@@ -2,6 +2,9 @@ import re
 from m2cgen.ast import NumExpr, BoolExpr, CtrlExpr
 
 
+__all__ = ['BaseInterpreter']
+
+
 class BaseInterpreter:
 
     def interpret(self, expr):
