@@ -30,7 +30,7 @@ class JavaGenerator(BaseInterpreter):
         left_val = self._do_interpret(expr.left)
         right_val = self._do_interpret(expr.right)
         expr = left_val + ' ' + expr.op.value + ' ' + right_val
-        return self._add_var_def(expr)
+        return expr
 
     def interpret_feature_ref(self, expr):
         index = expr.index
@@ -43,7 +43,7 @@ class JavaGenerator(BaseInterpreter):
         self._code += class_def
 
     def _add_method_def(self, name, args, return_type, modifier='public'):
-        method_def = modifier + ' ' + return_type + ' ' + name + '('
+        method_def = modifier + ' static ' + return_type + ' ' + name + '('
         method_def += ','.join([t + ' ' + n for t, n in args])
         method_def += ') {\n'
         self._code += method_def

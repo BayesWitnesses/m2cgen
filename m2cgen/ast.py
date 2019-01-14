@@ -9,6 +9,9 @@ class FeatureRef(Expr):
     def __init__(self, index):
         self.index = index
 
+    def __str__(self):
+        return 'FeatureRef(' + str(self.index) + ')'
+
 
 # Numeric Expressions.
 
@@ -19,6 +22,9 @@ class NumExpr(Expr):
 class NumVal(NumExpr):
     def __init__(self, value):
         self.value = value
+
+    def __str__(self):
+        return 'NumVal(' + str(self.value) + ')'
 
 
 class BinNumOpType(Enum):
@@ -33,6 +39,10 @@ class BinNumExpr(NumExpr):
         self.left = left
         self.right = right
         self.op = op
+
+    def __str__(self):
+        args = ','.join([str(self.left), str(self.right), self.op.name])
+        return 'BinNumExpr(' + args + ')'
 
 
 # Boolean Expressions.

@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.utils import shuffle
 
 from m2cgen.model2ast import model2ast
-
+from m2cgen.interpreter.java import JavaGenerator
 
 
 if __name__ == "__main__":
@@ -23,9 +23,8 @@ if __name__ == "__main__":
 
     clf.fit(X_train, y_train)
 
-
-
     y_pred = clf.predict(X_test)
+    print('Test score: ' + str(y_pred[0]))
 
     print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
     print('Variance score: %.2f' % r2_score(y_test, y_pred))
@@ -36,3 +35,5 @@ if __name__ == "__main__":
     converter = model2ast.LinearRegressionConverter(clf)
 
     ast = converter.convert_to_ast()
+    interpreter = JavaGenerator()
+    print(interpreter.interpret(ast))
