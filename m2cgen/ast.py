@@ -10,7 +10,7 @@ class FeatureRef(Expr):
         self.index = index
 
     def __str__(self):
-        return 'FeatureRef(' + str(self.index) + ')'
+        return "FeatureRef(" + str(self.index) + ")"
 
 
 # Numeric Expressions.
@@ -24,7 +24,7 @@ class NumVal(NumExpr):
         self.value = value
 
     def __str__(self):
-        return 'NumVal(' + str(self.value) + ')'
+        return "NumVal(" + str(self.value) + ")"
 
 
 class BinNumOpType(Enum):
@@ -41,8 +41,8 @@ class BinNumExpr(NumExpr):
         self.op = op
 
     def __str__(self):
-        args = ','.join([str(self.left), str(self.right), self.op.name])
-        return 'BinNumExpr(' + args + ')'
+        args = ",".join([str(self.left), str(self.right), self.op.name])
+        return "BinNumExpr(" + args + ")"
 
 
 # Boolean Expressions.
@@ -51,17 +51,20 @@ class BoolExpr(Expr):
     pass
 
 
-class BoolValue(BoolExpr):
+class BoolVal(BoolExpr):
     def __init__(self, value):
         self.value = value
 
+    def __str__(self):
+        return "BoolVal(" + str(self.value) + ")"
+
 
 class BinBoolOpType(Enum):
-    GT = 0
-    GTE = 1
-    LT = 2
-    LTE = 3
-    EQ = 4
+    GT = '>'
+    GTE = '>='
+    LT = '<'
+    LTE = '<='
+    EQ = '=='
 
 
 class BinBoolExpr(BoolExpr):
@@ -69,6 +72,10 @@ class BinBoolExpr(BoolExpr):
         self.left = left
         self.right = right
         self.op = op
+
+    def __str__(self):
+        args = ",".join([str(self.left), str(self.right), self.op.name])
+        return "BinBoolExpr(" + args + ")"
 
 
 class UnaryBoolOpType(Enum):
@@ -79,6 +86,10 @@ class UnaryBoolExpr(BoolExpr):
     def __init__(self, expr, op):
         self.expr = expr
         self.op = op
+
+    def __str__(self):
+        args = ",".join([str(self.expr), self.op.name])
+        return "UnaryBoolExpr(" + args + ")"
 
 
 # Control Expressions.
@@ -92,3 +103,7 @@ class IfExpr(CtrlExpr):
         self.test = test
         self.body = body
         self.orelse = orelse
+
+    def __str__(self):
+        args = ",".join([str(self.test), str(self.body), self.orelse])
+        return "IfExpr(" + args + ")"

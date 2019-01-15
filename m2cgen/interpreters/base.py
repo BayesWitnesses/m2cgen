@@ -2,9 +2,6 @@ import re
 from m2cgen.ast import NumExpr, BoolExpr, CtrlExpr
 
 
-__all__ = ['BaseInterpreter']
-
-
 class BaseInterpreter:
 
     def interpret(self, expr):
@@ -26,13 +23,13 @@ class BaseInterpreter:
                     return getattr(self, handler_name)
 
         raise NotImplementedError(
-            'No handler found for {}'.format(type(expr).__name__))
+            "No handler found for {}".format(type(expr).__name__))
 
     @staticmethod
     def _handler_name(expr_tpe):
         expr_name = BaseInterpreter._normalize_expr_name(expr_tpe.__name__)
-        return 'interpret_' + expr_name
+        return "interpret_" + expr_name
 
     @staticmethod
     def _normalize_expr_name(name):
-        return re.sub('(?!^)([A-Z]+)', r'_\1', name).lower()
+        return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
