@@ -105,5 +105,5 @@ class IfExpr(CtrlExpr):
         self.orelse = orelse
 
     def __str__(self):
-        args = ",".join([str(self.test), str(self.body), self.orelse])
+        args = ",".join([str(self.test), str(self.body), str(self.orelse)])
         return "IfExpr(" + args + ")"
