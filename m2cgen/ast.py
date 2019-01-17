@@ -107,3 +107,10 @@ class IfExpr(CtrlExpr):
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), self.orelse])
         return "IfExpr(" + args + ")"
+
+
+# Transparent Expressions
+
+class TransparentExpr(Expr):
+    def __init__(self, expr):
+        self.expr = expr

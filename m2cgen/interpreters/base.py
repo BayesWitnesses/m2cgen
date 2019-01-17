@@ -1,5 +1,5 @@
 import re
-from m2cgen.ast import NumExpr, BoolExpr, CtrlExpr
+from m2cgen import ast
 
 
 class BaseInterpreter:
@@ -8,19 +8,18 @@ class BaseInterpreter:
         return self._do_interpret(expr)
 
     def _do_interpret(self, expr):
-        handler = self._select_handler(expr, (NumExpr, BoolExpr, CtrlExpr))
+        try:
+            handler = self._select_handler(expr)
+        except NotImplementedError:
+            if issubclass(expr.__class__, ast.TransparentExpr):
+                return self._do_interpret(expr.expr)
+            raise
         return handler(expr)
 
-    def _select_handler(self, expr, fallback_tpes):
+    def _select_handler(self, expr):
         handler_name = self._handler_name(type(expr))
         if hasattr(self, handler_name):
             return getattr(self, handler_name)
-
-        for expr_tpe in fallback_tpes:
-            if isinstance(expr, expr_tpe):
-                handler_name = self._handler_name(expr_tpe)
-                if hasattr(self, handler_name):
-                    return getattr(self, handler_name)
 
         raise NotImplementedError(
             "No handler found for {}".format(type(expr).__name__))
