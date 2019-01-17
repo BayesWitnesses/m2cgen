@@ -43,16 +43,16 @@ def example_linear():
 def example_with_if_confition():
     left = ast.BinNumExpr(
         ast.IfExpr(
-            ast.BinBoolExpr(ast.NumVal(1),
-                            ast.NumVal(1),
-                            ast.BinBoolOpType.EQ),
+            ast.CompExpr(ast.NumVal(1),
+                         ast.NumVal(1),
+                         ast.CompOpType.EQ),
             ast.NumVal(1),
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
 
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
-    bool_test = ast.BinBoolExpr(left, right, ast.BinBoolOpType.GTE)
+    bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
 
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.NumVal(2))
 

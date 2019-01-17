@@ -57,7 +57,7 @@ class JavaGenerator(BaseInterpreter):
 
         return var_name
 
-    def interpret_bin_bool_expr(self, expr):
+    def interpret_comp_expr(self, expr):
         return "({}) {} ({})".format(
             self._do_interpret(expr.left),
             expr.op.value,
