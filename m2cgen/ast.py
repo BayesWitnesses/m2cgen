@@ -59,12 +59,29 @@ class BoolVal(BoolExpr):
         return "BoolVal(" + str(self.value) + ")"
 
 
-class BinBoolOpType(Enum):
+class CompOpType(Enum):
     GT = '>'
     GTE = '>='
     LT = '<'
     LTE = '<='
     EQ = '=='
+    NOT_EQ = '!='
+
+
+class CompExpr(BoolExpr):
+    def __init__(self, left, right, op):
+        self.left = left
+        self.right = right
+        self.op = op
+
+    def __str__(self):
+        args = ",".join([str(self.left), str(self.right), self.op.name])
+        return "CompExpr(" + args + ")"
+
+
+class BinBoolOpType(Enum):
+    AND = '&&'
+    OR = '||'
 
 
 class BinBoolExpr(BoolExpr):
