@@ -48,7 +48,7 @@ class BaseExporter:
         return mean_squared_error(y_true, y_predicted)
 
     def predict(self, X):
-        assert self.executor_cls, "validator_cls is missing"
+        assert self.executor_cls, "executor_cls is missing"
 
         executor = self.executor_cls(self)
 
