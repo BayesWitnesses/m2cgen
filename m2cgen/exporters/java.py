@@ -10,7 +10,3 @@ class JavaExporter(BaseExporter):
             model_name=model_name,
             indent=indent)
         super(JavaExporter, self).__init__(model)
-
-    def export_from_ast(self, model_ast):
-        self.interpreter.interpret(model_ast)
-        return self.interpreter.get_defined_classes()

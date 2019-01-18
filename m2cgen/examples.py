@@ -52,6 +52,6 @@ def example_tree():
 
 
 if __name__ == "__main__":
-    # example_linear()
+    example_linear()
 
     example_tree()

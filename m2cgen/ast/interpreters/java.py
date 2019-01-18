@@ -20,7 +20,6 @@ class JavaInterpreter(BaseInterpreter):
                 last_result = self._do_interpret(expr)
                 self.cg.add_return_statement(last_result)
 
-    def get_defined_classes(self):
         return [
             (self.model_name, self.cg.code),
         ]
