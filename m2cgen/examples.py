@@ -6,8 +6,7 @@ from sklearn import tree
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.utils import shuffle
 
-from m2cgen import assemblers
-from m2cgen.interpreters import JavaGenerator
+from m2cgen import exporters
 
 
 def train_model(estimator):
@@ -36,20 +35,16 @@ def example_linear():
     print("Coef", estimator.coef_)
     print("Intercept", estimator.intercept_)
 
-    assembler = assemblers.LinearRegressionAssembler(estimator)
-    model_ast = assembler.assemble()
-    interpreter = JavaGenerator()
-    print(interpreter.interpret(model_ast))
+    exporter = exporters.JavaExporter(estimator)
+    print(exporter.export())
 
 
 def example_tree():
     estimator = tree.DecisionTreeRegressor()
     train_model(estimator)
 
-    assembler = assemblers.TreeModelAssembler(estimator)
-    model_ast = assembler.assemble()
-    interpreter = JavaGenerator()
-    print(interpreter.interpret(model_ast))
+    exporter = exporters.JavaExporter(estimator)
+    print(exporter.export())
 
 
 if __name__ == "__main__":

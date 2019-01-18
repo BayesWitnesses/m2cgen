@@ -1,5 +1,5 @@
 import re
-from m2cgen.ast import NumExpr, BoolExpr, CtrlExpr
+from m2cgen.ast.ast import NumExpr, BoolExpr, CtrlExpr
 
 
 class BaseInterpreter:
