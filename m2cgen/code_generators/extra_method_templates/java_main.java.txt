@@ -1,0 +1,10 @@
+public static void main(String[] args) {
+    // Features:
+    double[] features = new double[args.length];
+    for (int i = 0, l = args.length; i < l; i++) {
+        features[i] = Double.parseDouble(args[i]);
+    }
+
+    // Prediction:
+    System.out.println(score(features));
+}

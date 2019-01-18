@@ -27,10 +27,12 @@ def train_model(estimator):
     print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
     print("Variance score: %.2f" % r2_score(y_test, y_pred))
 
+    return X_test
+
 
 def example_linear():
     estimator = linear_model.LinearRegression()
-    train_model(estimator)
+    X_test = train_model(estimator)
 
     print("Coef", estimator.coef_)
     print("Intercept", estimator.intercept_)
@@ -38,13 +40,19 @@ def example_linear():
     exporter = exporters.JavaExporter(estimator)
     print(exporter.export())
 
+    assert exporter.validate(X_test[:1]) < 0.1
+    print("prediction", exporter.predict(X_test[1:2]))
+
 
 def example_tree():
     estimator = tree.DecisionTreeRegressor()
-    train_model(estimator)
+    X_test = train_model(estimator)
 
     exporter = exporters.JavaExporter(estimator)
     print(exporter.export())
+
+    assert exporter.validate(X_test[:1]) < 0.1
+    print("prediction", exporter.predict(X_test[1:2]))
 
 
 if __name__ == "__main__":
