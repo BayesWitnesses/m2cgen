@@ -5,15 +5,6 @@ from m2cgen.code_generators.base import BaseCodeGenerator
 
 class JavaCodeGenerator(BaseCodeGenerator):
 
-    def __init__(self, indent=4):
-        self._indent = indent
-        super(JavaCodeGenerator, self).__init__()
-
-    def reset_state(self):
-        self._current_indent = 0
-        self._var_idx = 0
-        self.code = ""
-
     def add_class_def(self, class_name, modifier="public"):
         class_def = modifier + " class " + class_name + " {\n"
         self.add_code_line(class_def)
@@ -26,19 +17,14 @@ class JavaCodeGenerator(BaseCodeGenerator):
         self.add_code_line(method_def)
         self.increase_indent()
 
-    def _get_var_name(self):
-        var_name = "var" + str(self._var_idx)
-        self._var_idx += 1
-        return var_name
-
     def add_var_declaration(self, var_type="double"):
-        var_name = self._get_var_name()
+        var_name = self.get_var_name()
         var_def = var_type + " " + var_name + ";"
         self.add_code_line(var_def)
         return var_name
 
     def add_var_def(self, expr, var_type="double"):
-        var_name = self._get_var_name()
+        var_name = self.get_var_name()
         var_def = var_type + " " + var_name + " = " + expr + ";"
         self.add_code_line(var_def)
         return var_name
@@ -49,18 +35,6 @@ class JavaCodeGenerator(BaseCodeGenerator):
     def add_closing_bracket(self):
         self.decrease_indent()
         self.add_code_line("}\n")
-
-    def add_code_line(self, line):
-        indent = "".join([" "] * self._current_indent)
-        self.code += indent + line + "\n"
-
-    def increase_indent(self):
-        self._current_indent += self._indent
-
-    def decrease_indent(self):
-        self._current_indent -= self._indent
-        assert self._current_indent >= 0, (
-            "Invalid indentation: {}".format(self._current_indent))
 
     def add_package_name(self, package_name):
         package_def = "package " + package_name + ";\n"
