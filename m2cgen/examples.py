@@ -28,6 +28,10 @@ def train_model(estimator):
     print("Variance score: %.2f" % r2_score(y_test, y_pred))
 
 
+def print_model(defined_classes):
+    print(defined_classes[0][1])
+
+
 def example_linear():
     estimator = linear_model.LinearRegression()
     train_model(estimator)
@@ -36,7 +40,7 @@ def example_linear():
     print("Intercept", estimator.intercept_)
 
     exporter = exporters.JavaExporter(estimator)
-    print(exporter.export())
+    print_model(exporter.export())
 
 
 def example_tree():
@@ -44,10 +48,10 @@ def example_tree():
     train_model(estimator)
 
     exporter = exporters.JavaExporter(estimator)
-    print(exporter.export())
+    print_model(exporter.export())
 
 
 if __name__ == "__main__":
-    example_linear()
+    # example_linear()
 
     example_tree()

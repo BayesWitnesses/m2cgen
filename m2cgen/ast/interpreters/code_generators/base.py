@@ -1,7 +1,5 @@
 class BaseCodeGenerator:
 
-    code = None
-
     def __init__(self, indent=4):
         self._indent = indent
         self.reset_state()

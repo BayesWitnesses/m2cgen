@@ -1,6 +1,6 @@
 import contextlib
 
-from m2cgen.code_generators.base import BaseCodeGenerator
+from m2cgen.ast.interpreters.code_generators.base import BaseCodeGenerator
 
 
 class JavaCodeGenerator(BaseCodeGenerator):
