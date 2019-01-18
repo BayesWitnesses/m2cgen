@@ -1,14 +1,6 @@
 from m2cgen import ast
 from m2cgen.assemblers import utils
-
-
-class ModelAssembler:
-
-    def __init__(self, model):
-        self.model = model
-
-    def assemble(self):
-        raise NotImplementedError
+from m2cgen.assemblers.base import ModelAssembler
 
 
 class LinearRegressionAssembler(ModelAssembler):

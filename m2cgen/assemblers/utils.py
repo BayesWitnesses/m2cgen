@@ -5,6 +5,10 @@ def mul(l, r):
     return ast.BinNumExpr(l, r, ast.BinNumOpType.MUL)
 
 
+def lte(l, r):
+    return ast.CompExpr(l, r, ast.CompOpType.LTE)
+
+
 def apply_op_to_expressions(op, *exprs):
     if len(exprs) < 2:
         raise ValueError("At least two expressions are required")
