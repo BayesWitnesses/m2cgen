@@ -1,4 +1,4 @@
-from m2cgen.ast.interpreters.java import JavaInterpreter
+from m2cgen.ast.interpreters import JavaInterpreter
 from m2cgen.exporters.base import BaseExporter
 
 
