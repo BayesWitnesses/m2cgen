@@ -1,9 +1,28 @@
 import contextlib
 
 from m2cgen.ast.interpreters.code_generator import BaseCodeGenerator
+from m2cgen.ast.interpreters.grammar import BaseGrammar
 
 
 class JavaCodeGenerator(BaseCodeGenerator):
+
+    class grammar(BaseGrammar):
+        num_value = "${value}"
+        comp_expression = "(${left}) ${op} (${right})"
+        bin_num_expression = "(${left}) ${op} (${right})"
+        var_declaration = "${var_type} ${var_name};"
+        return_statement = "return ${value};"
+        array_index_access = "${array_name}[${index}]"
+        if_statement = """
+    if (${if_def}) {
+        ${body_def}
+    } else {
+        ${else_body}
+    }
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(JavaCodeGenerator, self).__init__(*args, **kwargs)
 
     def add_class_def(self, class_name, modifier="public"):
         class_def = modifier + " class " + class_name + " {\n"
@@ -17,21 +36,6 @@ class JavaCodeGenerator(BaseCodeGenerator):
         self.add_code_line(method_def)
         self.increase_indent()
 
-    def add_var_declaration(self, var_type="double"):
-        var_name = self.get_var_name()
-        var_def = var_type + " " + var_name + ";"
-        self.add_code_line(var_def)
-        return var_name
-
-    def add_var_def(self, expr, var_type="double"):
-        var_name = self.get_var_name()
-        var_def = var_type + " " + var_name + " = " + expr + ";"
-        self.add_code_line(var_def)
-        return var_name
-
-    def add_return_statement(self, expr):
-        self.add_code_line("return " + expr + ";")
-
     def add_closing_bracket(self):
         self.decrease_indent()
         self.add_code_line("}\n")
@@ -39,15 +43,6 @@ class JavaCodeGenerator(BaseCodeGenerator):
     def add_package_name(self, package_name):
         package_def = "package " + package_name + ";\n"
         self.add_code_line(package_def)
-
-    def add_if_statement(self, if_def):
-        self.add_code_line("if (" + if_def + ") {")
-        self.increase_indent()
-
-    def add_else_statement(self):
-        self.decrease_indent()
-        self.add_code_line("} else {")
-        self.increase_indent()
 
     @contextlib.contextmanager
     def class_definition(self, model_name):
