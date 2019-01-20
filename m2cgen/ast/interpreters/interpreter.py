@@ -38,24 +38,6 @@ class BaseInterpreter:
 
     # Default method implementations
 
-    def interpret_comp_expr(self, expr):
-        return self.cg.grammar.comp_expression(
-            left=self._do_interpret(expr.left),
-            op=expr.op.value,
-            right=self._do_interpret(expr.right))
-
-    def interpret_bin_num_expr(self, expr):
-        return self.cg.grammar.bin_num_expression(
-            left=self._do_interpret(expr.left),
-            op=expr.op.value,
-            right=self._do_interpret(expr.right))
-
-    def interpret_num_val(self, expr):
-        return self.cg.grammar.num_value(value=expr.value)
-
-    def interpret_feature_ref(self, expr):
-        return self.cg.grammar.array_index_access(array_name="input", index=expr.index)
-
     def interpret_if_expr(self, expr):
         var_name = self.cg.add_var_declaration()
 
@@ -66,3 +48,21 @@ class BaseInterpreter:
         self.cg.add_if_expr(if_def, body_def, else_body)
 
         return var_name
+
+    def interpret_comp_expr(self, expr):
+        return self.cg.comp_expression(
+            left=self._do_interpret(expr.left),
+            op=expr.op.value,
+            right=self._do_interpret(expr.right))
+
+    def interpret_bin_num_expr(self, expr):
+        return self.cg.bin_num_expression(
+            left=self._do_interpret(expr.left),
+            op=expr.op.value,
+            right=self._do_interpret(expr.right))
+
+    def interpret_num_val(self, expr):
+        return self.cg.num_value(value=expr.value)
+
+    def interpret_feature_ref(self, expr):
+        return self.cg.array_index_access(array_name="input", index=expr.index)

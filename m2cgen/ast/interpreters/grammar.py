@@ -3,8 +3,8 @@ from string import Template
 
 class GrammarExpression:
     """
-        Simple wrapper around string.Template to provide readable
-        __str__ method.
+    Simple wrapper around string.Template to provide readable
+    __str__ method.
     """
 
     def __init__(self, template):
@@ -19,7 +19,10 @@ class GrammarExpression:
 
 
 class GrammarMetaclass(type):
-    """Probably overengineering. Just to make attributes of grammar implicitly templates."""
+    """
+    Probably overengineering. Just to make attributes of grammar
+    implicitly templates.
+    """
 
     def __init__(self, *args, **kwargs):
         super(GrammarMetaclass, self).__init__(*args, **kwargs)

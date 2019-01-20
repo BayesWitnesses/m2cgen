@@ -14,12 +14,12 @@ class JavaCodeGenerator(BaseCodeGenerator):
         return_statement = "return ${value};"
         array_index_access = "${array_name}[${index}]"
         if_statement = """
-    if (${if_def}) {
-        ${body_def}
-    } else {
-        ${else_body}
-    }
-    """
+if (${if_def}) {
+    ${body_def}
+} else {
+    ${else_body}
+}
+"""
 
     def __init__(self, *args, **kwargs):
         super(JavaCodeGenerator, self).__init__(*args, **kwargs)
