@@ -40,7 +40,7 @@ def example_linear():
     print("Coef", estimator.coef_)
     print("Intercept", estimator.intercept_)
 
-    exporter = exporters.JavaExporter(estimator)
+    exporter = exporters.PythonExporter(estimator)
     print_model(exporter.export())
 
 
@@ -48,7 +48,7 @@ def example_tree():
     estimator = tree.DecisionTreeRegressor()
     train_model(estimator)
 
-    exporter = exporters.JavaExporter(estimator)
+    exporter = exporters.PythonExporter(estimator)
     print_model(exporter.export())
 
 
