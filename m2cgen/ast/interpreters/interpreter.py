@@ -61,7 +61,7 @@ class BaseInterpreter:
         handle_nested_expr(expr.body)
         self._cg.add_else_statement()
         handle_nested_expr(expr.orelse)
-        self._cg.add_close_block()
+        self._cg.add_block_termination()
 
         return var_name
 

@@ -24,7 +24,7 @@ class BaseCodeGenerator:
     tpl_if_statement = NotImplemented
     tpl_else_statement = NotImplemented
     tpl_array_index_access = NotImplemented
-    tpl_close_block = NotImplemented
+    tpl_block_termination = NotImplemented
     tpl_var_assignment = NotImplemented
 
     def __init__(self, indent=4):
@@ -77,9 +77,9 @@ class BaseCodeGenerator:
         self.add_code_line(self.tpl_else_statement())
         self.increase_indent()
 
-    def add_close_block(self):
+    def add_block_termination(self):
         self.decrease_indent()
-        self.add_code_line(self.tpl_close_block())
+        self.add_code_line(self.tpl_block_termination())
 
     def add_var_assignment(self, var_name, value):
         self.add_code_line(
@@ -112,5 +112,5 @@ class CLikeCodeGenerator(BaseCodeGenerator):
     tpl_array_index_access = CodeTemplate("${array_name}[${index}]")
     tpl_if_statement = CodeTemplate("if (${if_def}) {")
     tpl_else_statement = CodeTemplate("} else {")
-    tpl_close_block = CodeTemplate("}")
+    tpl_block_termination = CodeTemplate("}")
     tpl_var_assignment = CodeTemplate("${var_name} = ${value};")

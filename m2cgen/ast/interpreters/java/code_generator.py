@@ -28,10 +28,10 @@ class JavaCodeGenerator(CLikeCodeGenerator):
     def class_definition(self, model_name):
         self.add_class_def(model_name)
         yield
-        self.add_close_block()
+        self.add_block_termination()
 
     @contextlib.contextmanager
     def method_definition(self, name, args, return_type, modifier="public"):
         self.add_method_def(name, args, return_type, modifier=modifier)
         yield
-        self.add_close_block()
+        self.add_block_termination()
