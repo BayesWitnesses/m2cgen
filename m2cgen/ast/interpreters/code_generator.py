@@ -1,14 +1,14 @@
 from string import Template
 
 
-class CodeTemplate():
+class CodeTemplate:
 
     def __init__(self, template):
         self.template = Template(template)
-        self._template = template
+        self.str_template = template
 
     def __str__(self):
-        return self._template
+        return self.str_template
 
     def __call__(self, *args, **kwargs):
         return self.template.substitute(*args, **kwargs)
