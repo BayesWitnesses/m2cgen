@@ -20,6 +20,7 @@ class BaseCodeGenerator:
 
     tpl_num_value = NotImplemented
     tpl_infix_expression = NotImplemented
+    tpl_var_declaration = NotImplemented
     tpl_return_statement = NotImplemented
     tpl_if_statement = NotImplemented
     tpl_else_statement = NotImplemented
