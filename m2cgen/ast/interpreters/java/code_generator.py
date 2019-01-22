@@ -1,20 +1,9 @@
 import contextlib
 
-from m2cgen.ast.interpreters.code_generator import BaseCodeGenerator
-from m2cgen.ast.interpreters.code_generator import CodeTemplate as CT
+from m2cgen.ast.interpreters.code_generator import CLikeCodeGenerator
 
 
-class JavaCodeGenerator(BaseCodeGenerator):
-
-    tpl_num_value = CT("${value}")
-    tpl_infix_expression = CT("(${left}) ${op} (${right})")
-    tpl_var_declaration = CT("${var_type} ${var_name};")
-    tpl_return_statement = CT("return ${value};")
-    tpl_array_index_access = CT("${array_name}[${index}]")
-    tpl_if_statement = CT("if (${if_def}) {")
-    tpl_else_statement = CT("} else {")
-    tpl_close_block = CT("}")
-    tpl_var_assignment = CT("${var_name} = ${value};")
+class JavaCodeGenerator(CLikeCodeGenerator):
 
     def __init__(self, *args, **kwargs):
         super(JavaCodeGenerator, self).__init__(*args, **kwargs)

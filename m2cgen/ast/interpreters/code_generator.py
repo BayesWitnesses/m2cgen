@@ -97,3 +97,20 @@ class BaseCodeGenerator:
     def array_index_access(self, array_name, index):
         return self.tpl_array_index_access(
             array_name=array_name, index=index)
+
+
+class CLikeCodeGenerator(BaseCodeGenerator):
+    """
+    This code generator provides C-like syntax so that subclasses will only
+    have to provide logic for wrapping expressions into functions/classes/etc.
+    """
+
+    tpl_num_value = CodeTemplate("${value}")
+    tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
+    tpl_var_declaration = CodeTemplate("${var_type} ${var_name};")
+    tpl_return_statement = CodeTemplate("return ${value};")
+    tpl_array_index_access = CodeTemplate("${array_name}[${index}]")
+    tpl_if_statement = CodeTemplate("if (${if_def}) {")
+    tpl_else_statement = CodeTemplate("} else {")
+    tpl_close_block = CodeTemplate("}")
+    tpl_var_assignment = CodeTemplate("${var_name} = ${value};")
