@@ -1,19 +1,9 @@
 import contextlib
 
-from m2cgen.ast.interpreters.code_generator import BaseCodeGenerator
+from m2cgen.ast.interpreters.code_generator import CLikeCodeGenerator
 
 
-class JavaCodeGenerator(BaseCodeGenerator):
-
-    tpl_num_value = "{value}"
-    tpl_infix_expression = "({left}) {op} ({right})"
-    tpl_var_declaration = "{var_type} {var_name};"
-    tpl_return_statement = "return {value};"
-    tpl_array_index_access = "{array_name}[{index}]"
-    tpl_if_statement = "if ({if_def}) {{"
-    tpl_else_statement = "} else {"
-    tpl_final_else_statement = "}"
-    tpl_var_assignment = "{var_name} = {value};"
+class JavaCodeGenerator(CLikeCodeGenerator):
 
     def __init__(self, *args, **kwargs):
         super(JavaCodeGenerator, self).__init__(*args, **kwargs)
@@ -30,10 +20,6 @@ class JavaCodeGenerator(BaseCodeGenerator):
         self.add_code_line(method_def)
         self.increase_indent()
 
-    def add_closing_bracket(self):
-        self.decrease_indent()
-        self.add_code_line("}")
-
     def add_package_name(self, package_name):
         package_def = "package " + package_name + ";\n"
         self.add_code_line(package_def)
@@ -42,10 +28,10 @@ class JavaCodeGenerator(BaseCodeGenerator):
     def class_definition(self, model_name):
         self.add_class_def(model_name)
         yield
-        self.add_closing_bracket()
+        self.add_block_termination()
 
     @contextlib.contextmanager
     def method_definition(self, name, args, return_type, modifier="public"):
         self.add_method_def(name, args, return_type, modifier=modifier)
         yield
-        self.add_closing_bracket()
+        self.add_block_termination()
