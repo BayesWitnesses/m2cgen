@@ -2,6 +2,7 @@ import numpy as np
 
 from sklearn.datasets import load_boston
 from sklearn import linear_model
+from sklearn import ensemble
 from sklearn import tree
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.utils import shuffle
@@ -51,7 +52,17 @@ def example_tree():
     print_model(exporter.export())
 
 
+def example_random_forest():
+    estimator = ensemble.RandomForestRegressor()
+    train_model(estimator)
+
+    exporter = exporters.JavaExporter(estimator)
+    print_model(exporter.export())
+
+
 if __name__ == "__main__":
     example_linear()
 
     example_tree()
+
+    example_random_forest()
