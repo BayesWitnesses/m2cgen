@@ -8,6 +8,7 @@ class BaseExporter:
     models_to_assemblers = {
         "LinearRegression": assemblers.LinearRegressionAssembler,
         "DecisionTreeRegressor": assemblers.TreeModelAssembler,
+        "RandomForestRegressor": assemblers.RandomForestModelAssembler,
     }
 
     def __init__(self, model):
