@@ -6,7 +6,9 @@ from m2cgen.ast.ast import NumExpr, BoolExpr, CtrlExpr
 
 class BaseInterpreter:
 
-    cg = None
+    def __init__(self, cg, feature_array_name="input"):
+        self._cg = cg
+        self._feature_array_name = feature_array_name
 
     def interpret(self, expr):
         return self._do_interpret(expr)
@@ -44,39 +46,41 @@ class BaseInterpreter:
         if if_var_name is not None:
             var_name = if_var_name
         else:
-            var_name = self.cg.add_var_declaration()
+            var_name = self._cg.add_var_declaration()
 
         if_def = self._do_interpret(expr.test, **kwargs)
-        self.cg.add_if_statement(if_def)
+        self._cg.add_if_statement(if_def)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):
                 self._do_interpret(nested, if_var_name=var_name, **kwargs)
             else:
-                res_def = var_name + " = " + self._do_interpret(nested) + ";"
-                self.cg.add_code_line(res_def)
+                self._cg.add_var_assignment(
+                    var_name, self._do_interpret(nested))
 
         handle_nested_expr(expr.body)
-        self.cg.add_else_statement()
+        self._cg.add_else_statement()
         handle_nested_expr(expr.orelse)
-        self.cg.finalize_else_statement()
+        self._cg.add_final_else_statement()
 
         return var_name
 
     def interpret_comp_expr(self, expr):
-        return self.cg.infix_expression(
+        return self._cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))
 
     def interpret_bin_num_expr(self, expr):
-        return self.cg.infix_expression(
+        return self._cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))
 
     def interpret_num_val(self, expr):
-        return self.cg.num_value(value=expr.value)
+        return self._cg.num_value(value=expr.value)
 
     def interpret_feature_ref(self, expr):
-        return self.cg.array_index_access(array_name="input", index=expr.index)
+        return self._cg.array_index_access(
+            array_name=self._feature_array_name,
+            index=expr.index)
