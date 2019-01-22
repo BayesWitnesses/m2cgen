@@ -93,6 +93,6 @@ class TransparentExpr(CtrlExpr):
         self.expr = expr
 
 
-class LogicalBlockExpr(TransparentExpr):
+class SubroutineExpr(TransparentExpr):
     def __str__(self):
-        return "LogicalBlockExpr(" + str(self.expr) + ")"
+        return "SubroutineExpr(" + str(self.expr) + ")"

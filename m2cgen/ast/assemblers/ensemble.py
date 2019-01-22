@@ -15,7 +15,7 @@ class RandomForestModelAssembler(ModelAssembler):
         def assemble_tree_expr(t):
             assembler = TreeModelAssembler(t)
             return ast.BinNumExpr(
-                ast.LogicalBlockExpr(assembler.assemble()),
+                ast.SubroutineExpr(assembler.assemble()),
                 ast.NumVal(coef),
                 ast.BinNumOpType.MUL)
 
