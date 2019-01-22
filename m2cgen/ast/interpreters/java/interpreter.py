@@ -16,7 +16,9 @@ class JavaInterpreter(BaseInterpreter):
             self.cg.add_package_name(self.package_name)
 
         with self.cg.class_definition(self.model_name):
-            with self.cg.method_definition():
+            with self.cg.method_definition(name="score",
+                                           args=[("double[]", "input")],
+                                           return_type="double"):
                 last_result = self._do_interpret(expr)
                 self.cg.add_return_statement(last_result)
 

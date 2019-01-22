@@ -1,4 +1,6 @@
 import re
+
+from m2cgen.ast import ast
 from m2cgen.ast.ast import NumExpr, BoolExpr, CtrlExpr
 
 
@@ -9,9 +11,9 @@ class BaseInterpreter:
     def interpret(self, expr):
         return self._do_interpret(expr)
 
-    def _do_interpret(self, expr):
+    def _do_interpret(self, expr, **kwargs):
         handler = self._select_handler(expr, (NumExpr, BoolExpr, CtrlExpr))
-        return handler(expr)
+        return handler(expr, **kwargs)
 
     def _select_handler(self, expr, fallback_tpes):
         handler_name = self._handler_name(type(expr))
@@ -38,25 +40,37 @@ class BaseInterpreter:
 
     # Default method implementations
 
-    def interpret_if_expr(self, expr):
-        var_name = self.cg.add_var_declaration()
+    def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
+        if if_var_name is not None:
+            var_name = if_var_name
+        else:
+            var_name = self.cg.add_var_declaration()
 
-        if_def = self._do_interpret(expr.test)
-        body_def = var_name + " = " + self._do_interpret(expr.body) + ";"
-        else_body = var_name + " = " + self._do_interpret(expr.orelse) + ";"
+        if_def = self._do_interpret(expr.test, **kwargs)
+        self.cg.add_if_statement(if_def)
 
-        self.cg.add_if_expr(if_def, body_def, else_body)
+        def handle_nested_expr(nested):
+            if isinstance(nested, ast.IfExpr):
+                self._do_interpret(nested, if_var_name=var_name, **kwargs)
+            else:
+                res_def = var_name + " = " + self._do_interpret(nested) + ";"
+                self.cg.add_code_line(res_def)
+
+        handle_nested_expr(expr.body)
+        self.cg.add_else_statement()
+        handle_nested_expr(expr.orelse)
+        self.cg.finalize_else_statement()
 
         return var_name
 
     def interpret_comp_expr(self, expr):
-        return self.cg.comp_expression(
+        return self.cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))
 
     def interpret_bin_num_expr(self, expr):
-        return self.cg.bin_num_expression(
+        return self.cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))

@@ -44,8 +44,8 @@ class GrammarMetaclass(type):
 
 class BaseGrammar(metaclass=GrammarMetaclass):
     num_value = NotImplemented
-    comp_expression = NotImplemented
-    bin_num_expression = NotImplemented
+    infix_expression = NotImplemented
     return_statement = NotImplemented
     if_statement = NotImplemented
+    else_statement = NotImplemented
     array_index_access = NotImplemented

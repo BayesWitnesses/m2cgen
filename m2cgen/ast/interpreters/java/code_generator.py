@@ -8,18 +8,12 @@ class JavaCodeGenerator(BaseCodeGenerator):
 
     class grammar(BaseGrammar):
         num_value = "${value}"
-        comp_expression = "(${left}) ${op} (${right})"
-        bin_num_expression = "(${left}) ${op} (${right})"
+        infix_expression = "(${left}) ${op} (${right})"
         var_declaration = "${var_type} ${var_name};"
         return_statement = "return ${value};"
         array_index_access = "${array_name}[${index}]"
-        if_statement = """
-if (${if_def}) {
-    ${body_def}
-} else {
-    ${else_body}
-}
-"""
+        if_statement = "if (${if_def}) {"
+        else_statement = "} else {"
 
     def __init__(self, *args, **kwargs):
         super(JavaCodeGenerator, self).__init__(*args, **kwargs)
@@ -38,7 +32,10 @@ if (${if_def}) {
 
     def add_closing_bracket(self):
         self.decrease_indent()
-        self.add_code_line("}\n")
+        self.add_code_line("}")
+
+    def finalize_else_statement(self):
+        self.add_closing_bracket()
 
     def add_package_name(self, package_name):
         package_def = "package " + package_name + ";\n"
@@ -51,9 +48,7 @@ if (${if_def}) {
         self.add_closing_bracket()
 
     @contextlib.contextmanager
-    def method_definition(self):
-        self.add_method_def(name="score",
-                            args=[("double[]", "input")],
-                            return_type="double")
+    def method_definition(self, name, args, return_type, modifier="public"):
+        self.add_method_def(name, args, return_type, modifier=modifier)
         yield
         self.add_closing_bracket()

@@ -30,10 +30,6 @@ class BaseCodeGenerator:
         if newline:
             self.code += "\n"
 
-    def add_multline_code(self, multiline_code):
-        for line in multiline_code.lstrip().split("\n"):
-            self.add_code_line(line)
-
     # Following statements compute expressions using grammar AND add
     # it to the result.
 
@@ -46,19 +42,20 @@ class BaseCodeGenerator:
             self.grammar.var_declaration(var_type=var_type, var_name=var_name))
         return var_name
 
-    def add_if_expr(self, if_def, body_def, else_body):
-        self.add_multline_code(
-            self.grammar.if_statement(
-                if_def=if_def, body_def=body_def, else_body=else_body))
+    def add_if_statement(self, if_def):
+        self.add_code_line(self.grammar.if_statement(if_def=if_def))
+        self.increase_indent()
+
+    def add_else_statement(self):
+        self.decrease_indent()
+        self.add_code_line(self.grammar.else_statement())
+        self.increase_indent()
 
     # Following methods simply compute expressions using grammar without
     # changing result.
 
-    def comp_expression(self, left, right, op):
-        return self.grammar.comp_expression(left=left, right=right, op=op)
-
-    def bin_num_expression(self, left, right, op):
-        return self.grammar.bin_num_expression(left=left, right=right, op=op)
+    def infix_expression(self, left, right, op):
+        return self.grammar.infix_expression(left=left, right=right, op=op)
 
     def num_value(self, value):
         return self.grammar.num_value(value=value)
