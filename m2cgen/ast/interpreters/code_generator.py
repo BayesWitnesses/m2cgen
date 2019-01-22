@@ -51,6 +51,8 @@ class BaseCodeGenerator:
             "Invalid indentation: {}".format(self._current_indent))
 
     def add_code_line(self, line, newline=True):
+        if not line:
+            return
         indent = "".join([" "] * self._current_indent)
         self.code += indent + line
         if newline:
