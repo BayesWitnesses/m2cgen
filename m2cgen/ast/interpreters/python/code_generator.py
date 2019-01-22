@@ -18,7 +18,7 @@ class PythonCodeGenerator(BaseCodeGenerator):
     tpl_block_termination = CT("")
 
     def add_class_def(self, class_name):
-        class_def = "class " + class_name + "():"
+        class_def = "class " + class_name + "(object):"
         self.add_code_line(class_def)
         self.increase_indent()
 
