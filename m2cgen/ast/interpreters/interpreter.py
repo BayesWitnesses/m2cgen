@@ -7,9 +7,9 @@ class BaseInterpreter:
     def interpret(self, expr):
         return self._do_interpret(expr)
 
-    def _do_interpret(self, expr):
+    def _do_interpret(self, expr, **kwargs):
         handler = self._select_handler(expr, (NumExpr, BoolExpr, CtrlExpr))
-        return handler(expr)
+        return handler(expr, **kwargs)
 
     def _select_handler(self, expr, fallback_tpes):
         handler_name = self._handler_name(type(expr))

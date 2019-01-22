@@ -34,7 +34,7 @@ class JavaCodeGenerator(BaseCodeGenerator):
 
     def add_closing_bracket(self):
         self.decrease_indent()
-        self.add_code_line("}\n")
+        self.add_code_line("}")
 
     def add_package_name(self, package_name):
         package_def = "package " + package_name + ";\n"
@@ -56,9 +56,7 @@ class JavaCodeGenerator(BaseCodeGenerator):
         self.add_closing_bracket()
 
     @contextlib.contextmanager
-    def method_definition(self):
-        self.add_method_def(name="score",
-                            args=[("double[]", "input")],
-                            return_type="double")
+    def method_definition(self, name, args, return_type, modifier="public"):
+        self.add_method_def(name, args, return_type, modifier=modifier)
         yield
         self.add_closing_bracket()

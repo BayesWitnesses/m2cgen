@@ -1,5 +1,6 @@
 from m2cgen.ast.interpreters.interpreter import BaseInterpreter
 from m2cgen.ast.interpreters.java.code_generator import JavaCodeGenerator
+from m2cgen.ast.ast import IfExpr
 
 
 class JavaInterpreter(BaseInterpreter):
@@ -16,7 +17,9 @@ class JavaInterpreter(BaseInterpreter):
             self.cg.add_package_name(self.package_name)
 
         with self.cg.class_definition(self.model_name):
-            with self.cg.method_definition():
+            with self.cg.method_definition(name="score",
+                                           args=[("double[]", "input")],
+                                           return_type="double"):
                 last_result = self._do_interpret(expr)
                 self.cg.add_return_statement(last_result)
 
@@ -24,36 +27,44 @@ class JavaInterpreter(BaseInterpreter):
             (self.model_name, self.cg.code),
         ]
 
-    def interpret_num_val(self, expr):
+    def interpret_num_val(self, expr, **kwargs):
         return str(expr.value)
 
-    def interpret_bin_num_expr(self, expr):
-        left_val = self._do_interpret(expr.left)
-        right_val = self._do_interpret(expr.right)
+    def interpret_bin_num_expr(self, expr, **kwargs):
+        left_val = self._do_interpret(expr.left, **kwargs)
+        right_val = self._do_interpret(expr.right, **kwargs)
         java_expr = left_val + " " + expr.op.value + " " + right_val
         return java_expr
 
-    def interpret_feature_ref(self, expr):
+    def interpret_feature_ref(self, expr, **kwargs):
         index = expr.index
         return "input[" + str(index) + "]"
 
-    def interpret_if_expr(self, expr):
-        var_name = self.cg.add_var_declaration()
+    def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
+        if if_var_name is not None:
+            var_name = if_var_name
+        else:
+            var_name = self.cg.add_var_declaration()
 
-        if_def = self._do_interpret(expr.test)
-        body_def = var_name + " = " + self._do_interpret(expr.body) + ";"
-        else_body = var_name + " = " + self._do_interpret(expr.orelse) + ";"
-
+        if_def = self._do_interpret(expr.test, **kwargs)
         self.cg.add_if_statement(if_def)
-        self.cg.add_code_line(body_def)
+
+        def handle_nested_expr(nested):
+            if isinstance(nested, IfExpr):
+                self._do_interpret(nested, if_var_name=var_name, **kwargs)
+            else:
+                res_def = var_name + " = " + self._do_interpret(nested) + ";"
+                self.cg.add_code_line(res_def)
+
+        handle_nested_expr(expr.body)
         self.cg.add_else_statement()
-        self.cg.add_code_line(else_body)
+        handle_nested_expr(expr.orelse)
         self.cg.add_closing_bracket()
 
         return var_name
 
-    def interpret_comp_expr(self, expr):
+    def interpret_comp_expr(self, expr, **kwargs):
         return "({}) {} ({})".format(
-            self._do_interpret(expr.left),
+            self._do_interpret(expr.left, **kwargs),
             expr.op.value,
-            self._do_interpret(expr.right))
+            self._do_interpret(expr.right, **kwargs))
