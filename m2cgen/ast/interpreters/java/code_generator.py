@@ -5,6 +5,19 @@ from m2cgen.ast.interpreters.code_generator import BaseCodeGenerator
 
 class JavaCodeGenerator(BaseCodeGenerator):
 
+    tpl_num_value = "{value}"
+    tpl_infix_expression = "({left}) {op} ({right})"
+    tpl_var_declaration = "{var_type} {var_name};"
+    tpl_return_statement = "return {value};"
+    tpl_array_index_access = "{array_name}[{index}]"
+    tpl_if_statement = "if ({if_def}) {{"
+    tpl_else_statement = "} else {"
+    tpl_final_else_statement = "}"
+    tpl_var_assignment = "{var_name} = {value};"
+
+    def __init__(self, *args, **kwargs):
+        super(JavaCodeGenerator, self).__init__(*args, **kwargs)
+
     def add_class_def(self, class_name, modifier="public"):
         class_def = modifier + " class " + class_name + " {\n"
         self.add_code_line(class_def)
@@ -17,21 +30,6 @@ class JavaCodeGenerator(BaseCodeGenerator):
         self.add_code_line(method_def)
         self.increase_indent()
 
-    def add_var_declaration(self, var_type="double"):
-        var_name = self.get_var_name()
-        var_def = var_type + " " + var_name + ";"
-        self.add_code_line(var_def)
-        return var_name
-
-    def add_var_def(self, expr, var_type="double"):
-        var_name = self.get_var_name()
-        var_def = var_type + " " + var_name + " = " + expr + ";"
-        self.add_code_line(var_def)
-        return var_name
-
-    def add_return_statement(self, expr):
-        self.add_code_line("return " + expr + ";")
-
     def add_closing_bracket(self):
         self.decrease_indent()
         self.add_code_line("}")
@@ -39,15 +37,6 @@ class JavaCodeGenerator(BaseCodeGenerator):
     def add_package_name(self, package_name):
         package_def = "package " + package_name + ";\n"
         self.add_code_line(package_def)
-
-    def add_if_statement(self, if_def):
-        self.add_code_line("if (" + if_def + ") {")
-        self.increase_indent()
-
-    def add_else_statement(self):
-        self.decrease_indent()
-        self.add_code_line("} else {")
-        self.increase_indent()
 
     @contextlib.contextmanager
     def class_definition(self, model_name):
