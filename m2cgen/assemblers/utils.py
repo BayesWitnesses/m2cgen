@@ -1,4 +1,4 @@
-from m2cgen.ast import ast
+from m2cgen import ast
 
 
 def mul(l, r):

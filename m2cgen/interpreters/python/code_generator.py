@@ -1,7 +1,7 @@
 import contextlib
 
-from m2cgen.ast.interpreters.code_generator import BaseCodeGenerator
-from m2cgen.ast.interpreters.code_generator import CodeTemplate as CT
+from m2cgen.interpreters.code_generator import BaseCodeGenerator
+from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
 
 class PythonCodeGenerator(BaseCodeGenerator):

@@ -1,4 +1,6 @@
-from m2cgen.ast import assemblers
+from m2cgen import assemblers
+from m2cgen.interpreters import PythonInterpreter
+from m2cgen.interpreters import JavaInterpreter
 
 
 class BaseExporter:
@@ -28,3 +30,22 @@ class BaseExporter:
     def export(self):
         model_ast = self.assembler.assemble()
         return self.interpreter.interpret(model_ast)
+
+
+class JavaExporter(BaseExporter):
+
+    def __init__(self, model, package_name=None, model_name="Model", indent=4):
+        self.interpreter = JavaInterpreter(
+            package_name=package_name,
+            model_name=model_name,
+            indent=indent)
+        super(JavaExporter, self).__init__(model)
+
+
+class PythonExporter(BaseExporter):
+
+    def __init__(self, model, model_name="Model", indent=4):
+        self.interpreter = PythonInterpreter(
+            model_name=model_name,
+            indent=indent)
+        super(PythonExporter, self).__init__(model)

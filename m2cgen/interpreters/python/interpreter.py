@@ -1,5 +1,5 @@
-from m2cgen.ast.interpreters.interpreter import BaseInterpreter
-from m2cgen.ast.interpreters.python.code_generator import PythonCodeGenerator
+from m2cgen.interpreters.interpreter import BaseInterpreter
+from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
 
 
 class PythonInterpreter(BaseInterpreter):

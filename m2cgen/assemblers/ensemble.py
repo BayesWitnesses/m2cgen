@@ -1,7 +1,7 @@
-from m2cgen.ast import ast
-from m2cgen.ast.assemblers import utils
-from m2cgen.ast.assemblers.base import ModelAssembler
-from m2cgen.ast.assemblers.tree import TreeModelAssembler
+from m2cgen import ast
+from m2cgen.assemblers import utils
+from m2cgen.assemblers.base import ModelAssembler
+from m2cgen.assemblers import TreeModelAssembler
 
 
 class RandomForestModelAssembler(ModelAssembler):
