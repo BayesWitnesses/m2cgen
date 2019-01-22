@@ -1,3 +1,19 @@
+from string import Template
+
+
+class CodeTemplate():
+
+    def __init__(self, template):
+        self.template = Template(template)
+        self._template = template
+
+    def __str__(self):
+        return self._template
+
+    def __call__(self, *args, **kwargs):
+        return self.template.substitute(*args, **kwargs)
+
+
 class BaseCodeGenerator:
 
     grammar = None
@@ -8,7 +24,7 @@ class BaseCodeGenerator:
     tpl_if_statement = NotImplemented
     tpl_else_statement = NotImplemented
     tpl_array_index_access = NotImplemented
-    tpl_final_else_statement = NotImplemented
+    tpl_close_block = NotImplemented
     tpl_var_assignment = NotImplemented
 
     def __init__(self, indent=4):
@@ -43,41 +59,41 @@ class BaseCodeGenerator:
     # it to the result.
 
     def add_return_statement(self, value):
-        self.add_code_line(self.tpl_return_statement.format(value=value))
+        self.add_code_line(self.tpl_return_statement(value=value))
 
     def add_var_declaration(self, var_type="double"):
         var_name = self.get_var_name()
         self.add_code_line(
-            self.tpl_var_declaration.format(
+            self.tpl_var_declaration(
                 var_type=var_type, var_name=var_name))
         return var_name
 
     def add_if_statement(self, if_def):
-        self.add_code_line(self.tpl_if_statement.format(if_def=if_def))
+        self.add_code_line(self.tpl_if_statement(if_def=if_def))
         self.increase_indent()
 
     def add_else_statement(self):
         self.decrease_indent()
-        self.add_code_line(self.tpl_else_statement)
+        self.add_code_line(self.tpl_else_statement())
         self.increase_indent()
 
-    def add_final_else_statement(self):
+    def add_close_block(self):
         self.decrease_indent()
-        self.add_code_line(self.tpl_final_else_statement)
+        self.add_code_line(self.tpl_close_block())
 
     def add_var_assignment(self, var_name, value):
         self.add_code_line(
-            self.tpl_var_assignment.format(var_name=var_name, value=value))
+            self.tpl_var_assignment(var_name=var_name, value=value))
 
     # Following methods simply compute expressions using grammar without
     # changing result.
 
     def infix_expression(self, left, right, op):
-        return self.tpl_infix_expression.format(left=left, right=right, op=op)
+        return self.tpl_infix_expression(left=left, right=right, op=op)
 
     def num_value(self, value):
-        return self.tpl_num_value.format(value=value)
+        return self.tpl_num_value(value=value)
 
     def array_index_access(self, array_name, index):
-        return self.tpl_array_index_access.format(
+        return self.tpl_array_index_access(
             array_name=array_name, index=index)
