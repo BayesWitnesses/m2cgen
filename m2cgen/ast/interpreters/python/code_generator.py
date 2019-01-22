@@ -10,7 +10,7 @@ class PythonCodeGenerator(BaseCodeGenerator):
     tpl_infix_expression = CT("(${left}) ${op} (${right})")
     tpl_return_statement = CT("return ${value}")
     tpl_array_index_access = CT("${array_name}[${index}]")
-    tpl_if_statement = CT("if (${if_def}) :")
+    tpl_if_statement = CT("if (${if_def}):")
     tpl_else_statement = CT("else:")
     tpl_var_assignment = CT("${var_name} = ${value}")
 
@@ -33,10 +33,8 @@ class PythonCodeGenerator(BaseCodeGenerator):
     def class_definition(self, model_name):
         self.add_class_def(model_name)
         yield
-        self.add_block_termination()
 
     @contextlib.contextmanager
     def method_definition(self, name, args):
         self.add_method_def(name, args)
         yield
-        self.add_block_termination()
