@@ -1,6 +1,6 @@
 import re
 
-from m2cgen.ast import ast
+from m2cgen import ast
 
 
 class BaseInterpreter:

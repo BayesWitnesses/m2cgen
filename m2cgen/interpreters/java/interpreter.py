@@ -1,5 +1,5 @@
-from m2cgen.ast.interpreters.interpreter import BaseInterpreter
-from m2cgen.ast.interpreters.java.code_generator import JavaCodeGenerator
+from m2cgen.interpreters.interpreter import BaseInterpreter
+from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 
 
 class JavaInterpreter(BaseInterpreter):

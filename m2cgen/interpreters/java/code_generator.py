@@ -1,6 +1,6 @@
 import contextlib
 
-from m2cgen.ast.interpreters.code_generator import CLikeCodeGenerator
+from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 
 
 class JavaCodeGenerator(CLikeCodeGenerator):
