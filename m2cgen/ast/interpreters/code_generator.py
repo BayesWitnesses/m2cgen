@@ -16,8 +16,6 @@ class CodeTemplate:
 
 class BaseCodeGenerator:
 
-    grammar = None
-
     tpl_num_value = NotImplemented
     tpl_infix_expression = NotImplemented
     tpl_var_declaration = NotImplemented
@@ -50,13 +48,11 @@ class BaseCodeGenerator:
         assert self._current_indent >= 0, (
             "Invalid indentation: {}".format(self._current_indent))
 
-    def add_code_line(self, line, newline=True):
-        indent = "".join([" "] * self._current_indent)
-        self.code += indent + line
-        if newline:
-            self.code += "\n"
+    def add_code_line(self, line):
+        indent = " " * self._current_indent
+        self.code += indent + line + "\n"
 
-    # Following statements compute expressions using grammar AND add
+    # Following statements compute expressions using templates AND add
     # it to the result.
 
     def add_return_statement(self, value):
@@ -86,7 +82,7 @@ class BaseCodeGenerator:
         self.add_code_line(
             self.tpl_var_assignment(var_name=var_name, value=value))
 
-    # Following methods simply compute expressions using grammar without
+    # Following methods simply compute expressions using templates without
     # changing result.
 
     def infix_expression(self, left, right, op):
