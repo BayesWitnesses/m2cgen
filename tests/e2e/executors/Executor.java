@@ -5,11 +5,7 @@ import java.util.Arrays;
 
 class Executor {
 
-    public static double score(double[] input) {
-        System.out.println(Arrays.toString(input));
-        return 2.3;
-    }
-
+    /** The example invocation: java -cp . Executor Model score 1 2 3 4 5 6 7 8 9 10 11 12 13 */
     public static void main(String[] args) {
         String className = args[0];
         String methodName = args[1];
