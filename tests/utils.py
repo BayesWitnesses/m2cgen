@@ -1,3 +1,7 @@
+import numpy as np
+from sklearn.datasets import load_boston
+from sklearn.utils import shuffle
+
 from m2cgen import ast
 
 
@@ -24,3 +28,20 @@ def cmp_exprs(left, right):
         return True
 
     return False
+
+
+def train_model(estimator):
+    boston = load_boston()
+
+    X, y = shuffle(boston.data, boston.target, random_state=13)
+    X = X.astype(np.float32)
+
+    offset = int(X.shape[0] * 0.9)
+    X_train, y_train = X[:offset], y[:offset]
+    X_test = X[offset:]
+
+    estimator.fit(X_train, y_train)
+
+    y_pred = estimator.predict(X_test)
+
+    return X_test, y_pred
