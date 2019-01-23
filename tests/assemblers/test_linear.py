@@ -1,7 +1,7 @@
 from sklearn import linear_model
 
 from m2cgen import assemblers, ast
-from m2cgen.assemblers.tests import utils
+from tests import utils
 
 
 def test_single_feature():
