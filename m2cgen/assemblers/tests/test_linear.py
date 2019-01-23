@@ -1,4 +1,3 @@
-import numpy as np
 from sklearn import linear_model
 
 from m2cgen import assemblers, ast
@@ -7,16 +6,17 @@ from m2cgen.assemblers.tests import utils
 
 def test_single_feature():
     estimator = linear_model.LinearRegression()
-    utils.train_model(estimator, 1)
+    estimator.coef_ = [1]
+    estimator.intercept_ = 3
 
     assembler = assemblers.LinearRegressionAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
-        ast.NumVal(np.float32(24.448652)),
+        ast.NumVal(3),
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(np.float32(-0.4199702)),
+            ast.NumVal(1),
             ast.BinNumOpType.MUL),
         ast.BinNumOpType.ADD)
 
@@ -25,22 +25,23 @@ def test_single_feature():
 
 def test_two_features():
     estimator = linear_model.LinearRegression()
-    utils.train_model(estimator, 2)
+    estimator.coef_ = [1, 2]
+    estimator.intercept_ = 3
 
     assembler = assemblers.LinearRegressionAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.NumVal(np.float32(22.845331)),
+            ast.NumVal(3),
             ast.BinNumExpr(
                 ast.FeatureRef(0),
-                ast.NumVal(np.float32(-0.35993505)),
+                ast.NumVal(1),
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(np.float32(0.11003721)),
+            ast.NumVal(2),
             ast.BinNumOpType.MUL),
         ast.BinNumOpType.ADD)
 
