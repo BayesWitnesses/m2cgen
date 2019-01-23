@@ -12,8 +12,10 @@ def train_model(estimator, n_params, random_state=13):
     """
     boston = load_boston()
 
-    X, y = shuffle(boston.data, boston.target, random_state=random_state)
-    X = X.astype(np.float32)
+    # X, y = shuffle(boston.data, boston.target, random_state=random_state)
+    X = boston.data.astype(np.float32)
+    y = boston.target
+
 
     offset = int(X.shape[0] * 0.9)
     X_train, y_train = X[:offset, :n_params], y[:offset]
