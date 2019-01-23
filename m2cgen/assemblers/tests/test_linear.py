@@ -16,7 +16,7 @@ def test_single_feature():
         ast.NumVal(np.float32(24.448652)),
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(np.float32(-0.41997024)),
+            ast.NumVal(np.float32(-0.4199702)),
             ast.BinNumOpType.MUL),
         ast.BinNumOpType.ADD)
 

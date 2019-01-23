@@ -53,7 +53,7 @@ def example_tree():
 
 
 def example_random_forest():
-    estimator = ensemble.RandomForestRegressor()
+    estimator = ensemble.RandomForestRegressor(n_estimators=10)
     train_model(estimator)
 
     exporter = exporters.JavaExporter(estimator)
