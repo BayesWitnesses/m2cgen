@@ -54,6 +54,12 @@ class BaseCodeGenerator:
         indent = " " * self._current_indent
         self.code += indent + line + "\n"
 
+    def add_code_lines(self, lines):
+        if isinstance(lines, str):
+            lines = lines.split("\n")
+        for l in lines:
+            self.add_code_line(l)
+
     # Following statements compute expressions using templates AND add
     # it to the result.
 
