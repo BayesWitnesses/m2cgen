@@ -7,5 +7,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pytest m2cgen/
   - flake8 m2cgen/
