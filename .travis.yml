@@ -8,4 +8,4 @@ install:
 
 script:
   - pytest tests/
-  - flake8 m2cgen/
+  - flake8 .
