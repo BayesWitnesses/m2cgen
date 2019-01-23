@@ -22,12 +22,7 @@ class JavaInterpreter(BaseInterpreter):
             self._cg.add_package_name(self.package_name)
 
         with self._cg.class_definition(self.model_name):
-            with self._cg.method_definition(
-                    name="score",
-                    args=[("double[]", self._feature_array_name)],
-                    return_type="double"):
-                last_result = self._do_interpret(expr)
-                self._cg.add_return_statement(last_result)
+            self._do_interpret_with_method("score", expr)
             for cg in self._subroutine_cgs:
                 self._cg.add_code_lines(cg.code)
 
@@ -39,22 +34,25 @@ class JavaInterpreter(BaseInterpreter):
         new_cg = JavaCodeGenerator(indent=self.indent)
         old_cg = self._cg
 
-        method_name = self.get_subroutine_name()
+        method_name = self._get_subroutine_name()
 
         self._cg = new_cg
-        with self._cg.method_definition(
-                    name=method_name,
-                    args=[("double[]", self._feature_array_name)],
-                    return_type="double"):
-                last_result = self._do_interpret(expr.expr, **kwargs)
-                self._cg.add_return_statement(last_result)
+        self._do_interpret_with_method(method_name, expr.expr)
         self._cg = old_cg
 
         self._subroutine_cgs.append(new_cg)
 
         return method_name + "(" + self._feature_array_name + ")"
 
-    def get_subroutine_name(self):
+    def _get_subroutine_name(self):
         subroutine_name = "subroutine" + str(self._subroutine_idx)
         self._subroutine_idx += 1
         return subroutine_name
+
+    def _do_interpret_with_method(self, method_name, expr):
+        with self._cg.method_definition(
+                name=method_name,
+                args=[("double[]", self._feature_array_name)],
+                return_type="double"):
+            last_result = self._do_interpret(expr)
+            self._cg.add_return_statement(last_result)
