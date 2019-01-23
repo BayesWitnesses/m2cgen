@@ -13,10 +13,10 @@ def test_single_feature():
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
-        ast.NumVal(np.float32(24.123604)),
+        ast.NumVal(np.float32(24.142467)),
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(np.float32(-0.4176014)),
+            ast.NumVal(np.float32(-0.42031747)),
             ast.BinNumOpType.MUL),
         ast.BinNumOpType.ADD)
 
@@ -32,15 +32,15 @@ def test_two_features():
 
     expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.NumVal(np.float32(22.466934)),
+            ast.NumVal(np.float32(22.487913)),
             ast.BinNumExpr(
                 ast.FeatureRef(0),
-                ast.NumVal(np.float32(-0.35059974)),
+                ast.NumVal(np.float32(-0.35317078)),
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(np.float32(0.120529264)),
+            ast.NumVal(np.float32(0.120180726)),
             ast.BinNumOpType.MUL),
         ast.BinNumOpType.ADD)
 
