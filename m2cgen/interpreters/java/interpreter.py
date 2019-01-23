@@ -17,6 +17,7 @@ class JavaInterpreter(BaseInterpreter):
     def interpret(self, expr):
         self._cg.reset_state()
         self._subroutine_idx = 0
+        self._subroutine_cgs = []
 
         if self.package_name:
             self._cg.add_package_name(self.package_name)
