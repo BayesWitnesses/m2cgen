@@ -10,39 +10,40 @@ class JavaInterpreter(BaseInterpreter):
         self.model_name = model_name
         self.indent = indent
         self._subroutine_idx = 0
-        self._subroutine_cgs = []
-        cg = JavaCodeGenerator(indent=indent)
+        self._subroutine_expr_queue = []
+        cg = self._create_code_generator()
         super(JavaInterpreter, self).__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
-        self._cg.reset_state()
         self._subroutine_idx = 0
-        self._subroutine_cgs = []
+        self._subroutine_expr_queue = [("score", expr)]
+
+        top_cg = self._create_code_generator()
 
         if self.package_name:
-            self._cg.add_package_name(self.package_name)
+            top_cg.add_package_name(self.package_name)
 
-        with self._cg.class_definition(self.model_name):
-            self._do_interpret_with_method("score", expr)
-            for cg in self._subroutine_cgs:
-                self._cg.add_code_lines(cg.code)
+        with top_cg.class_definition(self.model_name):
+            while len(self._subroutine_expr_queue) > 0:
+                method_name, next_expr = self._subroutine_expr_queue.pop(0)
+                self._cg = self._create_code_generator()
+
+                with self._cg.method_definition(
+                        name=method_name,
+                        args=[("double[]", self._feature_array_name)],
+                        return_type="double"):
+                    last_result = self._do_interpret(next_expr)
+                    self._cg.add_return_statement(last_result)
+
+                top_cg.add_code_lines(self._cg.code)
 
         return [
-            (self.model_name, self._cg.code),
+            (self.model_name, top_cg.code),
         ]
 
     def interpret_subroutine_expr(self, expr, **kwargs):
-        new_cg = JavaCodeGenerator(indent=self.indent)
-        old_cg = self._cg
-
         method_name = self._get_subroutine_name()
-
-        self._cg = new_cg
-        self._do_interpret_with_method(method_name, expr.expr)
-        self._cg = old_cg
-
-        self._subroutine_cgs.append(new_cg)
-
+        self._subroutine_expr_queue.append((method_name, expr.expr))
         return method_name + "(" + self._feature_array_name + ")"
 
     def _get_subroutine_name(self):
@@ -50,10 +51,5 @@ class JavaInterpreter(BaseInterpreter):
         self._subroutine_idx += 1
         return subroutine_name
 
-    def _do_interpret_with_method(self, method_name, expr):
-        with self._cg.method_definition(
-                name=method_name,
-                args=[("double[]", self._feature_array_name)],
-                return_type="double"):
-            last_result = self._do_interpret(expr)
-            self._cg.add_return_statement(last_result)
+    def _create_code_generator(self):
+        return JavaCodeGenerator(indent=self.indent)
