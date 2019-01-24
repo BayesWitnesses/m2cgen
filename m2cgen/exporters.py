@@ -44,5 +44,5 @@ class JavaExporter(BaseExporter):
 class PythonExporter(BaseExporter):
 
     def __init__(self, model, indent=4):
-        self.interpreter = PythonInterpreter(indent=indent)
+        self.interpreter = interpreters.PythonInterpreter(indent=indent)
         super(PythonExporter, self).__init__(model)
