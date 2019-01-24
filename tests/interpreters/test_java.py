@@ -141,11 +141,30 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
 
 
+def test_package_name():
+    expr = ast.NumVal(1)
+
+    interpreter = interpreters.JavaInterpreter(package_name="foo.bar")
+
+    expected_code = """
+package foo.bar;
+
+public class Model {
+
+    public static double score(double[] input) {
+        return 1;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
 def test_subroutine():
     expr = ast.BinNumExpr(
         ast.FeatureRef(0),
         ast.SubroutineExpr(
-            ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD)),
+            ast.BinNumExpr(
+                ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD)),
         ast.BinNumOpType.MUL)
 
     expected_code = """
