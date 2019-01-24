@@ -58,5 +58,8 @@ def train_model(estimator, test_fraction=0.1):
 @contextlib.contextmanager
 def tmp_dir():
     dirpath = tempfile.mkdtemp()
-    yield dirpath
-    shutil.rmtree(dirpath)
+
+    try:
+        yield dirpath
+    finally:
+        shutil.rmtree(dirpath)

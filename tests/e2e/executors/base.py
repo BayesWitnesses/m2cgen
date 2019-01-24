@@ -11,9 +11,12 @@ class BaseExecutor:
     def prepare_then_cleanup(self):
         with utils.tmp_dir() as tmp_dirpath:
             self._resource_tmp_dir = tmp_dirpath
-
             self.prepare()
-            yield
+
+            try:
+                yield
+            finally:
+                self._resource_tmp_dir = None
 
     def prepare(self):
         raise NotImplementedError
