@@ -19,6 +19,7 @@ class JavaExecutor:
         files_to_compile = []
         for model_name, code in self.exporter.export():
             file_name = os.path.join(dirpath, "{}.java".format(model_name))
+            print(file_name)
 
             with open(file_name, "w") as f:
                 f.write(code)

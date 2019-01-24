@@ -17,24 +17,14 @@ class PythonCodeGenerator(BaseCodeGenerator):
     tpl_var_declaration = CT("")
     tpl_block_termination = CT("")
 
-    def add_class_def(self, class_name):
-        class_def = "class " + class_name + "(object):"
-        self.add_code_line(class_def)
-        self.increase_indent()
-
-    def add_method_def(self, name, args):
-        method_def = "def " + " " + name + "(self, "
+    def add_function_def(self, name, args):
+        method_def = "def " + " " + name + "("
         method_def += ", ".join(args)
         method_def += "):"
         self.add_code_line(method_def)
         self.increase_indent()
 
     @contextlib.contextmanager
-    def class_definition(self, model_name):
-        self.add_class_def(model_name)
-        yield
-
-    @contextlib.contextmanager
-    def method_definition(self, name, args):
-        self.add_method_def(name, args)
+    def function_definition(self, name, args):
+        self.add_function_def(name, args)
         yield
