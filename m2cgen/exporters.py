@@ -1,6 +1,5 @@
 from m2cgen import assemblers
-from m2cgen.interpreters import PythonInterpreter
-from m2cgen.interpreters import JavaInterpreter
+from m2cgen import interpreters
 
 
 class BaseExporter:
@@ -35,7 +34,7 @@ class BaseExporter:
 class JavaExporter(BaseExporter):
 
     def __init__(self, model, package_name=None, model_name="Model", indent=4):
-        self.interpreter = JavaInterpreter(
+        self.interpreter = interpreters.JavaInterpreter(
             package_name=package_name,
             model_name=model_name,
             indent=indent)
