@@ -1,3 +1,7 @@
+import contextlib
+import shutil
+import tempfile
+
 import numpy as np
 from sklearn.datasets import load_boston
 from sklearn.utils import shuffle
@@ -45,3 +49,10 @@ def train_model(estimator):
     y_pred = estimator.predict(X_test)
 
     return X_test, y_pred
+
+
+@contextlib.contextmanager
+def tmp_dir():
+    dirpath = tempfile.mkdtemp()
+    yield dirpath
+    shutil.rmtree(dirpath)

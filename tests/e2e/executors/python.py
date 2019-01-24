@@ -4,6 +4,7 @@ import tempfile
 import sys
 
 from m2cgen import exporters
+from tests import utils
 
 
 class PythonExecutor:
@@ -13,28 +14,29 @@ class PythonExecutor:
         self.exporter = exporters.PythonExporter(model)
 
     def predict(self, X):
-        dirpath = tempfile.mkdtemp()
 
-        exported_models = self.exporter.export()
-        assert len(exported_models) == 1
+        with utils.tmp_dir() as dirpath:
 
-        _, code = exported_models[0]
+            exported_models = self.exporter.export()
+            assert len(exported_models) == 1
 
-        file_name = os.path.join(dirpath, "model.py")
+            _, code = exported_models[0]
 
-        with open(file_name, "w") as f:
-            f.write(code)
+            file_name = os.path.join(dirpath, "model.py")
 
-        # Hacky way to dynamically import generated function
+            with open(file_name, "w") as f:
+                f.write(code)
 
-        parent_dir = os.path.dirname(dirpath)
-        package = os.path.basename(dirpath)
+            # Hacky way to dynamically import generated function
 
-        sys.path.append(parent_dir)
+            parent_dir = os.path.dirname(dirpath)
+            package = os.path.basename(dirpath)
 
-        try:
-            score = importlib.import_module("{}.model".format(package)).score
-        finally:
-            sys.path.pop()
+            sys.path.append(parent_dir)
 
-        return score(X)
+            try:
+                score = importlib.import_module("{}.model".format(package)).score
+            finally:
+                sys.path.pop()
+
+            return score(X)
