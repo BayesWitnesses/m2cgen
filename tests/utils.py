@@ -34,6 +34,10 @@ def cmp_exprs(left, right):
     return False
 
 
+def assert_code_equal(actual, expected):
+    assert actual.strip() == expected.strip()
+
+
 def train_model(estimator, test_fraction=0.1):
     boston = load_boston()
 

@@ -57,6 +57,8 @@ class BaseInterpreter:
             array_name=self._feature_array_name,
             index=expr.index)
 
+    # Private methods implementing visitor pattern
+
     def _do_interpret(self, expr, **kwargs):
         try:
             handler = self._select_handler(expr)
