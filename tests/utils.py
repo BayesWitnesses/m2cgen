@@ -24,3 +24,7 @@ def cmp_exprs(left, right):
         return True
 
     return False
+
+
+def assert_code_equal(actual, expected):
+    assert actual.strip() == expected.strip()
