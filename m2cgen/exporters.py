@@ -43,8 +43,6 @@ class JavaExporter(BaseExporter):
 
 class PythonExporter(BaseExporter):
 
-    def __init__(self, model, model_name="Model", indent=4):
-        self.interpreter = interpreters.PythonInterpreter(
-            model_name=model_name,
-            indent=indent)
+    def __init__(self, model, indent=4):
+        self.interpreter = interpreters.PythonInterpreter(indent=indent)
         super(PythonExporter, self).__init__(model)
