@@ -34,13 +34,13 @@ def cmp_exprs(left, right):
     return False
 
 
-def train_model(estimator):
+def train_model(estimator, test_fraction=0.1):
     boston = load_boston()
 
     X, y = shuffle(boston.data, boston.target, random_state=13)
     X = X.astype(np.float32)
 
-    offset = int(X.shape[0] * 0.9)
+    offset = int(X.shape[0] * (1 - test_fraction))
     X_train, y_train = X[:offset], y[:offset]
     X_test = X[offset:]
 

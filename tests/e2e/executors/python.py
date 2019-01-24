@@ -1,42 +1,39 @@
 import importlib
 import os
-import tempfile
 import sys
 
 from m2cgen import exporters
-from tests import utils
+from tests.e2e.executors import base
 
 
-class PythonExecutor:
+class PythonExecutor(base.BaseExecutor):
 
     def __init__(self, model):
         self.model = model
         self.exporter = exporters.PythonExporter(model)
 
     def predict(self, X):
+        # Hacky way to dynamically import generated function
 
-        with utils.tmp_dir() as dirpath:
+        parent_dir = os.path.dirname(self._resource_tmp_dir)
+        package = os.path.basename(self._resource_tmp_dir)
 
-            exported_models = self.exporter.export()
-            assert len(exported_models) == 1
+        sys.path.append(parent_dir)
 
-            _, code = exported_models[0]
+        try:
+            score = importlib.import_module("{}.model".format(package)).score
+        finally:
+            sys.path.pop()
 
-            file_name = os.path.join(dirpath, "model.py")
+        return score(X)
 
-            with open(file_name, "w") as f:
-                f.write(code)
+    def prepare(self):
+        exported_models = self.exporter.export()
+        assert len(exported_models) == 1
 
-            # Hacky way to dynamically import generated function
+        _, code = exported_models[0]
 
-            parent_dir = os.path.dirname(dirpath)
-            package = os.path.basename(dirpath)
+        file_name = os.path.join(self._resource_tmp_dir, "model.py")
 
-            sys.path.append(parent_dir)
-
-            try:
-                score = importlib.import_module("{}.model".format(package)).score
-            finally:
-                sys.path.pop()
-
-            return score(X)
+        with open(file_name, "w") as f:
+            f.write(code)
