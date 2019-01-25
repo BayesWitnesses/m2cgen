@@ -11,7 +11,7 @@ class PythonInterpreter(BaseInterpreter):
     def interpret(self, expr):
         self._cg.reset_state()
 
-        with self._cg.method_definition(
+        with self._cg.function_definition(
                 name="score",
                 args=[self._feature_array_name]):
             last_result = self._do_interpret(expr)

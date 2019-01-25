@@ -17,7 +17,7 @@ class PythonCodeGenerator(BaseCodeGenerator):
     tpl_var_declaration = CT("")
     tpl_block_termination = CT("")
 
-    def add_method_def(self, name, args):
+    def add_function_def(self, name, args):
         method_def = "def " + " " + name + "("
         method_def += ", ".join(args)
         method_def += "):"
@@ -25,6 +25,6 @@ class PythonCodeGenerator(BaseCodeGenerator):
         self.increase_indent()
 
     @contextlib.contextmanager
-    def method_definition(self, name, args):
-        self.add_method_def(name, args)
+    def function_definition(self, name, args):
+        self.add_function_def(name, args)
         yield
