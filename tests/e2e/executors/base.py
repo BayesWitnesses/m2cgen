@@ -20,3 +20,11 @@ class BaseExecutor:
 
     def prepare(self):
         raise NotImplementedError
+
+    def predict(self, X):
+        assert all(map(lambda x: isinstance(x, float), X)), (
+            "Only list of floats is acceptable.")
+        return self._predict(X)
+
+    def _predict(self, X):
+        raise NotImplementedError

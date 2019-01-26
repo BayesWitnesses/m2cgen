@@ -17,13 +17,14 @@ class JavaExecutor(base.BaseExecutor):
         self._java_bin = os.path.join(java_home, "bin/java")
         self._javac_bin = os.path.join(java_home, "bin/javac")
 
-    def predict(self, X):
+    def _predict(self, X):
 
         exec_args = [
             self._java_bin, "-cp", self._resource_tmp_dir,
             "Executor", "Model", "score"
         ]
         exec_args.extend(map(str, X))
+        print("Predict", " ".join(exec_args))
         result = subprocess.run(exec_args, stdout=subprocess.PIPE)
 
         return float(result.stdout)
@@ -46,5 +47,7 @@ class JavaExecutor(base.BaseExecutor):
                     self._resource_tmp_dir)
 
         # Compile all files together.
-        subprocess.run([self._javac_bin] + files_to_compile + (
-            [os.path.join(self._resource_tmp_dir, "Executor.java")]))
+        exec_args = [self._javac_bin] + files_to_compile + (
+            [os.path.join(self._resource_tmp_dir, "Executor.java")])
+        subprocess.run(exec_args)
+        print("Compile", " ".join(exec_args))

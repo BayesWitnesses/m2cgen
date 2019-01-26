@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from sklearn import linear_model
 from sklearn import tree
 from sklearn import ensemble
@@ -17,7 +16,7 @@ def exec_e2e_test(estimator, executor_cls):
 
     with executor.prepare_then_cleanup():
         for idx in range(len(X_test)):
-            y_pred_executed = executor.predict(X_test[idx])
+            y_pred_executed = executor.predict(X_test[idx].tolist())
             print("expected={}, actual={}".format(y_pred_true[idx],
                                                   y_pred_executed))
             assert np.isclose(y_pred_true[idx], y_pred_executed)
@@ -33,7 +32,6 @@ def test_java_tree():
     exec_e2e_test(estimator, executors.JavaExecutor)
 
 
-@pytest.mark.skip(reason="Random Forest assembler is broken")
 def test_java_ensemble():
     estimator = ensemble.RandomForestRegressor(n_estimators=10,
                                                random_state=RANDOM_SEED)
