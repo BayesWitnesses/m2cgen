@@ -46,10 +46,11 @@ def test_python_linear():
 
 
 def test_python_tree():
-    estimator = tree.DecisionTreeRegressor()
+    estimator = tree.DecisionTreeRegressor(random_state=RANDOM_SEED)
     exec_e2e_test(estimator, executors.PythonExecutor)
 
 
 def test_python_ensemble():
-    estimator = ensemble.RandomForestRegressor(n_estimators=10)
+    estimator = ensemble.RandomForestRegressor(n_estimators=10,
+                                               random_state=RANDOM_SEED)
     exec_e2e_test(estimator, executors.PythonExecutor)
