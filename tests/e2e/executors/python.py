@@ -12,7 +12,7 @@ class PythonExecutor(base.BaseExecutor):
         self.model = model
         self.exporter = exporters.PythonExporter(model)
 
-    def _predict(self, X):
+    def predict(self, X):
         # Hacky way to dynamically import generated function
 
         parent_dir = os.path.dirname(self._resource_tmp_dir)
@@ -25,7 +25,8 @@ class PythonExecutor(base.BaseExecutor):
         finally:
             sys.path.pop()
 
-        return score(X)
+        # Use .tolist() since we want to use raw list of floats.
+        return score(X.tolist())
 
     def prepare(self):
         exported_models = self.exporter.export()
