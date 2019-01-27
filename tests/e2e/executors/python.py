@@ -25,7 +25,8 @@ class PythonExecutor(base.BaseExecutor):
         finally:
             sys.path.pop()
 
-        return score(X)
+        # Use .tolist() since we want to use raw list of floats.
+        return score(X.tolist())
 
     def prepare(self):
         exported_models = self.exporter.export()
