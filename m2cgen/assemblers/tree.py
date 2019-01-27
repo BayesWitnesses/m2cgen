@@ -38,9 +38,9 @@ class TreeModelAssembler(ModelAssembler):
         feature_idx = self._tree.feature[node_id]
         threshold = self._tree.threshold[node_id]
 
-        # sklearn's trees internally work with float32 numbers, so in order to have
-        # consistent results across all supported languages, we convert all thresholds
-        # into float32.
+        # sklearn's trees internally work with float32 numbers, so in order
+        # to have consistent results across all supported languages, we convert
+        # all thresholds into float32.
         threshold = threshold.astype(np.float32)
 
         return utils.lte(ast.FeatureRef(feature_idx), ast.NumVal(threshold))
