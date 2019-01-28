@@ -1,6 +1,5 @@
 from m2cgen.interpreters.interpreter import BaseInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
-from m2cgen import ast
 from collections import namedtuple
 
 
@@ -20,6 +19,8 @@ class JavaInterpreter(BaseInterpreter):
         super(JavaInterpreter, self).__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
+        self._subroutine_expr_queue = [Subroutine("score", expr)]
+
         self._subroutine_idx = 0
 
         top_cg = self._create_code_generator()
@@ -28,17 +29,9 @@ class JavaInterpreter(BaseInterpreter):
             top_cg.add_package_name(self.package_name)
 
         with top_cg.class_definition(self.model_name):
-            if isinstance(expr, ast.SubroutineExpr):
-                self._subroutine_expr_queue = []
-                self._do_interpret(expr)
-            else:
-                self._subroutine_expr_queue = [
-                    Subroutine("score", expr)
-                ]
-
-            while len(self._subroutine_expr_queue) > 0:
-                self._process_next_subroutine()
-                top_cg.add_code_lines(self._cg.code)
+            while len(self._subroutine_expr_queue):
+                subroutine_code = self._process_next_subroutine()
+                top_cg.add_code_lines(subroutine_code)
 
         return [
             (self.model_name, top_cg.code),
@@ -75,6 +68,8 @@ class JavaInterpreter(BaseInterpreter):
                 subroutine.expr,
                 is_multi_output=is_multi_output)
             self._cg.add_return_statement(last_result)
+
+        return self._cg.code
 
     def _get_subroutine_name(self):
         subroutine_name = "subroutine" + str(self._subroutine_idx)

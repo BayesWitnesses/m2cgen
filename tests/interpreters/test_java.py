@@ -183,18 +183,17 @@ public class Model {
 
 
 def test_multi_output():
-    expr = ast.MainExpr(
-        ast.BinNumExpr(
-            ast.FeatureRef(0),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.NumVal(1),
-                        ast.NumVal(1),
-                        ast.CompOpType.EQ),
-                    ast.ArrayExpr([ast.NumVal(1), ast.NumVal(2)]),
-                    ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)]))),
-            ast.BinNumOpType.MUL))
+    expr = ast.BinNumExpr(
+        ast.FeatureRef(0),
+        ast.SubroutineExpr(
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.NumVal(1),
+                    ast.NumVal(1),
+                    ast.CompOpType.EQ),
+                ast.ArrayExpr([ast.NumVal(1), ast.NumVal(2)]),
+                ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)]))),
+        ast.BinNumOpType.MUL)
 
     expected_code = """
 public class Model {

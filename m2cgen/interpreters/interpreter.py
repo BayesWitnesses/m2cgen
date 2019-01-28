@@ -19,11 +19,8 @@ class BaseInterpreter:
         if if_var_name is not None:
             var_name = if_var_name
         else:
-            var_type = "double[]" if is_multi_output else "double"
-            var_name = self._cg.add_var_declaration(var_type=var_type)
-
-        if_def = self._do_interpret(expr.test, **kwargs)
-        self._cg.add_if_statement(if_def)
+            var_name = self._cg.add_var_declaration(
+                is_list_type=is_multi_output)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):
@@ -35,6 +32,7 @@ class BaseInterpreter:
                     nested, is_multi_output=is_multi_output)
                 self._cg.add_var_assignment(var_name, nested_result)
 
+        self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
         handle_nested_expr(expr.body)
         self._cg.add_else_statement()
         handle_nested_expr(expr.orelse)

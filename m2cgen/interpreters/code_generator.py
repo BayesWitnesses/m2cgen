@@ -26,6 +26,9 @@ class BaseCodeGenerator:
     tpl_block_termination = NotImplemented
     tpl_var_assignment = NotImplemented
 
+    scalar_variable_type = NotImplemented
+    list_variable_type = NotImplemented
+
     def __init__(self, indent=4):
         self._indent = indent
         self.reset_state()
@@ -66,8 +69,11 @@ class BaseCodeGenerator:
     def add_return_statement(self, value):
         self.add_code_line(self.tpl_return_statement(value=value))
 
-    def add_var_declaration(self, var_type="double"):
+    def add_var_declaration(self, is_list_type=False):
         var_name = self.get_var_name()
+        var_type = (
+            self.list_variable_type if is_list_type
+            else self.scalar_variable_type)
         self.add_code_line(
             self.tpl_var_declaration(
                 var_type=var_type, var_name=var_name))
@@ -119,3 +125,6 @@ class CLikeCodeGenerator(BaseCodeGenerator):
     tpl_else_statement = CodeTemplate("} else {")
     tpl_block_termination = CodeTemplate("}")
     tpl_var_assignment = CodeTemplate("${var_name} = ${value};")
+
+    scalar_variable_type = "double"
+    list_variable_type = "double[]"

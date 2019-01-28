@@ -117,8 +117,3 @@ class SubroutineExpr(TransparentExpr):
 
     def __str__(self):
         return "SubroutineExpr(" + str(self.expr) + ")"
-
-
-class MainExpr(SubroutineExpr):
-    def __str__(self):
-        return "MainExpr(" + str(self.expr) + ")"
