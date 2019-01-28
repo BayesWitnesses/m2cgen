@@ -184,25 +184,22 @@ public class Model {
 
 def test_multi_output():
     expr = ast.MainExpr(
-        ast.BinNumExpr(
-            ast.FeatureRef(0),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.NumVal(1),
-                        ast.NumVal(1),
-                        ast.CompOpType.EQ),
-                    ast.ArrayExpr([ast.NumVal(1), ast.NumVal(2)]),
-                    ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)])),
-                is_multi_output=True),
-            ast.BinNumOpType.MUL),
+        ast.SubroutineExpr(
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.NumVal(1),
+                    ast.NumVal(1),
+                    ast.CompOpType.EQ),
+                ast.ArrayExpr([ast.NumVal(1), ast.NumVal(2)]),
+                ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)])),
+            is_multi_output=True),
         is_multi_output=True)
 
     expected_code = """
 public class Model {
 
     public static double[] score(double[] input) {
-        return (input[0]) * (subroutine0(input));
+        return subroutine0(input);
     }
     public static double[] subroutine0(double[] input) {
         double[] var0;
