@@ -3,6 +3,7 @@ import numpy as np
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
+from sklearn import tree
 from sklearn.tree._tree import TREE_LEAF
 
 
@@ -11,9 +12,13 @@ class TreeModelAssembler(ModelAssembler):
     def __init__(self, model):
         super().__init__(model)
         self._tree = model.tree_
+        self._is_multi_output = False
+        if isinstance(self.model, tree.DecisionTreeClassifier):
+            self._is_multi_output = self.model.n_classes_ > 1
 
     def assemble(self):
-        return self._assemble_node(0)
+        return ast.MainExpr(self._assemble_node(0),
+                            is_multi_output=self._is_multi_output)
 
     def _assemble_node(self, node_id):
         if self._tree.children_left[node_id] == TREE_LEAF:
@@ -31,8 +36,14 @@ class TreeModelAssembler(ModelAssembler):
 
     def _assemble_leaf(self, node_id):
         scores = self._tree.value[node_id][0]
-        assert len(scores) == 1, "Only regression trees are supported"
-        return ast.NumVal(scores[0])
+        if self._is_multi_output:
+            outputs = []
+            for s in scores:
+                outputs.append(ast.NumVal(s))
+            return ast.ArrayExpr(outputs)
+        else:
+            assert len(scores) == 1, "Unexpected number of outputs"
+            return ast.NumVal(scores[0])
 
     def _assemble_cond(self, node_id):
         feature_idx = self._tree.feature[node_id]

@@ -45,6 +45,15 @@ class BinNumExpr(NumExpr):
         return "BinNumExpr(" + args + ")"
 
 
+class ArrayExpr(NumExpr):
+    def __init__(self, exprs):
+        self.exprs = exprs
+
+    def __str__(self):
+        args = ",".join([str(e) for e in self.exprs])
+        return "ArrayExpr([" + args + "])"
+
+
 # Boolean Expressions.
 
 class BoolExpr(Expr):
@@ -94,5 +103,16 @@ class TransparentExpr(CtrlExpr):
 
 
 class SubroutineExpr(TransparentExpr):
+    def __init__(self, expr, is_multi_output=False):
+        super().__init__(expr)
+        self.is_multi_output = is_multi_output
+
     def __str__(self):
-        return "SubroutineExpr(" + str(self.expr) + ")"
+        args = ",".join([str(self.expr), str(self.is_multi_output)])
+        return "SubroutineExpr(" + args + ")"
+
+
+class MainExpr(SubroutineExpr):
+    def __str__(self):
+        args = ",".join([str(self.expr), str(self.is_multi_output)])
+        return "MainExpr(" + args + ")"

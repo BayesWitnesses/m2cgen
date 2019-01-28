@@ -35,3 +35,6 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_method_def(name, args, return_type, modifier=modifier)
         yield
         self.add_block_termination()
+
+    def array_init(self, values, arr_type="double"):
+        return "new " + arr_type + "[] " + "{" + ", ".join(values) + "}"

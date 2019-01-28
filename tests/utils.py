@@ -1,9 +1,12 @@
 import contextlib
 import shutil
 import tempfile
+import numpy as np
 
-from sklearn.datasets import load_boston
+from sklearn import datasets
 from sklearn.utils import shuffle
+from sklearn.linear_model.base import LinearClassifierMixin
+from sklearn.tree import DecisionTreeClassifier
 
 from m2cgen import ast
 
@@ -11,8 +14,16 @@ from m2cgen import ast
 def cmp_exprs(left, right):
     """Recursively compares two ast expressions."""
 
+    if isinstance(left, ast.ArrayExpr) and isinstance(right, ast.Expr):
+        left_exprs = left.exprs
+        right_exprs = right.exprs
+        assert len(left_exprs) == len(right_exprs)
+        for l, r in zip(left_exprs, right_exprs):
+            assert cmp_exprs(l, r)
+        return True
+
     if not isinstance(left, ast.Expr) and not isinstance(right, ast.Expr):
-        assert left == right
+        assert left == right, str(left) + " != " + str(right)
         return True
 
     if isinstance(left, ast.Expr) and isinstance(right, ast.Expr):
@@ -37,10 +48,21 @@ def assert_code_equal(actual, expected):
     assert actual.strip() == expected.strip()
 
 
-def train_model(estimator, test_fraction=0.1):
-    boston = load_boston()
+def train_model_regression(estimator, test_fraction=0.1):
+    return _train_model(estimator, datasets.load_boston(), test_fraction)
 
-    X, y = shuffle(boston.data, boston.target, random_state=13)
+
+def train_model_classification(estimator, test_fraction=0.1):
+    return _train_model(estimator, datasets.load_iris(), test_fraction)
+
+
+def train_model_classification_binary(estimator, test_fraction=0.1):
+    return _train_model(estimator, datasets.load_breast_cancer(),
+                        test_fraction)
+
+
+def _train_model(estimator, dataset, test_fraction):
+    X, y = shuffle(dataset.data, dataset.target, random_state=13)
 
     offset = int(X.shape[0] * (1 - test_fraction))
     X_train, y_train = X[:offset], y[:offset]
@@ -48,7 +70,12 @@ def train_model(estimator, test_fraction=0.1):
 
     estimator.fit(X_train, y_train)
 
-    y_pred = estimator.predict(X_test)
+    if isinstance(estimator, LinearClassifierMixin):
+        y_pred = estimator.decision_function(X_test)
+    elif isinstance(estimator, DecisionTreeClassifier):
+        y_pred = estimator.tree_.predict(X_test.astype(np.float32))
+    else:
+        y_pred = estimator.predict(X_test)
 
     return X_test, y_pred
 

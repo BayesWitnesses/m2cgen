@@ -7,8 +7,10 @@ class BaseExporter:
     interpreter = None
 
     models_to_assemblers = {
-        "LinearRegression": assemblers.LinearRegressionAssembler,
+        "LinearRegression": assemblers.LinearModelAssembler,
+        "LogisticRegression": assemblers.LinearModelAssembler,
         "DecisionTreeRegressor": assemblers.TreeModelAssembler,
+        "DecisionTreeClassifier": assemblers.TreeModelAssembler,
         "RandomForestRegressor": assemblers.RandomForestModelAssembler,
     }
 
