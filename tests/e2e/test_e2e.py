@@ -20,10 +20,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer):
             print("expected={}, actual={}".format(y_pred_true[idx],
                                                   y_pred_executed))
             res = np.isclose(y_pred_true[idx], y_pred_executed)
-            if isinstance(res, bool):
-                assert res
-            else:
-                assert res.all()
+            assert res if isinstance(res, bool) else res.all()
 
 
 def test_java_linear_regression():
