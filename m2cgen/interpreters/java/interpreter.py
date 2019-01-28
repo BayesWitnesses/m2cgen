@@ -29,6 +29,7 @@ class JavaInterpreter(BaseInterpreter):
 
         with top_cg.class_definition(self.model_name):
             if isinstance(expr, ast.SubroutineExpr):
+                self._subroutine_expr_queue = []
                 self._do_interpret(expr)
             else:
                 self._subroutine_expr_queue = [
