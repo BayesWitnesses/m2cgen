@@ -16,7 +16,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer):
     executor = executor_cls(estimator)
 
     with executor.prepare_then_cleanup():
-        for idx in [0]:
+        for idx in range(len(X_test)):
             y_pred_executed = executor.predict(X_test[idx])
             print("expected={}, actual={}".format(y_pred_true[idx],
                                                   y_pred_executed))
