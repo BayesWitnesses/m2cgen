@@ -12,15 +12,13 @@ def test_single_condition():
     assembler = assemblers.TreeModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.MainExpr(
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.FeatureRef(0),
-                ast.NumVal(1.5),
-                ast.CompOpType.LTE),
-            ast.NumVal(1.0),
-            ast.NumVal(2.0)),
-        is_multi_output=False)
+    expected = ast.IfExpr(
+        ast.CompExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(1.5),
+            ast.CompOpType.LTE),
+        ast.NumVal(1.0),
+        ast.NumVal(2.0))
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -33,21 +31,19 @@ def test_two_conditions():
     assembler = assemblers.TreeModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.MainExpr(
+    expected = ast.IfExpr(
+        ast.CompExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(1.5),
+            ast.CompOpType.LTE),
+        ast.NumVal(1.0),
         ast.IfExpr(
             ast.CompExpr(
                 ast.FeatureRef(0),
-                ast.NumVal(1.5),
+                ast.NumVal(2.5),
                 ast.CompOpType.LTE),
-            ast.NumVal(1.0),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(0),
-                    ast.NumVal(2.5),
-                    ast.CompOpType.LTE),
-                ast.NumVal(2.0),
-                ast.NumVal(3.0))),
-        is_multi_output=False)
+            ast.NumVal(2.0),
+            ast.NumVal(3.0)))
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -60,26 +56,24 @@ def test_multi_class():
     assembler = assemblers.TreeModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.MainExpr(
+    expected = ast.IfExpr(
+        ast.CompExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(1.5),
+            ast.CompOpType.LTE),
+        ast.ArrayExpr([
+            ast.NumVal(0.0),
+            ast.NumVal(1.0)]),
         ast.IfExpr(
             ast.CompExpr(
                 ast.FeatureRef(0),
-                ast.NumVal(1.5),
+                ast.NumVal(2.5),
                 ast.CompOpType.LTE),
             ast.ArrayExpr([
+                ast.NumVal(1.0),
+                ast.NumVal(0.0)]),
+            ast.ArrayExpr([
                 ast.NumVal(0.0),
-                ast.NumVal(1.0)]),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(0),
-                    ast.NumVal(2.5),
-                    ast.CompOpType.LTE),
-                ast.ArrayExpr([
-                    ast.NumVal(1.0),
-                    ast.NumVal(0.0)]),
-                ast.ArrayExpr([
-                    ast.NumVal(0.0),
-                    ast.NumVal(1.0)]))),
-        is_multi_output=True)
+                ast.NumVal(1.0)])))
 
     assert utils.cmp_exprs(actual, expected)

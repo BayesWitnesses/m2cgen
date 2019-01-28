@@ -4,7 +4,7 @@ from m2cgen import ast
 from collections import namedtuple
 
 
-Subroutine = namedtuple('Subroutine', ['name', 'is_multi_output', 'expr'])
+Subroutine = namedtuple('Subroutine', ['name', 'expr'])
 
 
 class JavaInterpreter(BaseInterpreter):
@@ -33,7 +33,7 @@ class JavaInterpreter(BaseInterpreter):
                 self._do_interpret(expr)
             else:
                 self._subroutine_expr_queue = [
-                    Subroutine("score", False, expr)
+                    Subroutine("score", expr)
                 ]
 
             while len(self._subroutine_expr_queue) > 0:
@@ -58,13 +58,12 @@ class JavaInterpreter(BaseInterpreter):
         return self._cg.array_init(nested)
 
     def _enqueue_subroutine(self, name, expr):
-        self._subroutine_expr_queue.append(
-            Subroutine(name, expr.is_multi_output, expr.expr))
+        self._subroutine_expr_queue.append(Subroutine(name, expr.expr))
         return name + "(" + self._feature_array_name + ")"
 
     def _process_next_subroutine(self):
         subroutine = self._subroutine_expr_queue.pop(0)
-        is_multi_output = subroutine.is_multi_output
+        is_multi_output = subroutine.expr.is_multi_output
         return_type = "double[]" if is_multi_output else "double"
         self._cg = self._create_code_generator()
 

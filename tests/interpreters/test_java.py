@@ -193,15 +193,13 @@ def test_multi_output():
                         ast.NumVal(1),
                         ast.CompOpType.EQ),
                     ast.ArrayExpr([ast.NumVal(1), ast.NumVal(2)]),
-                    ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)])),
-                is_multi_output=True),
-            ast.BinNumOpType.MUL),
-        is_multi_output=True)
+                    ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)]))),
+            ast.BinNumOpType.MUL))
 
     expected_code = """
 public class Model {
 
-    public static double[] score(double[] input) {
+    public static double score(double[] input) {
         return (input[0]) * (subroutine0(input));
     }
     public static double[] subroutine0(double[] input) {

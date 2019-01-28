@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Expr:
-    pass
+    is_multi_output = False
 
 
 class FeatureRef(Expr):
@@ -46,7 +46,12 @@ class BinNumExpr(NumExpr):
 
 
 class ArrayExpr(NumExpr):
+    is_multi_output = True
+
     def __init__(self, exprs):
+        assert all(map(lambda e: not e.is_multi_output, exprs)), (
+            "All expressions for ArrayExpr must be scalar")
+
         self.exprs = exprs
 
     def __str__(self):
@@ -88,9 +93,14 @@ class CtrlExpr(Expr):
 
 class IfExpr(CtrlExpr):
     def __init__(self, test, body, orelse):
+        assert not (body.is_multi_output ^ orelse.is_multi_output), (
+            "body and orelse expressions should have same is_multi_output")
+
         self.test = test
         self.body = body
         self.orelse = orelse
+
+        self.is_multi_output = body.is_multi_output
 
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), str(self.orelse)])
@@ -100,19 +110,15 @@ class IfExpr(CtrlExpr):
 class TransparentExpr(CtrlExpr):
     def __init__(self, expr):
         self.expr = expr
+        self.is_multi_output = expr.is_multi_output
 
 
 class SubroutineExpr(TransparentExpr):
-    def __init__(self, expr, is_multi_output=False):
-        super().__init__(expr)
-        self.is_multi_output = is_multi_output
 
     def __str__(self):
-        args = ",".join([str(self.expr), str(self.is_multi_output)])
-        return "SubroutineExpr(" + args + ")"
+        return "SubroutineExpr(" + str(self.expr) + ")"
 
 
 class MainExpr(SubroutineExpr):
     def __str__(self):
-        args = ",".join([str(self.expr), str(self.is_multi_output)])
-        return "MainExpr(" + args + ")"
+        return "MainExpr(" + str(self.expr) + ")"
