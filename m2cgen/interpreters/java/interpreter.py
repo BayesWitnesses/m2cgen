@@ -52,7 +52,7 @@ class JavaInterpreter(BaseInterpreter):
 
     def _enqueue_subroutine(self, name, expr):
         self._subroutine_expr_queue.append(Subroutine(name, expr.expr))
-        return name + "(" + self._feature_array_name + ")"
+        return self._cg.method_invocation(name, self._feature_array_name)
 
     def _process_next_subroutine(self):
         subroutine = self._subroutine_expr_queue.pop(0)
