@@ -14,12 +14,12 @@ class LinearModelAssembler(ModelAssembler):
 
         if coef.shape[0] == 1:
             return _linear_to_ast(coef[0], intercept[0, 0])
-        else:
-            exprs = []
-            for idx in range(coef.shape[0]):
-                exprs.append(ast.SubroutineExpr(
-                    _linear_to_ast(coef[idx], intercept[0, idx])))
-            return ast.VectorExpr(exprs)
+
+        exprs = []
+        for idx in range(coef.shape[0]):
+            exprs.append(ast.SubroutineExpr(
+                _linear_to_ast(coef[idx], intercept[0, idx])))
+        return ast.VectorExpr(exprs)
 
 
 def _linear_to_ast(coef, intercept):
