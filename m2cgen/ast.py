@@ -36,6 +36,9 @@ class BinNumOpType(Enum):
 
 class BinNumExpr(NumExpr):
     def __init__(self, left, right, op):
+        assert not left.is_multi_output, "Only scalars are supported"
+        assert not right.is_multi_output, "Only scalars are supported"
+
         self.left = left
         self.right = right
         self.op = op
@@ -76,6 +79,9 @@ class CompOpType(Enum):
 
 class CompExpr(BoolExpr):
     def __init__(self, left, right, op):
+        assert not left.is_multi_output, "Only scalars are supported"
+        assert not right.is_multi_output, "Only scalars are supported"
+
         self.left = left
         self.right = right
         self.op = op
