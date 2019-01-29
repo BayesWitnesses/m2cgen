@@ -36,12 +36,8 @@ class BinNumOpType(Enum):
 
 class BinNumExpr(NumExpr):
     def __init__(self, left, right, op):
-        try:
-            assert not left.is_vector_output, "Only scalars are supported"
-            assert not right.is_vector_output, "Only scalars are supported"
-        except AssertionError:
-            import ipdb; ipdb.set_trace()
-            pass
+        assert not left.is_vector_output, "Only scalars are supported"
+        assert not right.is_vector_output, "Only scalars are supported"
 
         self.left = left
         self.right = right

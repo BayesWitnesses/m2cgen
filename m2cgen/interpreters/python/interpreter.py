@@ -19,7 +19,7 @@ class PythonInterpreter(BaseInterpreter):
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
-        if self.with_linear_algebra:
+        if self.with_linear_algebra or self.with_vectors:
             self._cg.code = "import numpy as np\n" + self._cg.code
 
         return [
@@ -28,9 +28,14 @@ class PythonInterpreter(BaseInterpreter):
 
     def interpret_bin_vector_expr(self, expr):
         self.with_linear_algebra = True
-        return "(np.asarray("+self._do_interpret(expr.left)+")" + expr.op.value + "np.asarray("+self._do_interpret(expr.left)+")).tolist()"
+        return self._cg.infix_expression(
+            left=self._do_interpret(expr.left),
+            op=expr.op.value,
+            right=self._do_interpret(expr.right))
 
     def interpret_bin_vector_num_expr(self, expr):
         self.with_linear_algebra = True
-        return "(np.asarray("+self._do_interpret(expr.left)+")" + expr.op.value + self._do_interpret(expr.left) + ").tolist()"
-
+        return self._cg.infix_expression(
+            left=self._do_interpret(expr.left),
+            op=expr.op.value,
+            right=self._do_interpret(expr.right))

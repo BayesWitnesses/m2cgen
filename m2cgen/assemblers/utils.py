@@ -35,7 +35,8 @@ def apply_op_to_expressions(op, *exprs):
         if not rest_exprs:
             return current_expr
 
-        return _inner(apply_bin_op(current_expr, rest_exprs[0], op), *rest_exprs[1:])
+        return _inner(
+            apply_bin_op(current_expr, rest_exprs[0], op), *rest_exprs[1:])
 
     return _inner(apply_bin_op(exprs[0], exprs[1], op), *exprs[2:])
 

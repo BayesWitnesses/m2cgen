@@ -29,5 +29,5 @@ class PythonCodeGenerator(BaseCodeGenerator):
         self.add_function_def(name, args)
         yield
 
-    def array_init(self, values):
-        return "[" + ", ".join(values) + "]"
+    def vector_init(self, values):
+        return "np.asarray([" + ", ".join(values) + "])"

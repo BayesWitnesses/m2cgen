@@ -21,7 +21,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
     X_test, y_pred_true = model_trainer(estimator)
     executor = executor_cls(estimator)
 
-    idxs_to_test = [0] if is_fast else range(len(X_test))
+    idxs_to_test = [1] if is_fast else range(len(X_test))
 
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
@@ -120,7 +120,8 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             marks=[PYTHON, CLASSIFICATION, pytest.mark.qwerty2],
     ),
     pytest.param(
-            ensemble.RandomForestClassifier(n_estimators=10, random_state=RANDOM_SEED),
+            ensemble.RandomForestClassifier(n_estimators=2,
+                                            random_state=RANDOM_SEED),
             executors.PythonExecutor,
             utils.train_model_classification_binary,
             marks=[PYTHON, CLASSIFICATION, pytest.mark.qwerty],
