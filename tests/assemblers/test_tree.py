@@ -61,7 +61,7 @@ def test_multi_class():
             ast.FeatureRef(0),
             ast.NumVal(1.5),
             ast.CompOpType.LTE),
-        ast.ArrayExpr([
+        ast.VectorExpr([
             ast.NumVal(0.0),
             ast.NumVal(1.0)]),
         ast.IfExpr(
@@ -69,10 +69,10 @@ def test_multi_class():
                 ast.FeatureRef(0),
                 ast.NumVal(2.5),
                 ast.CompOpType.LTE),
-            ast.ArrayExpr([
+            ast.VectorExpr([
                 ast.NumVal(1.0),
                 ast.NumVal(0.0)]),
-            ast.ArrayExpr([
+            ast.VectorExpr([
                 ast.NumVal(0.0),
                 ast.NumVal(1.0)])))
 

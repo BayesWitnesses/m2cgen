@@ -14,7 +14,7 @@ from m2cgen import ast
 def cmp_exprs(left, right):
     """Recursively compares two ast expressions."""
 
-    if isinstance(left, ast.ArrayExpr) and isinstance(right, ast.Expr):
+    if isinstance(left, ast.VectorExpr) and isinstance(right, ast.Expr):
         left_exprs = left.exprs
         right_exprs = right.exprs
         assert len(left_exprs) == len(right_exprs)

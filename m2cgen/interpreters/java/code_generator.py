@@ -33,8 +33,9 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     @contextlib.contextmanager
-    def method_definition(self, name, args, return_vector, modifier="public"):
-        return_type = self._get_var_type(return_vector)
+    def method_definition(self, name, args, is_vector_output,
+                          modifier="public"):
+        return_type = self._get_var_type(is_vector_output)
 
         self.add_method_def(name, args, return_type, modifier=modifier)
         yield
@@ -44,5 +45,5 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         return method_name + "(" + ", ".join(args) + ")"
 
     def array_init(self, values):
-        return "new " + self.vector_variable_type + (
+        return "new " + self.vector_output_type + (
             " {" + ", ".join(values) + "}")
