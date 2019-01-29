@@ -113,3 +113,26 @@ def  score(input):
 
     interpreter = interpreters.PythonInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
+def test_multi_output():
+    expr = ast.SubroutineExpr(
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.NumVal(1),
+                ast.NumVal(1),
+                ast.CompOpType.EQ),
+            ast.VectorExpr([ast.NumVal(1), ast.NumVal(2)]),
+            ast.VectorExpr([ast.NumVal(3), ast.NumVal(4)])))
+
+    expected_code = """
+def  score(input):
+    if (1) == (1):
+        var0 = [1, 2]
+    else:
+        var0 = [3, 4]
+    return var0
+"""
+
+    interpreter = interpreters.PythonInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)

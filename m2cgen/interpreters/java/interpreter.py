@@ -38,12 +38,6 @@ class JavaInterpreter(BaseInterpreter):
             (self.model_name, top_cg.code),
         ]
 
-    def interpret_vector_expr(self, expr, **kwargs):
-        nested = []
-        for e in expr.exprs:
-            nested.append(self._do_interpret(e, **kwargs))
-        return self._cg.array_init(nested)
-
     def _create_code_generator(self):
         return JavaCodeGenerator(indent=self.indent)
 

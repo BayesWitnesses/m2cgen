@@ -10,6 +10,12 @@ from tests.e2e import executors
 
 RANDOM_SEED = 1234
 
+# pytest marks
+PYTHON = pytest.mark.python
+JAVA = pytest.mark.java
+REGRESSION = pytest.mark.regr
+CLASSIFICATION = pytest.mark.clf
+
 
 def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
     X_test, y_pred_true = model_trainer(estimator)
@@ -31,63 +37,87 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             linear_model.LinearRegression(),
             executors.JavaExecutor,
             utils.train_model_regression,
-            marks=pytest.mark.java,
+            marks=[JAVA, REGRESSION],
     ),
     pytest.param(
             linear_model.LogisticRegression(),
             executors.JavaExecutor,
             utils.train_model_classification,
-            marks=pytest.mark.java,
+            marks=[JAVA, CLASSIFICATION],
     ),
     pytest.param(
             linear_model.LogisticRegression(),
             executors.JavaExecutor,
             utils.train_model_classification_binary,
-            marks=pytest.mark.java,
+            marks=[JAVA, CLASSIFICATION],
     ),
     pytest.param(
             tree.DecisionTreeRegressor(random_state=RANDOM_SEED),
             executors.JavaExecutor,
             utils.train_model_regression,
-            marks=pytest.mark.java,
+            marks=[JAVA, REGRESSION],
     ),
     pytest.param(
             tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
             executors.JavaExecutor,
             utils.train_model_classification,
-            marks=pytest.mark.java,
+            marks=[JAVA, CLASSIFICATION],
     ),
     pytest.param(
             tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
             executors.JavaExecutor,
             utils.train_model_classification_binary,
-            marks=pytest.mark.java,
+            marks=[JAVA, CLASSIFICATION],
     ),
     pytest.param(
             ensemble.RandomForestRegressor(n_estimators=10,
                                            random_state=RANDOM_SEED),
             executors.JavaExecutor,
             utils.train_model_regression,
-            marks=pytest.mark.java,
+            marks=[JAVA, REGRESSION],
     ),
     pytest.param(
             linear_model.LinearRegression(),
             executors.PythonExecutor,
             utils.train_model_regression,
-            marks=pytest.mark.python,
+            marks=[PYTHON, REGRESSION],
     ),
     pytest.param(
             tree.DecisionTreeRegressor(random_state=RANDOM_SEED),
             executors.PythonExecutor,
             utils.train_model_regression,
-            marks=pytest.mark.python,
+            marks=[PYTHON, REGRESSION],
     ),
     pytest.param(
             ensemble.RandomForestRegressor(n_estimators=10,
                                            random_state=RANDOM_SEED),
             executors.PythonExecutor,
             utils.train_model_regression,
-            marks=pytest.mark.python,
+            marks=[PYTHON, REGRESSION],
+    ),
+    pytest.param(
+            linear_model.LogisticRegression(),
+            executors.PythonExecutor,
+            utils.train_model_classification,
+            marks=[PYTHON, CLASSIFICATION],
+    ),
+    pytest.param(
+            linear_model.LogisticRegression(),
+            executors.PythonExecutor,
+            utils.train_model_classification_binary,
+            marks=[PYTHON, CLASSIFICATION],
+    ),
+    pytest.param(
+            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
+            executors.PythonExecutor,
+            utils.train_model_classification,
+            marks=[PYTHON, CLASSIFICATION],
+    ),
+    pytest.param(
+            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
+            executors.PythonExecutor,
+            utils.train_model_classification_binary,
+            marks=[PYTHON, CLASSIFICATION],
     ),
 ])
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):

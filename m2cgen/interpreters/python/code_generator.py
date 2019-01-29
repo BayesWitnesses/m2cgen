@@ -28,3 +28,6 @@ class PythonCodeGenerator(BaseCodeGenerator):
     def function_definition(self, name, args):
         self.add_function_def(name, args)
         yield
+
+    def array_init(self, values):
+        return "[" + ", ".join(values) + "]"

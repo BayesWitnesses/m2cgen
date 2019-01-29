@@ -56,6 +56,10 @@ class BaseInterpreter:
             array_name=self._feature_array_name,
             index=expr.index)
 
+    def interpret_vector_expr(self, expr, **kwargs):
+        nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
+        return self._cg.array_init(nested)
+
     # Private methods implementing visitor pattern
 
     def _do_interpret(self, expr, **kwargs):
