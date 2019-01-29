@@ -20,7 +20,7 @@ class BaseInterpreter:
             var_name = if_var_name
         else:
             var_name = self._cg.add_var_declaration(
-                is_list_type=is_vector_result)
+                is_vector_type=is_vector_result)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):

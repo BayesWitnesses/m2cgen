@@ -1,5 +1,6 @@
 from m2cgen.interpreters.interpreter import BaseInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
+
 from collections import namedtuple
 
 
@@ -37,15 +38,20 @@ class JavaInterpreter(BaseInterpreter):
             (self.model_name, top_cg.code),
         ]
 
-    def interpret_subroutine_expr(self, expr, **kwargs):
-        method_name = self._get_subroutine_name()
-        return self._enqueue_subroutine(method_name, expr)
-
     def interpret_array_expr(self, expr, **kwargs):
         nested = []
         for e in expr.exprs:
             nested.append(self._do_interpret(e, **kwargs))
         return self._cg.array_init(nested)
+
+    def _create_code_generator(self):
+        return JavaCodeGenerator(indent=self.indent)
+
+    # Methods to support ast.SubroutineExpr
+
+    def interpret_subroutine_expr(self, expr, **kwargs):
+        method_name = self._get_subroutine_name()
+        return self._enqueue_subroutine(method_name, expr)
 
     def _enqueue_subroutine(self, name, expr):
         self._subroutine_expr_queue.append(Subroutine(name, expr.expr))
@@ -54,17 +60,14 @@ class JavaInterpreter(BaseInterpreter):
     def _process_next_subroutine(self):
         subroutine = self._subroutine_expr_queue.pop(0)
         is_vector_result = subroutine.expr.is_vector_result
-        return_type = (
-            self._cg.vector_variable_type if is_vector_result
-            else self._cg.scalar_variable_type)
 
         self._cg = self._create_code_generator()
 
         with self._cg.method_definition(
                 name=subroutine.name,
                 args=[
-                    (self._cg.vector_variable_type, self._feature_array_name)],
-                return_type=return_type):
+                    (True, self._feature_array_name)],
+                return_vector=is_vector_result):
             last_result = self._do_interpret(
                 subroutine.expr,
                 is_vector_result=is_vector_result)
@@ -76,6 +79,3 @@ class JavaInterpreter(BaseInterpreter):
         subroutine_name = "subroutine" + str(self._subroutine_idx)
         self._subroutine_idx += 1
         return subroutine_name
-
-    def _create_code_generator(self):
-        return JavaCodeGenerator(indent=self.indent)

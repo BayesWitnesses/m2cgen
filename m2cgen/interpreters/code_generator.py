@@ -69,11 +69,9 @@ class BaseCodeGenerator:
     def add_return_statement(self, value):
         self.add_code_line(self.tpl_return_statement(value=value))
 
-    def add_var_declaration(self, is_list_type=False):
+    def add_var_declaration(self, is_vector_type=False):
         var_name = self.get_var_name()
-        var_type = (
-            self.vector_variable_type if is_list_type
-            else self.scalar_variable_type)
+        var_type = self._get_var_type(is_vector_type)
         self.add_code_line(
             self.tpl_var_declaration(
                 var_type=var_type, var_name=var_name))
@@ -108,6 +106,13 @@ class BaseCodeGenerator:
     def array_index_access(self, array_name, index):
         return self.tpl_array_index_access(
             array_name=array_name, index=index)
+
+    # Helpers
+
+    def _get_var_type(self, is_vector):
+        return (
+            self.vector_variable_type if is_vector
+            else self.scalar_variable_type)
 
 
 class CLikeCodeGenerator(BaseCodeGenerator):
