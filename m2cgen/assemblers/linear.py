@@ -25,7 +25,7 @@ class LinearModelAssembler(ModelAssembler):
 def _linear_to_ast(coef, intercept):
     feature_weight_mul_ops = []
 
-    for (index, value) in enumerate(coef):
+    for index, value in enumerate(coef):
         feature_weight_mul_ops.append(
             utils.mul(ast.FeatureRef(index), ast.NumVal(value)))
 
