@@ -59,7 +59,7 @@ class JavaInterpreter(BaseInterpreter):
 
     def _process_next_subroutine(self):
         subroutine = self._subroutine_expr_queue.pop(0)
-        _is_vector_output = subroutine.expr._is_vector_output
+        is_vector_output = subroutine.expr.is_vector_output
 
         self._cg = self._create_code_generator()
 
@@ -67,10 +67,10 @@ class JavaInterpreter(BaseInterpreter):
                 name=subroutine.name,
                 args=[
                     (True, self._feature_array_name)],
-                return_vector=_is_vector_output):
+                return_vector=is_vector_output):
             last_result = self._do_interpret(
                 subroutine.expr,
-                _is_vector_output=_is_vector_output)
+                is_vector_output=is_vector_output)
             self._cg.add_return_statement(last_result)
 
         return self._cg.code
