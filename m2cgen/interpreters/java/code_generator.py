@@ -44,5 +44,5 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         return method_name + "(" + ", ".join(args) + ")"
 
     def array_init(self, values):
-        return "new " + self.vector_variable_type + (
+        return "new " + self.vector_output_type + (
             " {" + ", ".join(values) + "}")
