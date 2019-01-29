@@ -53,20 +53,21 @@ class JavaInterpreter(BaseInterpreter):
 
     def _process_next_subroutine(self):
         subroutine = self._subroutine_expr_queue.pop(0)
-        is_multi_output = subroutine.expr.is_multi_output
+        is_vector_result = subroutine.expr.is_vector_result
         return_type = (
-            self._cg.list_variable_type if is_multi_output
+            self._cg.vector_variable_type if is_vector_result
             else self._cg.scalar_variable_type)
 
         self._cg = self._create_code_generator()
 
         with self._cg.method_definition(
                 name=subroutine.name,
-                args=[(self._cg.list_variable_type, self._feature_array_name)],
+                args=[
+                    (self._cg.vector_variable_type, self._feature_array_name)],
                 return_type=return_type):
             last_result = self._do_interpret(
                 subroutine.expr,
-                is_multi_output=is_multi_output)
+                is_vector_result=is_vector_result)
             self._cg.add_return_statement(last_result)
 
         return self._cg.code

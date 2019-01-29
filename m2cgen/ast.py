@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Expr:
-    is_multi_output = False
+    is_vector_result = False
 
 
 class FeatureRef(Expr):
@@ -36,8 +36,8 @@ class BinNumOpType(Enum):
 
 class BinNumExpr(NumExpr):
     def __init__(self, left, right, op):
-        assert not left.is_multi_output, "Only scalars are supported"
-        assert not right.is_multi_output, "Only scalars are supported"
+        assert not left.is_vector_result, "Only scalars are supported"
+        assert not right.is_vector_result, "Only scalars are supported"
 
         self.left = left
         self.right = right
@@ -49,10 +49,10 @@ class BinNumExpr(NumExpr):
 
 
 class ArrayExpr(NumExpr):
-    is_multi_output = True
+    is_vector_result = True
 
     def __init__(self, exprs):
-        assert all(map(lambda e: not e.is_multi_output, exprs)), (
+        assert all(map(lambda e: not e.is_vector_result, exprs)), (
             "All expressions for ArrayExpr must be scalar")
 
         self.exprs = exprs
@@ -79,8 +79,8 @@ class CompOpType(Enum):
 
 class CompExpr(BoolExpr):
     def __init__(self, left, right, op):
-        assert not left.is_multi_output, "Only scalars are supported"
-        assert not right.is_multi_output, "Only scalars are supported"
+        assert not left.is_vector_result, "Only scalars are supported"
+        assert not right.is_vector_result, "Only scalars are supported"
 
         self.left = left
         self.right = right
@@ -99,14 +99,14 @@ class CtrlExpr(Expr):
 
 class IfExpr(CtrlExpr):
     def __init__(self, test, body, orelse):
-        assert not (body.is_multi_output ^ orelse.is_multi_output), (
-            "body and orelse expressions should have same is_multi_output")
+        assert not (body.is_vector_result ^ orelse.is_vector_result), (
+            "body and orelse expressions should have same is_vector_result")
 
         self.test = test
         self.body = body
         self.orelse = orelse
 
-        self.is_multi_output = body.is_multi_output
+        self.is_vector_result = body.is_vector_result
 
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), str(self.orelse)])
@@ -116,7 +116,7 @@ class IfExpr(CtrlExpr):
 class TransparentExpr(CtrlExpr):
     def __init__(self, expr):
         self.expr = expr
-        self.is_multi_output = expr.is_multi_output
+        self.is_vector_result = expr.is_vector_result
 
 
 class SubroutineExpr(TransparentExpr):

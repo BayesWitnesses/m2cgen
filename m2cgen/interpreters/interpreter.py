@@ -15,21 +15,21 @@ class BaseInterpreter:
     # Default method implementations
 
     def interpret_if_expr(self, expr, if_var_name=None,
-                          is_multi_output=False, **kwargs):
+                          is_vector_result=False, **kwargs):
         if if_var_name is not None:
             var_name = if_var_name
         else:
             var_name = self._cg.add_var_declaration(
-                is_list_type=is_multi_output)
+                is_list_type=is_vector_result)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):
                 self._do_interpret(nested, if_var_name=var_name,
-                                   is_multi_output=is_multi_output,
+                                   is_vector_result=is_vector_result,
                                    **kwargs)
             else:
                 nested_result = self._do_interpret(
-                    nested, is_multi_output=is_multi_output)
+                    nested, is_vector_result=is_vector_result)
                 self._cg.add_var_assignment(var_name, nested_result)
 
         self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
