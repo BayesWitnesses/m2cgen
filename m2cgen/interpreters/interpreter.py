@@ -14,27 +14,21 @@ class BaseInterpreter:
 
     # Default method implementations
 
-    def interpret_if_expr(self, expr, if_var_name=None,
-                          is_multi_output=False, **kwargs):
+    def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
         if if_var_name is not None:
             var_name = if_var_name
         else:
-            var_type = "double[]" if is_multi_output else "double"
-            var_name = self._cg.add_var_declaration(var_type=var_type)
-
-        if_def = self._do_interpret(expr.test, **kwargs)
-        self._cg.add_if_statement(if_def)
+            var_name = self._cg.add_var_declaration(
+                is_vector_type=expr.is_vector_output)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):
-                self._do_interpret(nested, if_var_name=var_name,
-                                   is_multi_output=is_multi_output,
-                                   **kwargs)
+                self._do_interpret(nested, if_var_name=var_name, **kwargs)
             else:
-                nested_result = self._do_interpret(
-                    nested, is_multi_output=is_multi_output)
+                nested_result = self._do_interpret(nested)
                 self._cg.add_var_assignment(var_name, nested_result)
 
+        self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
         handle_nested_expr(expr.body)
         self._cg.add_else_statement()
         handle_nested_expr(expr.orelse)

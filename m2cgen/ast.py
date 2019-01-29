@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Expr:
-    is_multi_output = False
+    is_vector_output = False
 
 
 class FeatureRef(Expr):
@@ -36,8 +36,8 @@ class BinNumOpType(Enum):
 
 class BinNumExpr(NumExpr):
     def __init__(self, left, right, op):
-        assert not left.is_multi_output, "Only scalars are supported"
-        assert not right.is_multi_output, "Only scalars are supported"
+        assert not left.is_vector_output, "Only scalars are supported"
+        assert not right.is_vector_output, "Only scalars are supported"
 
         self.left = left
         self.right = right
@@ -48,18 +48,18 @@ class BinNumExpr(NumExpr):
         return "BinNumExpr(" + args + ")"
 
 
-class ArrayExpr(NumExpr):
-    is_multi_output = True
+class VectorExpr(NumExpr):
+    is_vector_output = True
 
     def __init__(self, exprs):
-        assert all(map(lambda e: not e.is_multi_output, exprs)), (
-            "All expressions for ArrayExpr must be scalar")
+        assert all(map(lambda e: not e.is_vector_output, exprs)), (
+            "All expressions for VectorExpr must be scalar")
 
         self.exprs = exprs
 
     def __str__(self):
         args = ",".join([str(e) for e in self.exprs])
-        return "ArrayExpr([" + args + "])"
+        return "VectorExpr([" + args + "])"
 
 
 # Boolean Expressions.
@@ -79,8 +79,8 @@ class CompOpType(Enum):
 
 class CompExpr(BoolExpr):
     def __init__(self, left, right, op):
-        assert not left.is_multi_output, "Only scalars are supported"
-        assert not right.is_multi_output, "Only scalars are supported"
+        assert not left.is_vector_output, "Only scalars are supported"
+        assert not right.is_vector_output, "Only scalars are supported"
 
         self.left = left
         self.right = right
@@ -99,14 +99,14 @@ class CtrlExpr(Expr):
 
 class IfExpr(CtrlExpr):
     def __init__(self, test, body, orelse):
-        assert not (body.is_multi_output ^ orelse.is_multi_output), (
-            "body and orelse expressions should have same is_multi_output")
+        assert not (body.is_vector_output ^ orelse.is_vector_output), (
+            "body and orelse expressions should have same is_vector_output")
 
         self.test = test
         self.body = body
         self.orelse = orelse
 
-        self.is_multi_output = body.is_multi_output
+        self.is_vector_output = body.is_vector_output
 
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), str(self.orelse)])
@@ -116,15 +116,10 @@ class IfExpr(CtrlExpr):
 class TransparentExpr(CtrlExpr):
     def __init__(self, expr):
         self.expr = expr
-        self.is_multi_output = expr.is_multi_output
+        self.is_vector_output = expr.is_vector_output
 
 
 class SubroutineExpr(TransparentExpr):
 
     def __str__(self):
         return "SubroutineExpr(" + str(self.expr) + ")"
-
-
-class MainExpr(SubroutineExpr):
-    def __str__(self):
-        return "MainExpr(" + str(self.expr) + ")"
