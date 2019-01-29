@@ -12,9 +12,9 @@ class TreeModelAssembler(ModelAssembler):
     def __init__(self, model):
         super().__init__(model)
         self._tree = model.tree_
-        self._is_vector_result = False
+        self._is_vector_output = False
         if isinstance(self.model, tree.DecisionTreeClassifier):
-            self._is_vector_result = self.model.n_classes_ > 1
+            self._is_vector_output = self.model.n_classes_ > 1
 
     def assemble(self):
         return self._assemble_node(0)
@@ -35,7 +35,7 @@ class TreeModelAssembler(ModelAssembler):
 
     def _assemble_leaf(self, node_id):
         scores = self._tree.value[node_id][0]
-        if self._is_vector_result:
+        if self._is_vector_output:
             outputs = []
             for s in scores:
                 outputs.append(ast.NumVal(s))
