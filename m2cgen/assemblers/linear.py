@@ -10,10 +10,10 @@ class LinearModelAssembler(ModelAssembler):
 
     def _build_ast(self):
         coef = utils.to_2d_array(self.model.coef_)
-        intercept = self.model.intercept_
+        intercept = utils.to_1d_array(self.model.intercept_)
 
         if coef.shape[0] == 1:
-            return _linear_to_ast(coef[0], intercept)
+            return _linear_to_ast(coef[0], intercept[0])
 
         exprs = []
         for idx in range(coef.shape[0]):
@@ -25,7 +25,7 @@ class LinearModelAssembler(ModelAssembler):
 def _linear_to_ast(coef, intercept):
     feature_weight_mul_ops = []
 
-    for (index, value) in enumerate(coef):
+    for index, value in enumerate(coef):
         feature_weight_mul_ops.append(
             utils.mul(ast.FeatureRef(index), ast.NumVal(value)))
 

@@ -24,6 +24,10 @@ def apply_op_to_expressions(op, *exprs):
     return _inner(ast.BinNumExpr(exprs[0], exprs[1], op), *exprs[2:])
 
 
+def to_1d_array(var):
+    return np.reshape(np.asarray(var), (np.size(var)))
+
+
 def to_2d_array(var):
     if len(np.shape(var)) == 2:
         x, y = var.shape
