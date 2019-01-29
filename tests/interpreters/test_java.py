@@ -180,3 +180,34 @@ public class Model {
 
     interpreter = interpreters.JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
+def test_multi_output():
+    expr = ast.SubroutineExpr(
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.NumVal(1),
+                ast.NumVal(1),
+                ast.CompOpType.EQ),
+            ast.VectorExpr([ast.NumVal(1), ast.NumVal(2)]),
+            ast.VectorExpr([ast.NumVal(3), ast.NumVal(4)])))
+
+    expected_code = """
+public class Model {
+
+    public static double[] score(double[] input) {
+        return subroutine0(input);
+    }
+    public static double[] subroutine0(double[] input) {
+        double[] var0;
+        if ((1) == (1)) {
+            var0 = new double[] {1, 2};
+        } else {
+            var0 = new double[] {3, 4};
+        }
+        return var0;
+    }
+}"""
+
+    interpreter = interpreters.JavaInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)

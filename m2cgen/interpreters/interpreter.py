@@ -18,18 +18,17 @@ class BaseInterpreter:
         if if_var_name is not None:
             var_name = if_var_name
         else:
-            var_name = self._cg.add_var_declaration()
-
-        if_def = self._do_interpret(expr.test, **kwargs)
-        self._cg.add_if_statement(if_def)
+            var_name = self._cg.add_var_declaration(
+                is_vector_type=expr.is_vector_output)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):
                 self._do_interpret(nested, if_var_name=var_name, **kwargs)
             else:
-                self._cg.add_var_assignment(
-                    var_name, self._do_interpret(nested))
+                nested_result = self._do_interpret(nested)
+                self._cg.add_var_assignment(var_name, nested_result)
 
+        self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
         handle_nested_expr(expr.body)
         self._cg.add_else_statement()
         handle_nested_expr(expr.orelse)
@@ -37,22 +36,22 @@ class BaseInterpreter:
 
         return var_name
 
-    def interpret_comp_expr(self, expr):
+    def interpret_comp_expr(self, expr, **kwargs):
         return self._cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))
 
-    def interpret_bin_num_expr(self, expr):
+    def interpret_bin_num_expr(self, expr, **kwargs):
         return self._cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))
 
-    def interpret_num_val(self, expr):
+    def interpret_num_val(self, expr, **kwargs):
         return self._cg.num_value(value=expr.value)
 
-    def interpret_feature_ref(self, expr):
+    def interpret_feature_ref(self, expr, **kwargs):
         return self._cg.array_index_access(
             array_name=self._feature_array_name,
             index=expr.index)

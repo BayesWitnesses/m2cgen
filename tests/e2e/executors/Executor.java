@@ -19,7 +19,20 @@ class Executor {
         try {
             Class<?> klass = Class.forName(className);
             Method method = klass.getMethod(methodName, new Class[]{double[].class});
-            System.out.println(method.invoke(null, features));
+            Object result = method.invoke(null, features);
+            if (result instanceof double[]) {
+                double[] arr = (double[]) result;
+                String out = "";
+                for (int i = 0, l = arr.length; i < l; i++) {
+                    out += arr[i];
+                    if (i < l - 1) {
+                        out += " ";
+                    }
+                }
+                System.out.println(out);
+            } else {
+                System.out.println(result);
+            }
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

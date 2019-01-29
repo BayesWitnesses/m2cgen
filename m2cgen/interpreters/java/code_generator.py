@@ -13,9 +13,13 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_code_line(class_def)
         self.increase_indent()
 
-    def add_method_def(self, name, args, return_type, modifier="public"):
+    def add_method_def(self, name, args, is_vector_output, modifier="public"):
+        return_type = self._get_var_type(is_vector_output)
+
         method_def = modifier + " static " + return_type + " " + name + "("
-        method_def += ",".join([t + " " + n for t, n in args])
+        method_def += ",".join([
+            self._get_var_type(is_vector) + " " + n
+            for is_vector, n in args])
         method_def += ") {"
         self.add_code_line(method_def)
         self.increase_indent()
@@ -31,7 +35,15 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     @contextlib.contextmanager
-    def method_definition(self, name, args, return_type, modifier="public"):
-        self.add_method_def(name, args, return_type, modifier=modifier)
+    def method_definition(self, name, args, is_vector_output,
+                          modifier="public"):
+        self.add_method_def(name, args, is_vector_output, modifier=modifier)
         yield
         self.add_block_termination()
+
+    def method_invocation(self, method_name, *args):
+        return method_name + "(" + ", ".join(args) + ")"
+
+    def array_init(self, values):
+        return "new " + self.vector_output_type + (
+            " {" + ", ".join(values) + "}")
