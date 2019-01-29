@@ -67,7 +67,7 @@ class JavaInterpreter(BaseInterpreter):
                 name=subroutine.name,
                 args=[
                     (True, self._feature_array_name)],
-                return_vector=is_vector_output):
+                is_vector_output=is_vector_output):
             last_result = self._do_interpret(
                 subroutine.expr,
                 is_vector_output=is_vector_output)
