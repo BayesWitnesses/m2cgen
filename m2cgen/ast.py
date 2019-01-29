@@ -36,8 +36,12 @@ class BinNumOpType(Enum):
 
 class BinNumExpr(NumExpr):
     def __init__(self, left, right, op):
-        assert not left.is_vector_output, "Only scalars are supported"
-        assert not right.is_vector_output, "Only scalars are supported"
+        try:
+            assert not left.is_vector_output, "Only scalars are supported"
+            assert not right.is_vector_output, "Only scalars are supported"
+        except AssertionError:
+            import ipdb; ipdb.set_trace()
+            pass
 
         self.left = left
         self.right = right
@@ -48,18 +52,53 @@ class BinNumExpr(NumExpr):
         return "BinNumExpr(" + args + ")"
 
 
-class VectorExpr(NumExpr):
+# Vector Expressions.
+
+class VectorExpr(Expr):
     is_vector_output = True
+
+
+class VectorVal(VectorExpr):
 
     def __init__(self, exprs):
         assert all(map(lambda e: not e.is_vector_output, exprs)), (
-            "All expressions for VectorExpr must be scalar")
+            "All expressions for VectorVal must be scalar")
 
         self.exprs = exprs
 
     def __str__(self):
         args = ",".join([str(e) for e in self.exprs])
-        return "VectorExpr([" + args + "])"
+        return "VectorVal([" + args + "])"
+
+
+class BinVectorExpr(VectorExpr):
+
+    def __init__(self, left, right, op):
+        assert left.is_vector_output, "Only vectors are supported"
+        assert right.is_vector_output, "Only vectors are supported"
+
+        self.left = left
+        self.right = right
+        self.op = op
+
+    def __str__(self):
+        args = ",".join([str(self.left), str(self.right), self.op.name])
+        return "BinVectorExpr(" + args + ")"
+
+
+class BinVectorNumExpr(VectorExpr):
+
+    def __init__(self, left, right, op):
+        assert left.is_vector_output, "Only vectors are supported"
+        assert not right.is_vector_output, "Only scalars are supported"
+
+        self.left = left
+        self.right = right
+        self.op = op
+
+    def __str__(self):
+        args = ",".join([str(self.left), str(self.right), self.op.name])
+        return "BinVectorNumExpr(" + args + ")"
 
 
 # Boolean Expressions.

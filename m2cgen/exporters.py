@@ -12,6 +12,7 @@ class BaseExporter:
         "DecisionTreeRegressor": assemblers.TreeModelAssembler,
         "DecisionTreeClassifier": assemblers.TreeModelAssembler,
         "RandomForestRegressor": assemblers.RandomForestModelAssembler,
+        "RandomForestClassifier": assemblers.RandomForestModelAssembler,
     }
 
     def __init__(self, model):

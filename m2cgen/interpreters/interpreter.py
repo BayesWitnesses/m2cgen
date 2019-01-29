@@ -56,7 +56,7 @@ class BaseInterpreter:
             array_name=self._feature_array_name,
             index=expr.index)
 
-    def interpret_vector_expr(self, expr, **kwargs):
+    def interpret_vector_val(self, expr, **kwargs):
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.array_init(nested)
 
