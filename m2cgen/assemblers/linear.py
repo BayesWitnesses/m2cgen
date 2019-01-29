@@ -19,7 +19,7 @@ class LinearModelAssembler(ModelAssembler):
             for idx in range(coef.shape[0]):
                 exprs.append(ast.SubroutineExpr(
                     _linear_to_ast(coef[idx], intercept[0, idx])))
-            return ast.ArrayExpr(exprs)
+            return ast.VectorExpr(exprs)
 
 
 def _linear_to_ast(coef, intercept):

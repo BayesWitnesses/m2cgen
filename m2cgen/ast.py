@@ -48,18 +48,18 @@ class BinNumExpr(NumExpr):
         return "BinNumExpr(" + args + ")"
 
 
-class ArrayExpr(NumExpr):
+class VectorExpr(NumExpr):
     is_vector_output = True
 
     def __init__(self, exprs):
         assert all(map(lambda e: not e.is_vector_output, exprs)), (
-            "All expressions for ArrayExpr must be scalar")
+            "All expressions for VectorExpr must be scalar")
 
         self.exprs = exprs
 
     def __str__(self):
         args = ",".join([str(e) for e in self.exprs])
-        return "ArrayExpr([" + args + "])"
+        return "VectorExpr([" + args + "])"
 
 
 # Boolean Expressions.
