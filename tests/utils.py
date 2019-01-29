@@ -73,7 +73,7 @@ def _train_model(estimator, dataset, test_fraction):
     if isinstance(estimator, LinearClassifierMixin):
         y_pred = estimator.decision_function(X_test)
     elif isinstance(estimator, DecisionTreeClassifier):
-        y_pred = estimator.tree_.predict(X_test.astype(np.float32))
+        y_pred = estimator.predict_proba(X_test.astype(np.float32))
     else:
         y_pred = estimator.predict(X_test)
 
