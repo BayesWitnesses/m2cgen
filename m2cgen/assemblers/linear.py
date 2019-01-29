@@ -7,23 +7,22 @@ from m2cgen.assemblers.base import ModelAssembler
 class LinearModelAssembler(ModelAssembler):
 
     def assemble(self):
-        model_ast, is_multi_output = self._build_ast()
-        return ast.MainExpr(model_ast, is_multi_output=is_multi_output)
+        return self._build_ast()
 
     def _build_ast(self):
         coef = self.model.coef_
         intercept = self.model.intercept_
         if isinstance(coef, np.ndarray) and len(coef.shape) == 2:
             if coef.shape[0] == 1:
-                return _linear_to_ast(coef[0], intercept[0]), False
+                return _linear_to_ast(coef[0], intercept[0])
             else:
                 exprs = []
                 for idx in range(coef.shape[0]):
                     exprs.append(ast.SubroutineExpr(
                         _linear_to_ast(coef[idx], intercept[idx])))
-                return ast.ArrayExpr(exprs), True
+                return ast.ArrayExpr(exprs)
         else:
-            return _linear_to_ast(coef, intercept), False
+            return _linear_to_ast(coef, intercept)
 
 
 def _linear_to_ast(coef, intercept):

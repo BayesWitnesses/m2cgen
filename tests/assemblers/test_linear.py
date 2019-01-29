@@ -13,14 +13,13 @@ def test_single_feature():
     assembler = assemblers.LinearModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.MainExpr(
+    expected = ast.BinNumExpr(
+        ast.NumVal(3),
         ast.BinNumExpr(
-            ast.NumVal(3),
-            ast.BinNumExpr(
-                ast.FeatureRef(0),
-                ast.NumVal(1),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD), is_multi_output=False)
+            ast.FeatureRef(0),
+            ast.NumVal(1),
+            ast.BinNumOpType.MUL),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -33,20 +32,19 @@ def test_two_features():
     assembler = assemblers.LinearModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.MainExpr(
+    expected = ast.BinNumExpr(
         ast.BinNumExpr(
+            ast.NumVal(3),
             ast.BinNumExpr(
-                ast.NumVal(3),
-                ast.BinNumExpr(
-                    ast.FeatureRef(0),
-                    ast.NumVal(1),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(1),
-                ast.NumVal(2),
+                ast.FeatureRef(0),
+                ast.NumVal(1),
                 ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD), is_multi_output=False)
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
+            ast.FeatureRef(1),
+            ast.NumVal(2),
+            ast.BinNumOpType.MUL),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -59,54 +57,49 @@ def test_multi_class():
     assembler = assemblers.LinearModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.MainExpr(
-        ast.ArrayExpr([
-            ast.SubroutineExpr(
+    expected = ast.ArrayExpr([
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
                 ast.BinNumExpr(
+                    ast.NumVal(7),
                     ast.BinNumExpr(
-                        ast.NumVal(7),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.NumVal(1),
-                            ast.BinNumOpType.MUL),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(1),
-                        ast.NumVal(2),
+                        ast.FeatureRef(0),
+                        ast.NumVal(1),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
-                is_multi_output=False),
-            ast.SubroutineExpr(
                 ast.BinNumExpr(
+                    ast.FeatureRef(1),
+                    ast.NumVal(2),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD)),
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(8),
                     ast.BinNumExpr(
-                        ast.NumVal(8),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.NumVal(3),
-                            ast.BinNumOpType.MUL),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(1),
-                        ast.NumVal(4),
+                        ast.FeatureRef(0),
+                        ast.NumVal(3),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
-                is_multi_output=False),
-            ast.SubroutineExpr(
                 ast.BinNumExpr(
+                    ast.FeatureRef(1),
+                    ast.NumVal(4),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD)),
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(9),
                     ast.BinNumExpr(
-                        ast.NumVal(9),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.NumVal(5),
-                            ast.BinNumOpType.MUL),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(1),
-                        ast.NumVal(6),
+                        ast.FeatureRef(0),
+                        ast.NumVal(5),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
-                is_multi_output=False)]),
-        is_multi_output=True)
+                ast.BinNumExpr(
+                    ast.FeatureRef(1),
+                    ast.NumVal(6),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD))])
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -119,20 +112,18 @@ def test_binary_class():
     assembler = assemblers.LinearModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.MainExpr(
+    expected = ast.BinNumExpr(
         ast.BinNumExpr(
+            ast.NumVal(3),
             ast.BinNumExpr(
-                ast.NumVal(3),
-                ast.BinNumExpr(
-                    ast.FeatureRef(0),
-                    ast.NumVal(1),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(1),
-                ast.NumVal(2),
+                ast.FeatureRef(0),
+                ast.NumVal(1),
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD),
-        is_multi_output=False)
+        ast.BinNumExpr(
+            ast.FeatureRef(1),
+            ast.NumVal(2),
+            ast.BinNumOpType.MUL),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)

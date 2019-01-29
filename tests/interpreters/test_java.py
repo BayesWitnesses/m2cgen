@@ -191,9 +191,7 @@ def test_multi_output():
                     ast.NumVal(1),
                     ast.CompOpType.EQ),
                 ast.ArrayExpr([ast.NumVal(1), ast.NumVal(2)]),
-                ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)])),
-            is_multi_output=True),
-        is_multi_output=True)
+                ast.ArrayExpr([ast.NumVal(3), ast.NumVal(4)]))))
 
     expected_code = """
 public class Model {

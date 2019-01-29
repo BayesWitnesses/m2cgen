@@ -17,8 +17,7 @@ class TreeModelAssembler(ModelAssembler):
             self._is_multi_output = self.model.n_classes_ > 1
 
     def assemble(self):
-        return ast.MainExpr(self._assemble_node(0),
-                            is_multi_output=self._is_multi_output)
+        return self._assemble_node(0)
 
     def _assemble_node(self, node_id):
         if self._tree.children_left[node_id] == TREE_LEAF:
