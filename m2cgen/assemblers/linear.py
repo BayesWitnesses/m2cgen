@@ -10,16 +10,16 @@ class LinearModelAssembler(ModelAssembler):
 
     def _build_ast(self):
         coef = utils.to_2d_array(self.model.coef_)
-        intercept = utils.to_2d_array(self.model.intercept_)
+        intercept = self.model.intercept_
 
         if coef.shape[0] == 1:
-            return _linear_to_ast(coef[0], intercept[0, 0])
-        else:
-            exprs = []
-            for idx in range(coef.shape[0]):
-                exprs.append(ast.SubroutineExpr(
-                    _linear_to_ast(coef[idx], intercept[0, idx])))
-            return ast.VectorExpr(exprs)
+            return _linear_to_ast(coef[0], intercept)
+
+        exprs = []
+        for idx in range(coef.shape[0]):
+            exprs.append(ast.SubroutineExpr(
+                _linear_to_ast(coef[idx], intercept[idx])))
+        return ast.VectorExpr(exprs)
 
 
 def _linear_to_ast(coef, intercept):
