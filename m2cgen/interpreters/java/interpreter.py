@@ -41,9 +41,6 @@ class JavaInterpreter(BaseInterpreter):
         method_name = self._get_subroutine_name()
         return self._enqueue_subroutine(method_name, expr)
 
-    def interpret_main_expr(self, expr, **kwargs):
-        return self._enqueue_subroutine("score", expr)
-
     def interpret_array_expr(self, expr, **kwargs):
         nested = []
         for e in expr.exprs:
