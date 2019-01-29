@@ -95,6 +95,30 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             utils.train_model_regression,
             marks=[PYTHON, REGRESSION],
     ),
+    pytest.param(
+            linear_model.LogisticRegression(),
+            executors.PythonExecutor,
+            utils.train_model_classification,
+            marks=[PYTHON, CLASSIFICATION],
+    ),
+    pytest.param(
+            linear_model.LogisticRegression(),
+            executors.PythonExecutor,
+            utils.train_model_classification_binary,
+            marks=[PYTHON, CLASSIFICATION],
+    ),
+    pytest.param(
+            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
+            executors.PythonExecutor,
+            utils.train_model_classification,
+            marks=[PYTHON, CLASSIFICATION],
+    ),
+    pytest.param(
+            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
+            executors.PythonExecutor,
+            utils.train_model_classification_binary,
+            marks=[PYTHON, CLASSIFICATION],
+    ),
 ])
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
     exec_e2e_test(estimator, executor_cls, model_trainer, is_fast)
