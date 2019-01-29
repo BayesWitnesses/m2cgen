@@ -38,7 +38,7 @@ class JavaInterpreter(BaseInterpreter):
             (self.model_name, top_cg.code),
         ]
 
-    def interpret_array_expr(self, expr, **kwargs):
+    def interpret_vector_expr(self, expr, **kwargs):
         nested = []
         for e in expr.exprs:
             nested.append(self._do_interpret(e, **kwargs))
