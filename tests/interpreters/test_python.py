@@ -153,3 +153,19 @@ def  score(input):
     return (np.asarray([1, 2])) * (np.asarray([3, 4]))
 """
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
+def test_bin_vector_num_expr():
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.MUL)
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import numpy as np
+def  score(input):
+    return (np.asarray([1, 2])) * (1)
+"""
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
