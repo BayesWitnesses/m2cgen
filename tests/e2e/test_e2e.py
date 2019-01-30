@@ -13,6 +13,7 @@ RANDOM_SEED = 1234
 # pytest marks
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
+CPP = pytest.mark.cpp
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -33,6 +34,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
 
 
 @pytest.mark.parametrize("estimator,executor_cls,model_trainer", [
+    # Java
     pytest.param(
             linear_model.LinearRegression(),
             executors.JavaExecutor,
@@ -76,6 +78,8 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             utils.train_model_regression,
             marks=[JAVA, REGRESSION],
     ),
+
+    # Python
     pytest.param(
             linear_model.LinearRegression(),
             executors.PythonExecutor,
@@ -118,6 +122,27 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             executors.PythonExecutor,
             utils.train_model_classification_binary,
             marks=[PYTHON, CLASSIFICATION],
+    ),
+
+    # CPP
+    pytest.param(
+            linear_model.LinearRegression(),
+            executors.CPPExecutor,
+            utils.train_model_regression,
+            marks=[CPP, REGRESSION],
+    ),
+    pytest.param(
+            tree.DecisionTreeRegressor(random_state=RANDOM_SEED),
+            executors.CPPExecutor,
+            utils.train_model_regression,
+            marks=[CPP, REGRESSION],
+    ),
+    pytest.param(
+            ensemble.RandomForestRegressor(n_estimators=10,
+                                           random_state=RANDOM_SEED),
+            executors.CPPExecutor,
+            utils.train_model_regression,
+            marks=[CPP, REGRESSION],
     ),
 ])
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):

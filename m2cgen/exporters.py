@@ -48,3 +48,10 @@ class PythonExporter(BaseExporter):
     def __init__(self, model, indent=4):
         self.interpreter = interpreters.PythonInterpreter(indent=indent)
         super(PythonExporter, self).__init__(model)
+
+
+class CPPExporter(BaseExporter):
+
+    def __init__(self, model, indent=4):
+        self.interpreter = interpreters.CPPInterpreter(indent=indent)
+        super(CPPExporter, self).__init__(model)
