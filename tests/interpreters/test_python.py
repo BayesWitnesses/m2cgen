@@ -122,17 +122,50 @@ def test_multi_output():
                 ast.NumVal(1),
                 ast.NumVal(1),
                 ast.CompOpType.EQ),
-            ast.VectorExpr([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorExpr([ast.NumVal(3), ast.NumVal(4)])))
+            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
 
     expected_code = """
+import numpy as np
 def  score(input):
     if (1) == (1):
-        var0 = [1, 2]
+        var0 = np.asarray([1, 2])
     else:
-        var0 = [3, 4]
+        var0 = np.asarray([3, 4])
     return var0
 """
 
     interpreter = interpreters.PythonInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
+def test_bin_vector_expr():
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.MUL)
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import numpy as np
+def  score(input):
+    return (np.asarray([1, 2])) * (np.asarray([3, 4]))
+"""
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
+def test_bin_vector_num_expr():
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.MUL)
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import numpy as np
+def  score(input):
+    return (np.asarray([1, 2])) * (1)
+"""
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)

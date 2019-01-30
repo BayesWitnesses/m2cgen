@@ -40,7 +40,7 @@ class TreeModelAssembler(ModelAssembler):
             score_sum = scores.sum() or 1.0
             for s in scores:
                 outputs.append(ast.NumVal(s / score_sum))
-            return ast.VectorExpr(outputs)
+            return ast.VectorVal(outputs)
         else:
             assert len(scores) == 1, "Unexpected number of outputs"
             return ast.NumVal(scores[0])

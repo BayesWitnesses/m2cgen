@@ -189,8 +189,8 @@ def test_multi_output():
                 ast.NumVal(1),
                 ast.NumVal(1),
                 ast.CompOpType.EQ),
-            ast.VectorExpr([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorExpr([ast.NumVal(3), ast.NumVal(4)])))
+            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
 
     expected_code = """
 public class Model {
