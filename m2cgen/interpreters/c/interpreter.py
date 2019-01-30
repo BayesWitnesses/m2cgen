@@ -1,12 +1,12 @@
 from m2cgen.interpreters.interpreter import BaseInterpreter
-from m2cgen.interpreters.cpp.code_generator import CPPCodeGenerator
+from m2cgen.interpreters.c.code_generator import CCodeGenerator
 
 
-class CPPInterpreter(BaseInterpreter):
+class CInterpreter(BaseInterpreter):
 
     def __init__(self, indent=4, *args, **kwargs):
-        cg = CPPCodeGenerator(indent=indent)
-        super(CPPInterpreter, self).__init__(cg, *args, **kwargs)
+        cg = CCodeGenerator(indent=indent)
+        super(CInterpreter, self).__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

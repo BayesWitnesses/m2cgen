@@ -3,10 +3,10 @@ import contextlib
 from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 
 
-class CPPCodeGenerator(CLikeCodeGenerator):
+class CCodeGenerator(CLikeCodeGenerator):
 
     def __init__(self, *args, **kwargs):
-        super(CPPCodeGenerator, self).__init__(*args, **kwargs)
+        super(CCodeGenerator, self).__init__(*args, **kwargs)
 
     def add_function_def(self, name, args, is_vector_output):
         return_type = self._get_var_type(is_vector_output)

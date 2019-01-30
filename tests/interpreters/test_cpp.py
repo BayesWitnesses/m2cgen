@@ -9,7 +9,7 @@ def test_if_expr():
         ast.NumVal(2),
         ast.NumVal(3))
 
-    interpreter = interpreters.CPPInterpreter()
+    interpreter = interpreters.CInterpreter()
 
     expected_code = """
 double score(double input[]) {
@@ -31,7 +31,7 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.CPPInterpreter()
+    interpreter = interpreters.CInterpreter()
 
     expected_code = """
 double score(double input[]) {
@@ -73,7 +73,7 @@ double score(double input[]) {
     return var0;
 }"""
 
-    interpreter = interpreters.CPPInterpreter()
+    interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
 
 
@@ -120,5 +120,5 @@ double score(double input[]) {
     }
     return var0;
 }"""
-    interpreter = interpreters.CPPInterpreter()
+    interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)

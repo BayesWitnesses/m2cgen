@@ -7,34 +7,33 @@ from tests.e2e.executors import base
 
 
 executor_code_tpl = """
-#include <iostream>
+#include <stdio.h>
 
 ${code}
 
 int main(int argc, char *argv[])
 {
     double input [argc-1];
-
     for (int i = 1; i < argc; ++i) {
-        input[i-1] = std::stod(argv[i]);
+        sscanf(argv[i], "%lf", &input[i-1]);
     }
 
-    std::cout << score(input) << "\\n";
+    printf("%f\\n", score(input));
 
     return 0;
 }
 """
 
 
-class CPPExecutor(base.BaseExecutor):
+class CExecutor(base.BaseExecutor):
 
     model_name = "score"
 
     def __init__(self, model):
         self.model = model
-        self.exporter = exporters.CPPExporter(model)
+        self.exporter = exporters.CExporter(model)
 
-        self._cxx = "g++"
+        self._gcc = "gcc"
 
     def predict(self, X):
 
@@ -65,6 +64,6 @@ class CPPExecutor(base.BaseExecutor):
         assert len(files_to_compile) == 1
 
         target = os.path.join(self._resource_tmp_dir, self.model_name)
-        exec_args = [self._cxx] + files_to_compile + (
+        exec_args = [self._gcc] + files_to_compile + (
             ["-o", target, "-std=c++11"])
         subprocess.run(exec_args)

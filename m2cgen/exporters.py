@@ -50,8 +50,8 @@ class PythonExporter(BaseExporter):
         super(PythonExporter, self).__init__(model)
 
 
-class CPPExporter(BaseExporter):
+class CExporter(BaseExporter):
 
     def __init__(self, model, indent=4):
-        self.interpreter = interpreters.CPPInterpreter(indent=indent)
-        super(CPPExporter, self).__init__(model)
+        self.interpreter = interpreters.CInterpreter(indent=indent)
+        super(CExporter, self).__init__(model)

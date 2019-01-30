@@ -1,9 +1,9 @@
 from .java.interpreter import JavaInterpreter
 from .python.interpreter import PythonInterpreter
-from .cpp.interpreter import CPPInterpreter
+from .c.interpreter import CInterpreter
 
 __all__ = [
     JavaInterpreter,
     PythonInterpreter,
-    CPPInterpreter,
+    CInterpreter,
 ]

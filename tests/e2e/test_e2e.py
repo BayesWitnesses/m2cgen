@@ -13,7 +13,7 @@ RANDOM_SEED = 1234
 # pytest marks
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
-CPP = pytest.mark.cpp
+C = pytest.mark.c
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -124,25 +124,25 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             marks=[PYTHON, CLASSIFICATION],
     ),
 
-    # CPP
+    # C
     pytest.param(
             linear_model.LinearRegression(),
-            executors.CPPExecutor,
+            executors.CExecutor,
             utils.train_model_regression,
-            marks=[CPP, REGRESSION],
+            marks=[C, REGRESSION],
     ),
     pytest.param(
             tree.DecisionTreeRegressor(random_state=RANDOM_SEED),
-            executors.CPPExecutor,
+            executors.CExecutor,
             utils.train_model_regression,
-            marks=[CPP, REGRESSION],
+            marks=[C, REGRESSION],
     ),
     pytest.param(
             ensemble.RandomForestRegressor(n_estimators=10,
                                            random_state=RANDOM_SEED),
-            executors.CPPExecutor,
+            executors.CExecutor,
             utils.train_model_regression,
-            marks=[CPP, REGRESSION],
+            marks=[C, REGRESSION],
     ),
 ])
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
