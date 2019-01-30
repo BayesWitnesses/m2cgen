@@ -39,8 +39,8 @@ class CExecutor(base.BaseExecutor):
 
         exec_args = [os.path.join(self._resource_tmp_dir, self.model_name)]
         exec_args.extend(map(str, X))
-        result = subprocess.run(exec_args, stdout=subprocess.PIPE)
-        items = result.stdout.decode("utf-8").split(" ")
+        result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
+        items = result.stdout.read().decode("utf-8").split(" ")
         if len(items) == 1:
             return float(items[0])
         else:
