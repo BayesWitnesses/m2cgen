@@ -211,3 +211,67 @@ public class Model {
 
     interpreter = interpreters.JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
+def test_bin_vector_expr():
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.ADD)
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+
+    public static double[] score(double[] input) {
+        return addVectors(new double[] {1, 2}, new double[] {3, 4});
+    }
+    public static double[] addVectors(double[] v1, double[] v2) {
+        double[] result = new double[v1.length];
+        for (int i = 0; i < v1.length; i ++) {
+            result[i] = v1[i] + v2[i];
+        }
+        return result;
+    }
+    public static double[] mulVectorNumber(double[] v1, double num) {
+        double[] result = new double[v1.length];
+        for (int i = 0; i < v1.length; i ++) {
+            result[i] = v1[i] * num;
+        }
+        return result;
+    }
+}"""
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+
+
+def test_bin_vector_num_expr():
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.MUL)
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+
+    public static double[] score(double[] input) {
+        return mulVectorNumber(new double[] {1, 2}, 1);
+    }
+    public static double[] addVectors(double[] v1, double[] v2) {
+        double[] result = new double[v1.length];
+        for (int i = 0; i < v1.length; i ++) {
+            result[i] = v1[i] + v2[i];
+        }
+        return result;
+    }
+    public static double[] mulVectorNumber(double[] v1, double num) {
+        double[] result = new double[v1.length];
+        for (int i = 0; i < v1.length; i ++) {
+            result[i] = v1[i] * num;
+        }
+        return result;
+    }
+}"""
+    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
