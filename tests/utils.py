@@ -4,6 +4,7 @@ import tempfile
 import numpy as np
 
 from sklearn import datasets
+from sklearn.ensemble import forest
 from sklearn.utils import shuffle
 from sklearn.linear_model.base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
@@ -14,7 +15,7 @@ from m2cgen import ast
 def cmp_exprs(left, right):
     """Recursively compares two ast expressions."""
 
-    if isinstance(left, ast.VectorExpr) and isinstance(right, ast.Expr):
+    if isinstance(left, ast.VectorVal) and isinstance(right, ast.Expr):
         left_exprs = left.exprs
         right_exprs = right.exprs
         assert len(left_exprs) == len(right_exprs)
@@ -74,6 +75,8 @@ def _train_model(estimator, dataset, test_fraction):
         y_pred = estimator.decision_function(X_test)
     elif isinstance(estimator, DecisionTreeClassifier):
         y_pred = estimator.predict_proba(X_test.astype(np.float32))
+    elif isinstance(estimator, forest.ForestClassifier):
+        y_pred = estimator.predict_proba(X_test)
     else:
         y_pred = estimator.predict(X_test)
 

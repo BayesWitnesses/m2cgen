@@ -29,5 +29,11 @@ class PythonCodeGenerator(BaseCodeGenerator):
         self.add_function_def(name, args)
         yield
 
-    def array_init(self, values):
-        return "[" + ", ".join(values) + "]"
+    def vector_init(self, values):
+        return "np.asarray([" + ", ".join(values) + "])"
+
+    def add_dependency(self, dep, alias=None):
+        dep_str = "import " + dep
+        if alias:
+            dep_str += " as " + alias
+        super().prepend_code_line(dep_str)

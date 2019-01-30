@@ -57,7 +57,7 @@ def test_multi_class():
     assembler = assemblers.LinearModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.VectorExpr([
+    expected = ast.VectorVal([
         ast.SubroutineExpr(
             ast.BinNumExpr(
                 ast.BinNumExpr(
