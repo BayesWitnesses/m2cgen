@@ -20,7 +20,7 @@ class PythonInterpreter(BaseInterpreter):
             self._cg.add_return_statement(last_result)
 
         if self.with_linear_algebra or self.with_vectors:
-            self._cg.code = "import numpy as np\n" + self._cg.code
+            self._cg.prepend_code_line("import numpy as np")
 
         return [
             ("", self._cg.code),

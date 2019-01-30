@@ -17,14 +17,20 @@ BIN_EXPR_CLASSES = {
 }
 
 
-def apply_bin_op(l, r, op):
-    exr_class = BIN_EXPR_CLASSES.get((l.is_vector_output, r.is_vector_output))
+def apply_bin_op(left, right, op):
+    """
+    Finds binary expression class suitable for combination of left and right
+    expressions depending on whether their output is scalar or vector and
+    creates instance of this expression with specified operation.
+    """
+    exr_class = BIN_EXPR_CLASSES.get(
+        (left.is_vector_output, right.is_vector_output))
     if exr_class is None:
-        raise ValueError(
-            "Scalar/Vector operations are not supported."
-            "Use Vector/Scalar instead.")
+        # change the positions of left and right
+        left, right = right, left
+        exr_class = ast.BinVectorNumExpr
 
-    return exr_class(l, r, op)
+    return exr_class(left, right, op)
 
 
 def apply_op_to_expressions(op, *exprs):

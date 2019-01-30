@@ -63,6 +63,9 @@ class BaseCodeGenerator:
         for l in lines:
             self.add_code_line(l)
 
+    def prepend_code_line(self, line):
+        self.code = line + "\n" + self.code
+
     # Following statements compute expressions using templates AND add
     # it to the result.
 
