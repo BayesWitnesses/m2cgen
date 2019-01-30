@@ -34,9 +34,9 @@ class CPPExecutor(base.BaseExecutor):
         self.model = model
         self.exporter = exporters.CPPExporter(model)
 
-        cxx = os.environ.get("CXX")
-        assert cxx, "CXX is not specified"
-        self._cxx = cxx
+        # cxx = os.environ.get("CXX")
+        # assert cxx, "CXX is not specified"
+        self._cxx = "g++"
 
     def predict(self, X):
 
