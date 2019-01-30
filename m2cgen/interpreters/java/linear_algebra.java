@@ -1,7 +1,7 @@
 public static double[] addVectors(double[] v1, double[] v2) {
     double[] result = new double[v1.length];
 
-    for (int i = 0; i < v1.length; i ++) {
+    for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] + v2[i];
     }
 
@@ -11,7 +11,7 @@ public static double[] addVectors(double[] v1, double[] v2) {
 public static double[] mulVectorNumber(double[] v1, double num) {
     double[] result = new double[v1.length];
 
-    for (int i = 0; i < v1.length; i ++) {
+    for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] * num;
     }
 
