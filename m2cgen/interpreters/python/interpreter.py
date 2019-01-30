@@ -31,14 +31,12 @@ class PythonInterpreter(BaseInterpreter):
         return super().interpret_vector_val(expr, **kwargs)
 
     def interpret_bin_vector_expr(self, expr):
-        self.with_vectors = True
         return self._cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))
 
     def interpret_bin_vector_num_expr(self, expr):
-        self.with_vectors = True
         return self._cg.infix_expression(
             left=self._do_interpret(expr.left),
             op=expr.op.value,
