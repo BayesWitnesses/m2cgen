@@ -34,7 +34,9 @@ class CPPExecutor(base.BaseExecutor):
         self.model = model
         self.exporter = exporters.CPPExporter(model)
 
-        self._cpp = "g++-8"
+        cxx = os.environ.get("CXX")
+        assert cxx, "CXX is not specified"
+        self._cxx = cxx
 
     def predict(self, X):
 
@@ -65,5 +67,5 @@ class CPPExecutor(base.BaseExecutor):
         assert len(files_to_compile) == 1
 
         target = os.path.join(self._resource_tmp_dir, self.model_name)
-        exec_args = [self._cpp] + files_to_compile + ["-o", target]
+        exec_args = [self._cxx] + files_to_compile + ["-o", target]
         subprocess.run(exec_args)
