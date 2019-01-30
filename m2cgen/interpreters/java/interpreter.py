@@ -1,7 +1,7 @@
 import os
-import pathlib
 
 from m2cgen import ast
+from m2cgen.interpreters import utils
 from m2cgen.interpreters.interpreter import BaseInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 
@@ -43,7 +43,7 @@ class JavaInterpreter(BaseInterpreter):
             if self.with_linear_algebra:
                 filename = os.path.join(
                     os.path.dirname(__file__), "linear_algebra.java")
-                top_cg.add_code_lines(pathlib.Path(filename).read_text())
+                top_cg.add_code_lines(utils.get_file_content(filename))
 
         return [
             (self.model_name, top_cg.code),
