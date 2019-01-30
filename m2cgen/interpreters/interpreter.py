@@ -5,9 +5,6 @@ from m2cgen import ast
 
 class BaseInterpreter:
 
-    with_vectors = False
-    with_linear_algebra = False
-
     def __init__(self, cg, feature_array_name="input"):
         self._cg = cg
         self._feature_array_name = feature_array_name
@@ -60,7 +57,6 @@ class BaseInterpreter:
             index=expr.index)
 
     def interpret_vector_val(self, expr, **kwargs):
-        self.with_vectors = True
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
 
