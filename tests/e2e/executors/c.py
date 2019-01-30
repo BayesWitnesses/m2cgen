@@ -66,4 +66,4 @@ class CExecutor(base.BaseExecutor):
         target = os.path.join(self._resource_tmp_dir, self.model_name)
         exec_args = [self._gcc] + files_to_compile + (
             ["-o", target, "-std=c++11"])
-        subprocess.run(exec_args)
+        subprocess.call(exec_args)
