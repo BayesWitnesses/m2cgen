@@ -24,8 +24,8 @@ class JavaExecutor(base.BaseExecutor):
             "Executor", "Model", "score"
         ]
         exec_args.extend(map(str, X))
-        result = subprocess.run(exec_args, stdout=subprocess.PIPE)
-        items = result.stdout.decode("utf-8").split(" ")
+        result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
+        items = result.stdout.read().decode("utf-8").split(" ")
         if len(items) == 1:
             return float(items[0])
         else:
@@ -51,4 +51,4 @@ class JavaExecutor(base.BaseExecutor):
         # Compile all files together.
         exec_args = [self._javac_bin] + files_to_compile + (
             [os.path.join(self._resource_tmp_dir, "Executor.java")])
-        subprocess.run(exec_args)
+        subprocess.call(exec_args)
