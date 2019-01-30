@@ -63,7 +63,7 @@ def train_model_classification_binary(estimator, test_fraction=0.1):
 
 
 def _train_model(estimator, dataset, test_fraction):
-    X, y = shuffle(dataset.data[:, :1], dataset.target, random_state=13)
+    X, y = shuffle(dataset.data, dataset.target, random_state=13)
 
     offset = int(X.shape[0] * (1 - test_fraction))
     X_train, y_train = X[:offset], y[:offset]
@@ -76,7 +76,7 @@ def _train_model(estimator, dataset, test_fraction):
     elif isinstance(estimator, DecisionTreeClassifier):
         y_pred = estimator.predict_proba(X_test.astype(np.float32))
     elif isinstance(estimator, forest.ForestClassifier):
-        y_pred = estimator.predict_log_proba(X_test)
+        y_pred = estimator.predict_proba(X_test)
     else:
         y_pred = estimator.predict(X_test)
 

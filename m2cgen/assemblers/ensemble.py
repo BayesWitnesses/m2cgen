@@ -1,5 +1,3 @@
-from sklearn import ensemble
-
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
@@ -7,11 +5,6 @@ from m2cgen.assemblers import TreeModelAssembler
 
 
 class RandomForestModelAssembler(ModelAssembler):
-    def __init__(self, model):
-        super().__init__(model)
-        self._is_vector_output = False
-        if isinstance(self.model, ensemble.RandomForestClassifier):
-            self._is_vector_output = self.model.n_classes_ > 1
 
     def assemble(self):
         coef = 1.0 / self.model.n_estimators
