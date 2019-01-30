@@ -77,6 +77,20 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             marks=[JAVA, REGRESSION],
     ),
     pytest.param(
+            ensemble.RandomForestClassifier(n_estimators=10,
+                                            random_state=RANDOM_SEED),
+            executors.JavaExecutor,
+            utils.train_model_classification_binary,
+            marks=[JAVA, CLASSIFICATION],
+    ),
+    pytest.param(
+            ensemble.RandomForestClassifier(n_estimators=10,
+                                            random_state=RANDOM_SEED),
+            executors.JavaExecutor,
+            utils.train_model_classification,
+            marks=[JAVA, CLASSIFICATION],
+    ),
+    pytest.param(
             linear_model.LinearRegression(),
             executors.PythonExecutor,
             utils.train_model_regression,
