@@ -33,8 +33,6 @@ class CCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     def add_var_declaration(self, expr):
-        # import ipdb; ipdb.set_trace()
-
         var_name = self.get_var_name()
 
         if expr.is_vector_output:
