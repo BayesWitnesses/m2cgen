@@ -26,13 +26,13 @@ def export_to_python(model, indent=4):
 
 
 def _export(model, interpreter):
-    model_name = type(model).__name__
-    assembler_cls = _get_assembler_cls(model_name)
+    assembler_cls = _get_assembler_cls(model)
     model_ast = assembler_cls(model).assemble()
     return interpreter.interpret(model_ast)
 
 
-def _get_assembler_cls(model_name):
+def _get_assembler_cls(model):
+    model_name = type(model).__name__
     assembler_cls = SUPPORTED_MODELS.get(model_name)
 
     if not assembler_cls:
