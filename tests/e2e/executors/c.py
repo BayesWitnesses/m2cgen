@@ -8,7 +8,6 @@ from tests.e2e.executors import base
 
 EXECUTOR_CODE_TPL = """
 #include <stdio.h>
-#include <string.h>
 
 ${model_code}
 
