@@ -56,5 +56,5 @@ class CExecutor(base.BaseExecutor):
             f.write(code)
 
         target = os.path.join(self._resource_tmp_dir, self.model_name)
-        exec_args = [self._gcc] + [file_name] + ["-o", target]
+        exec_args = [self._gcc] + [file_name] + ["-o", target, "-std=c99"]
         subprocess.call(exec_args)
