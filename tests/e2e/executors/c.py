@@ -70,7 +70,7 @@ class CExecutor(base.BaseExecutor):
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
 
-        execute_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
             model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
@@ -78,7 +78,7 @@ class CExecutor(base.BaseExecutor):
             self._resource_tmp_dir, "{}.c".format(self.model_name))
 
         with open(file_name, "w") as f:
-            f.write(execute_code)
+            f.write(executor_code)
 
         target = os.path.join(self._resource_tmp_dir, self.model_name)
         exec_args = [self._gcc] + [file_name] + ["-o", target, "-std=c99"]
