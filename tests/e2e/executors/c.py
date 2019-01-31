@@ -54,12 +54,7 @@ class CExecutor(base.BaseExecutor):
 
         exec_args = [os.path.join(self._resource_tmp_dir, self.model_name)]
         exec_args.extend(map(str, X))
-        result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
-        items = result.stdout.read().decode("utf-8").strip().split(" ")
-        if len(items) == 1:
-            return float(items[0])
-        else:
-            return [float(i) for i in items]
+        return self._predict_from_commandline(exec_args)
 
     def prepare(self):
 

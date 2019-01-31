@@ -1,4 +1,5 @@
 import contextlib
+import subprocess
 
 from tests import utils
 
@@ -20,3 +21,11 @@ class BaseExecutor:
 
     def prepare(self):
         raise NotImplementedError
+
+    def _predict_from_commandline(self, exec_args):
+        result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
+        items = result.stdout.read().decode("utf-8").strip().split(" ")
+        if len(items) == 1:
+            return float(items[0])
+        else:
+            return [float(i) for i in items]
