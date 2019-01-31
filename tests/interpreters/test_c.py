@@ -21,7 +21,7 @@ double score(double input[]) {
     }
     return var0;
 }"""
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -37,7 +37,7 @@ def test_bin_num_expr():
 double score(double input[]) {
     return ((input[0]) / (-2)) * (2);
 }"""
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -74,7 +74,7 @@ double score(double input[]) {
 }"""
 
     interpreter = interpreters.CInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -121,4 +121,4 @@ double score(double input[]) {
     return var0;
 }"""
     interpreter = interpreters.CInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
