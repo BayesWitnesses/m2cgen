@@ -26,7 +26,7 @@ public class Model {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -46,7 +46,7 @@ public class Model {
     }
 }"""
 
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -87,7 +87,7 @@ public class Model {
 
     interpreter = interpreters.JavaInterpreter()
 
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -138,7 +138,7 @@ public class Model {
 }"""
 
     interpreter = interpreters.JavaInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_package_name():
@@ -156,7 +156,7 @@ public class Model {
     }
 }"""
 
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_subroutine():
@@ -179,7 +179,7 @@ public class Model {
 }"""
 
     interpreter = interpreters.JavaInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -210,7 +210,7 @@ public class Model {
 }"""
 
     interpreter = interpreters.JavaInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -242,7 +242,7 @@ public class Model {
         return result;
     }
 }"""
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -274,4 +274,4 @@ public class Model {
         return result;
     }
 }"""
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)

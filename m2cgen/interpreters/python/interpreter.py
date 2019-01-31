@@ -22,9 +22,7 @@ class PythonInterpreter(BaseInterpreter):
         if self.with_numpy:
             self._cg.add_dependency("numpy", alias="np")
 
-        return [
-            ("", self._cg.code),
-        ]
+        return self._cg.code
 
     def interpret_vector_val(self, expr, **kwargs):
         self.with_numpy = True

@@ -45,9 +45,7 @@ class JavaInterpreter(BaseInterpreter):
                     os.path.dirname(__file__), "linear_algebra.java")
                 top_cg.add_code_lines(utils.get_file_content(filename))
 
-        return [
-            (self.model_name, top_cg.code),
-        ]
+        return top_cg.code
 
     def _create_code_generator(self):
         return JavaCodeGenerator(indent=self.indent)

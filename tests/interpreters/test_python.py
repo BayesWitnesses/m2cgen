@@ -20,7 +20,7 @@ def  score(input):
     return var0
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -37,7 +37,7 @@ def  score(input):
     return ((input[0]) / (-2)) * (2)
     """
 
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -71,7 +71,7 @@ def  score(input):
 
     interpreter = interpreters.PythonInterpreter()
 
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -112,7 +112,7 @@ def  score(input):
     """
 
     interpreter = interpreters.PythonInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -136,7 +136,7 @@ def  score(input):
 """
 
     interpreter = interpreters.PythonInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -152,7 +152,7 @@ import numpy as np
 def  score(input):
     return (np.asarray([1, 2])) * (np.asarray([3, 4]))
 """
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -168,4 +168,4 @@ import numpy as np
 def  score(input):
     return (np.asarray([1, 2])) * (1)
 """
-    utils.assert_code_equal(interpreter.interpret(expr)[0][1], expected_code)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
