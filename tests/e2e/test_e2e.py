@@ -172,6 +172,12 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             utils.train_model_regression,
             marks=[C, REGRESSION],
     ),
+    pytest.param(
+            linear_model.LogisticRegression(),
+            executors.CExecutor,
+            utils.train_model_classification_binary,
+            marks=[C, CLASSIFICATION],
+    ),
 ])
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
     exec_e2e_test(estimator, executor_cls, model_trainer, is_fast)

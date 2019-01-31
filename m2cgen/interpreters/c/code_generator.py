@@ -20,7 +20,7 @@ class CCodeGenerator(CLikeCodeGenerator):
 
         function_def = return_type + " " + name + "("
         function_def += ",".join([
-            self._get_var_type(False) + " " + n + "[]"
+            self._get_var_type(is_vector) + " " + n
             for is_vector, n in args])
         function_def += ") {"
         self.add_code_line(function_def)
