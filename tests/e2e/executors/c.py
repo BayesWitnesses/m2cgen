@@ -2,15 +2,15 @@ import os
 import string
 import subprocess
 
+from m2cgen import interpreters, assemblers
 from tests.e2e.executors import base
 
-import m2cgen as m2c
 
-
-executor_code_tpl = """
+EXECUTOR_CODE_TPL = """
 #include <stdio.h>
+#include <string.h>
 
-${code}
+${model_code}
 
 int main(int argc, char *argv[])
 {
@@ -19,10 +19,22 @@ int main(int argc, char *argv[])
         sscanf(argv[i], "%lf", &input[i-1]);
     }
 
-    printf("%f\\n", score(input));
+    ${print_code}
 
     return 0;
 }
+"""
+
+EXECUTE_AND_PRINT_SCALAR = """
+    printf("%f\\n", score(input));
+"""
+
+EXECUTE_AND_PRINT_VECTOR_TPL = """
+    double *result = score(input);
+
+    for (int i = 0; i < ${size}; ++i) {
+        printf("%f ", *(result+i));
+    }
 """
 
 
@@ -32,6 +44,10 @@ class CExecutor(base.BaseExecutor):
 
     def __init__(self, model):
         self.model = model
+        self.interpreter = interpreters.CInterpreter()
+
+        assembler_cls = assemblers.get_assembler_cls(model)
+        self.model_ast = assembler_cls(model).assemble()
 
         self._gcc = "gcc"
 
@@ -40,20 +56,30 @@ class CExecutor(base.BaseExecutor):
         exec_args = [os.path.join(self._resource_tmp_dir, self.model_name)]
         exec_args.extend(map(str, X))
         result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
-        items = result.stdout.read().decode("utf-8").split(" ")
+        items = result.stdout.read().decode("utf-8").strip().split(" ")
         if len(items) == 1:
             return float(items[0])
         else:
             return [float(i) for i in items]
 
     def prepare(self):
-        code = m2c.export_to_c(self.model)
-        code = string.Template(executor_code_tpl).substitute(code=code)
+
+        if self.model_ast.is_vector_output:
+            print_code = (
+                string.Template(EXECUTE_AND_PRINT_VECTOR_TPL).substitute(
+                    size=self.model_ast.size))
+        else:
+            print_code = EXECUTE_AND_PRINT_SCALAR
+
+        execute_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+            model_code=self.interpreter.interpret(self.model_ast),
+            print_code=print_code)
 
         file_name = os.path.join(
             self._resource_tmp_dir, "{}.c".format(self.model_name))
+
         with open(file_name, "w") as f:
-            f.write(code)
+            f.write(execute_code)
 
         target = os.path.join(self._resource_tmp_dir, self.model_name)
         exec_args = [self._gcc] + [file_name] + ["-o", target, "-std=c99"]

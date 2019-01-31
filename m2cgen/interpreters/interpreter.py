@@ -25,7 +25,7 @@ class BaseInterpreter:
                 self._do_interpret(nested, if_var_name=var_name, **kwargs)
             else:
                 nested_result = self._do_interpret(nested)
-                self._cg.add_var_assignment(var_name, nested_result)
+                self._cg.add_var_assignment(var_name, nested_result, nested)
 
         self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
         handle_nested_expr(expr.body)

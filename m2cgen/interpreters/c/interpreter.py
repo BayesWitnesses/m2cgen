@@ -18,4 +18,6 @@ class CInterpreter(BaseInterpreter):
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
+        self._cg.finalize()
+
         return self._cg.code

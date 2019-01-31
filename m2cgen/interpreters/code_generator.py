@@ -90,7 +90,7 @@ class BaseCodeGenerator:
         self.decrease_indent()
         self.add_code_line(self.tpl_block_termination())
 
-    def add_var_assignment(self, var_name, value):
+    def add_var_assignment(self, var_name, value, expr):
         self.add_code_line(
             self.tpl_var_assignment(var_name=var_name, value=value))
 

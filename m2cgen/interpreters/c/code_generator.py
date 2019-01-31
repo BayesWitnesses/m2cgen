@@ -4,10 +4,20 @@ from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
 
+ARRAY_ASSIGNMENT_FUNC = """
+void assignArray(double *output, double input[], int size) {
+    for(int i = 0; i < size; ++i)
+        output[i] = input[i];
+}
+"""
+
+
 class CCodeGenerator(CLikeCodeGenerator):
 
+    with_arrays_assignment = False
+
     tpl_scalar_var_declare = CT("double ${var_name};")
-    tpl_vector_var_declare = CT("static double *${var_name}[${size}];")
+    tpl_vector_var_declare = CT("static double ${var_name}[${size}];")
 
     scalar_type = "double"
     vector_type = "double *"
@@ -44,6 +54,28 @@ class CCodeGenerator(CLikeCodeGenerator):
 
         self.add_code_line(tpl(var_name=var_name, size=size))
         return var_name
+
+    def add_var_assignment(self, var_name, value, expr):
+        if not expr.is_vector_output:
+            return super().add_var_assignment(var_name, value, False)
+
+        # vectors require special handling since we can't just assign
+        # vectors in C.
+
+        self.with_arrays_assignment = True
+
+        temp_var_name = self.get_var_name()
+        self.add_code_line("double {}[{}] = {};".format(
+            temp_var_name, expr.size, value))
+        self.add_code_line("assignArray({}, {}, {});".format(
+            var_name, temp_var_name, expr.size))
+
+    def vector_init(self, values):
+        return "{" + ", ".join(values) + "}"
+
+    def finalize(self):
+        if self.with_arrays_assignment:
+            self.code = ARRAY_ASSIGNMENT_FUNC + self.code
 
     def _get_var_type(self, is_vector):
         return (

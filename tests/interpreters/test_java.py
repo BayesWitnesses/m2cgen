@@ -141,6 +141,30 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_if_expr_with_vectors():
+    expr = ast.IfExpr(
+        ast.CompExpr(ast.NumVal(1), ast.FeatureRef(0), ast.CompOpType.EQ),
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+
+    public static double[] score(double[] input) {
+        double[] var0;
+        if ((1) == (input[0])) {
+            var0 = new double[] {1, 2};
+        } else {
+            var0 = new double[] {3, 4};
+        }
+        return var0;
+    }
+}"""
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_package_name():
     expr = ast.NumVal(1)
 

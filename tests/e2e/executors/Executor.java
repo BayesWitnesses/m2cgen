@@ -25,9 +25,7 @@ class Executor {
                 String out = "";
                 for (int i = 0, l = arr.length; i < l; i++) {
                     out += arr[i];
-                    if (i < l - 1) {
-                        out += " ";
-                    }
+                    out += " ";
                 }
                 System.out.println(out);
             } else {

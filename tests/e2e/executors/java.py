@@ -25,7 +25,7 @@ class JavaExecutor(base.BaseExecutor):
         ]
         exec_args.extend(map(str, X))
         result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
-        items = result.stdout.read().decode("utf-8").split(" ")
+        items = result.stdout.read().decode("utf-8").strip().split(" ")
         if len(items) == 1:
             return float(items[0])
         else:

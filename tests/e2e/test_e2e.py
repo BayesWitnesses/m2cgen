@@ -63,7 +63,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
             executors.JavaExecutor,
             utils.train_model_classification,
-            marks=[JAVA, CLASSIFICATION],
+            marks=[JAVA, CLASSIFICATION, pytest.mark.qwerty2],
     ),
     pytest.param(
             tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
@@ -177,6 +177,18 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             executors.CExecutor,
             utils.train_model_classification_binary,
             marks=[C, CLASSIFICATION],
+    ),
+    pytest.param(
+            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
+            executors.CExecutor,
+            utils.train_model_classification,
+            marks=[C, CLASSIFICATION, pytest.mark.qwerty],
+    ),
+    pytest.param(
+            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
+            executors.CExecutor,
+            utils.train_model_classification_binary,
+            marks=[C, CLASSIFICATION, pytest.mark.qwerty],
     ),
 ])
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
