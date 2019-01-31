@@ -2,50 +2,41 @@ from m2cgen import assemblers
 from m2cgen import interpreters
 
 
-class BaseExporter:
-
-    interpreter = None
-
-    models_to_assemblers = {
-        "LinearRegression": assemblers.LinearModelAssembler,
-        "LogisticRegression": assemblers.LinearModelAssembler,
-        "DecisionTreeRegressor": assemblers.TreeModelAssembler,
-        "DecisionTreeClassifier": assemblers.TreeModelAssembler,
-        "RandomForestRegressor": assemblers.RandomForestModelAssembler,
-        "RandomForestClassifier": assemblers.RandomForestModelAssembler,
-    }
-
-    def __init__(self, model):
-        self.model = model
-        self.assembler = self._get_assembler_cls(type(model).__name__)(model)
-        assert self.interpreter, "interpreter is required"
-
-    def _get_assembler_cls(self, model_name):
-        assembler_cls = self.models_to_assemblers.get(model_name)
-
-        if not assembler_cls:
-            raise NotImplementedError(
-                "Model {} is not supported".format(model_name))
-
-        return assembler_cls
-
-    def export(self):
-        model_ast = self.assembler.assemble()
-        return self.interpreter.interpret(model_ast)
+SUPPORTED_MODELS = {
+    "LinearRegression": assemblers.LinearModelAssembler,
+    "LogisticRegression": assemblers.LinearModelAssembler,
+    "DecisionTreeRegressor": assemblers.TreeModelAssembler,
+    "DecisionTreeClassifier": assemblers.TreeModelAssembler,
+    "RandomForestRegressor": assemblers.RandomForestModelAssembler,
+    "RandomForestClassifier": assemblers.RandomForestModelAssembler,
+}
 
 
-class JavaExporter(BaseExporter):
-
-    def __init__(self, model, package_name=None, model_name="Model", indent=4):
-        self.interpreter = interpreters.JavaInterpreter(
-            package_name=package_name,
-            model_name=model_name,
-            indent=indent)
-        super(JavaExporter, self).__init__(model)
+def export_to_java(model, package_name=None, model_name="Model", indent=4):
+    interpreter = interpreters.JavaInterpreter(
+        package_name=package_name,
+        model_name=model_name,
+        indent=indent)
+    return _export(model, interpreter)
 
 
-class PythonExporter(BaseExporter):
+def export_to_python(model, indent=4):
+    interpreter = interpreters.PythonInterpreter(indent=indent)
+    return _export(model, interpreter)
 
-    def __init__(self, model, indent=4):
-        self.interpreter = interpreters.PythonInterpreter(indent=indent)
-        super(PythonExporter, self).__init__(model)
+
+def _export(model, interpreter):
+    model_name = type(model).__name__
+    assembler_cls = _get_assembler_cls(model_name)
+    model_ast = assembler_cls(model).assemble()
+    return interpreter.interpret(model_ast)
+
+
+def _get_assembler_cls(model_name):
+    assembler_cls = SUPPORTED_MODELS.get(model_name)
+
+    if not assembler_cls:
+        raise NotImplementedError(
+            "Model {} is not supported".format(model_name))
+
+    return assembler_cls

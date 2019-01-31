@@ -2,7 +2,7 @@ import importlib
 import os
 import sys
 
-from m2cgen import exporters
+import m2cgen as m2c
 from tests.e2e.executors import base
 
 
@@ -10,7 +10,6 @@ class PythonExecutor(base.BaseExecutor):
 
     def __init__(self, model):
         self.model = model
-        self.exporter = exporters.PythonExporter(model)
 
     def predict(self, X):
         # Hacky way to dynamically import generated function
@@ -29,10 +28,7 @@ class PythonExecutor(base.BaseExecutor):
         return score(X.tolist())
 
     def prepare(self):
-        exported_models = self.exporter.export()
-        assert len(exported_models) == 1
-
-        _, code = exported_models[0]
+        code = m2c.export_to_python(self.model)
 
         file_name = os.path.join(self._resource_tmp_dir, "model.py")
 

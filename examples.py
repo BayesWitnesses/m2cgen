@@ -7,7 +7,7 @@ from sklearn import tree
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.utils import shuffle
 
-from m2cgen import exporters
+import m2cgen as m2c
 
 
 def train_model(estimator):
@@ -29,10 +29,6 @@ def train_model(estimator):
     print("Variance score: %.2f" % r2_score(y_test, y_pred))
 
 
-def print_model(defined_classes):
-    print(defined_classes[0][1])
-
-
 def example_linear():
     estimator = linear_model.LinearRegression()
     train_model(estimator)
@@ -40,24 +36,21 @@ def example_linear():
     print("Coef", estimator.coef_)
     print("Intercept", estimator.intercept_)
 
-    exporter = exporters.PythonExporter(estimator)
-    print_model(exporter.export())
+    print(m2c.export_to_python(estimator))
 
 
 def example_tree():
     estimator = tree.DecisionTreeRegressor()
     train_model(estimator)
 
-    exporter = exporters.PythonExporter(estimator)
-    print_model(exporter.export())
+    print(m2c.export_to_python(estimator))
 
 
 def example_random_forest():
     estimator = ensemble.RandomForestRegressor(n_estimators=10)
     train_model(estimator)
 
-    exporter = exporters.JavaExporter(estimator)
-    print_model(exporter.export())
+    print(m2c.export_to_java(estimator))
 
 
 if __name__ == "__main__":
