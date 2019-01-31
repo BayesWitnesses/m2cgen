@@ -12,7 +12,7 @@ def test_if_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
-double score(double input[]) {
+double score(double * input) {
     double var0;
     if ((1) == (input[0])) {
         var0 = 2;
@@ -34,7 +34,7 @@ def test_bin_num_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
-double score(double input[]) {
+double score(double * input) {
     return ((input[0]) / (-2)) * (2);
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -57,7 +57,7 @@ def test_dependable_condition():
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
-double score(double input[]) {
+double score(double * input) {
     double var0;
     double var1;
     if ((1) == (1)) {
@@ -95,7 +95,7 @@ def test_nested_condition():
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
-double score(double input[]) {
+double score(double * input) {
     double var0;
     double var1;
     if ((1) == (1)) {
