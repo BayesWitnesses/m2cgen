@@ -51,6 +51,3 @@ class CCodeGenerator(CLikeCodeGenerator):
         return (
             self.vector_type if is_vector
             else self.scalar_type)
-
-    def _get_input_param_type(self, is_vector):
-        return self._get_var_type(is_vector)
