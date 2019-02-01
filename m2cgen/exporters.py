@@ -25,6 +25,11 @@ def export_to_python(model, indent=4):
     return _export(model, interpreter)
 
 
+def export_to_c(model, indent=4):
+    interpreter = interpreters.CInterpreter(indent=indent)
+    return _export(model, interpreter)
+
+
 def _export(model, interpreter):
     assembler_cls = _get_assembler_cls(model)
     model_ast = assembler_cls(model).assemble()
