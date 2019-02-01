@@ -13,7 +13,7 @@ def execute_test(exec_args):
     generated_code = result.stdout.read().decode("utf-8")
 
     code = generated_code + """
-        result = score([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])"""
+result = score([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])"""
     context = {}
     exec(code, context)
 

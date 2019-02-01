@@ -6,8 +6,11 @@ from _pytest import capture
 from m2cgen import cli
 
 
-def test_file_as_input():
-    args = ["--language", "python", "linear_dump.pickle"]
+def test_file_as_input(tmp_path):
+    f = tmp_path / "hello.txt"
+    f.write_text("123")
+
+    args = ["--language", "python", str(f)]
     infile, language = cli.parse_args(args)
 
     assert language == "python"
