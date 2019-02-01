@@ -7,7 +7,7 @@ from tests import utils
 
 expected_result = """
 def  score(input):
-    return (((((((((((((36.00681073365041) + ((input[0]) * (-0.10081655845910313))) + ((input[1]) * (0.044035569560799306))) + ((input[2]) * (0.03080443421334909))) + ((input[3]) * (2.932673609467255))) + ((input[4]) * (-17.093360132149055))) + ((input[5]) * (3.745068220863573))) + ((input[6]) * (0.003377435369856338))) + ((input[7]) * (-1.4348015681660935))) + ((input[8]) * (0.2901581119428262))) + ((input[9]) * (-0.011463487956327553))) + ((input[10]) * (-0.9500012437313172))) + ((input[11]) * (0.010374330909981442))) + ((input[12]) * (-0.5713890449294712))
+    return (((((((((((((36.0068107336504) + ((input[0]) * (-0.10081655845910333))) + ((input[1]) * (0.044035569560795046))) + ((input[2]) * (0.030804434213338117))) + ((input[3]) * (2.9326736094672468))) + ((input[4]) * (-17.09336013214845))) + ((input[5]) * (3.745068220863558))) + ((input[6]) * (0.0033774353698544472))) + ((input[7]) * (-1.4348015681660797))) + ((input[8]) * (0.29015811194282753))) + ((input[9]) * (-0.011463487956327451))) + ((input[10]) * (-0.950001243731317))) + ((input[11]) * (0.010374330909981468))) + ((input[12]) * (-0.5713890449294746))
 """.strip()  # NOQA
 
 
@@ -31,18 +31,20 @@ def _prepare_pickled_model(tmp_path):
 
 def test_positional_arg(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
-    exec_args = ["gen", "--language", "python", str(pickled_model_path)]
+    exec_args = ["m2cgen", "--language", "python", str(pickled_model_path)]
     execute_test(exec_args)
 
 
 def test_override_input(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
-    exec_args = ["gen", "--language", "python", "<", str(pickled_model_path)]
+    exec_args = [
+        "m2cgen", "--language", "python", "<", str(pickled_model_path)]
     execute_test(exec_args)
 
 
 def test_piped(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
     exec_args = [
-        "cat", str(pickled_model_path), " | ", "gen", "--language", "python"]
+        "cat", str(pickled_model_path), " | ", "m2cgen", "--language",
+        "python"]
     execute_test(exec_args)
