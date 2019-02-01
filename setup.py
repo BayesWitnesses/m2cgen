@@ -18,6 +18,11 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
     ],
     python_requires='!=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
+    install_requires=[
+        "numpy",
+        "scipy",
+        "scikit-learn",
+    ],
     entry_points={
         'console_scripts': [
             'gen = m2cgen.cli.gen:main',
