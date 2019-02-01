@@ -61,6 +61,7 @@ class VectorVal(VectorExpr):
             "All expressions for VectorVal must be scalar")
 
         self.exprs = exprs
+        self.size = len(exprs)
 
     def __str__(self):
         args = ",".join([str(e) for e in self.exprs])
@@ -76,6 +77,7 @@ class BinVectorExpr(VectorExpr):
         self.left = left
         self.right = right
         self.op = op
+        self.size = left.size
 
     def __str__(self):
         args = ",".join([str(self.left), str(self.right), self.op.name])
@@ -91,6 +93,7 @@ class BinVectorNumExpr(VectorExpr):
         self.left = left
         self.right = right
         self.op = op
+        self.size = left.size
 
     def __str__(self):
         args = ",".join([str(self.left), str(self.right), self.op.name])
@@ -129,7 +132,7 @@ class CompExpr(BoolExpr):
 # Control Expressions.
 
 class CtrlExpr(Expr):
-    pass
+    size = None
 
 
 class IfExpr(CtrlExpr):
@@ -142,6 +145,8 @@ class IfExpr(CtrlExpr):
         self.orelse = orelse
 
         self.is_vector_output = body.is_vector_output
+        if self.is_vector_output:
+            self.size = body.size
 
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), str(self.orelse)])
@@ -152,6 +157,8 @@ class TransparentExpr(CtrlExpr):
     def __init__(self, expr):
         self.expr = expr
         self.is_vector_output = expr.is_vector_output
+        if self.is_vector_output:
+            self.size = expr.size
 
 
 class SubroutineExpr(TransparentExpr):

@@ -26,9 +26,6 @@ class BaseCodeGenerator:
     tpl_block_termination = NotImplemented
     tpl_var_assignment = NotImplemented
 
-    scalar_output_type = NotImplemented
-    vector_output_type = NotImplemented
-
     def __init__(self, indent=4):
         self._indent = indent
         self.reset_state()
@@ -72,9 +69,9 @@ class BaseCodeGenerator:
     def add_return_statement(self, value):
         self.add_code_line(self.tpl_return_statement(value=value))
 
-    def add_var_declaration(self, is_vector_type=False):
+    def add_var_declaration(self, expr):
         var_name = self.get_var_name()
-        var_type = self._get_var_type(is_vector_type)
+        var_type = self._get_var_declare_type(expr.is_vector_output)
         self.add_code_line(
             self.tpl_var_declaration(
                 var_type=var_type, var_name=var_name))
@@ -110,12 +107,8 @@ class BaseCodeGenerator:
         return self.tpl_array_index_access(
             array_name=array_name, index=index)
 
-    # Helpers
-
-    def _get_var_type(self, is_vector):
-        return (
-            self.vector_output_type if is_vector
-            else self.scalar_output_type)
+    def _get_var_declare_type(self, expr):
+        return NotImplemented
 
 
 class CLikeCodeGenerator(BaseCodeGenerator):
@@ -133,6 +126,3 @@ class CLikeCodeGenerator(BaseCodeGenerator):
     tpl_else_statement = CodeTemplate("} else {")
     tpl_block_termination = CodeTemplate("}")
     tpl_var_assignment = CodeTemplate("${var_name} = ${value};")
-
-    scalar_output_type = "double"
-    vector_output_type = "double[]"

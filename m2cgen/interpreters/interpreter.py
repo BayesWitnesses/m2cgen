@@ -18,8 +18,7 @@ class BaseInterpreter:
         if if_var_name is not None:
             var_name = if_var_name
         else:
-            var_name = self._cg.add_var_declaration(
-                is_vector_type=expr.is_vector_output)
+            var_name = self._cg.add_var_declaration(expr)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):

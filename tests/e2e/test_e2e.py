@@ -13,6 +13,7 @@ RANDOM_SEED = 1234
 # pytest marks
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
+C = pytest.mark.c
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -33,6 +34,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
 
 
 @pytest.mark.parametrize("estimator,executor_cls,model_trainer", [
+    # Java
     pytest.param(
             linear_model.LinearRegression(),
             executors.JavaExecutor,
@@ -76,6 +78,8 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             utils.train_model_regression,
             marks=[JAVA, REGRESSION],
     ),
+
+    # Python
     pytest.param(
             ensemble.RandomForestClassifier(n_estimators=10,
                                             random_state=RANDOM_SEED),
@@ -146,6 +150,33 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             executors.PythonExecutor,
             utils.train_model_classification,
             marks=[PYTHON, CLASSIFICATION],
+    ),
+
+    # C
+    pytest.param(
+            linear_model.LinearRegression(),
+            executors.CExecutor,
+            utils.train_model_regression,
+            marks=[C, REGRESSION],
+    ),
+    pytest.param(
+            tree.DecisionTreeRegressor(random_state=RANDOM_SEED),
+            executors.CExecutor,
+            utils.train_model_regression,
+            marks=[C, REGRESSION],
+    ),
+    pytest.param(
+            ensemble.RandomForestRegressor(n_estimators=10,
+                                           random_state=RANDOM_SEED),
+            executors.CExecutor,
+            utils.train_model_regression,
+            marks=[C, REGRESSION],
+    ),
+    pytest.param(
+            linear_model.LogisticRegression(),
+            executors.CExecutor,
+            utils.train_model_classification_binary,
+            marks=[C, CLASSIFICATION],
     ),
 ])
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
