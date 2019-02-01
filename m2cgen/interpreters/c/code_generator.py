@@ -5,7 +5,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
 
 ARRAY_ASSIGNMENT_FUNC = """
-void assignArray(double *output, double input[], int size) {
+void assign_array(double *output, double input[], int size) {
     for(int i = 0; i < size; ++i)
         output[i] = input[i];
 }
@@ -67,7 +67,7 @@ class CCodeGenerator(CLikeCodeGenerator):
         temp_var_name = self.get_var_name()
         self.add_code_line("double {}[{}] = {};".format(
             temp_var_name, expr.size, value))
-        self.add_code_line("assignArray({}, {}, {});".format(
+        self.add_code_line("assign_array({}, {}, {});".format(
             var_name, temp_var_name, expr.size))
 
     def vector_init(self, values):

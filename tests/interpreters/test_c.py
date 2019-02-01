@@ -135,7 +135,7 @@ def test_multi_output():
             ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
 
     expected_code = """
-void assignArray(double *output, double input[], int size) {
+void assign_array(double *output, double input[], int size) {
     for(int i = 0; i < size; ++i)
         output[i] = input[i];
 }
@@ -143,10 +143,10 @@ double * score(double * input) {
     static double var0[2];
     if ((1) == (1)) {
         double var1[2] = {1, 2};
-        assignArray(var0, var1, 2);
+        assign_array(var0, var1, 2);
     } else {
         double var2[2] = {3, 4};
-        assignArray(var0, var2, 2);
+        assign_array(var0, var2, 2);
     }
     return var0;
 }"""
