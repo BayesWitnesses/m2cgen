@@ -39,10 +39,8 @@ def test_language_is_required(mocked_exit):
     with mock.patch.object(sys, "stderr", new=mocked_stderr):
         cli.parse_args([])
 
-    expected_error = (
-        "usage: pytest [-h] --language {python,java} [infile]\npytest: error: "
-        "the following arguments are required: --language\n")
-
-    assert mocked_stderr.getvalue() == expected_error
+    assert (
+        "the following arguments are required: --language" in
+        mocked_stderr.getvalue())
 
     mocked_exit.assert_called_with(2)
