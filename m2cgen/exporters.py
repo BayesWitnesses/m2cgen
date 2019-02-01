@@ -1,3 +1,8 @@
+from sklearn import linear_model, ensemble
+from sklearn.ensemble import forest
+from sklearn.linear_model.base import LinearModel
+from sklearn.tree import tree
+
 from m2cgen import assemblers
 from m2cgen import interpreters
 
@@ -10,6 +15,8 @@ SUPPORTED_MODELS = {
     "RandomForestRegressor": assemblers.RandomForestModelAssembler,
     "RandomForestClassifier": assemblers.RandomForestModelAssembler,
 }
+
+UNSUPPORTED_MODELS = [ensemble.RandomTreesEmbedding]
 
 
 def export_to_java(model, package_name=None, model_name="Model", indent=4):
@@ -37,11 +44,20 @@ def _export(model, interpreter):
 
 
 def _get_assembler_cls(model):
-    model_name = type(model).__name__
-    assembler_cls = SUPPORTED_MODELS.get(model_name)
+    if isinstance(model, LinearModel):
+        return assemblers.LinearModelAssembler
 
-    if not assembler_cls:
-        raise NotImplementedError(
-            "Model {} is not supported".format(model_name))
+    if isinstance(model, linear_model.LogisticRegression):
+        return assemblers.LinearModelAssembler
 
-    return assembler_cls
+    if isinstance(model, tree.BaseDecisionTree):
+        return assemblers.TreeModelAssembler
+
+    if isinstance(model, forest.ForestRegressor):
+        return assemblers.RandomForestModelAssembler
+
+    if isinstance(model, forest.ForestClassifier):
+        return assemblers.RandomForestModelAssembler
+
+    raise NotImplementedError(
+        "Model {} is not supported".format(model.__name__))
