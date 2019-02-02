@@ -60,6 +60,9 @@ random_forest_classifier = ensemble.RandomForestClassifier(
         (executors.PythonExecutor, PYTHON),
         (executors.JavaExecutor, JAVA),
     ],
+
+    # These models will be executed against each language specified in the
+    # previous list
     [
         # Linear Regression/Classification
         regression(linear_regressor),
