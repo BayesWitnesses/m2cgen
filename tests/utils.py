@@ -98,8 +98,8 @@ def tmp_dir():
         shutil.rmtree(dirpath)
 
 
-def cartesian_e2e_param(executors_with_marks, models_with_trainers_with_marks,
-                        *additional_params):
+def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
+                         *additional_params):
     result_params = list(additional_params)
 
     # Specifying None for additional parameters makes pytest to generate

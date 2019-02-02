@@ -18,7 +18,7 @@ REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
 
-@utils.cartesian_e2e_param(
+@utils.cartesian_e2e_params(
     # These are languages which support all models.
     [
         (executors.PythonExecutor, PYTHON),
