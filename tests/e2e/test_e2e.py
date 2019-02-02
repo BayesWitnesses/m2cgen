@@ -106,6 +106,9 @@ random_forest_classifier = ensemble.RandomForestClassifier(
             n_estimators=10, random_state=RANDOM_SEED)),
     ],
 
+    # Following is the list of extra tests for languages/models which are
+    # partially supported yet.
+
     # C
     pytest.param(
         linear_regressor,
