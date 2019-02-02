@@ -1,9 +1,10 @@
-import pickle
 import io
-from unittest import mock
+import pickle
 import sys
+
 from _pytest import capture
 from sklearn import linear_model
+from unittest import mock
 
 from m2cgen import cli
 from tests import utils
