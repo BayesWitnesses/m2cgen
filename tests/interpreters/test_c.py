@@ -181,3 +181,63 @@ void score(double * input, double * output) {
 }"""
     interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_bin_vector_expr():
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.ADD)
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+void addVectors(double *v1, double *v2, int size, double *result) {
+    for(int i = 0; i < size; ++i)
+        result[i] = v1[i] + v2[i];
+}
+void mulVectorNumber(double *v1, double num, int size, double *result) {
+    for(int i = 0; i < size; ++i)
+        result[i] = v1[i] * num;
+}
+
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
+void score(double * input, double * output) {
+    double var0[2];
+    addVectors((double[]){1, 2}, (double[]){3, 4}, 2, var0);
+    assign_array(var0, output, 2);
+}"""
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_bin_vector_num_expr():
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.MUL)
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+void addVectors(double *v1, double *v2, int size, double *result) {
+    for(int i = 0; i < size; ++i)
+        result[i] = v1[i] + v2[i];
+}
+void mulVectorNumber(double *v1, double num, int size, double *result) {
+    for(int i = 0; i < size; ++i)
+        result[i] = v1[i] * num;
+}
+
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
+void score(double * input, double * output) {
+    double var0[2];
+    mulVectorNumber((double[]){1, 2}, 1, 2, var0);
+    assign_array(var0, output, 2);
+}"""
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)

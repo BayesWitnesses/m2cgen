@@ -65,6 +65,12 @@ class BaseCodeGenerator:
     def prepend_code_line(self, line):
         self.code = line + "\n" + self.code
 
+    def prepend_code_lines(self, lines):
+        if isinstance(lines, str):
+            lines = lines.strip().split("\n")
+        for l in lines[::-1]:
+            self.prepend_code_line(l)
+
     # Following statements compute expressions using templates AND add
     # it to the result.
 
@@ -128,3 +134,6 @@ class CLikeCodeGenerator(BaseCodeGenerator):
     tpl_else_statement = CodeTemplate("} else {")
     tpl_block_termination = CodeTemplate("}")
     tpl_var_assignment = CodeTemplate("${var_name} = ${value};")
+
+    def function_invocation(self, function_name, *args):
+        return function_name + "(" + ", ".join(map(str, args)) + ")"

@@ -2,7 +2,7 @@ import os
 
 from m2cgen import ast
 from m2cgen.interpreters import utils
-from m2cgen.interpreters.interpreter import BaseInterpreter
+from m2cgen.interpreters.interpreter import InterpreterWithLinearAlgebra
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 
 from collections import namedtuple
@@ -11,9 +11,15 @@ from collections import namedtuple
 Subroutine = namedtuple('Subroutine', ['name', 'expr'])
 
 
-class JavaInterpreter(BaseInterpreter):
+class JavaInterpreter(InterpreterWithLinearAlgebra):
 
-    with_linear_algebra = False
+    supported_bin_vector_ops = {
+        ast.BinNumOpType.ADD: "addVectors",
+    }
+
+    supported_bin_vector_num_ops = {
+        ast.BinNumOpType.MUL: "mulVectorNumber",
+    }
 
     def __init__(self, package_name=None, model_name="Model", indent=4,
                  *args, **kwargs):
@@ -79,28 +85,3 @@ class JavaInterpreter(BaseInterpreter):
         subroutine_name = "subroutine" + str(self._subroutine_idx)
         self._subroutine_idx += 1
         return subroutine_name
-
-    # Methods to support linear algebra
-
-    def interpret_bin_vector_expr(self, expr):
-        assert expr.op == ast.BinNumOpType.ADD, (
-            "Only addition is supported, received: {}".format(expr.op.name))
-
-        self.with_linear_algebra = True
-
-        return self._cg.method_invocation(
-            "addVectors",
-            self._do_interpret(expr.left),
-            self._do_interpret(expr.right))
-
-    def interpret_bin_vector_num_expr(self, expr):
-        assert expr.op == ast.BinNumOpType.MUL, (
-            "Only multiplication is supported, received: {}".format(
-                expr.op.name))
-
-        self.with_linear_algebra = True
-
-        return self._cg.method_invocation(
-            "mulVectorNumber",
-            self._do_interpret(expr.left),
-            self._do_interpret(expr.right))
