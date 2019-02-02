@@ -10,30 +10,51 @@ from m2cgen import cli
 from tests import utils
 
 
+def _get_mock_args(indent=4, package_name=None, class_name=None, infile=None,
+                   language=None):
+    return mock.MagicMock(
+        indent=indent, package_name=package_name, class_name=class_name,
+        infile=infile, language=language)
+
+
+def _get_pickled_trained_model():
+    estimator = linear_model.LinearRegression()
+    utils.train_model_regression(estimator)
+
+    infile = io.BytesIO()
+    pickle.dump(estimator, infile)
+    infile.seek(0)
+
+    return infile
+
+
 def test_file_as_input(tmp_path):
     f = tmp_path / "hello.txt"
     f.write_text("123")
 
-    args = ["--language", "python", str(f)]
-    infile, language = cli.parse_args(args)
+    input_args = ["-l", "python", str(f)]
+    args = cli.parse_args(input_args)
 
-    assert language == "python"
+    assert args.language == "python"
+
+    assert isinstance(args.infile, io.BufferedReader)
+    assert args.infile.name == str(f)
 
 
 def test_stdin_as_input(request):
-    args = ["--language", "python"]
-    infile, language = cli.parse_args(args)
+    input_args = ["--language", "python"]
+    args = cli.parse_args(input_args)
 
-    assert language == "python"
+    assert args.language == "python"
 
     # Since pytest by default captures stdin, but sometimes we need to disable
     # it (primarily for using (i)pdb), we have 2 different strategies to verify
     # that stdin was returned as infile.
     capturemanager = request.config.pluginmanager.getplugin("capturemanager")
     if capturemanager.is_globally_capturing():
-        assert isinstance(infile, capture.DontReadFromInput)
+        assert isinstance(args.infile, capture.DontReadFromInput)
     else:
-        assert infile.name == "<stdin>"
+        assert args.infile.name == "<stdin>"
 
 
 @mock.patch.object(sys, "exit")
@@ -51,18 +72,46 @@ def test_language_is_required(mocked_exit):
 
 
 def test_generate_code():
-    expected_code = """
-def  score(input):
-    return (((((((((((((36.0068107336504) + ((input[0]) * (-0.10081655845910333))) + ((input[1]) * (0.044035569560795046))) + ((input[2]) * (0.030804434213338117))) + ((input[3]) * (2.9326736094672468))) + ((input[4]) * (-17.09336013214845))) + ((input[5]) * (3.745068220863558))) + ((input[6]) * (0.0033774353698544472))) + ((input[7]) * (-1.4348015681660797))) + ((input[8]) * (0.29015811194282753))) + ((input[9]) * (-0.011463487956327451))) + ((input[10]) * (-0.950001243731317))) + ((input[11]) * (0.010374330909981468))) + ((input[12]) * (-0.5713890449294746))
-"""  # NOQA
+    infile = _get_pickled_trained_model()
 
-    estimator = linear_model.LinearRegression()
-    utils.train_model_regression(estimator)
+    mock_args = _get_mock_args(infile=infile, language="python")
+    generated_code = cli.generate_code(mock_args)
 
-    infile = io.BytesIO()
+    utils.verify_python_model_is_expected(
+        generated_code,
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        expected_output=-41.89077994476439)
 
-    pickle.dump(estimator, infile)
-    infile.seek(0)
 
-    actual_code = cli.generate_code(infile, "python")
-    assert actual_code.strip() == expected_code.strip()
+def test_class_name():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="java", class_name="TestClassName")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert generated_code.startswith("public class TestClassName")
+
+
+def test_package_name():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="java", package_name="foo.bar.baz")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert generated_code.startswith("package foo.bar.baz;")
+
+
+def test_unsupported_args_are_ignored():
+    infile = _get_pickled_trained_model()
+
+    mock_args = _get_mock_args(
+        infile=infile, language="python", class_name="TestClassName",
+        package_name="foo.bar.baz")
+    generated_code = cli.generate_code(mock_args)
+
+    utils.verify_python_model_is_expected(
+        generated_code,
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        expected_output=-41.89077994476439)

@@ -1,4 +1,3 @@
-import numpy as np
 import pickle
 import subprocess
 
@@ -12,12 +11,10 @@ def execute_test(exec_args):
         " ".join(exec_args), stdout=subprocess.PIPE, shell=True)
     generated_code = result.stdout.read().decode("utf-8")
 
-    code = generated_code + """
-result = score([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])"""
-    context = {}
-    exec(code, context)
-
-    assert np.isclose(context["result"], -41.89077994476439)
+    utils.verify_python_model_is_expected(
+        generated_code,
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        expected_output=-41.89077994476439)
 
 
 def _prepare_pickled_model(tmp_path):

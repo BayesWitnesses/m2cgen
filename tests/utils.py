@@ -91,3 +91,14 @@ def tmp_dir():
         yield dirpath
     finally:
         shutil.rmtree(dirpath)
+
+
+def verify_python_model_is_expected(model_code, input, expected_output):
+    input_str = "[" + ", ".join(map(str, input)) + "]"
+    code = model_code + """
+result = score({})""".format(input_str)
+
+    context = {}
+    exec(code, context)
+
+    assert np.isclose(context["result"], expected_output)

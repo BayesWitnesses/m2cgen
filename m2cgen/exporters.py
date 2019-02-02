@@ -12,10 +12,10 @@ SUPPORTED_MODELS = {
 }
 
 
-def export_to_java(model, package_name=None, model_name="Model", indent=4):
+def export_to_java(model, package_name=None, class_name="Model", indent=4):
     interpreter = interpreters.JavaInterpreter(
         package_name=package_name,
-        model_name=model_name,
+        class_name=class_name,
         indent=indent)
     return _export(model, interpreter)
 
