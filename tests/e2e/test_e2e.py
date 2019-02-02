@@ -18,66 +18,65 @@ REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
 
+# Set of helper functions to make parametrization less verbose.
+def regression(model):
+    return (
+        model,
+        utils.train_model_regression,
+        REGRESSION,
+    )
+
+
+def classification(model):
+    return (
+        model,
+        utils.train_model_classification,
+        CLASSIFICATION,
+    )
+
+
+def binary_classification(model):
+    return (
+        model,
+        utils.train_model_classification_binary,
+        CLASSIFICATION,
+    )
+
+
+linear_regressor = linear_model.LinearRegression()
+logistic_regressor = linear_model.LogisticRegression()
+decision_tree_regressor = tree.DecisionTreeRegressor()
+decision_tree_classifier = tree.DecisionTreeClassifier(
+    random_state=RANDOM_SEED)
+random_forest_regressor = ensemble.RandomForestRegressor(
+    n_estimators=10, random_state=RANDOM_SEED)
+random_forest_classifier = ensemble.RandomForestClassifier(
+    n_estimators=10, random_state=RANDOM_SEED)
+
+
 @utils.cartesian_e2e_params(
-    # These are languages which support all models.
+    # These are the languages which support all models.
     [
         (executors.PythonExecutor, PYTHON),
         (executors.JavaExecutor, JAVA),
     ],
     [
         # Linear Regression/Classification
-        (
-            linear_model.LinearRegression(),
-            utils.train_model_regression,
-            REGRESSION,
-        ),
-        (
-            linear_model.LogisticRegression(),
-            utils.train_model_classification_binary,
-            CLASSIFICATION,
-        ),
-        (
-            linear_model.LogisticRegression(),
-            utils.train_model_classification,
-            CLASSIFICATION,
-        ),
+        regression(linear_regressor),
+        classification(linear_model.LogisticRegression()),
+        binary_classification(linear_model.LogisticRegression()),
+
 
         # Decision trees
-        (
-            tree.DecisionTreeRegressor(),
-            utils.train_model_regression,
-            REGRESSION,
-        ),
-        (
-            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
-            utils.train_model_classification,
-            CLASSIFICATION,
-        ),
-        (
-            tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
-            utils.train_model_classification_binary,
-            CLASSIFICATION,
-        ),
+        regression(decision_tree_regressor),
+        classification(decision_tree_classifier),
+        binary_classification(decision_tree_classifier),
+
 
         # Random forest
-        (
-            ensemble.RandomForestRegressor(n_estimators=10,
-                                           random_state=RANDOM_SEED),
-            utils.train_model_regression,
-            REGRESSION,
-        ),
-        (
-            ensemble.RandomForestClassifier(n_estimators=10,
-                                            random_state=RANDOM_SEED),
-            utils.train_model_classification,
-            CLASSIFICATION,
-        ),
-        (
-            ensemble.RandomForestClassifier(n_estimators=10,
-                                            random_state=RANDOM_SEED),
-            utils.train_model_classification_binary,
-            CLASSIFICATION,
-        ),
+        regression(random_forest_regressor),
+        classification(random_forest_classifier),
+        binary_classification(random_forest_classifier),
     ],
 
     # C
@@ -88,14 +87,13 @@ CLASSIFICATION = pytest.mark.clf
         marks=[C, REGRESSION],
     ),
     pytest.param(
-        tree.DecisionTreeRegressor(random_state=RANDOM_SEED),
+        decision_tree_regressor,
         executors.CExecutor,
         utils.train_model_regression,
         marks=[C, REGRESSION],
     ),
     pytest.param(
-        ensemble.RandomForestRegressor(n_estimators=10,
-                                       random_state=RANDOM_SEED),
+        random_forest_regressor,
         executors.CExecutor,
         utils.train_model_regression,
         marks=[C, REGRESSION],
