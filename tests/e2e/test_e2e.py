@@ -107,7 +107,7 @@ random_forest_classifier = ensemble.RandomForestClassifier(
     ],
 
     # Following is the list of extra tests for languages/models which are
-    # partially supported yet.
+    # not fully supported yet.
 
     # C
     pytest.param(
