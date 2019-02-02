@@ -67,8 +67,8 @@ random_forest_classifier = ensemble.RandomForestClassifier(
     [
         # Linear Regression/Classification
         regression(linear_regressor),
-        classification(linear_model.LogisticRegression()),
-        binary_classification(linear_model.LogisticRegression()),
+        classification(logistic_regressor),
+        binary_classification(logistic_regressor),
 
 
         # Decision trees
@@ -85,7 +85,7 @@ random_forest_classifier = ensemble.RandomForestClassifier(
 
     # C
     pytest.param(
-        linear_model.LinearRegression(),
+        linear_regressor,
         executors.CExecutor,
         utils.train_model_regression,
         marks=[C, REGRESSION],
@@ -103,7 +103,7 @@ random_forest_classifier = ensemble.RandomForestClassifier(
         marks=[C, REGRESSION],
     ),
     pytest.param(
-        linear_model.LogisticRegression(),
+        linear_regressor,
         executors.CExecutor,
         utils.train_model_classification_binary,
         marks=[C, CLASSIFICATION],
