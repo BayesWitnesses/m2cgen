@@ -65,22 +65,45 @@ random_forest_classifier = ensemble.RandomForestClassifier(
     # These models will be executed against each language specified in the
     # previous list
     [
-        # Linear Regression/Classification
+        # Linear Regression
         regression(linear_regressor),
+        regression(linear_model.HuberRegressor()),
+        regression(linear_model.ElasticNet()),
+        regression(linear_model.ElasticNetCV()),
+        regression(linear_model.TheilSenRegressor()),
+        regression(linear_model.Lars()),
+        regression(linear_model.LarsCV()),
+        regression(linear_model.Lasso()),
+        regression(linear_model.LassoCV()),
+        regression(linear_model.LassoLars()),
+        regression(linear_model.LassoLarsIC()),
+
+        # Logistic Regression
         classification(logistic_regressor),
         binary_classification(logistic_regressor),
-
+        classification(linear_model.LogisticRegressionCV()),
+        binary_classification(linear_model.LogisticRegressionCV()),
 
         # Decision trees
         regression(decision_tree_regressor),
         classification(decision_tree_classifier),
         binary_classification(decision_tree_classifier),
 
+        regression(tree.ExtraTreeRegressor()),
+        classification(tree.ExtraTreeClassifier()),
+        binary_classification(tree.ExtraTreeClassifier()),
 
         # Random forest
         regression(random_forest_regressor),
         classification(random_forest_classifier),
         binary_classification(random_forest_classifier),
+
+        regression(ensemble.ExtraTreesRegressor(
+            n_estimators=10, random_state=RANDOM_SEED)),
+        classification(ensemble.ExtraTreesClassifier(
+            n_estimators=10, random_state=RANDOM_SEED)),
+        binary_classification(ensemble.ExtraTreesClassifier(
+            n_estimators=10, random_state=RANDOM_SEED)),
     ],
 
     # C

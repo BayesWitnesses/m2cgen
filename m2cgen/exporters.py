@@ -3,12 +3,34 @@ from m2cgen import interpreters
 
 
 SUPPORTED_MODELS = {
+    # Linear Regressors
     "LinearRegression": assemblers.LinearModelAssembler,
+    "HuberRegressor": assemblers.LinearModelAssembler,
+    "ElasticNet": assemblers.LinearModelAssembler,
+    "ElasticNetCV": assemblers.LinearModelAssembler,
+    "TheilSenRegressor": assemblers.LinearModelAssembler,
+    "Lars": assemblers.LinearModelAssembler,
+    "LarsCV": assemblers.LinearModelAssembler,
+    "Lasso": assemblers.LinearModelAssembler,
+    "LassoCV": assemblers.LinearModelAssembler,
+    "LassoLars": assemblers.LinearModelAssembler,
+    "LassoLarsIC": assemblers.LinearModelAssembler,
+
+    # Logistic Regressors
     "LogisticRegression": assemblers.LinearModelAssembler,
+    "LogisticRegressionCV": assemblers.LinearModelAssembler,
+
+    # Decision trees
     "DecisionTreeRegressor": assemblers.TreeModelAssembler,
     "DecisionTreeClassifier": assemblers.TreeModelAssembler,
+    "ExtraTreeRegressor": assemblers.TreeModelAssembler,
+    "ExtraTreeClassifier": assemblers.TreeModelAssembler,
+
+    # Ensembles
     "RandomForestRegressor": assemblers.RandomForestModelAssembler,
     "RandomForestClassifier": assemblers.RandomForestModelAssembler,
+    "ExtraTreesRegressor": assemblers.RandomForestModelAssembler,
+    "ExtraTreesClassifier": assemblers.RandomForestModelAssembler,
 }
 
 

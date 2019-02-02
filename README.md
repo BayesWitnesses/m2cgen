@@ -26,11 +26,6 @@ m2cgen (Model 2 Code Generator) is a lightweight library which provides an easy 
 - LassoCV
 - LassoLars
 - LassoLarsIC
-- MultiTaskElasticNetCV (?!?)
-- MultiTaskLassoCV (?!?)
-- MultiTaskElasticNet (?!?)
-- MultiTaskLasso (?!?)
-
 
 ### Logistic Regressors
 - LogisticRegression
