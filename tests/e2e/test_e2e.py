@@ -148,7 +148,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             marks=[PYTHON, CLASSIFICATION],
     ),
     pytest.param(
-            ensemble.RandomForestClassifier(n_estimators=10, random_state=4),
+            ensemble.RandomForestClassifier(n_estimators=3, random_state=4),
             executors.JavaExecutor,
             utils.train_model_classification,
             marks=[PYTHON, CLASSIFICATION, pytest.mark.failing],
