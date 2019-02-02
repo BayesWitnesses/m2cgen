@@ -29,7 +29,8 @@ EXECUTE_AND_PRINT_SCALAR = """
 """
 
 EXECUTE_AND_PRINT_VECTOR_TPL = """
-    double *result = score(input);
+    double result[2];
+    score(input, result);
 
     for (int i = 0; i < ${size}; ++i) {
         printf("%f ", *(result+i));

@@ -11,13 +11,24 @@ class CInterpreter(BaseInterpreter):
     def interpret(self, expr):
         self._cg.reset_state()
 
+        args = [(True, self._feature_array_name)]
+
+        # C doesn't allow returning vectors, so if model returns vector we will
+        # have additional vector argument which we will populate at the end.
+        if expr.is_vector_output:
+            args += [(True, "output")]
+
         with self._cg.function_definition(
                 name="score",
-                args=[(True, self._feature_array_name)],
-                is_vector_output=expr.is_vector_output):
-            last_result = self._do_interpret(expr)
-            self._cg.add_return_statement(last_result)
+                args=args,
+                is_scalar_output=not expr.is_vector_output):
 
-        self._cg.finalize()
+            last_result = self._do_interpret(expr)
+
+            if expr.is_vector_output:
+                self._cg.add_assign_array_statement(
+                    last_result, "output", expr.size)
+            else:
+                self._cg.add_return_statement(last_result)
 
         return self._cg.code

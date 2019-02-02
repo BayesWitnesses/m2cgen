@@ -182,7 +182,7 @@ def exec_e2e_test(estimator, executor_cls, model_trainer, is_fast):
             tree.DecisionTreeClassifier(random_state=RANDOM_SEED),
             executors.CExecutor,
             utils.train_model_classification,
-            marks=[C, CLASSIFICATION],
+            marks=[C, CLASSIFICATION, pytest.mark.qwerty],
     ),
     pytest.param(
             tree.DecisionTreeClassifier(random_state=RANDOM_SEED),

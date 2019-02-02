@@ -16,6 +16,8 @@ class CodeTemplate:
 
 class BaseCodeGenerator:
 
+    initial_code = ""
+
     tpl_num_value = NotImplemented
     tpl_infix_expression = NotImplemented
     tpl_var_declaration = NotImplemented
@@ -33,7 +35,7 @@ class BaseCodeGenerator:
     def reset_state(self):
         self._current_indent = 0
         self._var_idx = 0
-        self.code = ""
+        self.code = self.initial_code
 
     def get_var_name(self):
         var_name = "var" + str(self._var_idx)

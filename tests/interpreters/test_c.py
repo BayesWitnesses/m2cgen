@@ -12,6 +12,10 @@ def test_if_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
 double score(double * input) {
     double var0;
     if ((1) == (input[0])) {
@@ -34,6 +38,10 @@ def test_bin_num_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
 double score(double * input) {
     return ((input[0]) / (-2)) * (2);
 }"""
@@ -57,6 +65,10 @@ def test_dependable_condition():
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
 double score(double * input) {
     double var0;
     double var1;
@@ -95,6 +107,10 @@ def test_nested_condition():
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
 double score(double * input) {
     double var0;
     double var1;
@@ -124,6 +140,21 @@ double score(double * input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_raw_array():
+    expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
+
+    expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
+void score(double * input, double * output) {
+    assign_array((double[]){3, 4}, output, 2);
+}"""
+    interpreter = interpreters.CInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_multi_output():
     expr = ast.SubroutineExpr(
         ast.IfExpr(
@@ -135,20 +166,18 @@ def test_multi_output():
             ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
 
     expected_code = """
-void assign_array(double *output, double input[], int size) {
+void assign_array(double source[], double *target, int size) {
     for(int i = 0; i < size; ++i)
-        output[i] = input[i];
+        target[i] = source[i];
 }
-double * score(double * input) {
-    static double var0[2];
+void score(double * input, double * output) {
+    double var0[2];
     if ((1) == (1)) {
-        double var1[2] = {1, 2};
-        assign_array(var0, var1, 2);
+        assign_array((double[]){1, 2}, var0, 2);
     } else {
-        double var2[2] = {3, 4};
-        assign_array(var0, var2, 2);
+        assign_array((double[]){3, 4}, var0, 2);
     }
-    return var0;
+    assign_array(var0, output, 2);
 }"""
     interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
