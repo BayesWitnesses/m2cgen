@@ -56,7 +56,8 @@ class CInterpreter(InterpreterWithLinearAlgebra):
     #    stored;
     # 2. Call super method with an extra parameters which will be passed to
     #    respective linear algebra function call;
-    # 3. Add code returned from super method to the result code.
+    # 3. Add code returned from super method to the result code;
+    # 4. Return name of the variable as current result.
 
     def interpret_bin_vector_expr(self, expr):
         var_name = self._cg.get_var_name()
