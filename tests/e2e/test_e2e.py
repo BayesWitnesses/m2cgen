@@ -55,7 +55,8 @@ random_forest_classifier = ensemble.RandomForestClassifier(
 
 
 @utils.cartesian_e2e_params(
-    # These are the languages which support all models.
+    # These are the languages which support all models specified in the
+    # next list.
     [
         (executors.PythonExecutor, PYTHON),
         (executors.JavaExecutor, JAVA),
