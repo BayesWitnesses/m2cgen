@@ -1,12 +1,12 @@
 """CLI for m2cgen.
 
 Example usage:
-    ./m2c <path_to_file> --language java --class_name MyModel \
+    $ m2c <path_to_file> --language java --class_name MyModel \
         --package_name foo.bar.baz
-    ./m2c --language java < <path_to_file>
+    $ m2c --language java < <path_to_file>
 
 Model can also be piped:
-    cat <path_to_file> | m2c --language java
+    # cat <path_to_file> | m2c --language java
 
 """
 import pickle
