@@ -7,6 +7,8 @@ python:
 
 install:
   - pip install -r requirements-test.txt
+  - python setup.py install
+  - rm -rfd m2cgen/
 
 script:
   - pytest -v tests/ --cov=m2cgen/

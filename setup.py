@@ -7,9 +7,9 @@ setup(
     description="Code-generation for various ML models into native code.",
     license="MIT",
     packages=find_packages(exclude=["tests.*", "tests"]),
-    package_data={
-        "": ["linear_algebra.java", "linear_algebra.c"],
-    },
+    # package_data={
+    #     "": ["linear_algebra.java", "linear_algebra.c"],
+    # },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
