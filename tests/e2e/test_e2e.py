@@ -129,7 +129,7 @@ random_forest_classifier = ensemble.RandomForestClassifier(
         marks=[C, REGRESSION],
     ),
     pytest.param(
-        linear_regressor,
+        logistic_regressor,
         executors.CExecutor,
         utils.train_model_classification_binary,
         marks=[C, CLASSIFICATION],
