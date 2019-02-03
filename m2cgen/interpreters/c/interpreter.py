@@ -52,8 +52,8 @@ class CInterpreter(InterpreterWithLinearAlgebra):
 
     # Both methods supporting linear algebra do several things:
     #
-    # 1. Call super method with extra parameters which will produce a string
-    #    with call to respective linear algebra function;
+    # 1. Call super method with extra parameters. Super method will return a
+    #    string with a call to the respective linear algebra function;
     # 2. Add variable declaration where the result of the operation will be
     #    stored;
     # 3. Add code returned from super method to the result code;
