@@ -80,3 +80,17 @@ public class Model {
     }
 }
 ```
+
+
+## CLI
+
+There's also a CLI interface called `m2c`:
+```
+$ m2c <pickle_file> --language <language> [--indent <indent>]
+      [--class_name <class_name>] [--package_name <package_name>]
+```
+
+You can also use piping:
+```
+$ cat <pickle_file> | m2c <pickle_file> --language <language>
+```
