@@ -15,10 +15,22 @@ SUPPORTED_MODELS = {
     "LassoCV": assemblers.LinearModelAssembler,
     "LassoLars": assemblers.LinearModelAssembler,
     "LassoLarsIC": assemblers.LinearModelAssembler,
+    "OrthogonalMatchingPursuit": assemblers.LinearModelAssembler,
+    "OrthogonalMatchingPursuitCV": assemblers.LinearModelAssembler,
+    "Ridge": assemblers.LinearModelAssembler,
+    "RidgeCV": assemblers.LinearModelAssembler,
+    "BayesianRidge": assemblers.LinearModelAssembler,
+    "ARDRegression": assemblers.LinearModelAssembler,
+    "SGDRegressor": assemblers.LinearModelAssembler,
+    "PassiveAggressiveRegressor": assemblers.LinearModelAssembler,
 
     # Logistic Regressors
     "LogisticRegression": assemblers.LinearModelAssembler,
     "LogisticRegressionCV": assemblers.LinearModelAssembler,
+    "RidgeClassifier": assemblers.LinearModelAssembler,
+    "RidgeClassifierCV": assemblers.LinearModelAssembler,
+    "SGDClassifier": assemblers.LinearModelAssembler,
+    "PassiveAggressiveClassifier": assemblers.LinearModelAssembler,
 
     # Decision trees
     "DecisionTreeRegressor": assemblers.TreeModelAssembler,

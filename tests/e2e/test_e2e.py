@@ -35,14 +35,6 @@ def classification(model):
     )
 
 
-def binary_classification(model):
-    return (
-        model,
-        utils.train_model_classification_binary,
-        CLASSIFICATION,
-    )
-
-
 linear_regressor = linear_model.LinearRegression()
 logistic_regressor = linear_model.LogisticRegression()
 decision_tree_regressor = tree.DecisionTreeRegressor()
@@ -77,32 +69,36 @@ random_forest_classifier = ensemble.RandomForestClassifier(
         regression(linear_model.LassoCV()),
         regression(linear_model.LassoLars()),
         regression(linear_model.LassoLarsIC()),
+        regression(linear_model.OrthogonalMatchingPursuit()),
+        regression(linear_model.OrthogonalMatchingPursuitCV()),
+        regression(linear_model.Ridge()),
+        regression(linear_model.RidgeCV()),
+        regression(linear_model.BayesianRidge()),
+        regression(linear_model.ARDRegression()),
+        regression(linear_model.SGDRegressor()),
+        regression(linear_model.PassiveAggressiveRegressor()),
 
         # Logistic Regression
         classification(logistic_regressor),
-        binary_classification(logistic_regressor),
         classification(linear_model.LogisticRegressionCV()),
-        binary_classification(linear_model.LogisticRegressionCV()),
+        classification(linear_model.RidgeClassifier()),
+        classification(linear_model.RidgeClassifierCV()),
+        classification(linear_model.SGDClassifier()),
 
         # Decision trees
         regression(decision_tree_regressor),
         classification(decision_tree_classifier),
-        binary_classification(decision_tree_classifier),
 
         regression(tree.ExtraTreeRegressor()),
         classification(tree.ExtraTreeClassifier()),
-        binary_classification(tree.ExtraTreeClassifier()),
 
         # Random forest
         regression(random_forest_regressor),
         classification(random_forest_classifier),
-        binary_classification(random_forest_classifier),
 
         regression(ensemble.ExtraTreesRegressor(
             n_estimators=10, random_state=RANDOM_SEED)),
         classification(ensemble.ExtraTreesClassifier(
-            n_estimators=10, random_state=RANDOM_SEED)),
-        binary_classification(ensemble.ExtraTreesClassifier(
             n_estimators=10, random_state=RANDOM_SEED)),
     ],
 
