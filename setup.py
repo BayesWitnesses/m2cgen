@@ -25,7 +25,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'm2cgen = m2cgen.cli:main',
+            'm2c = m2cgen.cli:main',
         ],
     }
 )
