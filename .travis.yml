@@ -7,6 +7,10 @@ python:
 
 install:
   - pip install -r requirements-test.txt
+
+  # Since we develop a library, we want to make sure that it properly runs
+  # after installation. We already ran into an issue when some files were
+  # forgotten to be included to package_data and it was not caught by tests.
   - python setup.py install
   - rm -rfd m2cgen/
 
