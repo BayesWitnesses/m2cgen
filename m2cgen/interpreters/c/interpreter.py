@@ -52,28 +52,32 @@ class CInterpreter(InterpreterWithLinearAlgebra):
 
     # Both methods supporting linear algebra do several things:
     #
-    # 1. Add variable declaration where the result of the operation will be
+    # 1. Call super method with extra parameters which will produce a string
+    #    with call to respective linear algebra function;
+    # 2. Add variable declaration where the result of the operation will be
     #    stored;
-    # 2. Call super method with an extra parameters which will be passed to
-    #    respective linear algebra function call;
     # 3. Add code returned from super method to the result code;
     # 4. Return name of the variable as current result.
 
-    def interpret_bin_vector_expr(self, expr):
+    def interpret_bin_vector_expr(self, expr, *args):
         var_name = self._cg.get_var_name()
-        self._cg.add_code_line("double {}[{}];".format(var_name, expr.size))
 
+        # Result: string like "addVectors(v1, v2, <size>, <var_name>)"
         value = super().interpret_bin_vector_expr(expr, expr.size, var_name)
+
+        self._cg.add_code_line("double {}[{}];".format(var_name, expr.size))
         self._cg.add_code_line(value + ";")
 
         return var_name
 
-    def interpret_bin_vector_num_expr(self, expr):
+    def interpret_bin_vector_num_expr(self, expr, *args):
         var_name = self._cg.get_var_name()
-        self._cg.add_code_line("double {}[{}];".format(var_name, expr.size))
 
+        # Result: string like "mulVectorNumber(v1, num, <size>, <var_name>)"
         value = super().interpret_bin_vector_num_expr(
             expr, expr.size, var_name)
+
+        self._cg.add_code_line("double {}[{}];".format(var_name, expr.size))
         self._cg.add_code_line(value + ";")
 
         return var_name
