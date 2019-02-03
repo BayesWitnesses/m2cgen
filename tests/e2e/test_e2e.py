@@ -8,8 +8,6 @@ from tests import utils
 from tests.e2e import executors
 
 
-RANDOM_SEED = 1234
-
 # pytest marks
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
@@ -35,15 +33,25 @@ def classification(model):
     )
 
 
+def classification_binary(model):
+    return (
+        model,
+        utils.train_model_classification_binary,
+        CLASSIFICATION,
+    )
+
+
+RANDOM_SEED = 1234
+FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
+
+
+# Reusable models for e2e tests. They will be cloned on each execution.
 linear_regressor = linear_model.LinearRegression()
 logistic_regressor = linear_model.LogisticRegression()
 decision_tree_regressor = tree.DecisionTreeRegressor()
-decision_tree_classifier = tree.DecisionTreeClassifier(
-    random_state=RANDOM_SEED)
-random_forest_regressor = ensemble.RandomForestRegressor(
-    n_estimators=10, random_state=RANDOM_SEED)
-random_forest_classifier = ensemble.RandomForestClassifier(
-    n_estimators=10, random_state=RANDOM_SEED)
+decision_tree_classifier = tree.DecisionTreeClassifier()
+random_forest_regressor = ensemble.RandomForestRegressor(**FOREST_PARAMS)
+random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
 
 
 @utils.cartesian_e2e_params(
@@ -55,7 +63,7 @@ random_forest_classifier = ensemble.RandomForestClassifier(
     ],
 
     # These models will be tested against each language specified in the
-    # previous list
+    # previous list.
     [
         # Linear Regression
         regression(linear_regressor),
@@ -78,6 +86,7 @@ random_forest_classifier = ensemble.RandomForestClassifier(
         regression(linear_model.SGDRegressor()),
         regression(linear_model.PassiveAggressiveRegressor()),
 
+
         # Logistic Regression
         classification(logistic_regressor),
         classification(linear_model.LogisticRegressionCV()),
@@ -85,21 +94,33 @@ random_forest_classifier = ensemble.RandomForestClassifier(
         classification(linear_model.RidgeClassifierCV()),
         classification(linear_model.SGDClassifier()),
 
+        classification_binary(logistic_regressor),
+        classification_binary(linear_model.LogisticRegressionCV()),
+        classification_binary(linear_model.RidgeClassifier()),
+        classification_binary(linear_model.RidgeClassifierCV()),
+        classification_binary(linear_model.SGDClassifier()),
+
+
         # Decision trees
         regression(decision_tree_regressor),
-        classification(decision_tree_classifier),
-
         regression(tree.ExtraTreeRegressor()),
+
+        classification(decision_tree_classifier),
         classification(tree.ExtraTreeClassifier()),
+
+        classification_binary(decision_tree_classifier),
+        classification_binary(tree.ExtraTreeClassifier()),
+
 
         # Random forest
         regression(random_forest_regressor),
-        classification(random_forest_classifier),
+        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
 
-        regression(ensemble.ExtraTreesRegressor(
-            n_estimators=10, random_state=RANDOM_SEED)),
-        classification(ensemble.ExtraTreesClassifier(
-            n_estimators=10, random_state=RANDOM_SEED)),
+        classification(random_forest_classifier),
+        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+
+        classification_binary(random_forest_classifier),
+        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
     ],
 
     # Following is the list of extra tests for languages/models which are
