@@ -57,7 +57,7 @@ class CInterpreter(InterpreterWithLinearAlgebra):
     # 2. Add variable declaration where the result of the operation will be
     #    stored;
     # 3. Add code returned from super method to the result code;
-    # 4. Return name of the variable as current result.
+    # 4. Return name of the variable with current result.
 
     def interpret_bin_vector_expr(self, expr, *args):
         var_name = self._cg.get_var_name()
