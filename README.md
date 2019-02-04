@@ -85,7 +85,7 @@ TODO: explain the difference between regression (single value output) and classi
 `m2cgen` can be used as a CLI tool to generate code using serialized model objects (pickle protocol):
 ```
 $ m2cgen <pickle_file> --language <language> [--indent <indent>]
-      [--class_name <class_name>] [--package_name <package_name>]
+         [--class_name <class_name>] [--package_name <package_name>]
 ```
 
 Piping is also supported:
