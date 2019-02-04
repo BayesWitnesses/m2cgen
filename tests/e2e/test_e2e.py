@@ -6,7 +6,6 @@ from sklearn import ensemble
 
 from tests import utils
 from tests.e2e import executors
-import sys
 
 
 # pytest marks
@@ -171,7 +170,6 @@ random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
     ),
 )
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
-    assert False, sys.path
     X_test, y_pred_true = model_trainer(estimator)
     executor = executor_cls(estimator)
 
