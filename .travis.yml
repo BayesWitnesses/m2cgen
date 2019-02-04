@@ -9,7 +9,7 @@ install:
   - pip install -r requirements-test.txt
 
 script:
-  - pytest -v tests/ --cov=m2cgen/
+  - pytest -v tests/ --cov=m2cgen/ --durations=0
   - flake8 .
 
 after_success:
