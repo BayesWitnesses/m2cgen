@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from sklearn import linear_model
+from sklearn import linear_model, svm
 from sklearn import tree
 from sklearn import ensemble
 
@@ -42,14 +42,15 @@ def classification_binary(model):
 
 
 RANDOM_SEED = 1234
+TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 
 
 # Reusable models for e2e tests. They will be cloned on each execution.
 linear_regressor = linear_model.LinearRegression()
 logistic_regressor = linear_model.LogisticRegression()
-decision_tree_regressor = tree.DecisionTreeRegressor()
-decision_tree_classifier = tree.DecisionTreeClassifier()
+decision_tree_regressor = tree.DecisionTreeRegressor(**TREE_PARAMS)
+decision_tree_classifier = tree.DecisionTreeClassifier(**TREE_PARAMS)
 random_forest_regressor = ensemble.RandomForestRegressor(**FOREST_PARAMS)
 random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
 
@@ -65,6 +66,11 @@ random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
     # These models will be tested against each language specified in the
     # previous list.
     [
+        # SVM
+        regression(svm.LinearSVR(random_state=RANDOM_SEED)),
+        classification(svm.LinearSVC(random_state=RANDOM_SEED)),
+        classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
+
         # Linear Regression
         regression(linear_regressor),
         regression(linear_model.HuberRegressor()),
@@ -85,7 +91,6 @@ random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
         regression(linear_model.ARDRegression()),
         regression(linear_model.SGDRegressor()),
         regression(linear_model.PassiveAggressiveRegressor()),
-
 
         # Logistic Regression
         classification(logistic_regressor),
