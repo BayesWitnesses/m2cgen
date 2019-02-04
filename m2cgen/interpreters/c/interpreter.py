@@ -15,19 +15,19 @@ class CInterpreter(BaseInterpreter):
 
         # C doesn't allow returning vectors, so if model returns vector we will
         # have additional vector argument which we will populate at the end.
-        if expr.is_vector_output:
+        if expr.output_size > 1:
             args += [(True, "output")]
 
         with self._cg.function_definition(
                 name="score",
                 args=args,
-                is_scalar_output=not expr.is_vector_output):
+                is_scalar_output=expr.output_size == 1):
 
             last_result = self._do_interpret(expr)
 
-            if expr.is_vector_output:
+            if expr.output_size > 1:
                 self._cg.add_assign_array_statement(
-                    last_result, "output", expr.size)
+                    last_result, "output", expr.output_size)
             else:
                 self._cg.add_return_statement(last_result)
 

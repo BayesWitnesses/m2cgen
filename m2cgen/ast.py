@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Expr:
-    is_vector_output = False
+    output_size = 1
 
 
 class FeatureRef(Expr):
@@ -36,8 +36,8 @@ class BinNumOpType(Enum):
 
 class BinNumExpr(NumExpr):
     def __init__(self, left, right, op):
-        assert not left.is_vector_output, "Only scalars are supported"
-        assert not right.is_vector_output, "Only scalars are supported"
+        assert left.output_size == 1, "Only scalars are supported"
+        assert right.output_size == 1, "Only scalars are supported"
 
         self.left = left
         self.right = right
@@ -51,17 +51,17 @@ class BinNumExpr(NumExpr):
 # Vector Expressions.
 
 class VectorExpr(Expr):
-    is_vector_output = True
+    pass
 
 
 class VectorVal(VectorExpr):
 
     def __init__(self, exprs):
-        assert all(map(lambda e: not e.is_vector_output, exprs)), (
+        assert all(map(lambda e: e.output_size == 1, exprs)), (
             "All expressions for VectorVal must be scalar")
 
         self.exprs = exprs
-        self.size = len(exprs)
+        self.output_size = len(exprs)
 
     def __str__(self):
         args = ",".join([str(e) for e in self.exprs])
@@ -71,13 +71,14 @@ class VectorVal(VectorExpr):
 class BinVectorExpr(VectorExpr):
 
     def __init__(self, left, right, op):
-        assert left.is_vector_output, "Only vectors are supported"
-        assert right.is_vector_output, "Only vectors are supported"
+        assert left.output_size > 1, "Only vectors are supported"
+        assert left.output_size == right.output_size, (
+            "Vectors must be of the same size")
 
         self.left = left
         self.right = right
         self.op = op
-        self.size = left.size
+        self.output_size = left.output_size
 
     def __str__(self):
         args = ",".join([str(self.left), str(self.right), self.op.name])
@@ -87,13 +88,13 @@ class BinVectorExpr(VectorExpr):
 class BinVectorNumExpr(VectorExpr):
 
     def __init__(self, left, right, op):
-        assert left.is_vector_output, "Only vectors are supported"
-        assert not right.is_vector_output, "Only scalars are supported"
+        assert left.output_size > 1, "Only vectors are supported"
+        assert right.output_size == 1, "Only scalars are supported"
 
         self.left = left
         self.right = right
         self.op = op
-        self.size = left.size
+        self.output_size = left.output_size
 
     def __str__(self):
         args = ",".join([str(self.left), str(self.right), self.op.name])
@@ -117,8 +118,8 @@ class CompOpType(Enum):
 
 class CompExpr(BoolExpr):
     def __init__(self, left, right, op):
-        assert not left.is_vector_output, "Only scalars are supported"
-        assert not right.is_vector_output, "Only scalars are supported"
+        assert left.output_size == 1, "Only scalars are supported"
+        assert right.output_size == 1, "Only scalars are supported"
 
         self.left = left
         self.right = right
@@ -137,16 +138,13 @@ class CtrlExpr(Expr):
 
 class IfExpr(CtrlExpr):
     def __init__(self, test, body, orelse):
-        assert not (body.is_vector_output ^ orelse.is_vector_output), (
-            "body and orelse expressions should have same is_vector_output")
+        assert body.output_size == orelse.output_size, (
+            "body and orelse expressions should have the same output size")
 
         self.test = test
         self.body = body
         self.orelse = orelse
-
-        self.is_vector_output = body.is_vector_output
-        if self.is_vector_output:
-            self.size = body.size
+        self.output_size = body.output_size
 
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), str(self.orelse)])
@@ -156,9 +154,7 @@ class IfExpr(CtrlExpr):
 class TransparentExpr(CtrlExpr):
     def __init__(self, expr):
         self.expr = expr
-        self.is_vector_output = expr.is_vector_output
-        if self.is_vector_output:
-            self.size = expr.size
+        self.output_size = expr.output_size
 
 
 class SubroutineExpr(TransparentExpr):

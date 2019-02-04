@@ -39,26 +39,24 @@ void assign_array(double source[], double *target, int size) {
         yield
         self.add_block_termination()
 
-    def add_var_declaration(self, expr):
+    def add_var_declaration(self, size):
         var_name = self.get_var_name()
 
-        if expr.is_vector_output:
+        if size > 1:
             tpl = self.tpl_vector_var_declare
-            size = expr.size
         else:
             tpl = self.tpl_scalar_var_declare
-            size = None
 
         self.add_code_line(tpl(var_name=var_name, size=size))
         return var_name
 
-    def add_var_assignment(self, var_name, value, expr):
-        if not expr.is_vector_output:
-            return super().add_var_assignment(var_name, value, expr)
+    def add_var_assignment(self, var_name, value, value_size):
+        if value_size == 1:
+            return super().add_var_assignment(var_name, value, value_size)
 
         # vectors require special handling since we can't just assign
         # vectors in C.
-        self.add_assign_array_statement(value, var_name, expr.size)
+        self.add_assign_array_statement(value, var_name, value_size)
 
     def add_assign_array_statement(self, source_var, target_var, size):
         self.add_code_line("assign_array({}, {}, {});".format(
