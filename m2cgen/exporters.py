@@ -3,6 +3,10 @@ from m2cgen import interpreters
 
 
 SUPPORTED_MODELS = {
+    # SVM
+    "LinearSVC": assemblers.LinearModelAssembler,
+    "LinearSVR": assemblers.LinearModelAssembler,
+
     # Linear Regressors
     "LinearRegression": assemblers.LinearModelAssembler,
     "HuberRegressor": assemblers.LinearModelAssembler,
