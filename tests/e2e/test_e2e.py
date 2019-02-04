@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import xgboost
 from sklearn import linear_model, svm
 from sklearn import tree
 from sklearn import ensemble
@@ -62,6 +63,10 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
     # These models will be tested against each language specified in the
     # previous list.
     [
+        # XGBoost
+        regression(xgboost.XGBRegressor(n_estimators=5,
+                                        random_state=RANDOM_SEED)),
+
         # SVM
         # regression(svm.LinearSVR(random_state=RANDOM_SEED)),
         classification(svm.LinearSVC(random_state=RANDOM_SEED)),
