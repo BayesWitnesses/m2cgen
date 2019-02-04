@@ -22,9 +22,10 @@ install:
 #  - rm -rfd m2cgen/
 
 script:
-  - pytest -v tests/ --cov=m2cgen/
+  - pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
   - flake8 .
-  - rm -rfd m2cgen/
-
-after_success:
   - coveralls
+
+  - python setup.py install
+  - rm -rfd m2cgen/
+  - pytest -v tests/e2e/
