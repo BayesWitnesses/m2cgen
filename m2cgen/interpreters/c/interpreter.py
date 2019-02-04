@@ -77,7 +77,8 @@ class CInterpreter(InterpreterWithLinearAlgebra):
         value = super().interpret_bin_vector_expr(
             expr, expr.output_size, var_name)
 
-        self._cg.add_code_line("double {}[{}];".format(var_name, expr.output_size))
+        self._cg.add_code_line("double {}[{}];".format(
+            var_name, expr.output_size))
         self._cg.add_code_line(value + ";")
 
         return var_name

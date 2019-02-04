@@ -46,15 +46,6 @@ TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 
 
-# Reusable models for e2e tests. They will be cloned on each execution.
-linear_regressor = linear_model.LinearRegression()
-logistic_regressor = linear_model.LogisticRegression()
-decision_tree_regressor = tree.DecisionTreeRegressor(**TREE_PARAMS)
-decision_tree_classifier = tree.DecisionTreeClassifier(**TREE_PARAMS)
-random_forest_regressor = ensemble.RandomForestRegressor(**FOREST_PARAMS)
-random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
-
-
 @utils.cartesian_e2e_params(
     # These are the languages which support all models specified in the
     # next list.
@@ -73,7 +64,7 @@ random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 
         # Linear Regression
-        regression(linear_regressor),
+        regression(linear_model.LinearRegression()),
         regression(linear_model.HuberRegressor()),
         regression(linear_model.ElasticNet()),
         regression(linear_model.ElasticNetCV()),
@@ -94,13 +85,13 @@ random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
         regression(linear_model.PassiveAggressiveRegressor()),
 
         # Logistic Regression
-        classification(logistic_regressor),
+        classification(linear_model.LogisticRegression()),
         classification(linear_model.LogisticRegressionCV()),
         classification(linear_model.RidgeClassifier()),
         classification(linear_model.RidgeClassifierCV()),
         classification(linear_model.SGDClassifier()),
 
-        classification_binary(logistic_regressor),
+        classification_binary(linear_model.LogisticRegression()),
         classification_binary(linear_model.LogisticRegressionCV()),
         classification_binary(linear_model.RidgeClassifier()),
         classification_binary(linear_model.RidgeClassifierCV()),
@@ -108,24 +99,25 @@ random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
 
 
         # Decision trees
-        regression(decision_tree_regressor),
+        regression(tree.DecisionTreeRegressor(**TREE_PARAMS)),
         regression(tree.ExtraTreeRegressor()),
 
-        classification(decision_tree_classifier),
+        classification(tree.DecisionTreeClassifier(**TREE_PARAMS)),
         classification(tree.ExtraTreeClassifier()),
 
-        classification_binary(decision_tree_classifier),
+        classification_binary(tree.DecisionTreeClassifier(**TREE_PARAMS)),
         classification_binary(tree.ExtraTreeClassifier()),
 
 
         # Random forest
-        regression(random_forest_regressor),
+        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
         regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
 
-        classification(random_forest_classifier),
+        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
         classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
 
-        classification_binary(random_forest_classifier),
+        classification_binary(
+            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
         classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
     ],
 
