@@ -6,13 +6,6 @@ from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
 class CCodeGenerator(CLikeCodeGenerator):
 
-    initial_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
-"""
-
     tpl_scalar_var_declare = CT("double ${var_name};")
     tpl_vector_var_declare = CT("double ${var_name}[${size}];")
 

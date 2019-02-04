@@ -16,8 +16,6 @@ class CodeTemplate:
 
 class BaseCodeGenerator:
 
-    initial_code = ""
-
     tpl_num_value = NotImplemented
     tpl_infix_expression = NotImplemented
     tpl_var_declaration = NotImplemented
@@ -35,7 +33,7 @@ class BaseCodeGenerator:
     def reset_state(self):
         self._current_indent = 0
         self._var_idx = 0
-        self.code = self.initial_code
+        self.code = ""
 
     def get_var_name(self):
         var_name = "var" + str(self._var_idx)
@@ -64,6 +62,12 @@ class BaseCodeGenerator:
 
     def prepend_code_line(self, line):
         self.code = line + "\n" + self.code
+
+    def prepend_code_lines(self, lines):
+        if isinstance(lines, str):
+            lines = lines.strip().split("\n")
+        for l in lines[::-1]:
+            self.prepend_code_line(l)
 
     # Following statements compute expressions using templates AND add
     # it to the result.

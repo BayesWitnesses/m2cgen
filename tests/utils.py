@@ -1,5 +1,6 @@
 import contextlib
 import shutil
+import subprocess
 import tempfile
 import numpy as np
 
@@ -91,3 +92,12 @@ def tmp_dir():
         yield dirpath
     finally:
         shutil.rmtree(dirpath)
+
+
+def predict_from_commandline(exec_args):
+    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
+    items = result.stdout.read().decode("utf-8").strip().split(" ")
+    if len(items) == 1:
+        return float(items[0])
+    else:
+        return [float(i) for i in items]

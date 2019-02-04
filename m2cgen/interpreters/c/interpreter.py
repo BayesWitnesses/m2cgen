@@ -1,8 +1,13 @@
+import os
+
+from m2cgen.interpreters import utils
 from m2cgen.interpreters.interpreter import BaseInterpreter
 from m2cgen.interpreters.c.code_generator import CCodeGenerator
 
 
 class CInterpreter(BaseInterpreter):
+
+    with_vectors = False
 
     def __init__(self, indent=4, *args, **kwargs):
         cg = CCodeGenerator(indent=indent)
@@ -31,4 +36,13 @@ class CInterpreter(BaseInterpreter):
             else:
                 self._cg.add_return_statement(last_result)
 
+        if self.with_vectors:
+            filename = os.path.join(
+                os.path.dirname(__file__), "assign_array.c")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
         return self._cg.code
+
+    def interpret_vector_val(self, expr, **kwargs):
+        self.with_vectors = True
+        return super().interpret_vector_val(expr, **kwargs)
