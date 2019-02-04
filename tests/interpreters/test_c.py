@@ -122,3 +122,46 @@ double score(double * input) {
 }"""
     interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_raw_array():
+    expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
+
+    expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
+void score(double * input, double * output) {
+    assign_array((double[]){3, 4}, output, 2);
+}"""
+    interpreter = interpreters.CInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_multi_output():
+    expr = ast.SubroutineExpr(
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.NumVal(1),
+                ast.NumVal(1),
+                ast.CompOpType.EQ),
+            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
+
+    expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
+void score(double * input, double * output) {
+    double var0[2];
+    if ((1) == (1)) {
+        assign_array((double[]){1, 2}, var0, 2);
+    } else {
+        assign_array((double[]){3, 4}, var0, 2);
+    }
+    assign_array(var0, output, 2);
+}"""
+    interpreter = interpreters.CInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)

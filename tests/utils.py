@@ -2,6 +2,7 @@ import contextlib
 import functools
 import itertools
 import shutil
+import subprocess
 import tempfile
 
 import numpy as np
@@ -107,6 +108,15 @@ result = score({})""".format(input_str)
     exec(code, context)
 
     assert np.isclose(context["result"], expected_output)
+
+
+def predict_from_commandline(exec_args):
+    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
+    items = result.stdout.read().decode("utf-8").strip().split(" ")
+    if len(items) == 1:
+        return float(items[0])
+    else:
+        return [float(i) for i in items]
 
 
 def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
