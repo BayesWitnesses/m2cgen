@@ -155,7 +155,19 @@ random_forest_classifier = ensemble.RandomForestClassifier(**FOREST_PARAMS)
         executors.CExecutor,
         utils.train_model_classification_binary,
         marks=[C, CLASSIFICATION],
-    )
+    ),
+    pytest.param(
+        decision_tree_classifier,
+        executors.CExecutor,
+        utils.train_model_classification,
+        marks=[C, CLASSIFICATION],
+    ),
+    pytest.param(
+        decision_tree_classifier,
+        executors.CExecutor,
+        utils.train_model_classification_binary,
+        marks=[C, CLASSIFICATION],
+    ),
 )
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
     X_test, y_pred_true = model_trainer(estimator)

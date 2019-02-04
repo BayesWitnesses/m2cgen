@@ -24,7 +24,7 @@ def apply_bin_op(left, right, op):
     creates instance of this expression with specified operation.
     """
     exr_class = BIN_EXPR_CLASSES.get(
-        (left.is_vector_output, right.is_vector_output))
+        (left.output_size > 1, right.output_size > 1))
     if exr_class is None:
         # change the positions of left and right
         left, right = right, left
