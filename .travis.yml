@@ -15,7 +15,6 @@ install:
   - pip install -r requirements-test.txt
 
 script:
-  - pytest -v tests/ --cov=m2cgen/
   - flake8 .
 
   # Since we develop a library, we want to make sure that it properly runs
