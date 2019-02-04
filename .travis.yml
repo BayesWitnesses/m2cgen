@@ -27,4 +27,5 @@ script:
 
   # Then we install it as a library, remove source code and run e2e tests.
   - python setup.py install
-  - M2CGEN_HOME="$(pwd)" && cd /tmp && export PYTHONPATH="$(pwd)" && pytest -v tests/e2e/
+  - rm -rfd m2cgen/
+  - pytest -v tests/e2e/
