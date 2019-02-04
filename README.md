@@ -90,5 +90,5 @@ $ m2cgen <pickle_file> --language <language> [--indent <indent>]
 
 Piping is also supported:
 ```
-$ cat <pickle_file> | m2cgen <pickle_file> --language <language>
+$ cat <pickle_file> | m2cgen --language <language>
 ```
