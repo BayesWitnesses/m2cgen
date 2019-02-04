@@ -44,9 +44,9 @@ class BaseInterpreter:
 
     def interpret_bin_num_expr(self, expr, **kwargs):
         return self._cg.infix_expression(
-            left=self._do_interpret(expr.left),
+            left=self._do_interpret(expr.left, **kwargs),
             op=expr.op.value,
-            right=self._do_interpret(expr.right))
+            right=self._do_interpret(expr.right, **kwargs))
 
     def interpret_num_val(self, expr, **kwargs):
         return self._cg.num_value(value=expr.value)

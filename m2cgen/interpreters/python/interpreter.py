@@ -39,3 +39,14 @@ class PythonInterpreter(BaseInterpreter):
             left=self._do_interpret(expr.left),
             op=expr.op.value,
             right=self._do_interpret(expr.right))
+
+    def interpret_bin_num_expr(self, expr, depth=0, **kwargs):
+        next_depth = depth + 1 if depth < 10 else 0
+        result = super().interpret_bin_num_expr(expr, depth=next_depth,
+                                                **kwargs)
+        if depth < 10:
+            return result
+        else:
+            var_name = self._cg.add_var_declaration(expr.output_size)
+            self._cg.add_var_assignment(var_name, result, expr.output_size)
+            return var_name
