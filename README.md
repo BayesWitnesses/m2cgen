@@ -4,60 +4,46 @@
 [![Coverage Status](https://coveralls.io/repos/github/BayesWitnesses/m2cgen/badge.svg?branch=master)](https://coveralls.io/github/BayesWitnesses/m2cgen?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-m2cgen (Model 2 Code Generator) is a lightweight library which provides an easy way to transpile trained sklearn models to native code (Python, C, Java).
+**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java).
 
 ## Supported languages
 
 - Python
 - Java
-- C (almost)
+- C
 
 ## Supported models
-
-### SVM
-- LinearSVC
-- LinearSVR
-
-### Linear Regressors
-- LinearRegression
-- HuberRegressor
-- ElasticNet
-- ElasticNetCV
-- TheilSenRegressor
-- Lars
-- LarsCV
-- Lasso
-- LassoCV
-- LassoLars
-- LassoLarsIC
-- OrthogonalMatchingPursuit
-- OrthogonalMatchingPursuitCV
-- Ridge
-- RidgeCV
-- BayesianRidge
-- ARDRegression
-- SGDRegressor
-- PassiveAggressiveRegressor
-
-### Logistic Regressors
-- LogisticRegression
-- LogisticRegressionCV
-- RidgeClassifier
-- RidgeClassifierCV
-- SGDClassifier
-- PassiveAggressiveClassifier
-
-### Decision trees
-- DecisionTreeClassifier
-- DecisionTreeRegressor
-- ExtraTreeClassifier
-- ExtraTreeRegressor
-
-### Ensembles
-- RandomForestClassifier
-- ExtraTreesClassifier
-- RandomForestRegressor
-- ExtraTreesRegressor
+<table>
+  <thead>
+      <tr>
+        <th width="10%"></th>
+        <th width="45%">Classification</th>
+        <th width="45%">Regression</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <th>Linear</th>
+        <td>LogisticRegression, LogisticRegressionCV, RidgeClassifier, RidgeClassifierCV, SGDClassifier, PassiveAggressiveClassifier</td>
+        <td>LinearRegression, HuberRegressor, ElasticNet, ElasticNetCV, TheilSenRegressor, Lars, LarsCV, Lasso, LassoCV, LassoLars, LassoLarsIC, OrthogonalMatchingPursuit, OrthogonalMatchingPursuitCV, Ridge, RidgeCV, BayesianRidge, ARDRegression, SGDRegressor, PassiveAggressiveRegressor</td>
+      </tr>
+      <tr>
+        <th>SVM</th>
+        <td>LinearSVC</td>
+        <td>LinearSVR</td>
+      </tr>
+      <tr>
+        <th>Tree</th>
+        <td>DecisionTreeClassifier, ExtraTreeClassifier</td>
+        <td>DecisionTreeRegressor, ExtraTreeRegressor</td>
+      </tr>
+      <tr>
+        <th>Random Forest</th>
+        <td>RandomForestClassifier, ExtraTreesClassifier</td>
+        <td>RandomForestRegressor, ExtraTreesRegressor</td>
+      </tr>
+  </tbody>
+</table>
 
 ## Installation
 
@@ -67,11 +53,11 @@ pip install m2cgen
 
 ## Usage
 
-Here's the simple example how to transpile linear regression model to Java
+Here's a simple example of how a trained linear model can be represented in Java code:
 ```python
 from sklearn.datasets import load_boston
 from sklearn import linear_model
-from m2cgen.exporters import export_to_java
+import m2cgen as m2c
 
 boston = load_boston()
 X, y = boston.data, boston.target
@@ -79,7 +65,7 @@ X, y = boston.data, boston.target
 estimator = linear_model.LinearRegression()
 estimator.fit(X, y)
 
-code = export_to_java(estimator)
+code = m2c.export_to_java(estimator)
 ```
 
 The example of the generated code:
@@ -92,16 +78,17 @@ public class Model {
 }
 ```
 
+TODO: explain the difference between regression (single value output) and classification (multi-value output). Show how to handle vector outputs in C.
 
 ## CLI
 
-There's also a CLI interface called `m2c`:
+`m2cgen` can be used as a CLI tool to generate code using serialized model objects (pickle protocol):
 ```
-$ m2c <pickle_file> --language <language> [--indent <indent>]
+$ m2cgen <pickle_file> --language <language> [--indent <indent>]
       [--class_name <class_name>] [--package_name <package_name>]
 ```
 
-You can also use piping:
+Piping is also supported:
 ```
-$ cat <pickle_file> | m2c <pickle_file> --language <language>
+$ cat <pickle_file> | m2cgen <pickle_file> --language <language>
 ```
