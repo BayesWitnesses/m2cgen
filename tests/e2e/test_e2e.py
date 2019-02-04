@@ -66,47 +66,47 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
         # Linear Regression
         regression(linear_model.LinearRegression()),
         regression(linear_model.HuberRegressor()),
-        regression(linear_model.ElasticNet()),
-        regression(linear_model.ElasticNetCV()),
-        regression(linear_model.TheilSenRegressor()),
+        regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
+        regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
+        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.Lars()),
         regression(linear_model.LarsCV()),
-        regression(linear_model.Lasso()),
-        regression(linear_model.LassoCV()),
+        regression(linear_model.Lasso(random_state=RANDOM_SEED)),
+        regression(linear_model.LassoCV(random_state=RANDOM_SEED)),
         regression(linear_model.LassoLars()),
         regression(linear_model.LassoLarsIC()),
         regression(linear_model.OrthogonalMatchingPursuit()),
         regression(linear_model.OrthogonalMatchingPursuitCV()),
-        regression(linear_model.Ridge()),
+        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
         regression(linear_model.RidgeCV()),
         regression(linear_model.BayesianRidge()),
         regression(linear_model.ARDRegression()),
-        regression(linear_model.SGDRegressor()),
-        regression(linear_model.PassiveAggressiveRegressor()),
+        regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.PassiveAggressiveRegressor(random_state=RANDOM_SEED)),
 
         # Logistic Regression
-        classification(linear_model.LogisticRegression()),
-        classification(linear_model.LogisticRegressionCV()),
-        classification(linear_model.RidgeClassifier()),
+        classification(linear_model.LogisticRegression(random_state=RANDOM_SEED)),
+        classification(linear_model.LogisticRegressionCV(random_state=RANDOM_SEED)),
+        classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifierCV()),
-        classification(linear_model.SGDClassifier()),
+        classification(linear_model.SGDClassifier(random_state=RANDOM_SEED)),
 
-        classification_binary(linear_model.LogisticRegression()),
-        classification_binary(linear_model.LogisticRegressionCV()),
-        classification_binary(linear_model.RidgeClassifier()),
+        classification_binary(linear_model.LogisticRegression(random_state=RANDOM_SEED)),
+        classification_binary(linear_model.LogisticRegressionCV(random_state=RANDOM_SEED)),
+        classification_binary(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
         classification_binary(linear_model.RidgeClassifierCV()),
-        classification_binary(linear_model.SGDClassifier()),
+        classification_binary(linear_model.SGDClassifier(random_state=RANDOM_SEED)),
 
 
         # Decision trees
         regression(tree.DecisionTreeRegressor(**TREE_PARAMS)),
-        regression(tree.ExtraTreeRegressor()),
+        regression(tree.ExtraTreeRegressor(**TREE_PARAMS)),
 
         classification(tree.DecisionTreeClassifier(**TREE_PARAMS)),
-        classification(tree.ExtraTreeClassifier()),
+        classification(tree.ExtraTreeClassifier(**TREE_PARAMS)),
 
         classification_binary(tree.DecisionTreeClassifier(**TREE_PARAMS)),
-        classification_binary(tree.ExtraTreeClassifier()),
+        classification_binary(tree.ExtraTreeClassifier(**TREE_PARAMS)),
 
 
         # Random forest
