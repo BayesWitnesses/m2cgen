@@ -176,6 +176,10 @@ def test_bin_vector_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
 void addVectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -183,11 +187,6 @@ void addVectors(double *v1, double *v2, int size, double *result) {
 void mulVectorNumber(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
-}
-
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
 }
 void score(double * input, double * output) {
     double var0[2];
@@ -206,6 +205,10 @@ def test_bin_vector_num_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
+void assign_array(double source[], double *target, int size) {
+    for(int i = 0; i < size; ++i)
+        target[i] = source[i];
+}
 void addVectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -213,11 +216,6 @@ void addVectors(double *v1, double *v2, int size, double *result) {
 void mulVectorNumber(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
-}
-
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
 }
 void score(double * input, double * output) {
     double var0[2];
