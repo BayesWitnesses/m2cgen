@@ -18,14 +18,15 @@ class BaseInterpreter:
         if if_var_name is not None:
             var_name = if_var_name
         else:
-            var_name = self._cg.add_var_declaration(expr)
+            var_name = self._cg.add_var_declaration(expr.output_size)
 
         def handle_nested_expr(nested):
             if isinstance(nested, ast.IfExpr):
                 self._do_interpret(nested, if_var_name=var_name, **kwargs)
             else:
                 nested_result = self._do_interpret(nested)
-                self._cg.add_var_assignment(var_name, nested_result, nested)
+                self._cg.add_var_assignment(var_name, nested_result,
+                                            nested.output_size)
 
         self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
         handle_nested_expr(expr.body)
