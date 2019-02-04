@@ -60,10 +60,10 @@ class CExecutor(base.BaseExecutor):
 
     def prepare(self):
 
-        if self.model_ast.is_vector_output:
+        if self.model_ast.output_size > 1:
             print_code = (
                 string.Template(EXECUTE_AND_PRINT_VECTOR_TPL).substitute(
-                    size=self.model_ast.size))
+                    size=self.model_ast.output_size))
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
 

@@ -75,9 +75,10 @@ class BaseCodeGenerator:
     def add_return_statement(self, value):
         self.add_code_line(self.tpl_return_statement(value=value))
 
-    def add_var_declaration(self, expr):
+    def add_var_declaration(self, size):
         var_name = self.get_var_name()
-        var_type = self._get_var_declare_type(expr.is_vector_output)
+        is_vector = size > 1
+        var_type = self._get_var_declare_type(is_vector)
         self.add_code_line(
             self.tpl_var_declaration(
                 var_type=var_type, var_name=var_name))
@@ -96,7 +97,7 @@ class BaseCodeGenerator:
         self.decrease_indent()
         self.add_code_line(self.tpl_block_termination())
 
-    def add_var_assignment(self, var_name, value, expr):
+    def add_var_assignment(self, var_name, value, value_size):
         self.add_code_line(
             self.tpl_var_assignment(var_name=var_name, value=value))
 
