@@ -14,6 +14,10 @@ m2cgen (Model 2 Code Generator) is a lightweight library which provides an easy 
 
 ## Supported models
 
+### SVM
+- LinearSVC
+- LinearSVR
+
 ### Linear Regressors
 - LinearRegression
 - HuberRegressor
