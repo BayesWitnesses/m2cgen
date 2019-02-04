@@ -10,12 +10,50 @@ __all__ = [
 
 
 SUPPORTED_MODELS = {
+    # SVM
+    "LinearSVC": LinearModelAssembler,
+    "LinearSVR": LinearModelAssembler,
+
+    # Linear Regressors
     "LinearRegression": LinearModelAssembler,
+    "HuberRegressor": LinearModelAssembler,
+    "ElasticNet": LinearModelAssembler,
+    "ElasticNetCV": LinearModelAssembler,
+    "TheilSenRegressor": LinearModelAssembler,
+    "Lars": LinearModelAssembler,
+    "LarsCV": LinearModelAssembler,
+    "Lasso": LinearModelAssembler,
+    "LassoCV": LinearModelAssembler,
+    "LassoLars": LinearModelAssembler,
+    "LassoLarsIC": LinearModelAssembler,
+    "OrthogonalMatchingPursuit": LinearModelAssembler,
+    "OrthogonalMatchingPursuitCV": LinearModelAssembler,
+    "Ridge": LinearModelAssembler,
+    "RidgeCV": LinearModelAssembler,
+    "BayesianRidge": LinearModelAssembler,
+    "ARDRegression": LinearModelAssembler,
+    "SGDRegressor": LinearModelAssembler,
+    "PassiveAggressiveRegressor": LinearModelAssembler,
+
+    # Logistic Regressors
     "LogisticRegression": LinearModelAssembler,
+    "LogisticRegressionCV": LinearModelAssembler,
+    "RidgeClassifier": LinearModelAssembler,
+    "RidgeClassifierCV": LinearModelAssembler,
+    "SGDClassifier": LinearModelAssembler,
+    "PassiveAggressiveClassifier": LinearModelAssembler,
+
+    # Decision trees
     "DecisionTreeRegressor": TreeModelAssembler,
     "DecisionTreeClassifier": TreeModelAssembler,
+    "ExtraTreeRegressor": TreeModelAssembler,
+    "ExtraTreeClassifier": TreeModelAssembler,
+
+    # Ensembles
     "RandomForestRegressor": RandomForestModelAssembler,
     "RandomForestClassifier": RandomForestModelAssembler,
+    "ExtraTreesRegressor": RandomForestModelAssembler,
+    "ExtraTreesClassifier": RandomForestModelAssembler,
 }
 
 

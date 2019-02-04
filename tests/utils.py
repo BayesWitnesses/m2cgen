@@ -1,9 +1,15 @@
 import contextlib
+import functools
+import itertools
 import shutil
+import subprocess
 import tempfile
+
 import numpy as np
+import pytest
 
 from sklearn import datasets
+from sklearn.base import clone
 from sklearn.ensemble import forest
 from sklearn.utils import shuffle
 from sklearn.linear_model.base import LinearClassifierMixin
@@ -91,3 +97,52 @@ def tmp_dir():
         yield dirpath
     finally:
         shutil.rmtree(dirpath)
+
+
+def predict_from_commandline(exec_args):
+    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
+    items = result.stdout.read().decode("utf-8").strip().split(" ")
+    if len(items) == 1:
+        return float(items[0])
+    else:
+        return [float(i) for i in items]
+
+
+def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
+                         *additional_params):
+    result_params = list(additional_params)
+
+    # Specifying None for additional parameters makes pytest to generate
+    # automatic ids. If we don't do this pytest will throw exception that
+    # number of parameters doesn't match number of provided ids
+    ids = [None] * len(additional_params)
+
+    prod = itertools.product(
+        executors_with_marks, models_with_trainers_with_marks)
+
+    for (executor, executor_mark), (model, trainer, trainer_mark) in prod:
+        # Since we reuse the same model across multiple tests we want it
+        # to be clean.
+        model = clone(model)
+
+        # We use custom id since pytest for some reason can't show name of
+        # the model in the automatic id. Which sucks.
+        ids.append("{} - {} - {}".format(
+            type(model).__name__, executor_mark.name, trainer.__name__))
+
+        result_params.append(pytest.param(
+            model, executor, trainer, marks=[executor_mark, trainer_mark],
+        ))
+
+    param_names = "estimator,executor_cls,model_trainer"
+
+    def wrap(func):
+
+        @pytest.mark.parametrize(param_names, result_params, ids=ids)
+        @functools.wraps(func)
+        def inner(*args, **kwarg):
+            return func(*args, **kwarg)
+
+        return inner
+
+    return wrap

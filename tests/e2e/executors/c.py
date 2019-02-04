@@ -3,6 +3,7 @@ import string
 import subprocess
 
 from m2cgen import interpreters, assemblers
+from tests import utils
 from tests.e2e.executors import base
 
 
@@ -29,7 +30,7 @@ EXECUTE_AND_PRINT_SCALAR = """
 """
 
 EXECUTE_AND_PRINT_VECTOR_TPL = """
-    double result[2];
+    double result[${size}];
     score(input, result);
 
     for (int i = 0; i < ${size}; ++i) {
@@ -55,14 +56,14 @@ class CExecutor(base.BaseExecutor):
 
         exec_args = [os.path.join(self._resource_tmp_dir, self.model_name)]
         exec_args.extend(map(str, X))
-        return self._predict_from_commandline(exec_args)
+        return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
 
-        if self.model_ast.is_vector_output:
+        if self.model_ast.output_size > 1:
             print_code = (
                 string.Template(EXECUTE_AND_PRINT_VECTOR_TPL).substitute(
-                    size=self.model_ast.size))
+                    size=self.model_ast.output_size))
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
 

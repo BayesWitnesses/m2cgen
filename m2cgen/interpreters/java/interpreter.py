@@ -68,7 +68,7 @@ class JavaInterpreter(InterpreterWithLinearAlgebra):
 
     def _process_next_subroutine(self):
         subroutine = self._subroutine_expr_queue.pop(0)
-        is_vector_output = subroutine.expr.is_vector_output
+        is_vector_output = subroutine.expr.output_size > 1
 
         self._cg = self._create_code_generator()
 

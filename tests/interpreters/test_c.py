@@ -12,10 +12,6 @@ def test_if_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
 double score(double * input) {
     double var0;
     if ((1) == (input[0])) {
@@ -38,10 +34,6 @@ def test_bin_num_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
 double score(double * input) {
     return ((input[0]) / (-2)) * (2);
 }"""
@@ -65,10 +57,6 @@ def test_dependable_condition():
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
 double score(double * input) {
     double var0;
     double var1;
@@ -107,10 +95,6 @@ def test_nested_condition():
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
 double score(double * input) {
     double var0;
     double var1;
