@@ -22,11 +22,14 @@ LANGUAGE_TO_EXPORTER = {
         ["indent"]),
     "java": (
         m2cgen.export_to_java,
-        ["indent", "class_name", "package_name"])
+        ["indent", "class_name", "package_name"]),
+    "c": (
+        m2cgen.export_to_c, ["indent"]),
 }
 
 
 parser = argparse.ArgumentParser(
+    prog="m2cgen",
     description="Generate code in native language for provided model")
 parser.add_argument(
     "infile", type=argparse.FileType("rb"), nargs="?",

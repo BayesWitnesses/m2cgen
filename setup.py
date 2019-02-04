@@ -14,7 +14,7 @@ setup(
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Code Generators",
-        'Topic :: Software Development :: Libraries :: Python Modules',
+        "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
@@ -31,8 +31,8 @@ setup(
         "scikit-learn",
     ],
     entry_points={
-        'console_scripts': [
-            'm2c = m2cgen.cli:main',
+        "console_scripts": [
+            "m2cgen = m2cgen.cli:main",
         ],
     }
 )

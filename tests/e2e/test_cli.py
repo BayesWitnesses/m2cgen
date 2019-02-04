@@ -30,20 +30,20 @@ def _prepare_pickled_model(tmp_path):
 
 def test_positional_arg(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
-    exec_args = ["m2c", "--language", "python", str(pickled_model_path)]
+    exec_args = ["m2cgen", "--language", "python", str(pickled_model_path)]
     execute_test(exec_args)
 
 
 def test_override_input(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
     exec_args = [
-        "m2c", "--language", "python", "<", str(pickled_model_path)]
+        "m2cgen", "--language", "python", "<", str(pickled_model_path)]
     execute_test(exec_args)
 
 
 def test_piped(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
     exec_args = [
-        "cat", str(pickled_model_path), " | ", "m2c", "--language",
+        "cat", str(pickled_model_path), " | ", "m2cgen", "--language",
         "python"]
     execute_test(exec_args)
