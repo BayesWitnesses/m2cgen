@@ -32,8 +32,8 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_code_line(package_def)
 
     @contextlib.contextmanager
-    def class_definition(self, model_name):
-        self.add_class_def(model_name)
+    def class_definition(self, class_name):
+        self.add_class_def(class_name)
         yield
         self.add_block_termination()
 

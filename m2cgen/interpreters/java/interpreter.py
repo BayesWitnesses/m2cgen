@@ -15,10 +15,10 @@ class JavaInterpreter(BaseInterpreter):
 
     with_linear_algebra = False
 
-    def __init__(self, package_name=None, model_name="Model", indent=4,
+    def __init__(self, package_name=None, class_name="Model", indent=4,
                  *args, **kwargs):
         self.package_name = package_name
-        self.model_name = model_name
+        self.class_name = class_name
         self.indent = indent
         self._subroutine_idx = 0
         self._subroutine_expr_queue = []
@@ -35,7 +35,7 @@ class JavaInterpreter(BaseInterpreter):
         if self.package_name:
             top_cg.add_package_name(self.package_name)
 
-        with top_cg.class_definition(self.model_name):
+        with top_cg.class_definition(self.class_name):
             while len(self._subroutine_expr_queue):
                 subroutine_code = self._process_next_subroutine()
                 top_cg.add_code_lines(subroutine_code)
