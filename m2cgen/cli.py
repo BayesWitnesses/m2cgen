@@ -17,9 +17,9 @@ import m2cgen
 
 
 LANGUAGE_TO_EXPORTER = {
-    "python": (m2cgen.export_to_python,["indent"]),
+    "python": (m2cgen.export_to_python, ["indent"]),
     "java": (
-        m2cgen.export_to_java,["indent", "class_name", "package_name"]),
+        m2cgen.export_to_java, ["indent", "class_name", "package_name"]),
     "c": (m2cgen.export_to_c, ["indent"]),
 }
 

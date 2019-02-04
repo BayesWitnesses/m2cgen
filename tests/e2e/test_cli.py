@@ -47,3 +47,10 @@ def test_piped(tmp_path):
         "cat", str(pickled_model_path), " | ", "m2cgen", "--language",
         "python"]
     execute_test(exec_args)
+
+
+def test_dash_m(tmp_path):
+    pickled_model_path = _prepare_pickled_model(tmp_path)
+    exec_args = ["python", "-m", "m2cgen", "--language", "python",
+                 str(pickled_model_path)]
+    execute_test(exec_args)
