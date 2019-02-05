@@ -104,11 +104,12 @@ class InterpreterWithLinearAlgebra(BaseInterpreter):
 
         function_name = self.supported_bin_vector_ops[expr.op]
 
+        extra_func_args = kwargs.pop("extra_func_args", [])
         return self._cg.function_invocation(
             function_name,
-            self._do_interpret(expr.left),
-            self._do_interpret(expr.right),
-            *kwargs.get('extra_func_args', []))
+            self._do_interpret(expr.left, **kwargs),
+            self._do_interpret(expr.right, **kwargs),
+            *extra_func_args)
 
     def interpret_bin_vector_num_expr(self, expr, **kwargs):
         if expr.op not in self.supported_bin_vector_num_ops:
@@ -119,8 +120,9 @@ class InterpreterWithLinearAlgebra(BaseInterpreter):
 
         function_name = self.supported_bin_vector_num_ops[expr.op]
 
+        extra_func_args = kwargs.pop("extra_func_args", [])
         return self._cg.function_invocation(
             function_name,
-            self._do_interpret(expr.left),
-            self._do_interpret(expr.right),
-            *kwargs.get('extra_func_args', []))
+            self._do_interpret(expr.left, **kwargs),
+            self._do_interpret(expr.right, **kwargs),
+            *extra_func_args)

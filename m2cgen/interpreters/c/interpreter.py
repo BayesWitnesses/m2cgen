@@ -70,23 +70,23 @@ class CInterpreter(InterpreterWithLinearAlgebra):
     # 3. Add code returned from super method to the result code;
     # 4. Return name of the variable with current result.
 
-    def interpret_bin_vector_expr(self, expr, *args):
+    def interpret_bin_vector_expr(self, expr, **kwargs):
         var_name = self._cg.add_var_declaration(expr.output_size)
 
         # Result: string like "addVectors(v1, v2, <size>, <var_name>)"
         func_inv = super().interpret_bin_vector_expr(
-            expr, extra_func_args=[expr.output_size, var_name])
+            expr, extra_func_args=[expr.output_size, var_name], **kwargs)
 
         self._cg.add_code_line(func_inv + ";")
 
         return var_name
 
-    def interpret_bin_vector_num_expr(self, expr, *args):
+    def interpret_bin_vector_num_expr(self, expr, **kwargs):
         var_name = self._cg.add_var_declaration(expr.output_size)
 
         # Result: string like "mulVectorNumber(v1, num, <size>, <var_name>)"
         func_inv = super().interpret_bin_vector_num_expr(
-            expr, extra_func_args=[expr.output_size, var_name])
+            expr, extra_func_args=[expr.output_size, var_name], **kwargs)
 
         self._cg.add_code_line(func_inv + ";")
 
