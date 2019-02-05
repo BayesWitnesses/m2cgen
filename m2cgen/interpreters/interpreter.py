@@ -88,7 +88,7 @@ class BaseInterpreter:
         return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
 
 
-class LinearAlgebraSupportMixin(BaseInterpreter):
+class InterpreterWithLinearAlgebra(BaseInterpreter):
 
     with_linear_algebra = False
 
@@ -124,7 +124,3 @@ class LinearAlgebraSupportMixin(BaseInterpreter):
             self._do_interpret(expr.left),
             self._do_interpret(expr.right),
             *extra_func_args)
-
-
-class InterpreterWithLinearAlgebra(LinearAlgebraSupportMixin, BaseInterpreter):
-    pass

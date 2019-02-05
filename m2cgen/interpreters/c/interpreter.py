@@ -9,11 +9,11 @@ from m2cgen.interpreters.c.code_generator import CCodeGenerator
 class CInterpreter(InterpreterWithLinearAlgebra):
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "addVectors",
+        ast.BinNumOpType.ADD: "add_vectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mulVectorNumber",
+        ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
     with_vectors = False
@@ -71,27 +71,23 @@ class CInterpreter(InterpreterWithLinearAlgebra):
     # 4. Return name of the variable with current result.
 
     def interpret_bin_vector_expr(self, expr, *args):
-        var_name = self._cg.get_var_name()
+        var_name = self._cg.add_var_declaration(expr.output_size)
 
         # Result: string like "addVectors(v1, v2, <size>, <var_name>)"
-        value = super().interpret_bin_vector_expr(
+        func_inv = super().interpret_bin_vector_expr(
             expr, expr.output_size, var_name)
 
-        self._cg.add_code_line("double {}[{}];".format(
-            var_name, expr.output_size))
-        self._cg.add_code_line(value + ";")
+        self._cg.add_code_line(func_inv + ";")
 
         return var_name
 
     def interpret_bin_vector_num_expr(self, expr, *args):
-        var_name = self._cg.get_var_name()
+        var_name = self._cg.add_var_declaration(expr.output_size)
 
         # Result: string like "mulVectorNumber(v1, num, <size>, <var_name>)"
-        value = super().interpret_bin_vector_num_expr(
+        func_inv = super().interpret_bin_vector_num_expr(
             expr, expr.output_size, var_name)
 
-        self._cg.add_code_line("double {}[{}];".format(
-            var_name, expr.output_size))
-        self._cg.add_code_line(value + ";")
+        self._cg.add_code_line(func_inv + ";")
 
         return var_name

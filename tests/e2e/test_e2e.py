@@ -41,6 +41,10 @@ def classification_binary(model):
     )
 
 
+# Absolute tolerance. Used in np.isclose to compare 2 values.
+# We compare 6 decimal digits.
+ATOL = 1.e-6
+
 RANDOM_SEED = 1234
 TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
@@ -59,7 +63,7 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
     # previous list.
     [
         # SVM
-        regression(svm.LinearSVR(random_state=RANDOM_SEED)),
+        # regression(svm.LinearSVR(random_state=RANDOM_SEED)),
         classification(svm.LinearSVC(random_state=RANDOM_SEED)),
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 
@@ -82,20 +86,27 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
         regression(linear_model.BayesianRidge()),
         regression(linear_model.ARDRegression()),
         regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
-        regression(linear_model.PassiveAggressiveRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.PassiveAggressiveRegressor(
+            random_state=RANDOM_SEED)),
 
         # Logistic Regression
-        classification(linear_model.LogisticRegression(random_state=RANDOM_SEED)),
-        classification(linear_model.LogisticRegressionCV(random_state=RANDOM_SEED)),
+        classification(linear_model.LogisticRegression(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifierCV()),
         classification(linear_model.SGDClassifier(random_state=RANDOM_SEED)),
 
-        classification_binary(linear_model.LogisticRegression(random_state=RANDOM_SEED)),
-        classification_binary(linear_model.LogisticRegressionCV(random_state=RANDOM_SEED)),
-        classification_binary(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
+        classification_binary(linear_model.LogisticRegression(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.RidgeClassifier(
+            random_state=RANDOM_SEED)),
         classification_binary(linear_model.RidgeClassifierCV()),
-        classification_binary(linear_model.SGDClassifier(random_state=RANDOM_SEED)),
+        classification_binary(linear_model.SGDClassifier(
+            random_state=RANDOM_SEED)),
 
 
         # Decision trees
@@ -137,5 +148,5 @@ def test_e2e(estimator, executor_cls, model_trainer, is_fast):
             y_pred_executed = executor.predict(X_test[idx])
             print("expected={}, actual={}".format(y_pred_true[idx],
                                                   y_pred_executed))
-            res = np.isclose(y_pred_true[idx], y_pred_executed)
+            res = np.isclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
             assert res if isinstance(res, bool) else res.all()
