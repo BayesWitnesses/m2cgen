@@ -119,8 +119,6 @@ class InterpreterWithLinearAlgebra(BaseInterpreter):
 
         function_name = self.supported_bin_vector_num_ops[expr.op]
 
-
-
         return self._cg.function_invocation(
             function_name,
             self._do_interpret(expr.left),
