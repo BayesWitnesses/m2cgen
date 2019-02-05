@@ -75,7 +75,7 @@ class CInterpreter(InterpreterWithLinearAlgebra):
 
         # Result: string like "addVectors(v1, v2, <size>, <var_name>)"
         func_inv = super().interpret_bin_vector_expr(
-            expr, expr.output_size, var_name)
+            expr, extra_func_args=[expr.output_size, var_name])
 
         self._cg.add_code_line(func_inv + ";")
 
@@ -86,7 +86,7 @@ class CInterpreter(InterpreterWithLinearAlgebra):
 
         # Result: string like "mulVectorNumber(v1, num, <size>, <var_name>)"
         func_inv = super().interpret_bin_vector_num_expr(
-            expr, expr.output_size, var_name)
+            expr, extra_func_args=[expr.output_size, var_name])
 
         self._cg.add_code_line(func_inv + ";")
 
