@@ -99,6 +99,17 @@ def tmp_dir():
         shutil.rmtree(dirpath)
 
 
+def verify_python_model_is_expected(model_code, input, expected_output):
+    input_str = "[" + ", ".join(map(str, input)) + "]"
+    code = model_code + """
+result = score({})""".format(input_str)
+
+    context = {}
+    exec(code, context)
+
+    assert np.isclose(context["result"], expected_output)
+
+
 def predict_from_commandline(exec_args):
     result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
     items = result.stdout.read().decode("utf-8").strip().split(" ")
