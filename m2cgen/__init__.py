@@ -1,4 +1,4 @@
-from m2cgen.exporters import export_to_java, export_to_python, export_to_c
+from .exporters import export_to_java, export_to_python, export_to_c
 
 
 __all__ = [
