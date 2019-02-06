@@ -6,6 +6,8 @@ from m2cgen import ast
 
 class BaseInterpreter:
 
+    with_vectors = False
+
     # disabled by default
     depth_threshold = sys.maxsize
 
@@ -61,6 +63,7 @@ class BaseInterpreter:
             index=expr.index)
 
     def interpret_vector_val(self, expr, **kwargs):
+        self.with_vectors = True
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
 

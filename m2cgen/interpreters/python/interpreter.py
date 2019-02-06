@@ -8,8 +8,6 @@ class PythonInterpreter(BaseInterpreter):
     # create unnecessary overhead.
     depth_threshold = 80
 
-    with_numpy = False
-
     def __init__(self, indent=4, *args, **kwargs):
         cg = PythonCodeGenerator(indent=indent)
         super(PythonInterpreter, self).__init__(cg, *args, **kwargs)
@@ -23,14 +21,10 @@ class PythonInterpreter(BaseInterpreter):
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
-        if self.with_numpy:
+        if self.with_vectors:
             self._cg.add_dependency("numpy", alias="np")
 
         return self._cg.code
-
-    def interpret_vector_val(self, expr, **kwargs):
-        self.with_numpy = True
-        return super().interpret_vector_val(expr, **kwargs)
 
     def interpret_bin_vector_expr(self, expr, **kwargs):
         return self._cg.infix_expression(

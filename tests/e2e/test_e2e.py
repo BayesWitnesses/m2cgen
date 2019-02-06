@@ -137,8 +137,8 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 
         # This a special case of the HUGE model. We want to verify that
         # even in such cases we generate code which works.
-        regression(ensemble.RandomForestRegressor(n_estimators=100),
-                   is_fast=True),
+        # regression(ensemble.RandomForestRegressor(n_estimators=100),
+        #            is_fast=True),
     ],
 
     # Following is the list of extra tests for languages/models which are

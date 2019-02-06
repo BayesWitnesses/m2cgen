@@ -16,8 +16,6 @@ class CInterpreter(InterpreterWithLinearAlgebra):
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
-    with_vectors = False
-
     def __init__(self, indent=4, *args, **kwargs):
         cg = CCodeGenerator(indent=indent)
         super(CInterpreter, self).__init__(cg, *args, **kwargs)
@@ -56,10 +54,6 @@ class CInterpreter(InterpreterWithLinearAlgebra):
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         return self._cg.code
-
-    def interpret_vector_val(self, expr, **kwargs):
-        self.with_vectors = True
-        return super().interpret_vector_val(expr, **kwargs)
 
     # Both methods supporting linear algebra do several things:
     #
