@@ -86,3 +86,43 @@ class BaseInterpreter:
     @staticmethod
     def _normalize_expr_name(name):
         return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
+
+
+class InterpreterWithLinearAlgebra(BaseInterpreter):
+
+    with_linear_algebra = False
+
+    supported_bin_vector_ops = {}
+    supported_bin_vector_num_ops = {}
+
+    def interpret_bin_vector_expr(self, expr, **kwargs):
+        if expr.op not in self.supported_bin_vector_ops:
+            raise NotImplementedError(
+                "Op {} is unsupported".format(expr.op.name))
+
+        self.with_linear_algebra = True
+
+        function_name = self.supported_bin_vector_ops[expr.op]
+
+        extra_func_args = kwargs.pop("extra_func_args", [])
+        return self._cg.function_invocation(
+            function_name,
+            self._do_interpret(expr.left, **kwargs),
+            self._do_interpret(expr.right, **kwargs),
+            *extra_func_args)
+
+    def interpret_bin_vector_num_expr(self, expr, **kwargs):
+        if expr.op not in self.supported_bin_vector_num_ops:
+            raise NotImplementedError(
+                "Op {} is unsupported".format(expr.op.name))
+
+        self.with_linear_algebra = True
+
+        function_name = self.supported_bin_vector_num_ops[expr.op]
+
+        extra_func_args = kwargs.pop("extra_func_args", [])
+        return self._cg.function_invocation(
+            function_name,
+            self._do_interpret(expr.left, **kwargs),
+            self._do_interpret(expr.right, **kwargs),
+            *extra_func_args)

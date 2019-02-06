@@ -133,3 +133,6 @@ class CLikeCodeGenerator(BaseCodeGenerator):
     tpl_else_statement = CodeTemplate("} else {")
     tpl_block_termination = CodeTemplate("}")
     tpl_var_assignment = CodeTemplate("${var_name} = ${value};")
+
+    def function_invocation(self, function_name, *args):
+        return function_name + "(" + ", ".join(map(str, args)) + ")"
