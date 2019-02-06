@@ -220,3 +220,21 @@ def  score(input):
                     var0 = 1
     return var0"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_deep_expression():
+    expr = ast.NumVal(1)
+    for i in range(120):
+        expr = ast.BinNumExpr(expr, ast.NumVal(1), ast.BinNumOpType.ADD)
+
+    interpreter = interpreters.PythonInterpreter()
+
+    result_code = interpreter.interpret(expr)
+    result_code += """
+result = score(None)
+"""
+
+    scope = {}
+    exec(result_code, scope)
+
+    assert scope["result"] == 121
