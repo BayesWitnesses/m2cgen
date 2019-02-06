@@ -6,7 +6,7 @@ class PythonInterpreter(interpreters.AstToCodeInterpreter):
 
     # 93 may raise MemoryError, so use something close enough to it not to
     # create unnecessary overhead.
-    depth_threshold = 80
+    bin_depth_threshold = 80
 
     def __init__(self, indent=4, *args, **kwargs):
         cg = PythonCodeGenerator(indent=indent)

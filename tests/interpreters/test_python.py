@@ -172,7 +172,7 @@ def  score(input):
 
 
 class CustomPythonInterpreter(interpreters.PythonInterpreter):
-    depth_threshold = 2
+    bin_depth_threshold = 2
 
 
 def test_depth_threshold_with_bin_expr():
@@ -205,16 +205,13 @@ def  score(input):
     if (1) == (1):
         var0 = 1
     else:
-        var1 = (1) == (1)
-        if var1:
+        if (1) == (1):
             var0 = 1
         else:
-            var2 = (1) == (1)
-            if var2:
+            if (1) == (1):
                 var0 = 1
             else:
-                var3 = (1) == (1)
-                if var3:
+                if (1) == (1):
                     var0 = 1
                 else:
                     var0 = 1

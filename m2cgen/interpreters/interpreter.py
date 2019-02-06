@@ -7,27 +7,32 @@ from m2cgen import ast
 class BaseAstInterpreter:
 
     # disabled by default
-    depth_threshold = sys.maxsize
+    bin_depth_threshold = sys.maxsize
 
     def interpret(self, expr):
         return self._do_interpret(expr)
 
     # Private methods implementing visitor pattern
 
-    def _do_interpret(self, expr, depth=1, **kwargs):
+    def _do_interpret(self, expr, bin_depth=None, **kwargs):
 
-        # We track depth of the expression and if it exceeds specified limit,
-        # we will call hook.
-        if depth > self.depth_threshold and isinstance(expr, ast.BinExpr):
-            return self.depth_threshold_hook(expr, **kwargs)
+        # We track depth of the binary expressions and call a hook if it
+        # exceeds specified limit.
+        if isinstance(expr, ast.BinExpr):
+            bin_depth = bin_depth+1 if bin_depth is not None else 1
+
+            if bin_depth > self.bin_depth_threshold:
+                return self.bin_depth_threshold_hook(expr, **kwargs)
+        else:
+            bin_depth = 0
 
         try:
             handler = self._select_handler(expr)
         except NotImplementedError:
             if isinstance(expr, ast.TransparentExpr):
-                return self._do_interpret(expr.expr, depth=depth+1, **kwargs)
+                return self._do_interpret(expr.expr, bin_depth=bin_depth, **kwargs)
             raise
-        return handler(expr, depth=depth+1, **kwargs)
+        return handler(expr, bin_depth=bin_depth, **kwargs)
 
     def _select_handler(self, expr):
         handler_name = self._handler_name(type(expr))
@@ -45,7 +50,7 @@ class BaseAstInterpreter:
     def _normalize_expr_name(name):
         return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
 
-    def depth_threshold_hook(self, expr, **kwargs):
+    def bin_depth_threshold_hook(self, expr, **kwargs):
         raise NotImplementedError
 
 
@@ -105,7 +110,7 @@ class AstToCodeInterpreter(BaseAstInterpreter):
         return self._cg.vector_init(nested)
 
     # Default implementation. Simply adds new variable.
-    def depth_threshold_hook(self, expr, **kwargs):
+    def bin_depth_threshold_hook(self, expr, **kwargs):
         var_name = self._cg.add_var_declaration(expr.output_size)
         result = self._do_interpret(expr, **kwargs)
         self._cg.add_var_assignment(var_name, result, expr.output_size)
