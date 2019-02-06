@@ -17,30 +17,27 @@ CLASSIFICATION = pytest.mark.clf
 
 
 # Set of helper functions to make parametrization less verbose.
-def regression(model, is_fast=False):
+def regression(model):
     return (
         model,
         utils.train_model_regression,
         REGRESSION,
-        is_fast,
     )
 
 
-def classification(model, is_fast=False):
+def classification(model):
     return (
         model,
         utils.train_model_classification,
         CLASSIFICATION,
-        is_fast,
     )
 
 
-def classification_binary(model, is_fast=False):
+def classification_binary(model):
     return (
         model,
         utils.train_model_classification_binary,
         CLASSIFICATION,
-        is_fast,
     )
 
 
@@ -133,12 +130,6 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
         classification_binary(
             ensemble.RandomForestClassifier(**FOREST_PARAMS)),
         classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
-
-
-        # This a special case of the HUGE model. We want to verify that
-        # even in such cases we generate code which works.
-        # regression(ensemble.RandomForestRegressor(n_estimators=100),
-        #            is_fast=True),
     ],
 
     # Following is the list of extra tests for languages/models which are
@@ -146,13 +137,9 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 
     # <empty>
 )
-def test_e2e(estimator, executor_cls, model_trainer, is_fast_model, is_fast):
+def test_e2e(estimator, executor_cls, model_trainer, is_fast):
     X_test, y_pred_true = model_trainer(estimator)
     executor = executor_cls(estimator)
-
-    # is_fast means that user used --flag.
-    # is_fast_model means that this model is explicitly specified to run fast.
-    is_fast = is_fast_model or is_fast
 
     idxs_to_test = [0] if is_fast else range(len(X_test))
 
