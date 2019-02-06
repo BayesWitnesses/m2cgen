@@ -1,6 +1,6 @@
-from .linear import LinearModelAssembler
-from .tree import TreeModelAssembler
-from .ensemble import RandomForestModelAssembler
+from m2cgen.assemblers.linear import LinearModelAssembler
+from m2cgen.assemblers.tree import TreeModelAssembler
+from m2cgen.assemblers.ensemble import RandomForestModelAssembler
 
 __all__ = [
     LinearModelAssembler,

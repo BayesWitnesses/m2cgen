@@ -1,8 +1,8 @@
-from m2cgen.interpreters.interpreter import Interpreter
+from m2cgen import interpreters
 from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
 
 
-class PythonInterpreter(Interpreter):
+class PythonInterpreter(interpreters.AstToCodeInterpreter):
 
     # 93 may raise MemoryError, so use something close enough to it not to
     # create unnecessary overhead.

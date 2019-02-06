@@ -4,13 +4,10 @@ import sys
 from m2cgen import ast
 
 
-class BaseInterpreter:
+class BaseAstInterpreter:
 
     # disabled by default
     depth_threshold = sys.maxsize
-
-    def __init__(self, cg):
-        self._cg = cg
 
     def interpret(self, expr):
         return self._do_interpret(expr)
@@ -20,11 +17,9 @@ class BaseInterpreter:
     def _do_interpret(self, expr, depth=1, **kwargs):
 
         # We track depth of the expression and if it exceeds specified limit,
-        # we will call hook. By default it will create a variable and store
-        # result of the expression in this variable. Sub-interpreters may
-        # override this behaviour.
+        # we will call hook.
         if depth > self.depth_threshold and isinstance(expr, ast.BinExpr):
-            return self._depth_threshold_hook(expr, **kwargs)
+            return self.depth_threshold_hook(expr, **kwargs)
 
         try:
             handler = self._select_handler(expr)
@@ -43,28 +38,24 @@ class BaseInterpreter:
 
     @staticmethod
     def _handler_name(expr_tpe):
-        expr_name = BaseInterpreter._normalize_expr_name(expr_tpe.__name__)
+        expr_name = BaseAstInterpreter._normalize_expr_name(expr_tpe.__name__)
         return "interpret_" + expr_name
 
     @staticmethod
     def _normalize_expr_name(name):
         return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
 
-    # Default implementation. Simply adds new variable.
-    def _depth_threshold_hook(self, expr, **kwargs):
-        var_name = self._cg.add_var_declaration(expr.output_size)
-        result = self._do_interpret(expr, **kwargs)
-        self._cg.add_var_assignment(var_name, result, expr.output_size)
-        return var_name
+    def depth_threshold_hook(self, expr, **kwargs):
+        raise NotImplementedError
 
 
-class Interpreter(BaseInterpreter):
+class AstToCodeInterpreter(BaseAstInterpreter):
 
     with_vectors = False
 
     def __init__(self, cg, feature_array_name="input"):
+        self._cg = cg
         self._feature_array_name = feature_array_name
-        super().__init__(cg)
 
     def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
         if if_var_name is not None:
@@ -113,8 +104,15 @@ class Interpreter(BaseInterpreter):
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
 
+    # Default implementation. Simply adds new variable.
+    def depth_threshold_hook(self, expr, **kwargs):
+        var_name = self._cg.add_var_declaration(expr.output_size)
+        result = self._do_interpret(expr, **kwargs)
+        self._cg.add_var_assignment(var_name, result, expr.output_size)
+        return var_name
 
-class LinearAlgebraMixin(BaseInterpreter):
+
+class AstToCodeInterpreterWithLinearAlgebra(AstToCodeInterpreter):
 
     with_linear_algebra = False
 
@@ -151,7 +149,3 @@ class LinearAlgebraMixin(BaseInterpreter):
             self._do_interpret(expr.left, **kwargs),
             self._do_interpret(expr.right, **kwargs),
             *extra_func_args)
-
-
-class InterpreterWithLinearAlgebra(LinearAlgebraMixin, Interpreter):
-    pass
