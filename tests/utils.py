@@ -131,7 +131,10 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
     prod = itertools.product(
         executors_with_marks, models_with_trainers_with_marks)
 
-    for (executor, executor_mark), (model, trainer, trainer_mark) in prod:
+    for a1, a2 in prod:
+        executor, executor_mark = a1
+        model, trainer, trainer_mark, is_fast = a2
+
         # Since we reuse the same model across multiple tests we want it
         # to be clean.
         model = clone(model)
@@ -142,10 +145,11 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
             type(model).__name__, executor_mark.name, trainer.__name__))
 
         result_params.append(pytest.param(
-            model, executor, trainer, marks=[executor_mark, trainer_mark],
+            model, executor, trainer, is_fast,
+            marks=[executor_mark, trainer_mark],
         ))
 
-    param_names = "estimator,executor_cls,model_trainer"
+    param_names = "estimator,executor_cls,model_trainer,is_fast_model"
 
     def wrap(func):
 

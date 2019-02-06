@@ -13,6 +13,10 @@ class FeatureRef(Expr):
         return "FeatureRef(" + str(self.index) + ")"
 
 
+class BinExpr(Expr):
+    pass
+
+
 # Numeric Expressions.
 
 class NumExpr(Expr):
@@ -34,7 +38,7 @@ class BinNumOpType(Enum):
     DIV = '/'
 
 
-class BinNumExpr(NumExpr):
+class BinNumExpr(NumExpr, BinExpr):
     def __init__(self, left, right, op):
         assert left.output_size == 1, "Only scalars are supported"
         assert right.output_size == 1, "Only scalars are supported"
@@ -68,7 +72,7 @@ class VectorVal(VectorExpr):
         return "VectorVal([" + args + "])"
 
 
-class BinVectorExpr(VectorExpr):
+class BinVectorExpr(VectorExpr, BinExpr):
 
     def __init__(self, left, right, op):
         assert left.output_size > 1, "Only vectors are supported"
@@ -85,7 +89,7 @@ class BinVectorExpr(VectorExpr):
         return "BinVectorExpr(" + args + ")"
 
 
-class BinVectorNumExpr(VectorExpr):
+class BinVectorNumExpr(VectorExpr, BinExpr):
 
     def __init__(self, left, right, op):
         assert left.output_size > 1, "Only vectors are supported"
@@ -116,7 +120,7 @@ class CompOpType(Enum):
     NOT_EQ = '!='
 
 
-class CompExpr(BoolExpr):
+class CompExpr(BoolExpr, BinExpr):
     def __init__(self, left, right, op):
         assert left.output_size == 1, "Only scalars are supported"
         assert right.output_size == 1, "Only scalars are supported"

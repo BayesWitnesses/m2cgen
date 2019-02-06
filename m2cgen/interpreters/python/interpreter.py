@@ -4,6 +4,10 @@ from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
 
 class PythonInterpreter(BaseInterpreter):
 
+    # 93 may raise MemoryError, so use something close enough to it not to
+    # create unnecessary overhead.
+    depth_threshold = 80
+
     with_numpy = False
 
     def __init__(self, indent=4, *args, **kwargs):
@@ -28,25 +32,14 @@ class PythonInterpreter(BaseInterpreter):
         self.with_numpy = True
         return super().interpret_vector_val(expr, **kwargs)
 
-    def interpret_bin_vector_expr(self, expr):
+    def interpret_bin_vector_expr(self, expr, **kwargs):
         return self._cg.infix_expression(
-            left=self._do_interpret(expr.left),
+            left=self._do_interpret(expr.left, **kwargs),
             op=expr.op.value,
-            right=self._do_interpret(expr.right))
+            right=self._do_interpret(expr.right, **kwargs))
 
-    def interpret_bin_vector_num_expr(self, expr):
+    def interpret_bin_vector_num_expr(self, expr, **kwargs):
         return self._cg.infix_expression(
-            left=self._do_interpret(expr.left),
+            left=self._do_interpret(expr.left, **kwargs),
             op=expr.op.value,
-            right=self._do_interpret(expr.right))
-
-    def interpret_bin_num_expr(self, expr, depth=0, **kwargs):
-        next_depth = depth + 1 if depth < 10 else 0
-        result = super().interpret_bin_num_expr(expr, depth=next_depth,
-                                                **kwargs)
-        if depth < 10:
-            return result
-        else:
-            var_name = self._cg.add_var_declaration(expr.output_size)
-            self._cg.add_var_assignment(var_name, result, expr.output_size)
-            return var_name
+            right=self._do_interpret(expr.right, **kwargs))

@@ -169,3 +169,54 @@ def  score(input):
     return (np.asarray([1, 2])) * (1)
 """
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+class CustomPythonInterpreter(interpreters.PythonInterpreter):
+    depth_threshold = 2
+
+
+def test_depth_threshold_with_bin_expr():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
+
+    interpreter = CustomPythonInterpreter()
+
+    expected_code = """
+def  score(input):
+    var0 = (1) + ((1) + (1))
+    return (1) + ((1) + (var0))"""
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_depth_threshold_without_bin_expr():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        expr = ast.IfExpr(
+            ast.CompExpr(
+                ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
+            ast.NumVal(1),
+            expr)
+
+    interpreter = CustomPythonInterpreter()
+
+    expected_code = """
+def  score(input):
+    if (1) == (1):
+        var0 = 1
+    else:
+        var1 = (1) == (1)
+        if var1:
+            var0 = 1
+        else:
+            var2 = (1) == (1)
+            if var2:
+                var0 = 1
+            else:
+                var3 = (1) == (1)
+                if var3:
+                    var0 = 1
+                else:
+                    var0 = 1
+    return var0"""
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
