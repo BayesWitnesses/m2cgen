@@ -1,9 +1,9 @@
-from m2cgen.interpreters.interpreter import AstToCodeInterpreter
-from m2cgen.interpreters.interpreter import (
+from .interpreter import AstToCodeInterpreter
+from .interpreter import (
     AstToCodeInterpreterWithLinearAlgebra)
-from m2cgen.interpreters.java.interpreter import JavaInterpreter
-from m2cgen.interpreters.python.interpreter import PythonInterpreter
-from m2cgen.interpreters.c.interpreter import CInterpreter
+from .java.interpreter import JavaInterpreter
+from .python.interpreter import PythonInterpreter
+from .c.interpreter import CInterpreter
 
 
 __all__ = [
