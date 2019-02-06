@@ -6,33 +6,30 @@ from m2cgen import ast
 
 class BaseAstInterpreter:
 
-    # disabled by default
-    bin_depth_threshold = sys.maxsize
-
     def interpret(self, expr):
         return self._do_interpret(expr)
 
     # Private methods implementing visitor pattern
 
-    def _do_interpret(self, expr, bin_depth=None, **kwargs):
+    def _pre_interpret_hook(self, expr, **kwargs):
+        return expr, kwargs
 
-        # We track depth of the binary expressions and call a hook if it
-        # exceeds specified limit.
-        if isinstance(expr, ast.BinExpr):
-            bin_depth = bin_depth+1 if bin_depth is not None else 1
+    def _do_interpret(self, expr, **kwargs):
+        # Hook which allows to override kwargs and to return custom result.
+        result, kwargs = self._pre_interpret_hook(expr, **kwargs)
 
-            if bin_depth > self.bin_depth_threshold:
-                return self.bin_depth_threshold_hook(expr, **kwargs)
-        else:
-            bin_depth = 0
+        # If returned result is the same as incoming expr - it means that we
+        # still need to process it.
+        if result is not expr:
+            return result
 
         try:
             handler = self._select_handler(expr)
         except NotImplementedError:
             if isinstance(expr, ast.TransparentExpr):
-                return self._do_interpret(expr.expr, bin_depth=bin_depth, **kwargs)
+                return self._do_interpret(expr.expr, **kwargs)
             raise
-        return handler(expr, bin_depth=bin_depth, **kwargs)
+        return handler(expr, **kwargs)
 
     def _select_handler(self, expr):
         handler_name = self._handler_name(type(expr))
@@ -49,9 +46,6 @@ class BaseAstInterpreter:
     @staticmethod
     def _normalize_expr_name(name):
         return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
-
-    def bin_depth_threshold_hook(self, expr, **kwargs):
-        raise NotImplementedError
 
 
 class AstToCodeInterpreter(BaseAstInterpreter):
@@ -108,6 +102,26 @@ class AstToCodeInterpreter(BaseAstInterpreter):
         self.with_vectors = True
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
+
+
+class BinExpressionDepthTrackingMixin(AstToCodeInterpreter):
+
+    # disabled by default
+    bin_depth_threshold = sys.maxsize
+
+    def _pre_interpret_hook(self, expr, bin_depth=None, **kwargs):
+        if not isinstance(expr, ast.BinExpr):
+            return expr, kwargs
+
+        # We track depth of the binary expressions and call a hook if it
+        # exceeds specified limit.
+        bin_depth = bin_depth + 1 if bin_depth is not None else 1
+
+        if bin_depth > self.bin_depth_threshold:
+            return self.bin_depth_threshold_hook(expr, **kwargs), kwargs
+
+        kwargs["bin_depth"] = bin_depth
+        return expr, kwargs
 
     # Default implementation. Simply adds new variable.
     def bin_depth_threshold_hook(self, expr, **kwargs):

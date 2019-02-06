@@ -1,8 +1,10 @@
 from m2cgen import interpreters
+from m2cgen.interpreters.interpreter import BinExpressionDepthTrackingMixin
 from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
 
 
-class PythonInterpreter(interpreters.AstToCodeInterpreter):
+class PythonInterpreter(BinExpressionDepthTrackingMixin,
+                        interpreters.AstToCodeInterpreter):
 
     # 93 may raise MemoryError, so use something close enough to it not to
     # create unnecessary overhead.
