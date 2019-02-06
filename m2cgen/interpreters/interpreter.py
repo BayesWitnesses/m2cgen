@@ -27,7 +27,7 @@ class BaseAstInterpreter:
             handler = self._select_handler(expr)
         except NotImplementedError:
             if isinstance(expr, ast.TransparentExpr):
-                return self._do_interpret(expr.expr, **kwargs)
+                return self._do_interpret(expr.expr,  **kwargs)
             raise
         return handler(expr, **kwargs)
 
