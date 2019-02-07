@@ -109,11 +109,11 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
         self.subroutine_expr_queue = []
         super().__init__(*args, **kwargs)
 
-    def interpret_subroutine_expr(self, expr, **kwargs):
-        function_name = self._get_subroutine_name()
-        return self._enqueue_subroutine(function_name, expr)
-
-    def interpret_subroutines(self, top_code_generator):
+    def process_subroutine_queue(self, top_code_generator):
+        """
+        This method should be called from the interpreter to start processing
+        subroutine queue.
+        """
         self._subroutine_idx = 0
 
         while len(self.subroutine_expr_queue):
@@ -121,7 +121,18 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
             subroutine_code = self.process_subroutine(subroutine)
             top_code_generator.add_code_lines(subroutine_code)
 
+    def interpret_subroutine_expr(self, expr, **kwargs):
+        """
+        This method will be called whenever new subroutine is encountered.
+        """
+        function_name = self._get_subroutine_name()
+        return self._enqueue_subroutine(function_name, expr)
+
     def process_subroutine(self, subroutine):
+        """
+        Handles single subroutine. Creates new code generator and defines a
+        function for a given subroutine.
+        """
         is_vector_output = subroutine.expr.output_size > 1
 
         self._cg = self.create_code_generator()
@@ -144,7 +155,7 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
         self._subroutine_idx += 1
         return subroutine_name
 
-    # Methods to be defined by subclasses.
+    # Methods to be implemented by subclasses.
 
     def create_code_generator(self):
         raise NotImplementedError

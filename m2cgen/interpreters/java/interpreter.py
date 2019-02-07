@@ -41,7 +41,7 @@ class JavaInterpreter(ToCodeInterpreter,
             # of adding methods. We create first subroutine for incoming
             # expression and call `interpret_subroutines` method to process it.
             self.subroutine_expr_queue = [Subroutine("score", expr)]
-            self.interpret_subroutines(top_cg)
+            self.process_subroutine_queue(top_cg)
 
             if self.with_linear_algebra:
                 filename = os.path.join(
@@ -51,6 +51,6 @@ class JavaInterpreter(ToCodeInterpreter,
         return top_cg.code
 
     # Required by SubroutinesAsFunctionsMixin to create new code generator for
-    # new subroutine.
+    # each subroutine.
     def create_code_generator(self):
         return JavaCodeGenerator(indent=self.indent)
