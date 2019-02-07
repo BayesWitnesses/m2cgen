@@ -42,8 +42,9 @@ class XGBoostModelAssembler(ModelAssembler):
 
         base_score = self._base_score
         exprs = [self._assemble_single_output(t, base_score) for t in splits]
-        exp_exprs = [ast.ExpExpr(e, to_cache=True) for e in exprs]
 
+        # Apply softmax function to each output.
+        exp_exprs = [ast.ExpExpr(e, to_cache=True) for e in exprs]
         exp_sum_expr = ast.BinNumExpr(
             exp_exprs[0],
             utils.apply_op_to_expressions(
@@ -63,6 +64,7 @@ class XGBoostModelAssembler(ModelAssembler):
         base_score = -np.log(1.0 / self._base_score - 1.0)
         expr = self._assemble_single_output(trees, base_score)
 
+        # Apply logistic function (sigmoid).
         neg_expr = ast.BinNumExpr(ast.NumVal(0), expr, ast.BinNumOpType.SUB)
         exp_expr = ast.ExpExpr(neg_expr)
         log_loss_expr = ast.BinNumExpr(
