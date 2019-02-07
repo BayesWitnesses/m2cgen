@@ -49,7 +49,8 @@ ATOL = 1.e-6
 RANDOM_SEED = 1234
 TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
-XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10, random_state=RANDOM_SEED)
+XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
+                      random_state=RANDOM_SEED)
 
 
 @utils.cartesian_e2e_params(
