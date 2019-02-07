@@ -43,20 +43,8 @@ class XGBoostModelAssembler(ModelAssembler):
         base_score = self._base_score
         exprs = [self._assemble_single_output(t, base_score) for t in splits]
 
-        # Apply softmax function to each output.
-        exp_exprs = [ast.ExpExpr(e, to_cache=True) for e in exprs]
-        exp_sum_expr = ast.BinNumExpr(
-            exp_exprs[0],
-            utils.apply_op_to_expressions(
-                ast.BinNumOpType.ADD, *exp_exprs[1:]),
-            ast.BinNumOpType.ADD,
-            to_cache=True)
-
-        norm_exprs = [
-            ast.BinNumExpr(e, exp_sum_expr, ast.BinNumOpType.DIV)
-            for e in exp_exprs
-        ]
-        return ast.VectorVal(norm_exprs)
+        proba_exprs = utils.softmax_exprs(exprs)
+        return ast.VectorVal(proba_exprs)
 
     def _assemble_bin_class_output(self, trees):
         # Base score is calculated based on https://github.com/dmlc/xgboost/blob/master/src/objective/regression_loss.h#L64  # noqa
@@ -64,18 +52,11 @@ class XGBoostModelAssembler(ModelAssembler):
         base_score = -np.log(1.0 / self._base_score - 1.0)
         expr = self._assemble_single_output(trees, base_score)
 
-        # Apply logistic function (sigmoid).
-        neg_expr = ast.BinNumExpr(ast.NumVal(0), expr, ast.BinNumOpType.SUB)
-        exp_expr = ast.ExpExpr(neg_expr)
-        log_loss_expr = ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.BinNumExpr(ast.NumVal(1), exp_expr, ast.BinNumOpType.ADD),
-            ast.BinNumOpType.DIV,
-            to_cache=True)
+        proba_expr = utils.sigmoid_expr(expr)
 
         return ast.VectorVal([
-            ast.BinNumExpr(ast.NumVal(1), log_loss_expr, ast.BinNumOpType.SUB),
-            log_loss_expr
+            ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),
+            proba_expr
         ])
 
     def _assemble_single_output(self, trees, base_score):
