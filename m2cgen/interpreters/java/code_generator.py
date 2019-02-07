@@ -54,5 +54,5 @@ class JavaCodeGenerator(CLikeCodeGenerator):
             else self.scalar_output_type)
 
     # Method `function_definition` is required by SubroutinesAsFunctionsMixin.
-    # we already have this functionality in `method_definition` method.
+    # We already have this functionality in `method_definition` method.
     function_definition = method_definition

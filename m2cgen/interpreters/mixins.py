@@ -92,7 +92,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
 Subroutine = namedtuple('Subroutine', ['name', 'expr'])
 
 
-class SubroutinesAsFunctionsMixin(BaseAstToCodeInterpreter):
+class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
     """
     This mixin provides ability to interpret each SubroutineExpr as a function.
 
