@@ -52,14 +52,14 @@ class BaseInterpreter:
         return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
 
 
-class BaseAstToCodeInterpreter(BaseInterpreter):
+class BaseToCodeInterpreter(BaseInterpreter):
 
     def __init__(self, cg, feature_array_name="input"):
         self._cg = cg
         self._feature_array_name = feature_array_name
 
 
-class ToCodeInterpreter(BaseAstToCodeInterpreter):
+class ToCodeInterpreter(BaseToCodeInterpreter):
     """
     This interpreter provides default implementation for the methods
     interpreting AST expression into code.

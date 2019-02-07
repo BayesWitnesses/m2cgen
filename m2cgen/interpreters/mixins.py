@@ -1,12 +1,12 @@
 import sys
 
 from m2cgen import ast
-from m2cgen.interpreters.interpreter import BaseAstToCodeInterpreter
+from m2cgen.interpreters.interpreter import BaseToCodeInterpreter
 
 
-class BinExpressionDepthTrackingMixin(BaseAstToCodeInterpreter):
+class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
     """
-    This mixin provides an ability to call a custom cook when depth of the
+    This mixin provides an ability to call a custom hook when depth of the
     binary expression reaches certain threshold.
 
     Subclasses must specify value for `bin_depth_threshold`
@@ -40,14 +40,15 @@ class BinExpressionDepthTrackingMixin(BaseAstToCodeInterpreter):
         return var_name
 
 
-class LinearAlgebraMixin(BaseAstToCodeInterpreter):
+class LinearAlgebraMixin(BaseToCodeInterpreter):
     """
     This mixin provides simple way to interpret linear algebra expression as
     function invocation.
 
     It also provides flag `with_linear_algebra` which indicates whether
     linear algebra was used during interpretation. It can be used to add
-    dependencies.
+    corresponding third party dependencies that provide linear algebra
+    operations and/or data structures.
     """
 
     with_linear_algebra = False
