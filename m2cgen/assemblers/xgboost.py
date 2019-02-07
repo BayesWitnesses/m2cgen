@@ -37,7 +37,7 @@ class XGBoostModelAssembler(ModelAssembler):
 
     def _assemble_multi_class_output(self, trees):
         # Multi-class output is calculated based on discussion in
-        # https://github.com/dmlc/xgboost/issues/1746
+        # https://github.com/dmlc/xgboost/issues/1746#issuecomment-295962863
         splits = _split_trees_by_classes(trees, self._output_size)
 
         base_score = self._base_score
