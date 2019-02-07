@@ -3,6 +3,7 @@ from enum import Enum
 
 class Expr:
     output_size = 1
+    to_cache = False
 
 
 class FeatureRef(Expr):
@@ -31,6 +32,15 @@ class NumVal(NumExpr):
         return "NumVal(" + str(self.value) + ")"
 
 
+class ExpExpr(NumExpr):
+    def __init__(self, expr, to_cache=False):
+        self.expr = expr
+        self.to_cache = to_cache
+
+    def __str__(self):
+        return "ExpExpr(" + str(self.expr) + ")"
+
+
 class BinNumOpType(Enum):
     ADD = '+'
     SUB = '-'
@@ -39,13 +49,14 @@ class BinNumOpType(Enum):
 
 
 class BinNumExpr(NumExpr, BinExpr):
-    def __init__(self, left, right, op):
+    def __init__(self, left, right, op, to_cache=False):
         assert left.output_size == 1, "Only scalars are supported"
         assert right.output_size == 1, "Only scalars are supported"
 
         self.left = left
         self.right = right
         self.op = op
+        self.to_cache = to_cache
 
     def __str__(self):
         args = ",".join([str(self.left), str(self.right), self.op.name])

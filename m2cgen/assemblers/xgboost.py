@@ -27,10 +27,26 @@ class XGBoostModelAssembler(ModelAssembler):
         if self._output_size == 1:
             return self._assemble_single_output(trees)
         else:
-            split_size = len(trees) / self._output_size
-            splits = np.array_split(trees, split_size)
-            exprs = [self._assemble_single_output(t) for t in splits]
-            return ast.VectorVal(exprs)
+            return self._assemble_multi_output(trees)
+
+    def _assemble_multi_output(self, trees):
+        splits = np.array_split(trees, self._output_size)
+
+        exprs = [self._assemble_single_output(t) for t in splits]
+        exp_exprs = [ast.ExpExpr(e, to_cache=True) for e in exprs]
+
+        exp_sum_expr = ast.BinNumExpr(
+            exp_exprs[0],
+            utils.apply_op_to_expressions(
+                ast.BinNumOpType.ADD, *exp_exprs[1:]),
+            ast.BinNumOpType.ADD,
+            to_cache=True)
+
+        norm_exprs = [
+            ast.BinNumExpr(e, exp_sum_expr, ast.BinNumOpType.DIV)
+            for e in exp_exprs
+        ]
+        return ast.VectorVal(norm_exprs)
 
     def _assemble_single_output(self, trees):
         trees_ast = [self._assemble_tree(t) for t in trees]
@@ -66,4 +82,4 @@ class XGBoostModelAssembler(ModelAssembler):
         for child in tree["children"]:
             if child["nodeid"] == child_id:
                 return self._assemble_tree(child)
-        assert False, "Unexpected tree child ID {}".format(child_id)
+        assert False, "Unexpected child ID {}".format(child_id)

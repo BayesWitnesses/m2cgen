@@ -51,6 +51,10 @@ class JavaInterpreter(ToCodeInterpreter,
 
         return top_cg.code
 
+    def interpret_exp_expr(self, expr):
+        nested_result = self._do_interpret(expr.expr)
+        return self._cg.function_invocation("Math.exp", nested_result)
+
     # Required by SubroutinesAsFunctionsMixin to create new code generator for
     # each subroutine.
     def create_code_generator(self):

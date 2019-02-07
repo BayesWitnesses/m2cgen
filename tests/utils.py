@@ -14,6 +14,7 @@ from sklearn.ensemble import forest
 from sklearn.utils import shuffle
 from sklearn.linear_model.base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
+from xgboost import XGBClassifier
 
 from m2cgen import ast
 
@@ -81,7 +82,7 @@ def _train_model(estimator, dataset, test_fraction):
         y_pred = estimator.decision_function(X_test)
     elif isinstance(estimator, DecisionTreeClassifier):
         y_pred = estimator.predict_proba(X_test.astype(np.float32))
-    elif isinstance(estimator, forest.ForestClassifier):
+    elif isinstance(estimator, (forest.ForestClassifier, XGBClassifier)):
         y_pred = estimator.predict_proba(X_test)
     else:
         y_pred = estimator.predict(X_test)
