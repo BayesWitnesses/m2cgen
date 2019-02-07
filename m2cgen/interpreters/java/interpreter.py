@@ -39,7 +39,7 @@ class JavaInterpreter(ToCodeInterpreter,
 
             # Since we use SubroutinesAsFunctionsMixin, we already have logic
             # of adding methods. We create first subroutine for incoming
-            # expression and call `interpret_subroutines` method to process it.
+            # expression and call `process_subroutine_queue` method.
             self.subroutine_expr_queue = [Subroutine("score", expr)]
             self.process_subroutine_queue(top_cg)
 
