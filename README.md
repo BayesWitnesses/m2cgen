@@ -45,7 +45,7 @@
       <tr>
         <th>Boosting</th>
         <td>XGBClassifier(gbtree/dart booster only)</td>
-        <td>XGBRegressor(gbtree/dart boosters only)</td>
+        <td>XGBRegressor(gbtree/dart booster only)</td>
       </tr>
   </tbody>
 </table>
