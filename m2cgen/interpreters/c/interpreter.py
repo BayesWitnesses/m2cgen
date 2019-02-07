@@ -2,11 +2,11 @@ import os
 
 from m2cgen import ast
 from m2cgen.interpreters import utils, mixins
-from m2cgen import interpreters
 from m2cgen.interpreters.c.code_generator import CCodeGenerator
+from m2cgen.interpreters.interpreter import AstToCodeInterpreter
 
 
-class CInterpreter(interpreters.AstToCodeInterpreter,
+class CInterpreter(AstToCodeInterpreter,
                    mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {

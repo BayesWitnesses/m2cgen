@@ -1,9 +1,9 @@
 import os
 
 from m2cgen import ast
-from m2cgen import interpreters
 from m2cgen.interpreters import mixins
 from m2cgen.interpreters import utils
+from m2cgen.interpreters.interpreter import AstToCodeInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 
 from collections import namedtuple
@@ -12,7 +12,7 @@ from collections import namedtuple
 Subroutine = namedtuple('Subroutine', ['name', 'expr'])
 
 
-class JavaInterpreter(interpreters.AstToCodeInterpreter,
+class JavaInterpreter(AstToCodeInterpreter,
                       mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {

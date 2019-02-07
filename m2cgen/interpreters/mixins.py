@@ -5,23 +5,32 @@ from m2cgen.interpreters.interpreter import BaseAstToCodeInterpreter
 
 
 class BinExpressionDepthTrackingMixin(BaseAstToCodeInterpreter):
+    """
+    This mixin provides an ability to call a custom cook when depth of the
+    binary expression reaches certain threshold.
+
+    Subclasses must specify value for `bin_depth_threshold`
+
+    By default it creates a variable and assigns it the result of the incoming
+    expression interpretation.
+
+    Subclasses may override this default behaviour.
+    """
 
     # disabled by default
     bin_depth_threshold = sys.maxsize
 
-    def _pre_interpret_hook(self, expr, bin_depth=None, **kwargs):
+    def _pre_interpret_hook(self, expr, bin_depth=0, **kwargs):
         if not isinstance(expr, ast.BinExpr):
-            return expr, kwargs
+            return None, kwargs
 
         # We track depth of the binary expressions and call a hook if it
-        # exceeds specified limit.
-        bin_depth = bin_depth + 1 if bin_depth is not None else 1
-
-        if bin_depth > self.bin_depth_threshold:
+        # reaches specified threshold .
+        if bin_depth == self.bin_depth_threshold:
             return self.bin_depth_threshold_hook(expr, **kwargs), kwargs
 
-        kwargs["bin_depth"] = bin_depth
-        return expr, kwargs
+        kwargs["bin_depth"] = bin_depth + 1
+        return None, kwargs
 
     # Default implementation. Simply adds new variable.
     def bin_depth_threshold_hook(self, expr, **kwargs):
@@ -32,6 +41,14 @@ class BinExpressionDepthTrackingMixin(BaseAstToCodeInterpreter):
 
 
 class LinearAlgebraMixin(BaseAstToCodeInterpreter):
+    """
+    This mixin provides simple way to interpret linear algebra expression as
+    function invocation.
+
+    It also provides flag `with_linear_algebra` which indicates whether
+    linear algebra was used during interpretation. It can be used to add
+    dependencies.
+    """
 
     with_linear_algebra = False
 

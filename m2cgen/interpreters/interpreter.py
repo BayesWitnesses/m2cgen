@@ -1,26 +1,29 @@
 import re
 
 from m2cgen import ast
-from m2cgen.interpreters.code_generator import BaseCodeGenerator
 
 
 class BaseAstInterpreter:
+    """
+    Base class of AST interpreter. Provides single public method .interpret()
+    which takes instance of AST expression and recursively applies method
+    _do_interpret() to it.
+    """
 
     def interpret(self, expr):
         return self._do_interpret(expr)
 
-    # Private methods implementing visitor pattern
+    # Private methods implementing Visitor pattern
 
     def _pre_interpret_hook(self, expr, **kwargs):
-        return expr, kwargs
+        return None, kwargs
 
     def _do_interpret(self, expr, **kwargs):
         # Hook which allows to override kwargs and to return custom result.
         result, kwargs = self._pre_interpret_hook(expr, **kwargs)
 
-        # If returned result is the same as incoming expr - it means that we
-        # still need to process it.
-        if result is not expr:
+        # If result is empty, it means that we still need to process expr.
+        if result is not None:
             return result
 
         try:
@@ -29,6 +32,7 @@ class BaseAstInterpreter:
             if isinstance(expr, ast.TransparentExpr):
                 return self._do_interpret(expr.expr,  **kwargs)
             raise
+
         return handler(expr, **kwargs)
 
     def _select_handler(self, expr):
@@ -49,16 +53,25 @@ class BaseAstInterpreter:
 
 
 class BaseAstToCodeInterpreter(BaseAstInterpreter):
-    _cg: BaseCodeGenerator
-
-
-class AstToCodeInterpreter(BaseAstToCodeInterpreter):
-
-    with_vectors = False
 
     def __init__(self, cg, feature_array_name="input"):
         self._cg = cg
         self._feature_array_name = feature_array_name
+
+
+class AstToCodeInterpreter(BaseAstToCodeInterpreter):
+    """
+    This interpreter provides default implementation for the methods
+    interpreting AST expression into code.
+
+    It can be used for the most programming languages and requires only
+    language-specific instance of the CodeGenerator.
+
+    !!IMPORTANT!!: Code generators used by this interpreter must know nothing
+    about AST.
+    """
+
+    with_vectors = False
 
     def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
         if if_var_name is not None:

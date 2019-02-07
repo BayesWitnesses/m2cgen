@@ -15,6 +15,13 @@ class CodeTemplate:
 
 
 class BaseCodeGenerator:
+    """
+    This class provides basic functionality to generate code. It is
+    language-agnostic, but exposes set of attributes which subclasses should
+    use to define syntax specific for certain language(s).
+
+    !!IMPORTANT!!: Code generators must know nothing about AST.
+    """
 
     tpl_num_value = NotImplemented
     tpl_infix_expression = NotImplemented
@@ -47,6 +54,8 @@ class BaseCodeGenerator:
         self._current_indent -= self._indent
         assert self._current_indent >= 0, (
             "Invalid indentation: {}".format(self._current_indent))
+
+    # All code modifications should be implemented via following methods.
 
     def add_code_line(self, line):
         if not line:
@@ -113,6 +122,8 @@ class BaseCodeGenerator:
     def array_index_access(self, array_name, index):
         return self.tpl_array_index_access(
             array_name=array_name, index=index)
+
+    # Helpers
 
     def _get_var_declare_type(self, expr):
         return NotImplemented

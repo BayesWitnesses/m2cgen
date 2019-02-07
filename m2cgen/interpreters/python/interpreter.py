@@ -1,9 +1,9 @@
-from m2cgen import interpreters
 from m2cgen.interpreters import mixins
+from m2cgen.interpreters.interpreter import AstToCodeInterpreter
 from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
 
 
-class PythonInterpreter(interpreters.AstToCodeInterpreter,
+class PythonInterpreter(AstToCodeInterpreter,
                         mixins.BinExpressionDepthTrackingMixin):
 
     # 93 may raise MemoryError, so use something close enough to it not to
