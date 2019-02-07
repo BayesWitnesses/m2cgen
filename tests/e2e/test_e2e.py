@@ -49,7 +49,7 @@ ATOL = 1.e-6
 RANDOM_SEED = 1234
 TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
-XGBOOST_PARAMS = dict(n_estimators=5, random_state=RANDOM_SEED)
+XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10, random_state=RANDOM_SEED)
 
 
 @utils.cartesian_e2e_params(
@@ -67,9 +67,10 @@ XGBOOST_PARAMS = dict(n_estimators=5, random_state=RANDOM_SEED)
         # XGBoost
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
+        classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 
         # SVM
-        # regression(svm.LinearSVR(random_state=RANDOM_SEED)),
+        regression(svm.LinearSVR(random_state=RANDOM_SEED)),
         classification(svm.LinearSVC(random_state=RANDOM_SEED)),
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 

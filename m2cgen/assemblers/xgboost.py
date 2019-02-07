@@ -16,23 +16,32 @@ class XGBoostModelAssembler(ModelAssembler):
         self._feature_name_to_idx = {name: idx for idx, name in feature_names}
 
         self._output_size = 1
+        self._is_classification = False
         model_class_name = type(model).__name__
-        if model_class_name == "XGBClassifier" and self.model.n_classes_ > 2:
-            self._output_size = self.model.n_classes_
+        if model_class_name == "XGBClassifier":
+            self._is_classification = True
+            if self.model.n_classes_ > 2:
+                self._output_size = self.model.n_classes_
 
     def assemble(self):
         model_dump = self.model.get_booster().get_dump(dump_format="json")
         trees = [json.loads(d) for d in model_dump]
 
-        if self._output_size == 1:
-            return self._assemble_single_output(trees)
+        if self._is_classification:
+            if self._output_size == 1:
+                return self._assemble_bin_class_output(trees)
+            else:
+                return self._assemble_multi_class_output(trees)
         else:
-            return self._assemble_multi_output(trees)
+            return self._assemble_single_output(trees, self._base_score)
 
-    def _assemble_multi_output(self, trees):
-        splits = np.array_split(trees, self._output_size)
+    def _assemble_multi_class_output(self, trees):
+        # Multi-class output is calculated based on discussion in
+        # https://github.com/dmlc/xgboost/issues/1746
+        splits = _split_trees_by_classes(trees, self._output_size)
 
-        exprs = [self._assemble_single_output(t) for t in splits]
+        base_score = self._base_score
+        exprs = [self._assemble_single_output(t, base_score) for t in splits]
         exp_exprs = [ast.ExpExpr(e, to_cache=True) for e in exprs]
 
         exp_sum_expr = ast.BinNumExpr(
@@ -48,11 +57,30 @@ class XGBoostModelAssembler(ModelAssembler):
         ]
         return ast.VectorVal(norm_exprs)
 
-    def _assemble_single_output(self, trees):
+    def _assemble_bin_class_output(self, trees):
+        # Base score is calculated based on https://github.com/dmlc/xgboost/blob/master/src/objective/regression_loss.h#L64  # noqa
+        # return -logf(1.0f / base_score - 1.0f);
+        base_score = -np.log(1.0 / self._base_score - 1.0)
+        expr = self._assemble_single_output(trees, base_score)
+
+        neg_expr = ast.BinNumExpr(ast.NumVal(0), expr, ast.BinNumOpType.SUB)
+        exp_expr = ast.ExpExpr(neg_expr)
+        log_loss_expr = ast.BinNumExpr(
+            ast.NumVal(1),
+            ast.BinNumExpr(ast.NumVal(1), exp_expr, ast.BinNumOpType.ADD),
+            ast.BinNumOpType.DIV,
+            to_cache=True)
+
+        return ast.VectorVal([
+            ast.BinNumExpr(ast.NumVal(1), log_loss_expr, ast.BinNumOpType.SUB),
+            log_loss_expr
+        ])
+
+    def _assemble_single_output(self, trees, base_score):
         trees_ast = [self._assemble_tree(t) for t in trees]
         result_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
-            ast.NumVal(self._base_score),
+            ast.NumVal(base_score),
             *trees_ast)
         return ast.SubroutineExpr(result_ast)
 
@@ -83,3 +111,13 @@ class XGBoostModelAssembler(ModelAssembler):
             if child["nodeid"] == child_id:
                 return self._assemble_tree(child)
         assert False, "Unexpected child ID {}".format(child_id)
+
+
+def _split_trees_by_classes(trees, n_classes):
+    # Splits are computed based on a comment
+    # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
+    trees_by_classes = [[] for _ in range(n_classes)]
+    for i in range(len(trees)):
+        class_idx = i % n_classes
+        trees_by_classes[class_idx].append(trees[i])
+    return trees_by_classes

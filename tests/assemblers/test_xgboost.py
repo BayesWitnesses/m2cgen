@@ -8,7 +8,7 @@ from m2cgen import assemblers, ast
 def test_xgboost():
     sys.setrecursionlimit(5000)
     estimator = xgboost.XGBClassifier(n_estimators=5)
-    utils.train_model_classification(estimator)
+    utils.train_model_classification_binary(estimator)
     code = m2c.export_to_java(estimator)
     with open("Model.java", "w") as fd:
         fd.write(code)
