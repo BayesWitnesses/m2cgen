@@ -1,4 +1,5 @@
 import sys
+from collections import namedtuple
 
 from m2cgen import ast
 from m2cgen.interpreters.interpreter import BaseAstToCodeInterpreter
@@ -85,3 +86,64 @@ class LinearAlgebraMixin(BaseAstToCodeInterpreter):
             self._do_interpret(expr.left, **kwargs),
             self._do_interpret(expr.right, **kwargs),
             *extra_func_args)
+
+
+Subroutine = namedtuple('Subroutine', ['name', 'expr'])
+
+
+class SubroutinesAsFunctionsMixin(BaseAstToCodeInterpreter):
+    """
+    This mixin provides ability to interpret each SubroutineExpr as a function.
+
+    Subclass only need to implement `create_code_generator` method.
+
+    Their code generators should implement 3 methods:
+         - function_definition;
+         - function_invocation;
+         - add_return_statement.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self._subroutine_idx = 0
+        self.subroutine_expr_queue = []
+        super().__init__(*args, **kwargs)
+
+    def interpret_subroutine_expr(self, expr, **kwargs):
+        function_name = self._get_subroutine_name()
+        return self._enqueue_subroutine(function_name, expr)
+
+    def interpret_subroutines(self, top_code_generator):
+        self._subroutine_idx = 0
+
+        while len(self.subroutine_expr_queue):
+            subroutine = self.subroutine_expr_queue.pop(0)
+            subroutine_code = self.process_subroutine(subroutine)
+            top_code_generator.add_code_lines(subroutine_code)
+
+    def process_subroutine(self, subroutine):
+        is_vector_output = subroutine.expr.output_size > 1
+
+        self._cg = self.create_code_generator()
+
+        with self._cg.function_definition(
+                name=subroutine.name,
+                args=[(True, self._feature_array_name)],
+                is_vector_output=is_vector_output):
+            last_result = self._do_interpret(subroutine.expr)
+            self._cg.add_return_statement(last_result)
+
+        return self._cg.code
+
+    def _enqueue_subroutine(self, name, expr):
+        self.subroutine_expr_queue.append(Subroutine(name, expr.expr))
+        return self._cg.function_invocation(name, self._feature_array_name)
+
+    def _get_subroutine_name(self):
+        subroutine_name = "subroutine" + str(self._subroutine_idx)
+        self._subroutine_idx += 1
+        return subroutine_name
+
+    # Methods to be defined by subclasses.
+
+    def create_code_generator(self):
+        raise NotImplementedError
