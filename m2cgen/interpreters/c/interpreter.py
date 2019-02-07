@@ -20,6 +20,7 @@ class CInterpreter(ToCodeInterpreter,
     def __init__(self, indent=4, *args, **kwargs):
         cg = CCodeGenerator(indent=indent)
         super(CInterpreter, self).__init__(cg, *args, **kwargs)
+        self.with_exponent = False
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -54,6 +55,9 @@ class CInterpreter(ToCodeInterpreter,
                 os.path.dirname(__file__), "assign_array.c")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_exponent:
+            self._cg.add_dependency("<math.h>")
+
         return self._cg.code
 
     # Both methods supporting linear algebra do several things:
@@ -86,3 +90,8 @@ class CInterpreter(ToCodeInterpreter,
         self._cg.add_code_line(func_inv + ";")
 
         return var_name
+
+    def interpret_exp_expr(self, expr):
+        self.with_exponent = True
+        nested_result = self._do_interpret(expr.expr)
+        return self._cg.function_invocation("exp", nested_result)
