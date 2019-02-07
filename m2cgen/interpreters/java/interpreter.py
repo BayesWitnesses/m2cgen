@@ -26,8 +26,10 @@ class JavaInterpreter(ToCodeInterpreter,
         self.class_name = class_name
         self.indent = indent
 
-        cg = self.create_code_generator()
-        super(JavaInterpreter, self).__init__(cg, *args, **kwargs)
+        # We don't provide any code generator as for each subroutine we will
+        # create a new one and concatenate their results into top_cg created
+        # in .interpret() method.
+        super(JavaInterpreter, self).__init__(None, *args, **kwargs)
 
     def interpret(self, expr):
         top_cg = self.create_code_generator()
