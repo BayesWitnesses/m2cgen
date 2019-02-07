@@ -1,12 +1,13 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import utils
-from m2cgen.interpreters.interpreter import InterpreterWithLinearAlgebra
+from m2cgen.interpreters import utils, mixins
 from m2cgen.interpreters.c.code_generator import CCodeGenerator
+from m2cgen.interpreters.interpreter import ToCodeInterpreter
 
 
-class CInterpreter(InterpreterWithLinearAlgebra):
+class CInterpreter(ToCodeInterpreter,
+                   mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "add_vectors",
@@ -15,8 +16,6 @@ class CInterpreter(InterpreterWithLinearAlgebra):
     supported_bin_vector_num_ops = {
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
-
-    with_vectors = False
 
     def __init__(self, indent=4, *args, **kwargs):
         cg = CCodeGenerator(indent=indent)
@@ -56,10 +55,6 @@ class CInterpreter(InterpreterWithLinearAlgebra):
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         return self._cg.code
-
-    def interpret_vector_val(self, expr, **kwargs):
-        self.with_vectors = True
-        return super().interpret_vector_val(expr, **kwargs)
 
     # Both methods supporting linear algebra do several things:
     #
