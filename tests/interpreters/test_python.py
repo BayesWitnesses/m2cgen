@@ -219,6 +219,78 @@ def  score(input):
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_deep_mixed_exprs_not_reaching_threshold():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        inner = ast.NumVal(1)
+        for i in range(2):
+            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+
+        expr = ast.IfExpr(
+            ast.CompExpr(
+                inner, ast.NumVal(1), ast.CompOpType.EQ),
+            ast.NumVal(1),
+            expr)
+
+    interpreter = CustomPythonInterpreter()
+
+    expected_code = """
+def  score(input):
+    if ((1) + ((1) + (1))) == (1):
+        var0 = 1
+    else:
+        if ((1) + ((1) + (1))) == (1):
+            var0 = 1
+        else:
+            if ((1) + ((1) + (1))) == (1):
+                var0 = 1
+            else:
+                if ((1) + ((1) + (1))) == (1):
+                    var0 = 1
+                else:
+                    var0 = 1
+    return var0"""
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_deep_mixed_exprs_exceeding_threshold():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        inner = ast.NumVal(1)
+        for i in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+
+        expr = ast.IfExpr(
+            ast.CompExpr(
+                inner, ast.NumVal(1), ast.CompOpType.EQ),
+            ast.NumVal(1),
+            expr)
+
+    interpreter = CustomPythonInterpreter()
+
+    expected_code = """
+def  score(input):
+    var1 = (1) + ((1) + (1))
+    if ((1) + ((1) + (var1))) == (1):
+        var0 = 1
+    else:
+        var2 = (1) + ((1) + (1))
+        if ((1) + ((1) + (var2))) == (1):
+            var0 = 1
+        else:
+            var3 = (1) + ((1) + (1))
+            if ((1) + ((1) + (var3))) == (1):
+                var0 = 1
+            else:
+                var4 = (1) + ((1) + (1))
+                if ((1) + ((1) + (var4))) == (1):
+                    var0 = 1
+                else:
+                    var0 = 1
+    return var0"""
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_deep_expression():
     expr = ast.NumVal(1)
     for i in range(120):

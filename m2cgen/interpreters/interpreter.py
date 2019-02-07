@@ -3,7 +3,7 @@ import re
 from m2cgen import ast
 
 
-class BaseAstInterpreter:
+class BaseInterpreter:
     """
     Base class of AST interpreter. Provides single public method .interpret()
     which takes instance of AST expression and recursively applies method
@@ -44,7 +44,7 @@ class BaseAstInterpreter:
 
     @staticmethod
     def _handler_name(expr_tpe):
-        expr_name = BaseAstInterpreter._normalize_expr_name(expr_tpe.__name__)
+        expr_name = BaseInterpreter._normalize_expr_name(expr_tpe.__name__)
         return "interpret_" + expr_name
 
     @staticmethod
@@ -52,14 +52,14 @@ class BaseAstInterpreter:
         return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
 
 
-class BaseAstToCodeInterpreter(BaseAstInterpreter):
+class BaseAstToCodeInterpreter(BaseInterpreter):
 
     def __init__(self, cg, feature_array_name="input"):
         self._cg = cg
         self._feature_array_name = feature_array_name
 
 
-class AstToCodeInterpreter(BaseAstToCodeInterpreter):
+class ToCodeInterpreter(BaseAstToCodeInterpreter):
     """
     This interpreter provides default implementation for the methods
     interpreting AST expression into code.
