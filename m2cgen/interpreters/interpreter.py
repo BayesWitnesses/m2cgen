@@ -9,9 +9,45 @@ class BaseInterpreter:
     which takes instance of AST expression and recursively applies method
     _do_interpret() to it.
     """
+    def __init__(self):
+        self._cached_expr_results = {}
 
     def interpret(self, expr):
         return self._do_interpret(expr)
+
+    def _pre_interpret_hook(self, expr, **kwargs):
+        return None, kwargs
+
+    def _do_interpret(self, expr, **kwargs):
+        # Hook which allows to override kwargs and to return custom result.
+        result, kwargs = self._pre_interpret_hook(expr, **kwargs)
+
+        # If result is empty, it means that we still need to process expr.
+        if result is not None:
+            return result
+
+        try:
+            handler = self._select_handler(expr)
+        except NotImplementedError:
+            if isinstance(expr, ast.TransparentExpr):
+                return self._do_interpret(expr.expr, **kwargs)
+            raise
+
+        if not expr.to_reuse:
+            return handler(expr, **kwargs)
+
+        if expr in self._cached_expr_results:
+            return self._cached_expr_results[expr]
+
+        result = handler(expr, **kwargs)
+        return self._cache_reused_expr(expr, result)
+
+    def _cache_reused_expr(self, expr, expr_result):
+        # No caching by default.
+        return expr_result
+
+    def _reset_reused_expr_cache(self):
+        self._cached_expr_results = {}
 
     def _select_handler(self, expr):
         handler_name = self._handler_name(type(expr))
@@ -33,6 +69,7 @@ class BaseInterpreter:
 class BaseToCodeInterpreter(BaseInterpreter):
 
     def __init__(self, cg, feature_array_name="input"):
+        super().__init__()
         self._cg = cg
         self._feature_array_name = feature_array_name
 
@@ -52,7 +89,6 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     def __init__(self, cg, feature_array_name="input"):
         super().__init__(cg, feature_array_name=feature_array_name)
         self.with_vectors = False
-        self._cached_expr_results = {}
 
     def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
         if if_var_name is not None:
@@ -101,32 +137,8 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
 
-    def _pre_interpret_hook(self, expr, **kwargs):
-        return None, kwargs
-
-    def _do_interpret(self, expr, **kwargs):
-        # Hook which allows to override kwargs and to return custom result.
-        result, kwargs = self._pre_interpret_hook(expr, **kwargs)
-
-        # If result is empty, it means that we still need to process expr.
-        if result is not None:
-            return result
-
-        try:
-            handler = self._select_handler(expr)
-        except NotImplementedError:
-            if isinstance(expr, ast.TransparentExpr):
-                return self._do_interpret(expr.expr,  **kwargs)
-            raise
-
-        if not expr.to_reuse:
-            return handler(expr, **kwargs)
-
-        if expr in self._cached_expr_results:
-            return self._cached_expr_results[expr]
-
-        result = handler(expr, **kwargs)
+    def _cache_reused_expr(self, expr, expr_result):
         var_name = self._cg.add_var_declaration(expr.output_size)
-        self._cg.add_var_assignment(var_name, result, expr.output_size)
+        self._cg.add_var_assignment(var_name, expr_result, expr.output_size)
         self._cached_expr_results[expr] = var_name
         return var_name

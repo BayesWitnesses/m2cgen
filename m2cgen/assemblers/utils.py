@@ -33,7 +33,7 @@ def apply_bin_op(left, right, op):
     return exr_class(left, right, op)
 
 
-def apply_op_to_expressions(op, *exprs):
+def apply_op_to_expressions(op, *exprs, to_reuse=False):
     if len(exprs) < 2:
         raise ValueError("At least two expressions are required")
 
@@ -44,7 +44,9 @@ def apply_op_to_expressions(op, *exprs):
         return _inner(
             apply_bin_op(current_expr, rest_exprs[0], op), *rest_exprs[1:])
 
-    return _inner(apply_bin_op(exprs[0], exprs[1], op), *exprs[2:])
+    result = _inner(apply_bin_op(exprs[0], exprs[1], op), *exprs[2:])
+    result.to_reuse = to_reuse
+    return result
 
 
 def to_1d_array(var):
@@ -71,11 +73,8 @@ def sigmoid_expr(expr, to_reuse=False):
 
 def softmax_exprs(exprs):
     exp_exprs = [ast.ExpExpr(e, to_reuse=True) for e in exprs]
-    exp_sum_expr = ast.BinNumExpr(
-        exp_exprs[0],
-        apply_op_to_expressions(ast.BinNumOpType.ADD, *exp_exprs[1:]),
-        ast.BinNumOpType.ADD,
-        to_reuse=True)
+    exp_sum_expr = apply_op_to_expressions(ast.BinNumOpType.ADD, *exp_exprs,
+                                           to_reuse=True)
     return [
         ast.BinNumExpr(e, exp_sum_expr, ast.BinNumOpType.DIV)
         for e in exp_exprs
