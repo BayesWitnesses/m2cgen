@@ -15,11 +15,7 @@ install:
   - pip install -r requirements-test.txt
 
 script:
-  - flake8
-
-  # Verify that examples in generated_code_examples folder are valid.
-  - python tools/generate_code_examples.py generated_code_examples_new
-  - diff -Naur generated_code_examples generated_code_examples_new/
+  - flake8 .
 
   # Since we develop a library, we want to make sure that it properly runs
   # after installation. We already ran into an issue when some files were
@@ -33,3 +29,7 @@ script:
   - python setup.py install
   - rm -rfd m2cgen/
   - pytest -v tests/e2e/
+
+  # Verify that examples in generated_code_examples folder are valid.
+  - python tools/generate_code_examples.py generated_code_examples_new
+  - diff -Naur generated_code_examples generated_code_examples_new/
