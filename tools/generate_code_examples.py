@@ -6,7 +6,7 @@ Example usage:
 
 The structure of the exported code will be:
 
-<absolute_path_to_folder>/<language>/<model_name>.<language_ext>
+<absolute_path_to_folder>/<language>/<model_type><model_name>.<language_ext>
 """
 import os
 import sys
