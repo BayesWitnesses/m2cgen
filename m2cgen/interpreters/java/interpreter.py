@@ -32,6 +32,7 @@ class JavaInterpreter(ToCodeInterpreter,
 
     def interpret(self, expr):
         top_cg = self.create_code_generator()
+        self._reset_reused_expr_cache()
 
         if self.package_name:
             top_cg.add_package_name(self.package_name)

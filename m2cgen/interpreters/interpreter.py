@@ -13,6 +13,7 @@ class BaseInterpreter:
         self._cached_expr_results = {}
 
     def interpret(self, expr):
+        self._reset_reused_expr_cache()
         return self._do_interpret(expr)
 
     def _pre_interpret_hook(self, expr, **kwargs):

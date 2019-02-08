@@ -17,6 +17,7 @@ class PythonInterpreter(ToCodeInterpreter,
 
     def interpret(self, expr):
         self._cg.reset_state()
+        self._reset_reused_expr_cache()
 
         with self._cg.function_definition(
                 name="score",

@@ -24,6 +24,7 @@ class CInterpreter(ToCodeInterpreter,
 
     def interpret(self, expr):
         self._cg.reset_state()
+        self._reset_reused_expr_cache()
 
         args = [(True, self._feature_array_name)]
 

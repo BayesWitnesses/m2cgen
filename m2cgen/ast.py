@@ -6,8 +6,8 @@ class Expr:
     # Setting this value to true serves as an indication that the result
     # of evaluation of this expression is being used in other expressions
     # and it's recommended to persist or cache it in some way.
-    # The actual caching mechanism (if any) is left up to a specific interpreter
-    # implementation to provide.
+    # The actual caching mechanism (if any) is left up to a specific
+    # interpreter implementation to provide.
     to_reuse = False
 
 
@@ -43,7 +43,8 @@ class ExpExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        return "ExpExpr(" + str(self.expr) + ")"
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "ExpExpr(" + args + ")"
 
 
 class BinNumOpType(Enum):
@@ -64,7 +65,12 @@ class BinNumExpr(NumExpr, BinExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.left), str(self.right), self.op.name])
+        args = ",".join([
+            str(self.left),
+            str(self.right),
+            self.op.name,
+            "to_reuse=" + str(self.to_reuse)
+        ])
         return "BinNumExpr(" + args + ")"
 
 
