@@ -16,6 +16,8 @@ class BaseInterpreter:
         self._reset_reused_expr_cache()
         return self._do_interpret(expr)
 
+    # Private methods implementing Visitor pattern
+
     def _pre_interpret_hook(self, expr, **kwargs):
         return None, kwargs
 

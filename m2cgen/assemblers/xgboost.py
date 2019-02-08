@@ -77,6 +77,9 @@ class XGBoostModelAssembler(ModelAssembler):
         feature_idx = self._feature_name_to_idx[tree["split"]]
         feature_ref = ast.FeatureRef(feature_idx)
 
+        # Since comparison with NaN (missing) value always returns false we
+        # should make sure that the node ID specified in the "missing" field
+        # always ends up in the "else" branch of the ast.IfExpr.
         use_lt_comp = tree["missing"] == tree["no"]
         if use_lt_comp:
             comp_op = ast.CompOpType.LT
