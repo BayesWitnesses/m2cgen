@@ -102,6 +102,10 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
          - function_definition;
          - function_invocation;
          - add_return_statement.
+
+    Interpreter should prepare at least one subroutine using method
+    `enqueue_subroutine` and then call method `process_subroutine_queue` with
+    instance of code generator, which will be populated with the result code.
     """
 
     def __init__(self, *args, **kwargs):
@@ -126,7 +130,9 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
         This method will be called whenever new subroutine is encountered.
         """
         function_name = self._get_subroutine_name()
-        return self._enqueue_subroutine(function_name, expr)
+        self.enqueue_subroutine(function_name, expr.expr)
+        return self._cg.function_invocation(
+            function_name, self._feature_array_name)
 
     def process_subroutine(self, subroutine):
         """
@@ -146,9 +152,8 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
 
         return self._cg.code
 
-    def _enqueue_subroutine(self, name, expr):
-        self.subroutine_expr_queue.append(Subroutine(name, expr.expr))
-        return self._cg.function_invocation(name, self._feature_array_name)
+    def enqueue_subroutine(self, name, expr):
+        self.subroutine_expr_queue.append(Subroutine(name, expr))
 
     def _get_subroutine_name(self):
         subroutine_name = "subroutine" + str(self._subroutine_idx)

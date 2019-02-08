@@ -5,7 +5,6 @@ from m2cgen.interpreters import mixins
 from m2cgen.interpreters import utils
 from m2cgen.interpreters.interpreter import ToCodeInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
-from m2cgen.interpreters.mixins import Subroutine
 
 
 class JavaInterpreter(ToCodeInterpreter,
@@ -29,7 +28,7 @@ class JavaInterpreter(ToCodeInterpreter,
         # We don't provide any code generator as for each subroutine we will
         # create a new one and concatenate their results into top_cg created
         # in .interpret() method.
-        super(JavaInterpreter, self).__init__(None, *args, **kwargs)
+        super().__init__(None, *args, **kwargs)
 
     def interpret(self, expr):
         top_cg = self.create_code_generator()
@@ -42,7 +41,7 @@ class JavaInterpreter(ToCodeInterpreter,
             # Since we use SubroutinesAsFunctionsMixin, we already have logic
             # of adding methods. We create first subroutine for incoming
             # expression and call `process_subroutine_queue` method.
-            self.subroutine_expr_queue = [Subroutine("score", expr)]
+            self.enqueue_subroutine("score", expr)
             self.process_subroutine_queue(top_cg)
 
             if self.with_linear_algebra:
