@@ -1,4 +1,5 @@
 import sys
+from collections import namedtuple
 
 from m2cgen import ast
 from m2cgen.interpreters.interpreter import BaseToCodeInterpreter
@@ -9,7 +10,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
     This mixin provides an ability to call a custom hook when depth of the
     binary expression reaches certain threshold.
 
-    Subclasses must specify value for `bin_depth_threshold`
+    Subclasses must specify value for `bin_depth_threshold`.
 
     By default it creates a variable and assigns it the result of the incoming
     expression interpretation.
@@ -86,3 +87,80 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
             self._do_interpret(expr.left, **kwargs),
             self._do_interpret(expr.right, **kwargs),
             *extra_func_args)
+
+
+Subroutine = namedtuple('Subroutine', ['name', 'expr'])
+
+
+class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
+    """
+    This mixin provides ability to interpret each SubroutineExpr as a function.
+
+    Subclasses only need to implement `create_code_generator` method.
+
+    Their code generators should implement 3 methods:
+         - function_definition;
+         - function_invocation;
+         - add_return_statement.
+
+    Interpreter should prepare at least one subroutine using method
+    `enqueue_subroutine` and then call method `process_subroutine_queue` with
+    instance of code generator, which will be populated with the result code.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self._subroutine_idx = 0
+        self.subroutine_expr_queue = []
+        super().__init__(*args, **kwargs)
+
+    def process_subroutine_queue(self, top_code_generator):
+        """
+        This method should be called from the interpreter to start processing
+        subroutine queue.
+        """
+        self._subroutine_idx = 0
+
+        while len(self.subroutine_expr_queue):
+            subroutine = self.subroutine_expr_queue.pop(0)
+            subroutine_code = self.process_subroutine(subroutine)
+            top_code_generator.add_code_lines(subroutine_code)
+
+    def interpret_subroutine_expr(self, expr, **kwargs):
+        """
+        This method will be called whenever new subroutine is encountered.
+        """
+        function_name = self._get_subroutine_name()
+        self.enqueue_subroutine(function_name, expr.expr)
+        return self._cg.function_invocation(
+            function_name, self._feature_array_name)
+
+    def process_subroutine(self, subroutine):
+        """
+        Handles single subroutine. Creates new code generator and defines a
+        function for a given subroutine.
+        """
+        is_vector_output = subroutine.expr.output_size > 1
+
+        self._cg = self.create_code_generator()
+
+        with self._cg.function_definition(
+                name=subroutine.name,
+                args=[(True, self._feature_array_name)],
+                is_vector_output=is_vector_output):
+            last_result = self._do_interpret(subroutine.expr)
+            self._cg.add_return_statement(last_result)
+
+        return self._cg.code
+
+    def enqueue_subroutine(self, name, expr):
+        self.subroutine_expr_queue.append(Subroutine(name, expr))
+
+    def _get_subroutine_name(self):
+        subroutine_name = "subroutine" + str(self._subroutine_idx)
+        self._subroutine_idx += 1
+        return subroutine_name
+
+    # Methods to be implemented by subclasses.
+
+    def create_code_generator(self):
+        raise NotImplementedError

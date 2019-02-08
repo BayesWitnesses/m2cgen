@@ -44,9 +44,6 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         yield
         self.add_block_termination()
 
-    def method_invocation(self, method_name, *args):
-        return method_name + "(" + ", ".join(args) + ")"
-
     def vector_init(self, values):
         return "new " + self.vector_output_type + (
             " {" + ", ".join(values) + "}")
@@ -55,3 +52,7 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         return (
             self.vector_output_type if is_vector
             else self.scalar_output_type)
+
+    # Method `function_definition` is required by SubroutinesAsFunctionsMixin.
+    # We already have this functionality in `method_definition` method.
+    function_definition = method_definition
