@@ -11,27 +11,11 @@ void score(double * input, double * output) {
             if ((input[3]) <= (1.6500001)) {
                 assign_array((double[]){0.0, 1.0, 0.0}, var0, 3);
             } else {
-                if ((input[1]) <= (3.1)) {
-                    assign_array((double[]){0.0, 0.0, 1.0}, var0, 3);
-                } else {
-                    assign_array((double[]){0.0, 1.0, 0.0}, var0, 3);
-                }
+                assign_array((double[]){0.0, 0.3333333333333333, 0.6666666666666666}, var0, 3);
             }
         } else {
             if ((input[3]) <= (1.75)) {
-                if ((input[2]) <= (5.35)) {
-                    if ((input[3]) <= (1.55)) {
-                        if ((input[2]) <= (4.95)) {
-                            assign_array((double[]){0.0, 1.0, 0.0}, var0, 3);
-                        } else {
-                            assign_array((double[]){0.0, 0.0, 1.0}, var0, 3);
-                        }
-                    } else {
-                        assign_array((double[]){0.0, 1.0, 0.0}, var0, 3);
-                    }
-                } else {
-                    assign_array((double[]){0.0, 0.0, 1.0}, var0, 3);
-                }
+                assign_array((double[]){0.0, 0.42857142857142855, 0.5714285714285714}, var0, 3);
             } else {
                 assign_array((double[]){0.0, 0.0, 1.0}, var0, 3);
             }

@@ -18,8 +18,9 @@ from tests import utils
 
 
 RANDOM_SEED = 1234
-TREE_PARAMS = dict(random_state=RANDOM_SEED)
-FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
+TREE_PARAMS = dict(random_state=RANDOM_SEED, max_leaf_nodes=5)
+FOREST_PARAMS = dict(
+    n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
 
 
 EXAMPLE_LANGUAGES = [
