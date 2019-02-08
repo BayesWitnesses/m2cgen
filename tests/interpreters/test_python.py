@@ -12,7 +12,7 @@ def test_if_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-def  score(input):
+def score(input):
     if (1) == (input[0]):
         var0 = 2
     else:
@@ -33,7 +33,7 @@ def test_bin_num_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-def  score(input):
+def score(input):
     return ((input[0]) / (-2)) * (2)
     """
 
@@ -57,7 +57,7 @@ def test_dependable_condition():
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
-def  score(input):
+def score(input):
     if (1) == (1):
         var1 = 1
     else:
@@ -92,7 +92,7 @@ def test_nested_condition():
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
-def  score(input):
+def score(input):
     if (1) == (1):
         var1 = 1
     else:
@@ -127,7 +127,7 @@ def test_multi_output():
 
     expected_code = """
 import numpy as np
-def  score(input):
+def score(input):
     if (1) == (1):
         var0 = np.asarray([1, 2])
     else:
@@ -149,7 +149,7 @@ def test_bin_vector_expr():
 
     expected_code = """
 import numpy as np
-def  score(input):
+def score(input):
     return (np.asarray([1, 2])) * (np.asarray([3, 4]))
 """
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -165,7 +165,7 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 import numpy as np
-def  score(input):
+def score(input):
     return (np.asarray([1, 2])) * (1)
 """
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -183,7 +183,7 @@ def test_depth_threshold_with_bin_expr():
     interpreter = CustomPythonInterpreter()
 
     expected_code = """
-def  score(input):
+def score(input):
     var0 = (1) + ((1) + (1))
     return (1) + ((1) + (var0))"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -201,7 +201,7 @@ def test_depth_threshold_without_bin_expr():
     interpreter = CustomPythonInterpreter()
 
     expected_code = """
-def  score(input):
+def score(input):
     if (1) == (1):
         var0 = 1
     else:
@@ -235,7 +235,7 @@ def test_deep_mixed_exprs_not_reaching_threshold():
     interpreter = CustomPythonInterpreter()
 
     expected_code = """
-def  score(input):
+def score(input):
     if ((1) + ((1) + (1))) == (1):
         var0 = 1
     else:
@@ -269,7 +269,7 @@ def test_deep_mixed_exprs_exceeding_threshold():
     interpreter = CustomPythonInterpreter()
 
     expected_code = """
-def  score(input):
+def score(input):
     var1 = (1) + ((1) + (1))
     if ((1) + ((1) + (var1))) == (1):
         var0 = 1

@@ -1,4 +1,4 @@
-def  score(input):
+def score(input):
     if (input[5]) <= (6.941):
         if (input[12]) <= (14.395):
             if (input[7]) <= (1.43365):

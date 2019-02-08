@@ -1,5 +1,5 @@
 import numpy as np
-def  score(input):
+def score(input):
     if (input[2]) <= (2.6):
         var0 = np.asarray([1.0, 0.0, 0.0])
     else:

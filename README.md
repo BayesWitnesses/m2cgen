@@ -78,7 +78,9 @@ public class Model {
 }
 ```
 
-TODO: explain the difference between regression (single value output) and classification (multi-value output). Show how to handle vector outputs in C.
+**You can find more examples of generated code for different models/languages [here](https://github.com/BayesWitnesses/m2cgen/tree/master/generated_code_examples)**
+
+**TODO**: explain the difference between regression (single value output) and classification (multi-value output). Show how to handle vector outputs in C.
 
 ## CLI
 

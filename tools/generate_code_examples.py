@@ -31,32 +31,32 @@ EXAMPLE_LANGUAGES = [
 
 EXAMPLE_MODELS = [
     (
-        "linear_regression",
+        "regression", "linear",
         linear_model.LinearRegression(),
         utils.train_model_regression,
     ),
     (
-        "linear_classification",
+        "classification", "linear",
         linear_model.LogisticRegression(random_state=RANDOM_SEED),
         utils.train_model_classification,
     ),
     (
-        "decision_tree_regression",
+        "regression", "decision_tree",
         tree.DecisionTreeRegressor(**TREE_PARAMS),
         utils.train_model_regression,
     ),
     (
-        "decision_tree_classification",
+        "classification", "decision_tree",
         tree.DecisionTreeClassifier(**TREE_PARAMS),
         utils.train_model_classification,
     ),
     (
-        "random_forest_regression",
+        "regression", "random_forest",
         ensemble.RandomForestRegressor(**FOREST_PARAMS),
         utils.train_model_regression,
     ),
     (
-        "random_forest_classification",
+        "classification", "random_forest",
         ensemble.RandomForestClassifier(**FOREST_PARAMS),
         utils.train_model_classification,
     ),
@@ -71,15 +71,15 @@ if __name__ == "__main__":
     export_folder = os.path.abspath(sys.argv[1])
 
     prod = itertools.product(EXAMPLE_LANGUAGES, EXAMPLE_MODELS)
-    for (language, exporter, file_ext), (model_name, model, trainer) in prod:
+    for (language, exporter, file_ext), (mtype, mname, model, trainer) in prod:
         trainer(model)
 
         # Make sure path exists, create if doesn't.
-        language_path = os.path.join(export_folder, language)
-        os.makedirs(language_path, exist_ok=True)
+        folder = os.path.join(export_folder, language, mtype)
+        os.makedirs(folder, exist_ok=True)
 
-        model_filename = "{}.{}".format(model_name, file_ext)
-        model_path = os.path.join(language_path, model_filename)
+        model_filename = "{}.{}".format(mname, file_ext)
+        model_path = os.path.join(folder, model_filename)
 
         with open(model_path, "w") as f:
             f.write(exporter(model))
