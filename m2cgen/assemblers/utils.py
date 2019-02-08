@@ -59,14 +59,14 @@ def to_2d_array(var):
     return np.reshape(np.asarray(var), (x, y))
 
 
-def sigmoid_expr(expr):
+def sigmoid_expr(expr, to_reuse=False):
     neg_expr = ast.BinNumExpr(ast.NumVal(0), expr, ast.BinNumOpType.SUB)
     exp_expr = ast.ExpExpr(neg_expr)
     return ast.BinNumExpr(
         ast.NumVal(1),
         ast.BinNumExpr(ast.NumVal(1), exp_expr, ast.BinNumOpType.ADD),
         ast.BinNumOpType.DIV,
-        to_reuse=True)
+        to_reuse=to_reuse)
 
 
 def softmax_exprs(exprs):

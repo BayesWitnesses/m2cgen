@@ -12,8 +12,10 @@ class XGBoostModelAssembler(ModelAssembler):
         self._base_score = self.model.base_score
         self._n_estimators = self.model.n_estimators
 
-        feature_names = enumerate(self.model.get_booster().feature_names)
-        self._feature_name_to_idx = {name: idx for idx, name in feature_names}
+        feature_names = self.model.get_booster().feature_names
+        self._feature_name_to_idx = {
+            name: idx for idx, name in enumerate(feature_names)
+        }
 
         self._output_size = 1
         self._is_classification = False
@@ -52,7 +54,7 @@ class XGBoostModelAssembler(ModelAssembler):
         base_score = -np.log(1.0 / self._base_score - 1.0)
         expr = self._assemble_single_output(trees, base_score)
 
-        proba_expr = utils.sigmoid_expr(expr)
+        proba_expr = utils.sigmoid_expr(expr, to_reuse=True)
 
         return ast.VectorVal([
             ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),

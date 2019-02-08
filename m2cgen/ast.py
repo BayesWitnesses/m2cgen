@@ -3,6 +3,11 @@ from enum import Enum
 
 class Expr:
     output_size = 1
+    # Setting this value to true serves as an indication that the result
+    # of evaluation of this expression is being used in other expressions
+    # and it's recommended to persist or cache it in some way.
+    # The actual caching mechanism (if any) is left up to a specific interpreter
+    # implementation to provide.
     to_reuse = False
 
 

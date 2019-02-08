@@ -52,7 +52,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     def __init__(self, cg, feature_array_name="input"):
         super().__init__(cg, feature_array_name=feature_array_name)
         self.with_vectors = False
-        self._reused_exprs = {}
+        self._cached_expr_results = {}
 
     def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
         if if_var_name is not None:
@@ -122,11 +122,11 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         if not expr.to_reuse:
             return handler(expr, **kwargs)
 
-        if expr in self._reused_exprs:
-            return self._reused_exprs[expr]
+        if expr in self._cached_expr_results:
+            return self._cached_expr_results[expr]
 
         result = handler(expr, **kwargs)
         var_name = self._cg.add_var_declaration(expr.output_size)
         self._cg.add_var_assignment(var_name, result, expr.output_size)
-        self._reused_exprs[expr] = var_name
+        self._cached_expr_results[expr] = var_name
         return var_name
