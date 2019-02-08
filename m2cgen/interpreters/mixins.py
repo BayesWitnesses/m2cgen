@@ -10,7 +10,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
     This mixin provides an ability to call a custom hook when depth of the
     binary expression reaches certain threshold.
 
-    Subclasses must specify value for `bin_depth_threshold`
+    Subclasses must specify value for `bin_depth_threshold`.
 
     By default it creates a variable and assigns it the result of the incoming
     expression interpretation.
@@ -96,7 +96,7 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
     """
     This mixin provides ability to interpret each SubroutineExpr as a function.
 
-    Subclass only need to implement `create_code_generator` method.
+    Subclasses only need to implement `create_code_generator` method.
 
     Their code generators should implement 3 methods:
          - function_definition;
