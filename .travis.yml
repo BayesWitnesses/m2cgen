@@ -17,10 +17,6 @@ install:
 script:
   - flake8 .
 
-  # Verify that examples in generated_code_examples folder are valid.
-  - PYTHONPATH=$(pwd) python tools/generate_code_examples.py generated_code_examples_new
-  - diff -Naur generated_code_examples generated_code_examples_new/
-
   # Since we develop a library, we want to make sure that it properly runs
   # after installation. We already ran into an issue when some files were
   # forgotten to be included in package_data and it was not caught by tests.
