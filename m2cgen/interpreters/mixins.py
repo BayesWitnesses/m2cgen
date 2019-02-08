@@ -121,6 +121,7 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
         self._subroutine_idx = 0
 
         while len(self.subroutine_expr_queue):
+            self._reset_reused_expr_cache()
             subroutine = self.subroutine_expr_queue.pop(0)
             subroutine_code = self.process_subroutine(subroutine)
             top_code_generator.add_code_lines(subroutine_code)
