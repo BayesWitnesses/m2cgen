@@ -31,7 +31,11 @@ def cmp_exprs(left, right):
         return True
 
     if not isinstance(left, ast.Expr) and not isinstance(right, ast.Expr):
-        assert left == right, str(left) + " != " + str(right)
+        if _is_float(left) and _is_float(right):
+            comp_res = np.isclose(left, right)
+        else:
+            comp_res = left == right
+        assert comp_res, str(left) + " != " + str(right)
         return True
 
     if isinstance(left, ast.Expr) and isinstance(right, ast.Expr):
@@ -158,3 +162,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         return inner
 
     return wrap
+
+
+def _is_float(value):
+    return isinstance(value, (float, np.float16, np.float32, np.float64))
