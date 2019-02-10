@@ -316,9 +316,8 @@ def test_exp_expr():
 
     expected_code = """
 import numpy as np
-def  score(input):
-    return np.exp(1.0)
-"""
+def score(input):
+    return np.exp(1.0)"""
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -331,9 +330,8 @@ def test_reused_expr():
 
     expected_code = """
 import numpy as np
-def  score(input):
+def score(input):
     var0 = np.exp(1.0)
-    return (var0) / (var0)
-"""
+    return (var0) / (var0)"""
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
