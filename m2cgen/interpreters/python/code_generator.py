@@ -18,7 +18,7 @@ class PythonCodeGenerator(BaseCodeGenerator):
     tpl_block_termination = CT("")
 
     def add_function_def(self, name, args):
-        method_def = "def " + " " + name + "("
+        method_def = "def " + name + "("
         method_def += ", ".join(args)
         method_def += "):"
         self.add_code_line(method_def)
