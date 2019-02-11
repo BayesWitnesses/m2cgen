@@ -6,10 +6,6 @@ def mul(l, r):
     return ast.BinNumExpr(l, r, ast.BinNumOpType.MUL)
 
 
-def add(l, r):
-    return ast.BinNumExpr(l, r, ast.BinNumOpType.ADD)
-
-
 def lte(l, r):
     return ast.CompExpr(l, r, ast.CompOpType.LTE)
 
