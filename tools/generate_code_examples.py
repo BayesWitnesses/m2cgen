@@ -25,7 +25,7 @@ TREE_PARAMS = dict(random_state=RANDOM_SEED, max_leaf_nodes=5)
 FOREST_PARAMS = dict(
     n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
 XGBOOST_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
-LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
+LIGHT_GBM_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
 
 
 EXAMPLE_LANGUAGES = [
