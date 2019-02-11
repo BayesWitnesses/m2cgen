@@ -63,9 +63,9 @@ pip install m2cgen
   <thead>
       <tr>
         <th width="10%"></th>
-        <th width="30%">Binary</th>
-        <th width="30%">Multiclass</th>
-        <th width="30%">Comment</th>
+        <th width="35%">Binary</th>
+        <th width="35%">Multiclass</th>
+        <th width="20%">Comment</th>
       </tr>
   </thead>
   <tbody>
