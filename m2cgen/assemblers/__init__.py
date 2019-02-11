@@ -1,7 +1,7 @@
 from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
-from .xgboost import XGBoostModelAssembler
+from .boosting import XGBoostModelAssembler, LightGBMModelAssembler
 
 __all__ = [
     LinearModelAssembler,
@@ -12,6 +12,10 @@ __all__ = [
 
 
 SUPPORTED_MODELS = {
+    # LightGBM
+    "LGBMRegressor": LightGBMModelAssembler,
+    "LGBMClassifier": LightGBMModelAssembler,
+
     # XGBoost
     "XGBClassifier": XGBoostModelAssembler,
     "XGBRegressor": XGBoostModelAssembler,

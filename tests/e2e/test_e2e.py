@@ -1,3 +1,4 @@
+import lightgbm
 import pytest
 import numpy as np
 import xgboost
@@ -51,6 +52,7 @@ TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
                       random_state=RANDOM_SEED)
+LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 
 
 @utils.cartesian_e2e_params(
@@ -65,6 +67,11 @@ XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
     # These models will be tested against each language specified in the
     # previous list.
     [
+        # LightGBM
+        regression(lightgbm.LGBMRegressor(**LIGHT_GBM_PARAMS)),
+        classification(lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS)),
+        classification_binary(lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS)),
+
         # XGBoost
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),

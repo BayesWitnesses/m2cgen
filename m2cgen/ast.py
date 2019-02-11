@@ -141,6 +141,17 @@ class CompOpType(Enum):
     EQ = '=='
     NOT_EQ = '!='
 
+    @staticmethod
+    def from_str_op(op):
+        return {
+            ">": CompOpType.GT,
+            ">=": CompOpType.GTE,
+            "<": CompOpType.LT,
+            "<=": CompOpType.LTE,
+            "==": CompOpType.EQ,
+            "!=": CompOpType.NOT_EQ,
+        }[op]
+
 
 class CompExpr(BoolExpr):
     def __init__(self, left, right, op):

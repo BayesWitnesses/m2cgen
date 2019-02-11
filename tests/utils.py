@@ -7,6 +7,7 @@ import tempfile
 
 import numpy as np
 import pytest
+from lightgbm import LGBMClassifier
 
 from sklearn import datasets
 from sklearn.base import clone
@@ -86,7 +87,9 @@ def _train_model(estimator, dataset, test_fraction):
         y_pred = estimator.decision_function(X_test)
     elif isinstance(estimator, DecisionTreeClassifier):
         y_pred = estimator.predict_proba(X_test.astype(np.float32))
-    elif isinstance(estimator, (forest.ForestClassifier, XGBClassifier)):
+    elif isinstance(
+            estimator,
+            (forest.ForestClassifier, XGBClassifier, LGBMClassifier)):
         y_pred = estimator.predict_proba(X_test)
     else:
         y_pred = estimator.predict(X_test)
