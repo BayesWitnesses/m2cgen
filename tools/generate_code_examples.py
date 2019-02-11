@@ -11,6 +11,7 @@ The structure of the exported code will be:
 import os
 import sys
 import itertools
+import xgboost
 from sklearn import linear_model, tree, ensemble
 
 import m2cgen as m2c
@@ -21,6 +22,7 @@ RANDOM_SEED = 1234
 TREE_PARAMS = dict(random_state=RANDOM_SEED, max_leaf_nodes=5)
 FOREST_PARAMS = dict(
     n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
+XGBOOST_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
 
 
 EXAMPLE_LANGUAGES = [
@@ -58,6 +60,16 @@ EXAMPLE_MODELS = [
     (
         "classification", "random_forest",
         ensemble.RandomForestClassifier(**FOREST_PARAMS),
+        utils.train_model_classification,
+    ),
+    (
+        "regression", "xgboost",
+        xgboost.XGBRegressor(**XGBOOST_PARAMS),
+        utils.train_model_regression,
+    ),
+    (
+        "classification", "xgboost",
+        xgboost.XGBClassifier(**XGBOOST_PARAMS),
         utils.train_model_classification,
     ),
 ]
