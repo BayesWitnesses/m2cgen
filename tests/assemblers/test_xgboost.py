@@ -1,4 +1,5 @@
 import xgboost
+import numpy as np
 from tests import utils
 from m2cgen import assemblers, ast
 
@@ -46,6 +47,35 @@ def test_binary_classification():
     expected = ast.VectorVal([
         ast.BinNumExpr(ast.NumVal(1), sigmoid, ast.BinNumOpType.SUB),
         sigmoid])
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_multi_class():
+    estimator = xgboost.XGBClassifier(n_estimators=1, random_state=1,
+                                      max_depth=1)
+    estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
+
+    assembler = assemblers.XGBoostModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    exponent = ast.ExpExpr(
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.5),
+                ast.NumVal(0.0),
+                ast.BinNumOpType.ADD)),
+        to_reuse=True)
+
+    exponent_sum = ast.BinNumExpr(
+        ast.BinNumExpr(exponent, exponent, ast.BinNumOpType.ADD),
+        exponent,
+        ast.BinNumOpType.ADD,
+        to_reuse=True)
+
+    softmax = ast.BinNumExpr(exponent, exponent_sum, ast.BinNumOpType.DIV)
+
+    expected = ast.VectorVal([softmax] * 3)
 
     assert utils.cmp_exprs(actual, expected)
 
