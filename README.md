@@ -6,6 +6,13 @@
 
 **m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java).
 
+## Installation
+
+```
+pip install m2cgen
+```
+
+
 ## Supported languages
 
 - Python
@@ -50,11 +57,32 @@
   </tbody>
 </table>
 
-## Installation
 
-```
-pip install m2cgen
-```
+## Classification Output
+<table>
+  <thead>
+      <tr>
+        <th width="10%"></th>
+        <th width="35%">Binary</th>
+        <th width="35%">Multiclass</th>
+        <th width="20%">Comment</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <th>Linear</th>
+        <td>Scalar value; signed distance of the sample to the hyperplane for the second class </td>
+        <td>Vector value; signed distance of the sample to the hyperplane per each class</td>
+        <td>The output is consistent with the output of `LinearClassifierMixin.decision_function`</td>
+      </tr>
+      <tr>
+        <th>Tree/Random Forest/XGBoost</th>
+        <td>Vector value; class probabilities</td>
+        <td>Vector value; class probabilities</td>
+        <td>The output is consistent with the output of the `predict_proba` method of `DecisionTreeClassifier`/`ForestClassifier`/`XGBClassifier`</td>
+      </tr>
+  </tbody>
+</table>
 
 ## Usage
 
