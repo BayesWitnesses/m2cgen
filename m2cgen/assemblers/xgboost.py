@@ -10,7 +10,6 @@ class XGBoostModelAssembler(ModelAssembler):
     def __init__(self, model):
         super().__init__(model)
         self._base_score = self.model.base_score
-        self._n_estimators = self.model.n_estimators
 
         feature_names = self.model.get_booster().feature_names
         self._feature_name_to_idx = {
