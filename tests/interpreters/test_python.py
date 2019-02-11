@@ -307,3 +307,31 @@ result = score(None)
     exec(result_code, scope)
 
     assert scope["result"] == 121
+
+
+def test_exp_expr():
+    expr = ast.ExpExpr(ast.NumVal(1.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import numpy as np
+def score(input):
+    return np.exp(1.0)"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_reused_expr():
+    reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
+    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import numpy as np
+def score(input):
+    var0 = np.exp(1.0)
+    return (var0) / (var0)"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)

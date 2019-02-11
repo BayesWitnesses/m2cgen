@@ -223,3 +223,34 @@ void score(double * input, double * output) {
     assign_array(var0, output, 2);
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_exp_expr():
+    expr = ast.ExpExpr(ast.NumVal(1.0))
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    return exp(1.0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_reused_expr():
+    reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
+    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    double var0;
+    var0 = exp(1.0);
+    return (var0) / (var0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)

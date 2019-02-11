@@ -1,6 +1,7 @@
 numpy==1.15.1
 scipy==1.1.0
 scikit-learn==0.20.2
+xgboost==0.80
 flake8==3.6.0
 pytest==4.1.1
 pytest-mock==1.10.0

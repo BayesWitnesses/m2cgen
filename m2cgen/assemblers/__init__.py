@@ -1,15 +1,21 @@
 from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
+from .xgboost import XGBoostModelAssembler
 
 __all__ = [
     LinearModelAssembler,
     TreeModelAssembler,
-    RandomForestModelAssembler
+    RandomForestModelAssembler,
+    XGBoostModelAssembler,
 ]
 
 
 SUPPORTED_MODELS = {
+    # XGBoost
+    "XGBClassifier": XGBoostModelAssembler,
+    "XGBRegressor": XGBoostModelAssembler,
+
     # SVM
     "LinearSVC": LinearModelAssembler,
     "LinearSVR": LinearModelAssembler,

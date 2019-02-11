@@ -3,6 +3,12 @@ from enum import Enum
 
 class Expr:
     output_size = 1
+    # Setting this value to true serves as an indication that the result
+    # of evaluation of this expression is being used in other expressions
+    # and it's recommended to persist or cache it in some way.
+    # The actual caching mechanism (if any) is left up to a specific
+    # interpreter implementation to provide.
+    to_reuse = False
 
 
 class FeatureRef(Expr):
@@ -31,6 +37,16 @@ class NumVal(NumExpr):
         return "NumVal(" + str(self.value) + ")"
 
 
+class ExpExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "ExpExpr(" + args + ")"
+
+
 class BinNumOpType(Enum):
     ADD = '+'
     SUB = '-'
@@ -39,16 +55,22 @@ class BinNumOpType(Enum):
 
 
 class BinNumExpr(NumExpr, BinExpr):
-    def __init__(self, left, right, op):
+    def __init__(self, left, right, op, to_reuse=False):
         assert left.output_size == 1, "Only scalars are supported"
         assert right.output_size == 1, "Only scalars are supported"
 
         self.left = left
         self.right = right
         self.op = op
+        self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.left), str(self.right), self.op.name])
+        args = ",".join([
+            str(self.left),
+            str(self.right),
+            self.op.name,
+            "to_reuse=" + str(self.to_reuse)
+        ])
         return "BinNumExpr(" + args + ")"
 
 

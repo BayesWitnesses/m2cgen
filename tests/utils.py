@@ -14,6 +14,7 @@ from sklearn.ensemble import forest
 from sklearn.utils import shuffle
 from sklearn.linear_model.base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
+from xgboost import XGBClassifier
 
 from m2cgen import ast
 
@@ -30,7 +31,11 @@ def cmp_exprs(left, right):
         return True
 
     if not isinstance(left, ast.Expr) and not isinstance(right, ast.Expr):
-        assert left == right, str(left) + " != " + str(right)
+        if _is_float(left) and _is_float(right):
+            comp_res = np.isclose(left, right)
+        else:
+            comp_res = left == right
+        assert comp_res, str(left) + " != " + str(right)
         return True
 
     if isinstance(left, ast.Expr) and isinstance(right, ast.Expr):
@@ -81,7 +86,7 @@ def _train_model(estimator, dataset, test_fraction):
         y_pred = estimator.decision_function(X_test)
     elif isinstance(estimator, DecisionTreeClassifier):
         y_pred = estimator.predict_proba(X_test.astype(np.float32))
-    elif isinstance(estimator, forest.ForestClassifier):
+    elif isinstance(estimator, (forest.ForestClassifier, XGBClassifier)):
         y_pred = estimator.predict_proba(X_test)
     else:
         y_pred = estimator.predict(X_test)
@@ -157,3 +162,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         return inner
 
     return wrap
+
+
+def _is_float(value):
+    return isinstance(value, (float, np.float16, np.float32, np.float64))

@@ -51,7 +51,7 @@ def test_two_conditions():
 def test_multi_class():
     estimator = tree.DecisionTreeClassifier()
 
-    estimator.fit([[1], [2], [3]], [1, -1, 1])
+    estimator.fit([[1], [2], [3]], [0, 1, 2])
 
     assembler = assemblers.TreeModelAssembler(estimator)
     actual = assembler.assemble()
@@ -62,17 +62,20 @@ def test_multi_class():
             ast.NumVal(1.5),
             ast.CompOpType.LTE),
         ast.VectorVal([
+            ast.NumVal(1.0),
             ast.NumVal(0.0),
-            ast.NumVal(1.0)]),
+            ast.NumVal(0.0)]),
         ast.IfExpr(
             ast.CompExpr(
                 ast.FeatureRef(0),
                 ast.NumVal(2.5),
                 ast.CompOpType.LTE),
             ast.VectorVal([
+                ast.NumVal(0.0),
                 ast.NumVal(1.0),
                 ast.NumVal(0.0)]),
             ast.VectorVal([
+                ast.NumVal(0.0),
                 ast.NumVal(0.0),
                 ast.NumVal(1.0)])))
 

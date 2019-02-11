@@ -55,6 +55,10 @@ class CCodeGenerator(CLikeCodeGenerator):
         self.add_code_line("assign_array({}, {}, {});".format(
             source_var, target_var, size))
 
+    def add_dependency(self, dep):
+        dep_str = "#include " + dep
+        super().prepend_code_line(dep_str)
+
     def vector_init(self, values):
         return "(double[]){" + ", ".join(values) + "}"
 
