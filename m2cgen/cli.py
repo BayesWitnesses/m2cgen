@@ -12,6 +12,7 @@ Model can also be piped:
 import pickle
 import argparse
 import sys
+import numpy as np
 
 import m2cgen
 
@@ -51,7 +52,7 @@ parser.add_argument(
     "--recursion-limit", "-rl", type=int,
     help="Sets the maximum depth of the Python interpreter stack. "
          "No limit by default",
-    default=sys.maxsize)
+    default=np.iinfo(np.intc).max)
 
 
 def parse_args(args):
