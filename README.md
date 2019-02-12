@@ -51,8 +51,8 @@ pip install m2cgen
       </tr>
       <tr>
         <th>Boosting</th>
-        <td>XGBClassifier(gbtree/dart booster only), LGBMClassifier</td>
-        <td>XGBRegressor(gbtree/dart booster only), LGBMRegressor</td>
+        <td>XGBClassifier(gbtree/dart booster only), LGBMClassifier(gbtree/dart booster only)</td>
+        <td>XGBRegressor(gbtree/dart booster only), LGBMRegressor(gbtree/dart booster only)</td>
       </tr>
   </tbody>
 </table>

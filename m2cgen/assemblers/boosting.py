@@ -5,13 +5,13 @@ from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
 
 
-class BaseBoostAssembler(ModelAssembler):
+class BaseBoostingAssembler(ModelAssembler):
 
     classifier_name = None
 
     def __init__(self, model, trees, base_score=0):
         super().__init__(model)
-        self.trees = trees
+        self.all_trees = trees
         self._base_score = base_score
 
         self._output_size = 1
@@ -26,11 +26,12 @@ class BaseBoostAssembler(ModelAssembler):
     def assemble(self):
         if self._is_classification:
             if self._output_size == 1:
-                return self._assemble_bin_class_output(self.trees)
+                return self._assemble_bin_class_output(self.all_trees)
             else:
-                return self._assemble_multi_class_output(self.trees)
+                return self._assemble_multi_class_output(self.all_trees)
         else:
-            return self._assemble_single_output(self.trees, self._base_score)
+            return self._assemble_single_output(
+                self.all_trees, self._base_score)
 
     def _assemble_single_output(self, trees, base_score=0):
         trees_ast = [self._assemble_tree(t) for t in trees]
@@ -67,11 +68,11 @@ class BaseBoostAssembler(ModelAssembler):
             proba_expr
         ])
 
-    def _assemble_tree(self, node):
+    def _assemble_tree(self, tree):
         raise NotImplementedError
 
 
-class XGBoostModelAssembler(BaseBoostAssembler):
+class XGBoostModelAssembler(BaseBoostingAssembler):
 
     classifier_name = "XGBClassifier"
 
@@ -118,7 +119,7 @@ class XGBoostModelAssembler(BaseBoostAssembler):
         assert False, "Unexpected child ID {}".format(child_id)
 
 
-class LightGBMModelAssembler(BaseBoostAssembler):
+class LightGBMModelAssembler(BaseBoostingAssembler):
 
     classifier_name = "LGBMClassifier"
 
