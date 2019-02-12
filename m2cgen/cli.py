@@ -12,6 +12,7 @@ Model can also be piped:
 import pickle
 import argparse
 import sys
+import numpy as np
 
 import m2cgen
 
@@ -22,6 +23,10 @@ LANGUAGE_TO_EXPORTER = {
         m2cgen.export_to_java, ["indent", "class_name", "package_name"]),
     "c": (m2cgen.export_to_c, ["indent"]),
 }
+
+
+# The maximum recursion depth is represented by the maximum int32 value.
+MAX_RECURSION_DEPTH = np.iinfo(np.intc).max
 
 
 parser = argparse.ArgumentParser(
@@ -47,6 +52,11 @@ parser.add_argument(
     "--indent", "-i", dest="indent", type=int,
     default=4,
     help="Indentation for the generated code")
+parser.add_argument(
+    "--recursion-limit", "-rl", type=int,
+    help="Sets the maximum depth of the Python interpreter stack. "
+         "No limit by default",
+    default=MAX_RECURSION_DEPTH)
 
 
 def parse_args(args):
@@ -54,6 +64,8 @@ def parse_args(args):
 
 
 def generate_code(args):
+    sys.setrecursionlimit(args.recursion_limit)
+
     with args.infile as f:
         model = pickle.load(f)
 
