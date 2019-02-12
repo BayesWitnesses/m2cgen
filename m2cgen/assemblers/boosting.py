@@ -125,14 +125,11 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
 
     def __init__(self, model):
         model_dump = model.booster_.dump_model()
-        trees = model_dump["tree_info"]
+        trees = [m["tree_structure"] for m in model_dump["tree_info"]]
 
         super().__init__(model, trees)
 
     def _assemble_tree(self, tree):
-        if "tree_structure" in tree:
-            tree = tree["tree_structure"]
-
         if "leaf_value" in tree:
             return ast.NumVal(tree["leaf_value"])
 
