@@ -11,6 +11,8 @@ The structure of the exported code will be:
 import os
 import sys
 import itertools
+
+import lightgbm
 import xgboost
 from sklearn import linear_model, tree, ensemble
 
@@ -23,6 +25,7 @@ TREE_PARAMS = dict(random_state=RANDOM_SEED, max_leaf_nodes=5)
 FOREST_PARAMS = dict(
     n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
 XGBOOST_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
+LIGHT_GBM_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
 
 
 EXAMPLE_LANGUAGES = [
@@ -70,6 +73,16 @@ EXAMPLE_MODELS = [
     (
         "classification", "xgboost",
         xgboost.XGBClassifier(**XGBOOST_PARAMS),
+        utils.train_model_classification,
+    ),
+    (
+        "regression", "lightgbm",
+        lightgbm.LGBMRegressor(**LIGHT_GBM_PARAMS),
+        utils.train_model_regression,
+    ),
+    (
+        "classification", "lightgbm",
+        lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS),
         utils.train_model_classification,
     ),
 ]

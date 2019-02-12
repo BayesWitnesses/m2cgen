@@ -141,6 +141,13 @@ class CompOpType(Enum):
     EQ = '=='
     NOT_EQ = '!='
 
+    @staticmethod
+    def from_str_op(op):
+        return COMP_OP_TYPE_MAPPING[op]
+
+
+COMP_OP_TYPE_MAPPING = {e.value: e for e in CompOpType}
+
 
 class CompExpr(BoolExpr):
     def __init__(self, left, right, op):

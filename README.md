@@ -51,8 +51,8 @@ pip install m2cgen
       </tr>
       <tr>
         <th>Boosting</th>
-        <td>XGBClassifier(gbtree/dart booster only)</td>
-        <td>XGBRegressor(gbtree/dart booster only)</td>
+        <td>XGBClassifier(gbtree/dart booster only), LGBMClassifier(gbdt/dart booster only)</td>
+        <td>XGBRegressor(gbtree/dart booster only), LGBMRegressor(gbdt/dart booster only)</td>
       </tr>
   </tbody>
 </table>
@@ -76,10 +76,10 @@ pip install m2cgen
         <td>The output is consistent with the output of `LinearClassifierMixin.decision_function`</td>
       </tr>
       <tr>
-        <th>Tree/Random Forest/XGBoost</th>
+        <th>Tree/Random Forest/XGBoost/LightGBM</th>
         <td>Vector value; class probabilities</td>
         <td>Vector value; class probabilities</td>
-        <td>The output is consistent with the output of the `predict_proba` method of `DecisionTreeClassifier`/`ForestClassifier`/`XGBClassifier`</td>
+        <td>The output is consistent with the output of the `predict_proba` method of `DecisionTreeClassifier`/`ForestClassifier`/`XGBClassifier`/`LGBMClassifier`</td>
       </tr>
   </tbody>
 </table>

@@ -5,36 +5,41 @@ from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
 
 
-class XGBoostModelAssembler(ModelAssembler):
+class BaseBoostingAssembler(ModelAssembler):
 
-    def __init__(self, model):
+    classifier_name = None
+
+    def __init__(self, model, trees, base_score=0):
         super().__init__(model)
-        self._base_score = self.model.base_score
-
-        feature_names = self.model.get_booster().feature_names
-        self._feature_name_to_idx = {
-            name: idx for idx, name in enumerate(feature_names)
-        }
+        self.all_trees = trees
+        self._base_score = base_score
 
         self._output_size = 1
         self._is_classification = False
+
         model_class_name = type(model).__name__
-        if model_class_name == "XGBClassifier":
+        if model_class_name == self.classifier_name:
             self._is_classification = True
-            if self.model.n_classes_ > 2:
-                self._output_size = self.model.n_classes_
+            if model.n_classes_ > 2:
+                self._output_size = model.n_classes_
 
     def assemble(self):
-        model_dump = self.model.get_booster().get_dump(dump_format="json")
-        trees = [json.loads(d) for d in model_dump]
-
         if self._is_classification:
             if self._output_size == 1:
-                return self._assemble_bin_class_output(trees)
+                return self._assemble_bin_class_output(self.all_trees)
             else:
-                return self._assemble_multi_class_output(trees)
+                return self._assemble_multi_class_output(self.all_trees)
         else:
-            return self._assemble_single_output(trees, self._base_score)
+            return self._assemble_single_output(
+                self.all_trees, self._base_score)
+
+    def _assemble_single_output(self, trees, base_score=0):
+        trees_ast = [self._assemble_tree(t) for t in trees]
+        result_ast = utils.apply_op_to_expressions(
+            ast.BinNumOpType.ADD,
+            ast.NumVal(base_score),
+            *trees_ast)
+        return ast.SubroutineExpr(result_ast)
 
     def _assemble_multi_class_output(self, trees):
         # Multi-class output is calculated based on discussion in
@@ -50,7 +55,10 @@ class XGBoostModelAssembler(ModelAssembler):
     def _assemble_bin_class_output(self, trees):
         # Base score is calculated based on https://github.com/dmlc/xgboost/blob/master/src/objective/regression_loss.h#L64  # noqa
         # return -logf(1.0f / base_score - 1.0f);
-        base_score = -np.log(1.0 / self._base_score - 1.0)
+        base_score = 0
+        if self._base_score != 0:
+            base_score = -np.log(1.0 / self._base_score - 1.0)
+
         expr = self._assemble_single_output(trees, base_score)
 
         proba_expr = utils.sigmoid_expr(expr, to_reuse=True)
@@ -60,13 +68,24 @@ class XGBoostModelAssembler(ModelAssembler):
             proba_expr
         ])
 
-    def _assemble_single_output(self, trees, base_score):
-        trees_ast = [self._assemble_tree(t) for t in trees]
-        result_ast = utils.apply_op_to_expressions(
-            ast.BinNumOpType.ADD,
-            ast.NumVal(base_score),
-            *trees_ast)
-        return ast.SubroutineExpr(result_ast)
+    def _assemble_tree(self, tree):
+        raise NotImplementedError
+
+
+class XGBoostModelAssembler(BaseBoostingAssembler):
+
+    classifier_name = "XGBClassifier"
+
+    def __init__(self, model):
+        feature_names = model.get_booster().feature_names
+        self._feature_name_to_idx = {
+            name: idx for idx, name in enumerate(feature_names)
+        }
+
+        model_dump = model.get_booster().get_dump(dump_format="json")
+        trees = [json.loads(d) for d in model_dump]
+
+        super().__init__(model, trees, base_score=model.base_score)
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
@@ -98,6 +117,30 @@ class XGBoostModelAssembler(ModelAssembler):
             if child["nodeid"] == child_id:
                 return self._assemble_tree(child)
         assert False, "Unexpected child ID {}".format(child_id)
+
+
+class LightGBMModelAssembler(BaseBoostingAssembler):
+
+    classifier_name = "LGBMClassifier"
+
+    def __init__(self, model):
+        model_dump = model.booster_.dump_model()
+        trees = [m["tree_structure"] for m in model_dump["tree_info"]]
+
+        super().__init__(model, trees)
+
+    def _assemble_tree(self, tree):
+        if "leaf_value" in tree:
+            return ast.NumVal(tree["leaf_value"])
+
+        threshold = ast.NumVal(tree["threshold"])
+        feature_ref = ast.FeatureRef(tree["split_feature"])
+        op = ast.CompOpType.from_str_op(tree["decision_type"])
+
+        return ast.IfExpr(
+            ast.CompExpr(feature_ref, threshold, op),
+            self._assemble_tree(tree["left_child"]),
+            self._assemble_tree(tree["right_child"]))
 
 
 def _split_trees_by_classes(trees, n_classes):
