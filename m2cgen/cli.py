@@ -47,6 +47,11 @@ parser.add_argument(
     "--indent", "-i", dest="indent", type=int,
     default=4,
     help="Indentation for the generated code")
+parser.add_argument(
+    "--recursion-limit", "-rl", type=int,
+    help="Sets the maximum depth of the Python interpreter stack. "
+         "No limit by default",
+    default=sys.maxsize)
 
 
 def parse_args(args):
@@ -54,6 +59,8 @@ def parse_args(args):
 
 
 def generate_code(args):
+    sys.setrecursionlimit(args.recursion_limit)
+
     with args.infile as f:
         model = pickle.load(f)
 

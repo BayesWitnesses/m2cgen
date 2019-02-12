@@ -6,6 +6,14 @@
 
 **m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java).
 
+* [Installation](#installation)
+* [Supported Languages](#supported-languages)
+* [Supported Models](#supported-models)
+* [Classification Output](#classification-output)
+* [Usage](#usage)
+* [CLI](#cli)
+* [FAQ](#faq)
+
 ## Installation
 
 ```
@@ -13,13 +21,13 @@ pip install m2cgen
 ```
 
 
-## Supported languages
+## Supported Languages
 
 - Python
 - Java
 - C
 
-## Supported models
+## Supported Models
 <table>
   <thead>
       <tr>
@@ -73,13 +81,13 @@ pip install m2cgen
         <th>Linear</th>
         <td>Scalar value; signed distance of the sample to the hyperplane for the second class </td>
         <td>Vector value; signed distance of the sample to the hyperplane per each class</td>
-        <td>The output is consistent with the output of `LinearClassifierMixin.decision_function`</td>
+        <td>The output is consistent with the output of <i>LinearClassifierMixin.decision_function</i></td>
       </tr>
       <tr>
         <th>Tree/Random Forest/XGBoost/LightGBM</th>
         <td>Vector value; class probabilities</td>
         <td>Vector value; class probabilities</td>
-        <td>The output is consistent with the output of the `predict_proba` method of `DecisionTreeClassifier`/`ForestClassifier`/`XGBClassifier`/`LGBMClassifier`</td>
+        <td>The output is consistent with the output of the <i>predict_proba</i> method of <i>DecisionTreeClassifier</i>/<i>ForestClassifier</i>/<i>XGBClassifier</i>/<i>LGBMClassifier</i></td>
       </tr>
   </tbody>
 </table>
@@ -113,17 +121,21 @@ public class Model {
 
 **You can find more examples of generated code for different models/languages [here](https://github.com/BayesWitnesses/m2cgen/tree/master/generated_code_examples)**
 
-**TODO**: explain the difference between regression (single value output) and classification (multi-value output). Show how to handle vector outputs in C.
-
 ## CLI
 
 `m2cgen` can be used as a CLI tool to generate code using serialized model objects (pickle protocol):
 ```
 $ m2cgen <pickle_file> --language <language> [--indent <indent>]
          [--class_name <class_name>] [--package_name <package_name>]
+         [--recursion-limit <recursion_limit>]
 ```
 
 Piping is also supported:
 ```
 $ cat <pickle_file> | m2cgen --language <language>
 ```
+
+## FAQ
+**Generation fails with `RuntimeError: maximum recursion depth exceeded` error.**
+
+If this error occurs while generating code using an ensemble model, try to reduce the number of trained estimators within that model. Alternatively you can increase the maximum recursion depth with `sys.setrecursionlimit(<new_depth>)`.
