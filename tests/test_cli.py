@@ -1,7 +1,6 @@
 import io
 import pickle
 import sys
-import numpy as np
 
 from _pytest import capture
 from sklearn import linear_model
@@ -16,7 +15,7 @@ def _get_mock_args(indent=4, package_name=None, class_name=None, infile=None,
     return mock.MagicMock(
         indent=indent, package_name=package_name, class_name=class_name,
         infile=infile, language=language,
-        recursion_limit=np.iinfo(np.intc).max)
+        recursion_limit=cli.MAX_RECURSION_DEPTH)
 
 
 def _get_pickled_trained_model():

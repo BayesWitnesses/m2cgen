@@ -25,6 +25,10 @@ LANGUAGE_TO_EXPORTER = {
 }
 
 
+# The maximum recursion depth is represented by the maximum int32 value.
+MAX_RECURSION_DEPTH = np.iinfo(np.intc).max
+
+
 parser = argparse.ArgumentParser(
     prog="m2cgen",
     description="Generate code in native language for provided model")
@@ -52,7 +56,7 @@ parser.add_argument(
     "--recursion-limit", "-rl", type=int,
     help="Sets the maximum depth of the Python interpreter stack. "
          "No limit by default",
-    default=np.iinfo(np.intc).max)
+    default=MAX_RECURSION_DEPTH)
 
 
 def parse_args(args):
