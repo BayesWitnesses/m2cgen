@@ -135,12 +135,24 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
 
         threshold = ast.NumVal(tree["threshold"])
         feature_ref = ast.FeatureRef(tree["split_feature"])
+
         op = ast.CompOpType.from_str_op(tree["decision_type"])
+        assert op == ast.CompOpType.LTE, "Unexpected comparison op"
+
+        # Make sure that if the 'default_left' is true the left tree branch
+        # ends up in the "else" branch of the ast.IfExpr.
+        if tree['default_left']:
+            op = ast.CompOpType.GT
+            true_child = tree["right_child"]
+            false_child = tree["left_child"]
+        else:
+            true_child = tree["left_child"]
+            false_child = tree["right_child"]
 
         return ast.IfExpr(
             ast.CompExpr(feature_ref, threshold, op),
-            self._assemble_tree(tree["left_child"]),
-            self._assemble_tree(tree["right_child"]))
+            self._assemble_tree(true_child),
+            self._assemble_tree(false_child))
 
 
 def _split_trees_by_classes(trees, n_classes):
