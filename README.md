@@ -94,7 +94,7 @@ pip install m2cgen
 
 ## Usage
 
-Here's a simple example of how a trained linear model can be represented in Java code:
+Here's a simple example of how a trained linear model can be represented in Python code:
 ```python
 from sklearn.datasets import load_boston
 from sklearn import linear_model
