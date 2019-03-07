@@ -2,7 +2,6 @@ from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
 from .boosting import XGBoostModelAssembler, LightGBMModelAssembler
-import lightgbm as lgb
 
 __all__ = [
     LinearModelAssembler,
@@ -70,7 +69,7 @@ SUPPORTED_MODELS = {
 
 def get_assembler_cls(model):
     model_name = type(model).__name__
-    if type(model) == lgb.basic.Booster:
+    if model.__module__ == 'lightgbm.basic' and model_name == 'Booster':
         assembler_cls = LightGBMModelAssembler
     else:
         assembler_cls = SUPPORTED_MODELS.get(model_name)

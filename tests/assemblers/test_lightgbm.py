@@ -12,6 +12,12 @@ def test_binary_classification():
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
+    estimator.booster_.save_model('lgb_model.txt')
+    booster = lightgbm.Booster(model_file='lgb_model.txt')
+    assembler_from_booster = assemblers.LightGBMModelAssembler(booster)
+    actual_from_booster = assembler_from_booster.assemble()
+    assert utils.cmp_exprs(actual, actual_from_booster)
+
     sigmoid = ast.BinNumExpr(
         ast.NumVal(1),
         ast.BinNumExpr(
@@ -59,6 +65,12 @@ def test_multi_class():
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
+    estimator.booster_.save_model('lgb_model.txt')
+    booster = lightgbm.Booster(model_file='lgb_model.txt')
+    assembler_from_booster = assemblers.LightGBMModelAssembler(booster)
+    actual_from_booster = assembler_from_booster.assemble()
+    assert utils.cmp_exprs(actual, actual_from_booster)
+
     exponent = ast.ExpExpr(
         ast.SubroutineExpr(
             ast.BinNumExpr(
@@ -87,6 +99,12 @@ def test_regression():
 
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
+
+    estimator.booster_.save_model('lgb_model.txt')
+    booster = lightgbm.Booster(model_file='lgb_model.txt')
+    assembler_from_booster = assemblers.LightGBMModelAssembler(booster)
+    actual_from_booster = assembler_from_booster.assemble()
+    assert utils.cmp_exprs(actual, actual_from_booster)
 
     expected = ast.SubroutineExpr(
         ast.BinNumExpr(
