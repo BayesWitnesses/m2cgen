@@ -52,8 +52,8 @@ class CCodeGenerator(CLikeCodeGenerator):
         self.add_assign_array_statement(value, var_name, value_size)
 
     def add_assign_array_statement(self, source_var, target_var, size):
-        self.add_code_line("assign_array({}, {}, {});".format(
-            source_var, target_var, size))
+        self.add_code_line("memcpy({}, {}, {} * sizeof(double));".format(
+            target_var, source_var, size))
 
     def add_dependency(self, dep):
         dep_str = "#include " + dep
