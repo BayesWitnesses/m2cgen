@@ -1,8 +1,5 @@
 #include <math.h>
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
+#include <string.h>
 void score(double * input, double * output) {
     double var0;
     if ((input[2]) >= (2.5999999)) {
@@ -72,5 +69,5 @@ void score(double * input, double * output) {
     var8 = exp(((0.5) + (var6)) + (var7));
     double var9;
     var9 = ((var2) + (var5)) + (var8);
-    assign_array((double[]){(var2) / (var9), (var5) / (var9), (var8) / (var9)}, output, 3);
+    memcpy(output, (double[]){(var2) / (var9), (var5) / (var9), (var8) / (var9)}, 3 * sizeof(double));
 }

@@ -52,9 +52,7 @@ class CInterpreter(ToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_vectors:
-            filename = os.path.join(
-                os.path.dirname(__file__), "assign_array.c")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_dependency("<string.h>")
 
         if self.with_exponent:
             self._cg.add_dependency("<math.h>")

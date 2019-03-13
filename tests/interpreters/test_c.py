@@ -128,12 +128,9 @@ def test_raw_array():
     expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
+#include <string.h>
 void score(double * input, double * output) {
-    assign_array((double[]){3, 4}, output, 2);
+    memcpy(output, (double[]){3, 4}, 2 * sizeof(double));
 }"""
     interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -150,18 +147,15 @@ def test_multi_output():
             ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
+#include <string.h>
 void score(double * input, double * output) {
     double var0[2];
     if ((1) == (1)) {
-        assign_array((double[]){1, 2}, var0, 2);
+        memcpy(var0, (double[]){1, 2}, 2 * sizeof(double));
     } else {
-        assign_array((double[]){3, 4}, var0, 2);
+        memcpy(var0, (double[]){3, 4}, 2 * sizeof(double));
     }
-    assign_array(var0, output, 2);
+    memcpy(output, var0, 2 * sizeof(double));
 }"""
     interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -176,10 +170,7 @@ def test_bin_vector_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
+#include <string.h>
 void add_vectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -191,7 +182,7 @@ void mul_vector_number(double *v1, double num, int size, double *result) {
 void score(double * input, double * output) {
     double var0[2];
     add_vectors((double[]){1, 2}, (double[]){3, 4}, 2, var0);
-    assign_array(var0, output, 2);
+    memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -205,10 +196,7 @@ def test_bin_vector_num_expr():
     interpreter = interpreters.CInterpreter()
 
     expected_code = """
-void assign_array(double source[], double *target, int size) {
-    for(int i = 0; i < size; ++i)
-        target[i] = source[i];
-}
+#include <string.h>
 void add_vectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -220,7 +208,7 @@ void mul_vector_number(double *v1, double num, int size, double *result) {
 void score(double * input, double * output) {
     double var0[2];
     mul_vector_number((double[]){1, 2}, 1, 2, var0);
-    assign_array(var0, output, 2);
+    memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
