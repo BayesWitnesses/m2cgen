@@ -14,6 +14,7 @@ from tests.e2e import executors
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
 C = pytest.mark.c
+GO = pytest.mark.go
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -62,6 +63,7 @@ LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
         (executors.PythonExecutor, PYTHON),
         (executors.JavaExecutor, JAVA),
         (executors.CExecutor, C),
+        (executors.GoExecutor, GO),
     ],
 
     # These models will be tested against each language specified in the
@@ -122,7 +124,6 @@ LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
         classification_binary(linear_model.RidgeClassifierCV()),
         classification_binary(linear_model.SGDClassifier(
             random_state=RANDOM_SEED)),
-
 
         # Decision trees
         regression(tree.DecisionTreeRegressor(**TREE_PARAMS)),
