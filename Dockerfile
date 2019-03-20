@@ -1,17 +1,14 @@
 FROM python:3.7
 
-ENV JAVA_HOME /java
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
-WORKDIR /tmp
-RUN wget https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz && \
-    tar xvf openjdk-11*_bin.tar.gz && \
-    mv jdk-11* ${JAVA_HOME} && \
-    rm openjdk-11*_bin.tar.gz
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y openjdk-8-jdk && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen
-COPY Pipfile* ./
 
-RUN pip install pipenv
-RUN pipenv sync --dev
+COPY requirements-test.txt ./
+RUN pip install --no-cache-dir -r requirements-test.txt
 
-CMD pipenv run pip install . && pipenv run pytest -v -x --fast
+CMD python setup.py develop && pytest -v -x --fast
