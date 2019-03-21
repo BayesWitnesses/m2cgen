@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="m2cgen",
-    version="0.1.3",
+    version="0.2.0",
     url="https://github.com/BayesWitnesses/m2cgen",
     description="Code-generation for various ML models into native code.",
     license="MIT",
