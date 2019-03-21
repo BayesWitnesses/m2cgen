@@ -22,6 +22,7 @@ LANGUAGE_TO_EXPORTER = {
     "java": (
         m2cgen.export_to_java, ["indent", "class_name", "package_name"]),
     "c": (m2cgen.export_to_c, ["indent"]),
+    "go": (m2cgen.export_to_go, ["indent"]),
 }
 
 

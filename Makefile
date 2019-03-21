@@ -8,3 +8,6 @@ docker-build:
 
 docker-generate-examples:
 	docker run --rm -it -v "$$PWD":"/m2cgen" $(DOCKER_IMAGE) bash -c "python setup.py develop && python tools/generate_code_examples.py generated_code_examples"
+
+docker-flake8:
+	docker run --rm -it -v "$$PWD":"/m2cgen" $(DOCKER_IMAGE) bash -c "python setup.py develop && flake8 ."
