@@ -111,3 +111,39 @@ def test_regression():
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_regression_best_ntree_limit():
+    base_score = 0.6
+    estimator = xgboost.XGBRegressor(n_estimators=3, random_state=1,
+                                     max_depth=1, base_score=base_score)
+
+    estimator.best_ntree_limit = 2
+
+    utils.train_model_regression(estimator)
+
+    assembler = assemblers.XGBoostModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.SubroutineExpr(
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.NumVal(base_score),
+                ast.IfExpr(
+                    ast.CompExpr(
+                        ast.FeatureRef(12),
+                        ast.NumVal(9.72500038),
+                        ast.CompOpType.GTE),
+                    ast.NumVal(1.67318344),
+                    ast.NumVal(2.92757893)),
+                ast.BinNumOpType.ADD),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.94099998),
+                    ast.CompOpType.GTE),
+                ast.NumVal(3.3400948),
+                ast.NumVal(1.72118247)),
+            ast.BinNumOpType.ADD))
+
+    assert utils.cmp_exprs(actual, expected)
