@@ -112,6 +112,7 @@ def test_regression():
 
     assert utils.cmp_exprs(actual, expected)
 
+
 def test_regression_best_ntree_limit():
     base_score = 0.6
     estimator = xgboost.XGBRegressor(n_estimators=3, random_state=1,
