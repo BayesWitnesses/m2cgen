@@ -84,7 +84,7 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
 
         model_dump = model.get_booster().get_dump(dump_format="json")
 
-        # Respect sklearn ntree_limit
+        # Respect XGBoost ntree_limit
         ntree_limit = getattr(model, "best_ntree_limit", 0)
 
         if ntree_limit > 0:
