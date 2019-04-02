@@ -147,3 +147,84 @@ def test_regression_best_ntree_limit():
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_multi_class_best_ntree_limit():
+    base_score = 0.5
+    estimator = xgboost.XGBClassifier(n_estimators=100, random_state=1,
+                                      max_depth=1, base_score=base_score)
+
+    estimator.best_ntree_limit = 1
+
+    utils.train_model_classification(estimator)
+
+    assembler = assemblers.XGBoostModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    estimator_exp_class1 = ast.ExpExpr(
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.5),
+                ast.IfExpr(
+                    ast.CompExpr(
+                        ast.FeatureRef(2),
+                        ast.NumVal(2.5999999),
+                        ast.CompOpType.GTE),
+                    ast.NumVal(-0.0731707439),
+                    ast.NumVal(0.142857149)),
+                ast.BinNumOpType.ADD)),
+        to_reuse=True)
+
+    estimator_exp_class2 = ast.ExpExpr(
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.5),
+                ast.IfExpr(
+                    ast.CompExpr(
+                        ast.FeatureRef(2),
+                        ast.NumVal(2.5999999),
+                        ast.CompOpType.GTE),
+                    ast.NumVal(0.0341463387),
+                    ast.NumVal(-0.0714285821)),
+                ast.BinNumOpType.ADD)),
+        to_reuse=True)
+
+    estimator_exp_class3 = ast.ExpExpr(
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.5),
+                ast.IfExpr(
+                    ast.CompExpr(
+                        ast.FeatureRef(2),
+                        ast.NumVal(4.85000038),
+                        ast.CompOpType.GTE),
+                    ast.NumVal(0.129441619),
+                    ast.NumVal(-0.0681440532)),
+                ast.BinNumOpType.ADD)),
+        to_reuse=True)
+
+    exp_sum = ast.BinNumExpr(
+        ast.BinNumExpr(
+            estimator_exp_class1,
+            estimator_exp_class2,
+            ast.BinNumOpType.ADD),
+        estimator_exp_class3,
+        ast.BinNumOpType.ADD,
+        to_reuse=True)
+
+    expected = ast.VectorVal([
+        ast.BinNumExpr(
+            estimator_exp_class1,
+            exp_sum,
+            ast.BinNumOpType.DIV),
+        ast.BinNumExpr(
+            estimator_exp_class2,
+            exp_sum,
+            ast.BinNumOpType.DIV),
+        ast.BinNumExpr(
+            estimator_exp_class3,
+            exp_sum,
+            ast.BinNumOpType.DIV)
+    ])
+
+    assert utils.cmp_exprs(actual, expected)
