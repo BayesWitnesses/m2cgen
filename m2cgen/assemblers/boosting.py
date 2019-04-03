@@ -17,6 +17,7 @@ class BaseBoostingAssembler(ModelAssembler):
         self._output_size = 1
         self._is_classification = False
 
+        assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
         self._tree_limit = tree_limit
 
         model_class_name = type(model).__name__
@@ -36,8 +37,7 @@ class BaseBoostingAssembler(ModelAssembler):
                 self.all_trees, self._base_score)
 
     def _assemble_single_output(self, trees, base_score=0):
-        if self._tree_limit is not None:
-            assert self._tree_limit > 0, "Unexpected tree limit"
+        if self._tree_limit:
             trees = trees[:self._tree_limit]
 
         trees_ast = [self._assemble_tree(t) for t in trees]
