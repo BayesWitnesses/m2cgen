@@ -36,7 +36,8 @@ class BaseBoostingAssembler(ModelAssembler):
                 self.all_trees, self._base_score)
 
     def _assemble_single_output(self, trees, base_score=0):
-        if self._tree_limit is not None and self._tree_limit > 0:
+        if self._tree_limit is not None:
+            assert self._tree_limit > 0, "Unexpected tree limit"
             trees = trees[:self._tree_limit]
 
         trees_ast = [self._assemble_tree(t) for t in trees]
@@ -92,7 +93,7 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
 
         # Limit the number of trees that should be used for
         # assembling (if applicable).
-        best_ntree_limit = getattr(model, "best_ntree_limit", 0)
+        best_ntree_limit = getattr(model, "best_ntree_limit", None)
 
         super().__init__(model, trees, base_score=model.base_score,
                          tree_limit=best_ntree_limit)
