@@ -9,13 +9,16 @@ class BaseBoostingAssembler(ModelAssembler):
 
     classifier_name = None
 
-    def __init__(self, model, trees, base_score=0):
+    def __init__(self, model, trees, base_score=0, tree_limit=None):
         super().__init__(model)
         self.all_trees = trees
         self._base_score = base_score
 
         self._output_size = 1
         self._is_classification = False
+
+        assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
+        self._tree_limit = tree_limit
 
         model_class_name = type(model).__name__
         if model_class_name == self.classifier_name:
@@ -34,6 +37,9 @@ class BaseBoostingAssembler(ModelAssembler):
                 self.all_trees, self._base_score)
 
     def _assemble_single_output(self, trees, base_score=0):
+        if self._tree_limit:
+            trees = trees[:self._tree_limit]
+
         trees_ast = [self._assemble_tree(t) for t in trees]
         result_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
@@ -83,16 +89,14 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
         }
 
         model_dump = model.get_booster().get_dump(dump_format="json")
-
-        # Respect XGBoost ntree_limit
-        ntree_limit = getattr(model, "best_ntree_limit", 0)
-
-        if ntree_limit > 0:
-            model_dump = model_dump[:ntree_limit]
-
         trees = [json.loads(d) for d in model_dump]
 
-        super().__init__(model, trees, base_score=model.base_score)
+        # Limit the number of trees that should be used for
+        # assembling (if applicable).
+        best_ntree_limit = getattr(model, "best_ntree_limit", None)
+
+        super().__init__(model, trees, base_score=model.base_score,
+                         tree_limit=best_ntree_limit)
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
