@@ -89,9 +89,14 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     about AST.
     """
 
+    exponent_function_name = NotImplemented
+    power_function_name = NotImplemented
+    tanh_function_name = NotImplemented
+
     def __init__(self, cg, feature_array_name="input"):
         super().__init__(cg, feature_array_name=feature_array_name)
         self.with_vectors = False
+        self.with_math_module = False
 
     def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
         if if_var_name is not None:
@@ -139,6 +144,25 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_vectors = True
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
+
+    def interpret_exp_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.exponent_function_name, nested_result)
+
+    def interpret_tanh_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.tanh_function_name, nested_result)
+
+    def interpret_pow_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        base_result = self._do_interpret(expr.base_expr, **kwargs)
+        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
+        return self._cg.function_invocation(
+            self.power_function_name, base_result, exp_result)
 
     def _cache_reused_expr(self, expr, expr_result):
         var_name = self._cg.add_var_declaration(expr.output_size)

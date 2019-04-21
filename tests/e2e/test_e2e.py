@@ -1,3 +1,4 @@
+import sys
 import lightgbm
 import pytest
 import numpy as np
@@ -8,6 +9,9 @@ from sklearn import ensemble
 
 from tests import utils
 from tests.e2e import executors
+
+
+RECURSION_LIMIT = 5000
 
 
 # pytest marks
@@ -79,10 +83,20 @@ LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 
-        # SVM
+        # Linear SVM
         regression(svm.LinearSVR(random_state=RANDOM_SEED)),
         classification(svm.LinearSVC(random_state=RANDOM_SEED)),
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
+
+        # SVM
+        regression(svm.SVR(kernel='rbf')),
+        classification_binary(svm.SVC(kernel='rbf', random_state=RANDOM_SEED)),
+        classification_binary(svm.SVC(kernel='linear',
+                                      random_state=RANDOM_SEED)),
+        classification_binary(svm.SVC(kernel='poly', degree=2,
+                                      random_state=RANDOM_SEED)),
+        classification_binary(svm.SVC(kernel='sigmoid',
+                                      random_state=RANDOM_SEED)),
 
         # Linear Regression
         regression(linear_model.LinearRegression()),
@@ -154,6 +168,8 @@ LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
     # <empty>
 )
 def test_e2e(estimator, executor_cls, model_trainer, is_fast):
+    sys.setrecursionlimit(RECURSION_LIMIT)
+
     X_test, y_pred_true = model_trainer(estimator)
     executor = executor_cls(estimator)
 

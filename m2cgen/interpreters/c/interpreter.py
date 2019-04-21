@@ -17,10 +17,13 @@ class CInterpreter(ToCodeInterpreter,
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
+    exponent_function_name = "exp"
+    power_function_name = "pow"
+    tanh_function_name = "tanh"
+
     def __init__(self, indent=4, *args, **kwargs):
         cg = CCodeGenerator(indent=indent)
         super(CInterpreter, self).__init__(cg, *args, **kwargs)
-        self.with_exponent = False
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -54,7 +57,7 @@ class CInterpreter(ToCodeInterpreter,
         if self.with_vectors:
             self._cg.add_dependency("<string.h>")
 
-        if self.with_exponent:
+        if self.with_math_module:
             self._cg.add_dependency("<math.h>")
 
         return self._cg.code
@@ -89,8 +92,3 @@ class CInterpreter(ToCodeInterpreter,
         self._cg.add_code_line(func_inv + ";")
 
         return var_name
-
-    def interpret_exp_expr(self, expr):
-        self.with_exponent = True
-        nested_result = self._do_interpret(expr.expr)
-        return self._cg.function_invocation("exp", nested_result)

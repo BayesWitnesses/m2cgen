@@ -47,6 +47,31 @@ class ExpExpr(NumExpr):
         return "ExpExpr(" + args + ")"
 
 
+class TanhExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "TanhExpr(" + args + ")"
+
+
+class PowExpr(NumExpr, BinExpr):
+    def __init__(self, base_expr, exp_expr, to_reuse=False):
+        self.base_expr = base_expr
+        self.exp_expr = exp_expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        args = ",".join([
+            str(self.base_expr),
+            str(self.exp_expr),
+            "to_reuse=" + str(self.to_reuse)
+        ])
+        return "PowExpr(" + args + ")"
+
+
 class BinNumOpType(Enum):
     ADD = '+'
     SUB = '-'

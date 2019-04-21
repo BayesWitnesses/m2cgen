@@ -19,6 +19,10 @@ class JavaInterpreter(ToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    exponent_function_name = "Math.exp"
+    power_function_name = "Math.pow"
+    tanh_function_name = "Math.tanh"
+
     def __init__(self, package_name=None, class_name="Model", indent=4,
                  *args, **kwargs):
         self.package_name = package_name
@@ -50,10 +54,6 @@ class JavaInterpreter(ToCodeInterpreter,
                 top_cg.add_code_lines(utils.get_file_content(filename))
 
         return top_cg.code
-
-    def interpret_exp_expr(self, expr):
-        nested_result = self._do_interpret(expr.expr)
-        return self._cg.function_invocation("Math.exp", nested_result)
 
     # Required by SubroutinesAsFunctionsMixin to create new code generator for
     # each subroutine.

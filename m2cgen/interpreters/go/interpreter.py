@@ -16,10 +16,13 @@ class GoInterpreter(ToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    exponent_function_name = "math.Exp"
+    power_function_name = "math.Pow"
+    tanh_function_name = "math.Tanh"
+
     def __init__(self, indent=4, *args, **kwargs):
         cg = GoCodeGenerator(indent=indent)
         super(GoInterpreter, self).__init__(cg, *args, **kwargs)
-        self.with_exponent = False
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -41,12 +44,7 @@ class GoInterpreter(ToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.go")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
-        if self.with_exponent:
+        if self.with_math_module:
             self._cg.add_dependency("math")
 
         return self._cg.code
-
-    def interpret_exp_expr(self, expr):
-        self.with_exponent = True
-        nested_result = self._do_interpret(expr.expr)
-        return self._cg.function_invocation("math.Exp", nested_result)
