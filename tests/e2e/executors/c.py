@@ -78,6 +78,6 @@ class CExecutor(base.BaseExecutor):
             f.write(executor_code)
 
         target = os.path.join(self._resource_tmp_dir, self.model_name)
-        flags = ["-std=c99", "-lm", "-fbracket-depth=1000"]
+        flags = ["-std=c99", "-lm"]
         exec_args = [self._gcc] + [file_name] + ["-o", target] + flags
         subprocess.call(exec_args)

@@ -31,9 +31,8 @@ def test_rbf_kernel():
                         ast.NumVal(2)),
                     ast.BinNumOpType.MUL)))
 
-    expected = _create_expected_ast(estimator,
-                                    kernel_ast(1.0),
-                                    kernel_ast(2.0))
+    expected = _create_expected_ast(
+        estimator, [kernel_ast(1.0), kernel_ast(2.0)])
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -53,9 +52,8 @@ def test_linear_kernel():
                 ast.FeatureRef(0),
                 ast.BinNumOpType.MUL))
 
-    expected = _create_expected_ast(estimator,
-                                    kernel_ast(1.0),
-                                    kernel_ast(2.0))
+    expected = _create_expected_ast(
+        estimator, [kernel_ast(1.0), kernel_ast(2.0)])
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -82,9 +80,8 @@ def test_sigmoid_kernel():
                     ast.NumVal(0.0),
                     ast.BinNumOpType.ADD)))
 
-    expected = _create_expected_ast(estimator,
-                                    kernel_ast(1.0),
-                                    kernel_ast(2.0))
+    expected = _create_expected_ast(
+        estimator, [kernel_ast(1.0), kernel_ast(2.0)])
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -112,9 +109,8 @@ def test_poly_kernel():
                     ast.BinNumOpType.ADD),
                 ast.NumVal(estimator.degree)))
 
-    expected = _create_expected_ast(estimator,
-                                    kernel_ast(1.0),
-                                    kernel_ast(2.0))
+    expected = _create_expected_ast(
+        estimator, [kernel_ast(1.0), kernel_ast(2.0)])
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -129,17 +125,17 @@ def test_unknown_kernel():
     assembler.assemble()
 
 
-def _create_expected_ast(svm_model, kernel_ast_0, kernel_ast_1):
+def _create_expected_ast(svm_model, kernels_ast):
     return ast.BinNumExpr(
         ast.BinNumExpr(
             ast.NumVal(svm_model.intercept_[0]),
             ast.BinNumExpr(
-                kernel_ast_0,
+                kernels_ast[0],
                 ast.NumVal(svm_model.dual_coef_[0][0]),
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD),
         ast.BinNumExpr(
-            kernel_ast_1,
+            kernels_ast[1],
             ast.NumVal(svm_model.dual_coef_[0][1]),
             ast.BinNumOpType.MUL),
         ast.BinNumOpType.ADD)
