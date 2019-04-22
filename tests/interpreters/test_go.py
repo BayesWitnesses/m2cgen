@@ -184,8 +184,6 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
 func score(input []float64) []float64 {
     return addVectors([]float64{1, 2}, []float64{3, 4})
 }"""
-    print(expected_code)
-    print(interpreter.interpret(expr))
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -227,6 +225,34 @@ def test_exp_expr():
 import "math"
 func score(input []float64) float64 {
     return math.Exp(1.0)
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_pow_expr():
+    expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
+
+    interpreter = interpreters.GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return math.Pow(2.0, 3.0)
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_tanh_expr():
+    expr = ast.TanhExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return math.Tanh(2.0)
 }"""
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

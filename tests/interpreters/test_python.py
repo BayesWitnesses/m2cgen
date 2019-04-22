@@ -322,6 +322,32 @@ def score(input):
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_pow_expr():
+    expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import numpy as np
+def score(input):
+    return np.power(2.0, 3.0)"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_tanh_expr():
+    expr = ast.TanhExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import numpy as np
+def score(input):
+    return np.tanh(2.0)"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
