@@ -6,6 +6,14 @@ def mul(l, r):
     return ast.BinNumExpr(l, r, ast.BinNumOpType.MUL)
 
 
+def add(l, r):
+    return ast.BinNumExpr(l, r, ast.BinNumOpType.ADD)
+
+
+def sub(l, r):
+    return ast.BinNumExpr(l, r, ast.BinNumOpType.SUB)
+
+
 def lte(l, r):
     return ast.CompExpr(l, r, ast.CompOpType.LTE)
 
@@ -34,8 +42,10 @@ def apply_bin_op(left, right, op):
 
 
 def apply_op_to_expressions(op, *exprs, to_reuse=False):
-    if len(exprs) < 2:
-        raise ValueError("At least two expressions are required")
+    if len(exprs) < 1:
+        raise ValueError("At least one expression is required")
+    if len(exprs) == 1:
+        return exprs[0]
 
     def _inner(current_expr, *rest_exprs):
         if not rest_exprs:

@@ -2,6 +2,7 @@ from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
 from .boosting import XGBoostModelAssembler, LightGBMModelAssembler
+from .svm import SVMModelAssembler
 
 __all__ = [
     LinearModelAssembler,
@@ -23,6 +24,8 @@ SUPPORTED_MODELS = {
     # SVM
     "LinearSVC": LinearModelAssembler,
     "LinearSVR": LinearModelAssembler,
+    "SVR": SVMModelAssembler,
+    "SVC": SVMModelAssembler,
 
     # Linear Regressors
     "LinearRegression": LinearModelAssembler,
