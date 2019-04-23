@@ -146,18 +146,21 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return self._cg.vector_init(nested)
 
     def interpret_exp_expr(self, expr, **kwargs):
+        assert self.exponent_function_name, "Exponent function is not provided"
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.exponent_function_name, nested_result)
 
     def interpret_tanh_expr(self, expr, **kwargs):
+        assert self.tanh_function_name, "Tanh function is not provided"
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.tanh_function_name, nested_result)
 
     def interpret_pow_expr(self, expr, **kwargs):
+        assert self.power_function_name, "Power function is not provided"
         self.with_math_module = True
         base_result = self._do_interpret(expr.base_expr, **kwargs)
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
