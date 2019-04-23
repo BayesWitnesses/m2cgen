@@ -60,15 +60,15 @@ class SVMModelAssembler(ModelAssembler):
 
     def _rbf_kernel(self, support_vector):
         negative_gamma = utils.sub(ast.NumVal(0), ast.NumVal(self._gamma))
-        kernel = None
-        for j in range(len(support_vector)):
-            sub_expr = utils.sub(ast.NumVal(support_vector[j]),
-                                 ast.FeatureRef(j))
-            pow_expr = ast.PowExpr(sub_expr, ast.NumVal(2))
-            if kernel:
-                kernel = utils.add(pow_expr, kernel)
-            else:
-                kernel = pow_expr
+        elem_wise = [
+            ast.PowExpr(
+                utils.sub(ast.NumVal(support_element), ast.FeatureRef(i)),
+                ast.NumVal(2)
+            )
+            for i, support_element in enumerate(support_vector)
+        ]
+        kernel = utils.apply_op_to_expressions(ast.BinNumOpType.ADD,
+                                               *elem_wise)
         kernel = utils.mul(negative_gamma, kernel)
         return ast.ExpExpr(kernel)
 
@@ -81,15 +81,11 @@ class SVMModelAssembler(ModelAssembler):
         return ast.PowExpr(kernel, ast.NumVal(self.model.degree))
 
     def _linear_kernel(self, support_vector):
-        kernel = None
-        for j in range(len(support_vector)):
-            mul_expr = utils.mul(ast.NumVal(support_vector[j]),
-                                 ast.FeatureRef(j))
-            if kernel:
-                kernel = utils.add(mul_expr, kernel)
-            else:
-                kernel = mul_expr
-        return kernel
+        elem_wise = [
+            utils.mul(ast.NumVal(support_element), ast.FeatureRef(i))
+            for i, support_element in enumerate(support_vector)
+        ]
+        return utils.apply_op_to_expressions(ast.BinNumOpType.ADD, *elem_wise)
 
     def _linear_kernel_with_gama_and_coef(self, support_vector):
         kernel = self._linear_kernel(support_vector)
