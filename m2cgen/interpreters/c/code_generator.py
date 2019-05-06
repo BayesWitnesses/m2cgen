@@ -10,7 +10,7 @@ class CCodeGenerator(CLikeCodeGenerator):
     tpl_vector_var_declare = CT("double ${var_name}[${size}];")
 
     scalar_type = "double"
-    vector_type = "double *"
+    vector_type = "const double *"
 
     def __init__(self, *args, **kwargs):
         super(CCodeGenerator, self).__init__(*args, **kwargs)
