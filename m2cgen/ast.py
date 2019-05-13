@@ -216,6 +216,10 @@ class TransparentExpr(CtrlExpr):
 
 
 class SubroutineExpr(TransparentExpr):
+    def __init__(self, expr, to_reuse=False):
+        super().__init__(expr)
+        self.to_reuse = to_reuse
 
     def __str__(self):
-        return "SubroutineExpr(" + str(self.expr) + ")"
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "SubroutineExpr(" + args + ")"
