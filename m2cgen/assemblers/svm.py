@@ -26,7 +26,7 @@ class SVMModelAssembler(ModelAssembler):
             self._gamma = 1.0 / n_features
 
         self._output_size = 1
-        if type(model).__name__ == "SVC":
+        if type(model).__name__ in ("SVC", "NuSVC"):
             n_classes = len(model.n_support_)
             if n_classes > 2:
                 self._output_size = n_classes
