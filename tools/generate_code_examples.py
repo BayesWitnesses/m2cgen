@@ -14,11 +14,13 @@ import itertools
 
 import lightgbm
 import xgboost
-from sklearn import linear_model, tree, ensemble
+from sklearn import linear_model, tree, ensemble, svm
 
 import m2cgen as m2c
 from tests import utils
 
+
+RECURSION_LIMIT = 5000
 
 RANDOM_SEED = 1234
 TREE_PARAMS = dict(random_state=RANDOM_SEED, max_leaf_nodes=5)
@@ -26,6 +28,7 @@ FOREST_PARAMS = dict(
     n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
 XGBOOST_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
 LIGHT_GBM_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
+SVM_PARAMS = dict(kernel="rbf", random_state=RANDOM_SEED)
 
 
 EXAMPLE_LANGUAGES = [
@@ -86,10 +89,22 @@ EXAMPLE_MODELS = [
         lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS),
         utils.train_model_classification,
     ),
+    (
+        "regression", "svm",
+        svm.SVR(),
+        utils.train_model_regression,
+    ),
+    (
+        "classification", "svm",
+        svm.SVC(**SVM_PARAMS),
+        utils.train_model_classification,
+    ),
 ]
 
 
 if __name__ == "__main__":
+    sys.setrecursionlimit(RECURSION_LIMIT)
+
     if len(sys.argv) != 2:
         print("Path to the export folder is required")
         sys.exit(1)
