@@ -21,9 +21,12 @@ class SVMModelAssembler(ModelAssembler):
 
         n_features = len(model.support_vectors_[0])
 
-        self._gamma = model.gamma
-        if self._gamma == "auto" or self._gamma == "auto_deprecated":
-            self._gamma = 1.0 / n_features
+        gamma = model.gamma
+        if gamma == "auto" or gamma == "auto_deprecated":
+            gamma = 1.0 / n_features
+        self._gamma_expr = ast.NumVal(gamma)
+        self._neg_gamma_expr = utils.sub(ast.NumVal(0), ast.NumVal(gamma),
+                                         to_reuse=True)
 
         self._output_size = 1
         if type(model).__name__ in ("SVC", "NuSVC"):
@@ -101,7 +104,6 @@ class SVMModelAssembler(ModelAssembler):
         return kernel_exprs
 
     def _rbf_kernel(self, support_vector):
-        negative_gamma = utils.sub(ast.NumVal(0), ast.NumVal(self._gamma))
         elem_wise = [
             ast.PowExpr(
                 utils.sub(ast.NumVal(support_element), ast.FeatureRef(i)),
@@ -111,7 +113,7 @@ class SVMModelAssembler(ModelAssembler):
         ]
         kernel = utils.apply_op_to_expressions(ast.BinNumOpType.ADD,
                                                *elem_wise)
-        kernel = utils.mul(negative_gamma, kernel)
+        kernel = utils.mul(self._neg_gamma_expr, kernel)
         return ast.ExpExpr(kernel)
 
     def _sigmoid_kernel(self, support_vector):
@@ -131,5 +133,5 @@ class SVMModelAssembler(ModelAssembler):
 
     def _linear_kernel_with_gama_and_coef(self, support_vector):
         kernel = self._linear_kernel(support_vector)
-        kernel = utils.mul(ast.NumVal(self._gamma), kernel)
+        kernel = utils.mul(self._gamma_expr, kernel)
         return utils.add(kernel, ast.NumVal(self.model.coef0))

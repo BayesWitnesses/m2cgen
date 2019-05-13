@@ -187,7 +187,8 @@ def _rbf_kernel_ast(estimator, sup_vec_value, to_reuse=False):
     negative_gamma_ast = ast.BinNumExpr(
         ast.NumVal(0),
         ast.NumVal(estimator.gamma),
-        ast.BinNumOpType.SUB)
+        ast.BinNumOpType.SUB,
+        to_reuse=True)
 
     return ast.SubroutineExpr(
         ast.ExpExpr(
