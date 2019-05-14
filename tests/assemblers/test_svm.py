@@ -161,9 +161,6 @@ def test_multi_class_rbf_kernel():
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD)])
 
-    # expected = _create_expected_single_output_ast(
-    #     estimator, [kernel_ast(1.0), kernel_ast(2.0), kernel_ast(3.0)])
-
     assert utils.cmp_exprs(actual, expected)
 
 

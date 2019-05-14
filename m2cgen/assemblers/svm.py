@@ -69,7 +69,7 @@ class SVMModelAssembler(ModelAssembler):
 
         support_ranges = []
         for i in range(n_support_len):
-            range_start = sum(n_support[0:i])
+            range_start = sum(n_support[:i])
             range_end = range_start + n_support[i]
             support_ranges.append((range_start, range_end))
 

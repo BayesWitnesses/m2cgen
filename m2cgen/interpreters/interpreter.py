@@ -38,7 +38,10 @@ class BaseInterpreter:
             raise
 
         # Note that the reuse flag passed in the arguments has a higher
-        # precedence than one specified in the expression.
+        # precedence than one specified in the expression. One use case for
+        # this behavior is to override the original to_reuse flag for
+        # expressions that are wrapped by subroutine expression in case when
+        # subroutines are not supported by specific interpreter implementation.
         expr_to_reuse = to_reuse if to_reuse is not None else expr.to_reuse
         if not expr_to_reuse:
             return handler(expr, **kwargs)
