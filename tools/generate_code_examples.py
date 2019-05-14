@@ -28,7 +28,7 @@ FOREST_PARAMS = dict(
     n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
 XGBOOST_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
 LIGHT_GBM_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
-SVM_PARAMS = dict(kernel="rbf", random_state=RANDOM_SEED)
+SVC_PARAMS = dict(kernel="rbf", nu=0.1, random_state=RANDOM_SEED)
 
 
 EXAMPLE_LANGUAGES = [
@@ -91,12 +91,12 @@ EXAMPLE_MODELS = [
     ),
     (
         "regression", "svm",
-        svm.SVR(),
+        svm.NuSVR(nu=0.1),
         utils.train_model_regression,
     ),
     (
         "classification", "svm",
-        svm.SVC(**SVM_PARAMS),
+        svm.NuSVC(**SVC_PARAMS),
         utils.train_model_classification,
     ),
 ]
