@@ -25,7 +25,9 @@ SUPPORTED_MODELS = {
     "LinearSVC": LinearModelAssembler,
     "LinearSVR": LinearModelAssembler,
     "SVR": SVMModelAssembler,
+    "NuSVR": SVMModelAssembler,
     "SVC": SVMModelAssembler,
+    "NuSVC": SVMModelAssembler,
 
     # Linear Regressors
     "LinearRegression": LinearModelAssembler,

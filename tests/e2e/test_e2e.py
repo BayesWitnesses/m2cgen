@@ -58,6 +58,7 @@ FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
                       random_state=RANDOM_SEED)
 LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
+SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
 
 
 @utils.cartesian_e2e_params(
@@ -89,14 +90,15 @@ LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 
         # SVM
-        regression(svm.SVR(kernel='rbf')),
-        classification_binary(svm.SVC(kernel='rbf', random_state=RANDOM_SEED)),
-        classification_binary(svm.SVC(kernel='linear',
-                                      random_state=RANDOM_SEED)),
-        classification_binary(svm.SVC(kernel='poly', degree=2,
-                                      random_state=RANDOM_SEED)),
-        classification_binary(svm.SVC(kernel='sigmoid',
-                                      random_state=RANDOM_SEED)),
+        regression(svm.SVR(kernel="rbf")),
+        regression(svm.NuSVR(kernel="rbf")),
+        classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+        classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
+        classification_binary(svm.SVC(kernel="poly", degree=2, **SVC_PARAMS)),
+        classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
+        classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
+        classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+        classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
 
         # Linear Regression
         regression(linear_model.LinearRegression()),

@@ -36,10 +36,8 @@ class TreeModelAssembler(ModelAssembler):
     def _assemble_leaf(self, node_id):
         scores = self._tree.value[node_id][0]
         if self._is_vector_output:
-            outputs = []
             score_sum = scores.sum() or 1.0
-            for s in scores:
-                outputs.append(ast.NumVal(s / score_sum))
+            outputs = [ast.NumVal(s / score_sum) for s in scores]
             return ast.VectorVal(outputs)
         else:
             assert len(scores) == 1, "Unexpected number of outputs"

@@ -2,16 +2,16 @@ import numpy as np
 from m2cgen import ast
 
 
-def mul(l, r):
-    return ast.BinNumExpr(l, r, ast.BinNumOpType.MUL)
+def mul(l, r, to_reuse=False):
+    return ast.BinNumExpr(l, r, ast.BinNumOpType.MUL, to_reuse=to_reuse)
 
 
-def add(l, r):
-    return ast.BinNumExpr(l, r, ast.BinNumOpType.ADD)
+def add(l, r, to_reuse=False):
+    return ast.BinNumExpr(l, r, ast.BinNumOpType.ADD, to_reuse=to_reuse)
 
 
-def sub(l, r):
-    return ast.BinNumExpr(l, r, ast.BinNumOpType.SUB)
+def sub(l, r, to_reuse=False):
+    return ast.BinNumExpr(l, r, ast.BinNumOpType.SUB, to_reuse=to_reuse)
 
 
 def lte(l, r):
