@@ -29,73 +29,43 @@ pip install m2cgen
 - Go
 
 ## Supported Models
-<table>
-  <thead>
-      <tr>
-        <th width="10%"></th>
-        <th width="45%">Classification</th>
-        <th width="45%">Regression</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <th>Linear</th>
-        <td>LogisticRegression, LogisticRegressionCV, RidgeClassifier, RidgeClassifierCV, SGDClassifier, PassiveAggressiveClassifier</td>
-        <td>LinearRegression, HuberRegressor, ElasticNet, ElasticNetCV, TheilSenRegressor, Lars, LarsCV, Lasso, LassoCV, LassoLars, LassoLarsIC, OrthogonalMatchingPursuit, OrthogonalMatchingPursuitCV, Ridge, RidgeCV, BayesianRidge, ARDRegression, SGDRegressor, PassiveAggressiveRegressor</td>
-      </tr>
-      <tr>
-        <th>SVM</th>
-        <td>LinearSVC</td>
-        <td>LinearSVR</td>
-      </tr>
-      <tr>
-        <th>Tree</th>
-        <td>DecisionTreeClassifier, ExtraTreeClassifier</td>
-        <td>DecisionTreeRegressor, ExtraTreeRegressor</td>
-      </tr>
-      <tr>
-        <th>Random Forest</th>
-        <td>RandomForestClassifier, ExtraTreesClassifier</td>
-        <td>RandomForestRegressor, ExtraTreesRegressor</td>
-      </tr>
-      <tr>
-        <th>Boosting</th>
-        <td>XGBClassifier(gbtree/dart booster only), LGBMClassifier(gbdt/dart booster only)</td>
-        <td>XGBRegressor(gbtree/dart booster only), LGBMRegressor(gbdt/dart booster only)</td>
-      </tr>
-  </tbody>
-</table>
 
+|  | Classification | Regression |
+| --- | --- | --- |
+| **Linear** | LogisticRegression, LogisticRegressionCV, RidgeClassifier, RidgeClassifierCV, SGDClassifier, PassiveAggressiveClassifier | LinearRegression, HuberRegressor, ElasticNet, ElasticNetCV, TheilSenRegressor, Lars, LarsCV, Lasso, LassoCV, LassoLars, LassoLarsIC, OrthogonalMatchingPursuit, OrthogonalMatchingPursuitCV, Ridge, RidgeCV, BayesianRidge, ARDRegression, SGDRegressor, PassiveAggressiveRegressor |
+| **SVM** | SVC, NuSVC, LinearSVC | SVR, NuSVR, LinearSVR |
+| **Tree** | DecisionTreeClassifier, ExtraTreeClassifier | DecisionTreeRegressor, ExtraTreeRegressor |
+| **Random Forest** | RandomForestClassifier, ExtraTreesClassifier | RandomForestRegressor, ExtraTreesRegressor |
+| **Boosting** | XGBClassifier(gbtree/dart booster only), LGBMClassifier(gbdt/dart booster only) | XGBRegressor(gbtree/dart booster only), LGBMRegressor(gbdt/dart booster only) |
 
 ## Classification Output
-<table>
-  <thead>
-      <tr>
-        <th width="10%"></th>
-        <th width="35%">Binary</th>
-        <th width="35%">Multiclass</th>
-        <th width="20%">Comment</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <th>Linear</th>
-        <td>Scalar value; signed distance of the sample to the hyperplane for the second class </td>
-        <td>Vector value; signed distance of the sample to the hyperplane per each class</td>
-        <td>The output is consistent with the output of <i>LinearClassifierMixin.decision_function</i></td>
-      </tr>
-      <tr>
-        <th>Tree/Random Forest/XGBoost/LightGBM</th>
-        <td>Vector value; class probabilities</td>
-        <td>Vector value; class probabilities</td>
-        <td>The output is consistent with the output of the <i>predict_proba</i> method of <i>DecisionTreeClassifier</i>/<i>ForestClassifier</i>/<i>XGBClassifier</i>/<i>LGBMClassifier</i></td>
-      </tr>
-  </tbody>
-</table>
+### Linear/Linear SVM
+#### Binary
+Scalar value; signed distance of the sample to the hyperplane for the second class.
+#### Multiclass
+Vector value; signed distance of the sample to the hyperplane per each class.
+#### Comment
+The output is consistent with the output of ```LinearClassifierMixin.decision_function```.
+
+### SVM
+#### Binary
+Scalar value; signed distance of the sample to the hyperplane for the second class.
+#### Multiclass
+Vector value; one-vs-one score for each class, shape (n_samples, n_classes * (n_classes-1) / 2).
+#### Comment
+The output is consistent with the output of ```BaseSVC.decision_function``` when the `decision_function_shape` is set to `ovo`.
+
+### Tree/Random Forest/XGBoost/LightGBM
+#### Binary
+Vector value; class probabilities.
+#### Multiclass
+Vector value; class probabilities.
+#### Comment
+The output is consistent with the output of the `predict_proba` method of `DecisionTreeClassifier`/`ForestClassifier`/`XGBClassifier`/`LGBMClassifier`.
 
 ## Usage
 
-Here's a simple example of how a trained linear model can be represented in Java code:
+Here's a simple example of how a linear model trained in Python environment can be represented in Java code:
 ```python
 from sklearn.datasets import load_boston
 from sklearn import linear_model
@@ -110,7 +80,7 @@ estimator.fit(X, y)
 code = m2c.export_to_java(estimator)
 ```
 
-The example of the generated code:
+Generated Java code:
 ```java
 public class Model {
 
