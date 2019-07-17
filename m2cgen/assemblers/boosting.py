@@ -105,8 +105,8 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
             return ast.NumVal(tree["leaf"])
 
         threshold = ast.NumVal(tree["split_condition"])
-        split_feature = tree["split"]
-        feature_idx = self._feature_name_to_idx.get(split_feature, split_feature)
+        split = tree["split"]
+        feature_idx = self._feature_name_to_idx.get(split, split)
         feature_ref = ast.FeatureRef(feature_idx)
 
         # Since comparison with NaN (missing) value always returns false we
