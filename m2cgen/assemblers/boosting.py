@@ -84,11 +84,9 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
 
     def __init__(self, model):
         feature_names = model.get_booster().feature_names
-        self._feature_name_to_idx = {}
-        if feature_names is not None:
-            self._feature_name_to_idx = {
-                name: idx for idx, name in enumerate(feature_names)
-            }
+        self._feature_name_to_idx = {
+            name: idx for idx, name in enumerate(feature_names or [])
+        }
 
         model_dump = model.get_booster().get_dump(dump_format="json")
         trees = [json.loads(d) for d in model_dump]
