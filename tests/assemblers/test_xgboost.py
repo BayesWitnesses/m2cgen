@@ -1,5 +1,6 @@
 import xgboost
 import numpy as np
+import os
 from tests import utils
 from m2cgen import assemblers, ast
 
@@ -231,21 +232,16 @@ def test_multi_class_best_ntree_limit():
 
 
 def test_regression_saved_without_feature_names():
-    import os
-
     base_score = 0.6
     estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
                                      max_depth=1, base_score=base_score)
     utils.train_model_regression(estimator)
 
-    filename = "tmp.file"
-    if os.path.exists(filename):
-        raise OSError("File is already exist")
-    estimator.save_model(filename)
-    estimator = xgboost.XGBRegressor(base_score=base_score)
-    estimator.load_model(filename)
-    if os.path.exists(filename):
-        os.remove(filename)
+    with utils.tmp_dir() as tmp_dirpath:
+        filename = os.path.join(tmp_dirpath, "tmp.file")
+        estimator.save_model(filename)
+        estimator = xgboost.XGBRegressor(base_score=base_score)
+        estimator.load_model(filename)
 
     assembler = assemblers.XGBoostModelAssembler(estimator)
     actual = assembler.assemble()
