@@ -1,5 +1,6 @@
 import xgboost
 import numpy as np
+import os
 from tests import utils
 from m2cgen import assemblers, ast
 
@@ -226,5 +227,44 @@ def test_multi_class_best_ntree_limit():
             exp_sum,
             ast.BinNumOpType.DIV)
     ])
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_regression_saved_without_feature_names():
+    base_score = 0.6
+    estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
+                                     max_depth=1, base_score=base_score)
+    utils.train_model_regression(estimator)
+
+    with utils.tmp_dir() as tmp_dirpath:
+        filename = os.path.join(tmp_dirpath, "tmp.file")
+        estimator.save_model(filename)
+        estimator = xgboost.XGBRegressor(base_score=base_score)
+        estimator.load_model(filename)
+
+    assembler = assemblers.XGBoostModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.SubroutineExpr(
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.NumVal(base_score),
+                ast.IfExpr(
+                    ast.CompExpr(
+                        ast.FeatureRef(12),
+                        ast.NumVal(9.72500038),
+                        ast.CompOpType.GTE),
+                    ast.NumVal(1.67318344),
+                    ast.NumVal(2.92757893)),
+                ast.BinNumOpType.ADD),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.94099998),
+                    ast.CompOpType.GTE),
+                ast.NumVal(3.3400948),
+                ast.NumVal(1.72118247)),
+            ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)

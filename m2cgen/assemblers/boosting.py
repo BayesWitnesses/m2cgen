@@ -85,7 +85,7 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
     def __init__(self, model):
         feature_names = model.get_booster().feature_names
         self._feature_name_to_idx = {
-            name: idx for idx, name in enumerate(feature_names)
+            name: idx for idx, name in enumerate(feature_names or [])
         }
 
         model_dump = model.get_booster().get_dump(dump_format="json")
@@ -103,7 +103,8 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
             return ast.NumVal(tree["leaf"])
 
         threshold = ast.NumVal(tree["split_condition"])
-        feature_idx = self._feature_name_to_idx[tree["split"]]
+        split = tree["split"]
+        feature_idx = self._feature_name_to_idx.get(split, split)
         feature_ref = ast.FeatureRef(feature_idx)
 
         # Since comparison with NaN (missing) value always returns false we
