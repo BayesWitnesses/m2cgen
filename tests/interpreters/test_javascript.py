@@ -223,7 +223,7 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 function score(input) {
-    return addVectors([1, 2], [3, 4]);
+    return mulVectorNumber([1, 2], 1);
 }
 function addVectors(v1, v2) {
     let result = new Array(v1.length);
