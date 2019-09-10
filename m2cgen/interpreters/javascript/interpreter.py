@@ -7,6 +7,7 @@ from m2cgen.interpreters.interpreter import ToCodeInterpreter
 from m2cgen.interpreters.javascript.code_generator \
     import JavascriptCodeGenerator
 
+
 class JavascriptInterpreter(ToCodeInterpreter,
                             mixins.LinearAlgebraMixin,
                             mixins.SubroutinesAsFunctionsMixin):

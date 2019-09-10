@@ -7,7 +7,7 @@ class JavascriptCodeGenerator(CLikeCodeGenerator):
     def __init__(self, *args, **kwargs):
         super(JavascriptCodeGenerator, self).__init__(*args, **kwargs)
 
-    def add_method_def(self, name, args, is_vector_output, modifier=""):        
+    def add_method_def(self, name, args, is_vector_output, modifier=""):
         method_def = "function " + name + "("
         method_def += ",".join([n for is_vector, n in args])
         method_def += ") {"
