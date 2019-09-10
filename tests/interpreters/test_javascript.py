@@ -132,7 +132,6 @@ function score(input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
-
 def test_subroutine():
     expr = ast.BinNumExpr(
         ast.FeatureRef(0),
@@ -300,6 +299,7 @@ function score(input) {
 """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
 
 def test_with_util_functions():
     expr = ast.NumVal(1)

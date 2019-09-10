@@ -4,12 +4,12 @@ from m2cgen import ast
 from m2cgen.interpreters import mixins
 from m2cgen.interpreters import utils
 from m2cgen.interpreters.interpreter import ToCodeInterpreter
-from m2cgen.interpreters.javascript.code_generator import JavascriptCodeGenerator
-
+from m2cgen.interpreters.javascript.code_generator \
+    import JavascriptCodeGenerator
 
 class JavascriptInterpreter(ToCodeInterpreter,
-                      mixins.LinearAlgebraMixin,
-                      mixins.SubroutinesAsFunctionsMixin):
+                            mixins.LinearAlgebraMixin,
+                            mixins.SubroutinesAsFunctionsMixin):
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",
@@ -24,7 +24,7 @@ class JavascriptInterpreter(ToCodeInterpreter,
     tanh_function_name = "Math.tanh"
 
     def __init__(self, with_util_functions=False, indent=4,
-                 *args, **kwargs):                
+                 *args, **kwargs):
         self.indent = indent
         self.with_util_functions = with_util_functions
 
@@ -34,14 +34,14 @@ class JavascriptInterpreter(ToCodeInterpreter,
         super().__init__(None, *args, **kwargs)
 
     def interpret(self, expr):
-        top_cg = self.create_code_generator()        
-      
+        top_cg = self.create_code_generator()
+
         # Since we use SubroutinesAsFunctionsMixin, we already have logic
         # of adding methods. We create first subroutine for incoming
         # expression and call `process_subroutine_queue` method.
         self.enqueue_subroutine("score", expr)
         self.process_subroutine_queue(top_cg)
-        
+
         if self.with_util_functions:
             utils_filename = os.path.join(
                 os.path.dirname(__file__), "utils.js")

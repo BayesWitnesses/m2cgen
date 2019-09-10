@@ -92,7 +92,7 @@ def export_to_javascript(model, with_util_functions=False, indent=4):
     Parameters
     ----------
     model : object
-        The model object that should be transpiled into code.   
+        The model object that should be transpiled into code.
     with_util_functions : bool, optional
         If True, add Javascript array/dict utility functions.
     indent : int, optional
@@ -102,8 +102,10 @@ def export_to_javascript(model, with_util_functions=False, indent=4):
     -------
     code : string
     """
-    interpreter = interpreters.JavascriptInterpreter(with_util_functions=with_util_functions, indent=indent)
+    interpreter = interpreters.JavascriptInterpreter(
+        with_util_functions=with_util_functions, indent=indent)
     return _export(model, interpreter)
+
 
 def _export(model, interpreter):
     assembler_cls = assemblers.get_assembler_cls(model)

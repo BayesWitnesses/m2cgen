@@ -8,7 +8,8 @@ setup(
     license="MIT",
     packages=find_packages(exclude=["tests.*", "tests"]),
     package_data={
-        "": ["linear_algebra.java", "linear_algebra.c", "linear_algebra.go"],
+        "": ["linear_algebra.java", "linear_algebra.c", "linear_algebra.go",
+             "linear_algebra.js", "utils.js"],
     },
     classifiers=[
         "Development Status :: 3 - Alpha",
