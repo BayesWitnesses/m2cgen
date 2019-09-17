@@ -144,9 +144,6 @@ def test_multi_output():
 
     expected_code = """
 function score(input) {
-    return subroutine0(input);
-}
-function subroutine0(input) {
     var var0;
     if ((1) == (1)) {
         var0 = [1, 2];
