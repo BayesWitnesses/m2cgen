@@ -24,7 +24,7 @@ LANGUAGE_TO_EXPORTER = {
     "c": (m2cgen.export_to_c, ["indent"]),
     "go": (m2cgen.export_to_go, ["indent"]),
     "javascript": (
-        m2cgen.export_to_javascript, ["with_util_functions", "indent"]),
+        m2cgen.export_to_javascript, ["indent"]),
 }
 
 

@@ -23,10 +23,9 @@ class JavascriptInterpreter(ToCodeInterpreter,
     power_function_name = "Math.pow"
     tanh_function_name = "Math.tanh"
 
-    def __init__(self, with_util_functions=False, indent=4,
+    def __init__(self, indent=4,
                  *args, **kwargs):
         self.indent = indent
-        self.with_util_functions = with_util_functions
 
         cg = JavascriptCodeGenerator(indent=indent)
         super(JavascriptInterpreter, self).__init__(cg, *args, **kwargs)
@@ -40,15 +39,8 @@ class JavascriptInterpreter(ToCodeInterpreter,
         with self._cg.function_definition(
                 name="score",
                 args=args):
-
             last_result = self._do_interpret(expr)
-
             self._cg.add_return_statement(last_result)
-
-        if self.with_util_functions:
-            utils_filename = os.path.join(
-                os.path.dirname(__file__), "utils.js")
-            self._cg.add_code_lines(utils.get_file_content(utils_filename))
 
         if self.with_linear_algebra:
             filename = os.path.join(
