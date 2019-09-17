@@ -130,7 +130,7 @@ function score(input) {
 
     interpreter = interpreters.JavascriptInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-    
+
 
 def test_multi_output():
     expr = ast.SubroutineExpr(
