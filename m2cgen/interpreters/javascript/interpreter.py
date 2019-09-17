@@ -9,8 +9,7 @@ from m2cgen.interpreters.javascript.code_generator \
 
 
 class JavascriptInterpreter(ToCodeInterpreter,
-                            mixins.LinearAlgebraMixin,
-                            mixins.SubroutinesAsFunctionsMixin):
+                            mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",
@@ -29,33 +28,31 @@ class JavascriptInterpreter(ToCodeInterpreter,
         self.indent = indent
         self.with_util_functions = with_util_functions
 
-        # We don't provide any code generator as for each subroutine we will
-        # create a new one and concatenate their results into top_cg created
-        # in .interpret() method.
-        super().__init__(None, *args, **kwargs)
+        cg = JavascriptCodeGenerator(indent=indent)
+        super(JavascriptInterpreter, self).__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
-        top_cg = self.create_code_generator()
+        self._cg.reset_state()
+        self._reset_reused_expr_cache()
 
-        # Since we use SubroutinesAsFunctionsMixin, we already have logic
-        # of adding methods. We create first subroutine for incoming
-        # expression and call `process_subroutine_queue` method.
-        self.enqueue_subroutine("score", expr)
-        self.process_subroutine_queue(top_cg)
+        args = [(True, self._feature_array_name)]
+
+        with self._cg.function_definition(
+                name="score",
+                args=args):
+
+            last_result = self._do_interpret(expr)
+
+            self._cg.add_return_statement(last_result)
 
         if self.with_util_functions:
             utils_filename = os.path.join(
                 os.path.dirname(__file__), "utils.js")
-            top_cg.add_code_lines(utils.get_file_content(utils_filename))
+            self._cg.add_code_lines(utils.get_file_content(utils_filename))
 
         if self.with_linear_algebra:
             filename = os.path.join(
                 os.path.dirname(__file__), "linear_algebra.js")
-            top_cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
-        return top_cg.code
-
-    # Required by SubroutinesAsFunctionsMixin to create new code generator for
-    # each subroutine.
-    def create_code_generator(self):
-        return JavascriptCodeGenerator(indent=self.indent)
+        return self._cg.code

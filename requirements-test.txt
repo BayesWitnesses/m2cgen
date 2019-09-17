@@ -8,3 +8,4 @@ pytest==4.1.1
 pytest-mock==1.10.0
 coveralls==1.5.1
 pytest-cov==2.6.1
+py-mini-racer==0.1.18

@@ -7,17 +7,16 @@ class JavascriptCodeGenerator(CLikeCodeGenerator):
     def __init__(self, *args, **kwargs):
         super(JavascriptCodeGenerator, self).__init__(*args, **kwargs)
 
-    def add_method_def(self, name, args, is_vector_output, modifier=""):
-        method_def = "function " + name + "("
-        method_def += ",".join([n for is_vector, n in args])
-        method_def += ") {"
-        self.add_code_line(method_def)
+    def add_function_def(self, name, args):
+        function_def = "function " + name + "("
+        function_def += ",".join([n for is_vector, n in args])
+        function_def += ") {"
+        self.add_code_line(function_def)
         self.increase_indent()
 
     @contextlib.contextmanager
-    def method_definition(self, name, args, is_vector_output,
-                          modifier=""):
-        self.add_method_def(name, args, is_vector_output, modifier=modifier)
+    def function_definition(self, name, args):
+        self.add_function_def(name, args)
         yield
         self.add_block_termination()
 
@@ -26,7 +25,3 @@ class JavascriptCodeGenerator(CLikeCodeGenerator):
 
     def _get_var_declare_type(self, is_vector):
         return "var"
-
-    # Method `function_definition` is required by SubroutinesAsFunctionsMixin.
-    # We already have this functionality in `method_definition` method.
-    function_definition = method_definition

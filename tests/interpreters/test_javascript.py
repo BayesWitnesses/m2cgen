@@ -130,28 +130,7 @@ function score(input) {
 
     interpreter = interpreters.JavascriptInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_subroutine():
-    expr = ast.BinNumExpr(
-        ast.FeatureRef(0),
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD)),
-        ast.BinNumOpType.MUL)
-
-    expected_code = """
-function score(input) {
-    return (input[0]) * (subroutine0(input));
-}
-function subroutine0(input) {
-    return (1) + (2);
-}
-"""
-
-    interpreter = interpreters.JavascriptInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
+    
 
 def test_multi_output():
     expr = ast.SubroutineExpr(
