@@ -85,6 +85,25 @@ def export_to_go(model, indent=4):
     return _export(model, interpreter)
 
 
+def export_to_javascript(model, indent=4):
+    """
+    Generates a Javascript code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    indent : int, optional
+        The size of indents in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.JavascriptInterpreter(indent=indent)
+    return _export(model, interpreter)
+
+
 def _export(model, interpreter):
     assembler_cls = assemblers.get_assembler_cls(model)
     model_ast = assembler_cls(model).assemble()
