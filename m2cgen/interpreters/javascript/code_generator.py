@@ -9,7 +9,7 @@ class JavascriptCodeGenerator(CLikeCodeGenerator):
 
     def add_function_def(self, name, args):
         function_def = "function " + name + "("
-        function_def += ",".join([n for is_vector, n in args])
+        function_def += ",".join(args)
         function_def += ") {"
         self.add_code_line(function_def)
         self.increase_indent()
