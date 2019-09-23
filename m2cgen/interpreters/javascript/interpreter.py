@@ -34,7 +34,7 @@ class JavascriptInterpreter(ToCodeInterpreter,
         self._cg.reset_state()
         self._reset_reused_expr_cache()
 
-        args = [(True, self._feature_array_name)]
+        args = [self._feature_array_name]
 
         with self._cg.function_definition(
                 name="score",
