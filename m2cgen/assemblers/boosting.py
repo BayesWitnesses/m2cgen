@@ -152,6 +152,10 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
         output_size = 1
         if 'num_class' in model_dump:
             output_size = model_dump['num_class']
+            
+            if 'objective' not in model_dump:
+                raise Exception("objective function not specified in model_dump. try upgrading lightgbm >= 2.3.0")
+
             objective = model_dump['objective']
             is_classification = 'multiclass' in objective or 'binary' in objective
             
