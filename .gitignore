@@ -2,3 +2,6 @@
 **/__pycache__
 **/*.pyc
 venv
+build/
+m2cgen.egg-info
+dist
