@@ -74,9 +74,40 @@ def train_model_classification_binary(estimator, test_fraction=0.1):
     return _train_model(estimator, datasets.load_breast_cancer(),
                         test_fraction)
 
+def train_model_regression_random_data(estimator, test_fraction=0.01):
+    np.random.seed(seed=7)
+    N = 1000
+    data = np.random.random(size=(N, 200))
+    target = np.random.random(size=(N, 1))
+
+    return _train_model(estimator, (data, target), test_fraction)
+
+
+def train_model_classification_random_data(estimator, test_fraction=0.01):
+    np.random.seed(seed=7)
+    N = 1000
+
+    data = np.random.random(size=(N, 200))
+    target = np.random.randint(3, size=(N,))
+
+    return _train_model(estimator, (data, target), test_fraction)
+
+
+def train_model_classification_binary_random_data(estimator, test_fraction=0.01):
+    np.random.seed(seed=7)
+    N = 1000
+
+    data = np.random.random(size=(N, 200))
+    target = np.random.randint(2, size=(N,))
+
+    return _train_model(estimator, (data, target), test_fraction)
+
 
 def _train_model(estimator, dataset, test_fraction):
-    X, y = shuffle(dataset.data, dataset.target, random_state=13)
+    if isinstance(dataset, tuple):
+        X, y = dataset
+    else:
+        X, y = shuffle(dataset.data, dataset.target, random_state=13)
 
     offset = int(X.shape[0] * (1 - test_fraction))
     X_train, y_train = X[:offset], y[:offset]
@@ -120,8 +151,13 @@ result = score({})""".format(input_str)
 
 
 def predict_from_commandline(exec_args):
-    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE)
-    items = result.stdout.read().decode("utf-8").strip().split(" ")
+    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = result.communicate()
+    if result.returncode is not 0:
+        raise Exception("bad exit code ({}) stderr: {}".format(result.returncode, stderr.decode("utf-8")))
+
+    items = stdout.decode("utf-8").strip().split(" ")
+
     if len(items) == 1:
         return float(items[0])
     else:
