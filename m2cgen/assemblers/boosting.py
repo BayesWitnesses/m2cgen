@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import lightgbm
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
@@ -9,22 +10,16 @@ class BaseBoostingAssembler(ModelAssembler):
 
     classifier_name = None
 
-    def __init__(self, model, trees, base_score=0, tree_limit=None):
+    def __init__(self, model, trees, base_score=0, tree_limit=None, output_size=1, is_classification=False):
         super().__init__(model)
         self.all_trees = trees
         self._base_score = base_score
 
-        self._output_size = 1
-        self._is_classification = False
+        self._output_size = output_size
+        self._is_classification = is_classification
 
         assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
         self._tree_limit = tree_limit
-
-        model_class_name = type(model).__name__
-        if model_class_name == self.classifier_name:
-            self._is_classification = True
-            if model.n_classes_ > 2:
-                self._output_size = model.n_classes_
 
     def assemble(self):
         if self._is_classification:
@@ -95,8 +90,18 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
         # assembling (if applicable).
         best_ntree_limit = getattr(model, "best_ntree_limit", None)
 
+        model_class_name = type(model).__name__
+        is_classification = False
+        output_size = 1
+
+        if model_class_name == self.classifier_name:
+            is_classification = True
+            if model.n_classes_ > 2:
+                output_size = model.n_classes_
+
         super().__init__(model, trees, base_score=model.base_score,
-                         tree_limit=best_ntree_limit)
+                         tree_limit=best_ntree_limit, output_size=output_size, 
+                         is_classification=is_classification)
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
@@ -134,12 +139,26 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
 class LightGBMModelAssembler(BaseBoostingAssembler):
 
     classifier_name = "LGBMClassifier"
-
+    
     def __init__(self, model):
-        model_dump = model.booster_.dump_model()
-        trees = [m["tree_structure"] for m in model_dump["tree_info"]]
+        if isinstance(model, lightgbm.Booster):
+            model_dump = model.dump_model()
+        else:
+            model_dump = model.booster_.dump_model()
 
-        super().__init__(model, trees)
+        trees = [m["tree_structure"] for m in model_dump["tree_info"]]
+ 
+        is_classification = False
+        output_size = 1
+        if 'num_class' in model_dump:
+            output_size = model_dump['num_class']
+            objective = model_dump['objective']
+            is_classification = 'multiclass' in objective or 'binary' in objective
+            
+            if output_size > 2:
+                output_size = output_size
+
+        super().__init__(model, trees, output_size=output_size, is_classification=is_classification)
 
     def _assemble_tree(self, tree):
         if "leaf_value" in tree:

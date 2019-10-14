@@ -16,6 +16,7 @@ SUPPORTED_MODELS = {
     # LightGBM
     "LGBMRegressor": LightGBMModelAssembler,
     "LGBMClassifier": LightGBMModelAssembler,
+    "Booster": LightGBMModelAssembler,
 
     # XGBoost
     "XGBClassifier": XGBoostModelAssembler,
