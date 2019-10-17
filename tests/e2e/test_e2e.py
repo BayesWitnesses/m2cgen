@@ -1,3 +1,4 @@
+
 import sys
 import lightgbm
 import pytest
@@ -20,6 +21,7 @@ JAVA = pytest.mark.java
 C = pytest.mark.c
 GO = pytest.mark.go
 JAVASCRIPT = pytest.mark.javascript
+VBA = pytest.mark.vba
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -71,6 +73,7 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         (executors.CExecutor, C),
         (executors.GoExecutor, GO),
         (executors.JavascriptExecutor, JAVASCRIPT),
+        (executors.VbaExecutor, VBA),
     ],
 
     # These models will be tested against each language specified in the

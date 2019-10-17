@@ -87,7 +87,7 @@ def export_to_go(model, indent=4):
 
 def export_to_javascript(model, indent=4):
     """
-    Generates a Javascript code representation of the given model.
+    Generates a JavaScript code representation of the given model.
 
     Parameters
     ----------
@@ -101,6 +101,25 @@ def export_to_javascript(model, indent=4):
     code : string
     """
     interpreter = interpreters.JavascriptInterpreter(indent=indent)
+    return _export(model, interpreter)
+
+
+def export_to_vba(model, indent=4):
+    """
+    Generates a VBA code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    indent : int, optional
+        The size of indents in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.VbaInterpreter(indent=indent)
     return _export(model, interpreter)
 
 
