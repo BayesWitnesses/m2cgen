@@ -40,7 +40,7 @@ public class Model {
         double var1;
         if ((input[2]) >= (2.5999999)) {
             if ((input[2]) >= (4.85000038)) {
-                var1 = -0.0552999191;
+                var1 = -0.0552999265;
             } else {
                 var1 = 0.116139404;
             }
@@ -67,7 +67,7 @@ public class Model {
         double var1;
         if ((input[2]) >= (4.85000038)) {
             if ((input[3]) >= (1.75)) {
-                var1 = 0.124653712;
+                var1 = 0.124653697;
             } else {
                 var1 = 0.035562478;
             }

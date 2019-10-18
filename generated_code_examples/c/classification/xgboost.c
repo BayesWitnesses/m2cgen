@@ -28,7 +28,7 @@ void score(double * input, double * output) {
     double var4;
     if ((input[2]) >= (2.5999999)) {
         if ((input[2]) >= (4.85000038)) {
-            var4 = -0.0552999191;
+            var4 = -0.0552999265;
         } else {
             var4 = 0.116139404;
         }
@@ -54,7 +54,7 @@ void score(double * input, double * output) {
     double var7;
     if ((input[2]) >= (4.85000038)) {
         if ((input[3]) >= (1.75)) {
-            var7 = 0.124653712;
+            var7 = 0.124653697;
         } else {
             var7 = 0.035562478;
         }

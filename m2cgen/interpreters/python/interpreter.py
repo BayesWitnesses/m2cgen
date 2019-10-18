@@ -9,9 +9,11 @@ class PythonInterpreter(ToCodeInterpreter,
     # 60 raises MemoryError for some SVM models with RBF kernel.
     bin_depth_threshold = 55
 
-    exponent_function_name = "np.exp"
-    power_function_name = "np.power"
-    tanh_function_name = "np.tanh"
+    exponent_function_name = "math.exp"
+    power_function_name = "math.pow"
+    tanh_function_name = "math.tanh"
+
+    with_vector_operations = False
 
     def __init__(self, indent=4, *args, **kwargs):
         cg = PythonCodeGenerator(indent=indent)
@@ -27,19 +29,27 @@ class PythonInterpreter(ToCodeInterpreter,
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
-        if self.with_vectors or self.with_math_module:
+        if self.with_math_module:
+            self._cg.add_dependency("math")
+
+        if self.with_vector_operations:
             self._cg.add_dependency("numpy", alias="np")
 
         return self._cg.code
 
     def interpret_bin_vector_expr(self, expr, **kwargs):
+        self.with_vector_operations = True
         return self._cg.infix_expression(
-            left=self._do_interpret(expr.left, **kwargs),
+            left=self._cg.array_convert_to_numpy(
+                self._do_interpret(expr.left, **kwargs)),
             op=expr.op.value,
-            right=self._do_interpret(expr.right, **kwargs))
+            right=self._cg.array_convert_to_numpy(
+                self._do_interpret(expr.right, **kwargs)))
 
     def interpret_bin_vector_num_expr(self, expr, **kwargs):
+        self.with_vector_operations = True
         return self._cg.infix_expression(
-            left=self._do_interpret(expr.left, **kwargs),
+            left=self._cg.array_convert_to_numpy(
+                self._do_interpret(expr.left, **kwargs)),
             op=expr.op.value,
             right=self._do_interpret(expr.right, **kwargs))
