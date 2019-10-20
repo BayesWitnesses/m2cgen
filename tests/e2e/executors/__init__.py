@@ -3,7 +3,7 @@ from tests.e2e.executors.python import PythonExecutor
 from tests.e2e.executors.c import CExecutor
 from tests.e2e.executors.go import GoExecutor
 from tests.e2e.executors.javascript import JavascriptExecutor
-from tests.e2e.executors.vba import VbaExecutor
+from tests.e2e.executors.visual_basic import VisualBasicExecutor
 
 __all__ = [
     JavaExecutor,
@@ -11,5 +11,5 @@ __all__ = [
     CExecutor,
     GoExecutor,
     JavascriptExecutor,
-    VbaExecutor,
+    VisualBasicExecutor,
 ]

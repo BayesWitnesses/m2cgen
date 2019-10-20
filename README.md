@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/BayesWitnesses/m2cgen/badge.svg?branch=master)](https://coveralls.io/github/BayesWitnesses/m2cgen?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript).
+**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic).
 
 * [Installation](#installation)
 * [Supported Languages](#supported-languages)
@@ -23,11 +23,12 @@ pip install m2cgen
 
 ## Supported Languages
 
-- Python
-- Java
 - C
 - Go
+- Java
 - JavaScript
+- Python
+- Visual Basic
 
 ## Supported Models
 

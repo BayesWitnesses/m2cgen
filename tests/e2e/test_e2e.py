@@ -1,4 +1,3 @@
-
 import sys
 import lightgbm
 import pytest
@@ -21,7 +20,7 @@ JAVA = pytest.mark.java
 C = pytest.mark.c
 GO = pytest.mark.go
 JAVASCRIPT = pytest.mark.javascript
-VBA = pytest.mark.vba
+VISUAL_BASIC = pytest.mark.visual_basic
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -68,12 +67,12 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
     # These are the languages which support all models specified in the
     # next list.
     [
-        (executors.PythonExecutor, PYTHON),
-        (executors.JavaExecutor, JAVA),
-        (executors.CExecutor, C),
-        (executors.GoExecutor, GO),
-        (executors.JavascriptExecutor, JAVASCRIPT),
-        (executors.VbaExecutor, VBA),
+#        (executors.PythonExecutor, PYTHON),
+#        (executors.JavaExecutor, JAVA),
+#        (executors.CExecutor, C),
+#        (executors.GoExecutor, GO),
+#        (executors.JavascriptExecutor, JAVASCRIPT),
+        (executors.VisualBasicExecutor, VISUAL_BASIC),
     ],
 
     # These models will be tested against each language specified in the

@@ -7,7 +7,6 @@ Example usage:
 
 Model can also be piped:
     # cat <path_to_file> | m2cgen --language java
-
 """
 import pickle
 import argparse
@@ -23,7 +22,8 @@ LANGUAGE_TO_EXPORTER = {
     "c": (m2cgen.export_to_c, ["indent"]),
     "go": (m2cgen.export_to_go, ["indent"]),
     "javascript": (m2cgen.export_to_javascript, ["indent"]),
-    "vba": (m2cgen.export_to_vba, ["indent"]),
+    "visual_basic": (m2cgen.export_to_visual_basic,
+                     ["module_name", "indent"]),
 }
 
 

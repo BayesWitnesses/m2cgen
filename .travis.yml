@@ -11,6 +11,12 @@ matrix:
     dist: xenial
     sudo: true
 
+before_install:
+  - wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
+  - sudo dpkg -i packages-microsoft-prod.deb
+  - sudo apt-get update
+  - sudo apt-get install --no-install-recommends -y dotnet-sdk-3.0
+
 install:
   - pip install -r requirements-test.txt
 
