@@ -39,6 +39,8 @@ class NumVal(NumExpr):
 
 class ExpExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
         self.expr = expr
         self.to_reuse = to_reuse
 
@@ -49,6 +51,8 @@ class ExpExpr(NumExpr):
 
 class TanhExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
         self.expr = expr
         self.to_reuse = to_reuse
 
@@ -59,6 +63,9 @@ class TanhExpr(NumExpr):
 
 class PowExpr(NumExpr, BinExpr):
     def __init__(self, base_expr, exp_expr, to_reuse=False):
+        assert base_expr.output_size == 1, "Only scalars are supported"
+        assert exp_expr.output_size == 1, "Only scalars are supported"
+
         self.base_expr = base_expr
         self.exp_expr = exp_expr
         self.to_reuse = to_reuse
