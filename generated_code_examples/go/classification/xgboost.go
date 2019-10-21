@@ -27,7 +27,7 @@ func score(input []float64) []float64 {
     var var4 float64
     if (input[2]) >= (2.5999999) {
         if (input[2]) >= (4.85000038) {
-            var4 = -0.0552999265
+            var4 = -0.0552999191
         } else {
             var4 = 0.116139404
         }
@@ -53,7 +53,7 @@ func score(input []float64) []float64 {
     var var7 float64
     if (input[2]) >= (4.85000038) {
         if (input[3]) >= (1.75) {
-            var7 = 0.124653697
+            var7 = 0.124653712
         } else {
             var7 = 0.035562478
         }
