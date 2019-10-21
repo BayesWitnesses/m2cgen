@@ -4,7 +4,8 @@ from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
 
 
 class PythonInterpreter(ToCodeInterpreter,
-                        mixins.BinExpressionDepthTrackingMixin):
+                        mixins.BinExpressionDepthTrackingMixin,
+                        mixins.LinearAlgebraMixin):
 
     # 60 raises MemoryError for some SVM models with RBF kernel.
     bin_depth_threshold = 55
@@ -12,8 +13,6 @@ class PythonInterpreter(ToCodeInterpreter,
     exponent_function_name = "math.exp"
     power_function_name = "math.pow"
     tanh_function_name = "math.tanh"
-
-    with_vector_operations = False
 
     def __init__(self, indent=4, *args, **kwargs):
         cg = PythonCodeGenerator(indent=indent)
@@ -32,13 +31,13 @@ class PythonInterpreter(ToCodeInterpreter,
         if self.with_math_module:
             self._cg.add_dependency("math")
 
-        if self.with_vector_operations:
+        if self.with_linear_algebra:
             self._cg.add_dependency("numpy", alias="np")
 
         return self._cg.code
 
     def interpret_bin_vector_expr(self, expr, **kwargs):
-        self.with_vector_operations = True
+        self.with_linear_algebra = True
         return self._cg.infix_expression(
             left=self._cg.array_convert_to_numpy(
                 self._do_interpret(expr.left, **kwargs)),
@@ -47,7 +46,7 @@ class PythonInterpreter(ToCodeInterpreter,
                 self._do_interpret(expr.right, **kwargs)))
 
     def interpret_bin_vector_num_expr(self, expr, **kwargs):
-        self.with_vector_operations = True
+        self.with_linear_algebra = True
         return self._cg.infix_expression(
             left=self._cg.array_convert_to_numpy(
                 self._do_interpret(expr.left, **kwargs)),
