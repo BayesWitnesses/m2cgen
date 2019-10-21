@@ -37,6 +37,7 @@ EXAMPLE_LANGUAGES = [
     ("c", m2c.export_to_c, "c"),
     ("go", m2c.export_to_go, "go"),
     ("javascript", m2c.export_to_javascript, "js"),
+    ("powershell", m2c.export_to_powershell, "ps1"),
 ]
 
 EXAMPLE_MODELS = [

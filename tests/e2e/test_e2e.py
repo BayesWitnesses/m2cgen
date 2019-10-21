@@ -20,6 +20,7 @@ JAVA = pytest.mark.java
 C = pytest.mark.c
 GO = pytest.mark.go
 JAVASCRIPT = pytest.mark.javascript
+POWERSHELL = pytest.mark.powershell
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -71,6 +72,7 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         (executors.CExecutor, C),
         (executors.GoExecutor, GO),
         (executors.JavascriptExecutor, JAVASCRIPT),
+        (executors.PowershellExecutor, POWERSHELL),
     ],
 
     # These models will be tested against each language specified in the
