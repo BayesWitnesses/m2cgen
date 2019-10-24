@@ -38,9 +38,10 @@ class PowershellExecutor(base.BaseExecutor):
         file_name = os.path.join(self._resource_tmp_dir,
                                  "{}.ps1".format(self.model_name))
         exec_args = [self._powershell,
-                     "-Command",
-                     "& {0} -InputArray {1}".format(file_name,
-                                                    ','.join(map(str, X)))]
+                     "-File",
+                     file_name,
+                     "-InputArray",
+                     ",".join(map(str, X))]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
