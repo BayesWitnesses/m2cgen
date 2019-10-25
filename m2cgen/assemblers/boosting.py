@@ -49,7 +49,8 @@ class BaseBoostingAssembler(ModelAssembler):
         total_num_leaves = self._count_leaves(trees)
 
         if total_num_leaves > MAX_LEAVES_PER_SUBROUTINE:
-            trees_per_subroutine = int(np.ceil(MAX_LEAVES_PER_SUBROUTINE / (total_num_leaves / len(trees))))
+            trees_per_subroutine = int(np.floor(MAX_LEAVES_PER_SUBROUTINE / (total_num_leaves / len(trees))))
+            trees_per_subroutine = max(trees_per_subroutine, 1)
             to_sum = []
 
             for i in range(0, len(trees_ast), trees_per_subroutine):
