@@ -7,12 +7,23 @@ python:
   - 3.6
   - 3.7
 
+env:
+  matrix:
+    - LANG=c
+    - LANG=go
+    - LANG=java
+    - LANG=javascript
+    - LANG=powershell
+    - LANG=python
+
 before_install:
   # Install PowerShell Core.
-  - wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
-  - sudo dpkg -i packages-microsoft-prod.deb
-  - sudo apt-get update
-  - sudo apt-get install --no-install-recommends -y powershell
+  - if [[ $LANG == "powershell" ]]; then
+      wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb;
+      sudo dpkg -i packages-microsoft-prod.deb;
+      sudo apt-get update;
+      sudo apt-get install --no-install-recommends -y powershell;
+    fi
 
 install:
   - pip install -r requirements-test.txt
@@ -31,4 +42,5 @@ script:
   # Then we install it as a library, remove source code and run e2e tests.
   - python setup.py install
   - rm -rfd m2cgen/
-  - pytest -v tests/e2e/
+  - pytest -v tests/e2e/test_cli.py
+  - pytest -v tests/e2e/test_e2e.py -m $LANG
