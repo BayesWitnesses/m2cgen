@@ -1,0 +1,44 @@
+jobs:
+- job: Linux
+  timeoutInMinutes: 120
+  pool:
+    vmImage: 'ubuntu-16.04'
+  strategy:
+    matrix:
+      Python34:
+        python.version: 3.4
+      Python35:
+        python.version: 3.5
+      Python36:
+        python.version: 3.6
+      Python37:
+        python.version: 3.7
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - script: pip install -r requirements-test.txt
+    displayName: 'Install requirements'
+  - script: flake8 .
+    displayName: PEP8
+
+  # Since we develop a library, we want to make sure that it properly runs
+  # after installation. We already ran into an issue when some files were
+  # forgotten to be included in package_data and it was not caught by tests.
+
+  # So first we run unit tests against raw source code and report coverage.
+
+  - script: pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
+    displayName: Pytest
+#  - script: coveralls
+#    displayName: Coveralls
+
+  # Then we install it as a library, remove source code and run e2e tests.
+
+  - script: python setup.py install
+    displayName: 'Install package'
+  - script: rm -rfd m2cgen/
+    displayName: 'Remove sources'
+  - script: pytest -v tests/e2e/
+    timeoutInMinutes: 120
+    displayName: Pytest
