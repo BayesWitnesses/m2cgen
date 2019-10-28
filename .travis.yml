@@ -13,7 +13,8 @@ env:
     - LANG=go
     - LANG=java
     - LANG=javascript
-    - LANG=powershell
+    - LANG=powershell TASK=regression
+    - LANG=powershell TASK=classification
     - LANG=python
 
 before_install:
@@ -43,4 +44,4 @@ script:
   - python setup.py install
   - rm -rfd m2cgen/
   - pytest -v tests/e2e/test_cli.py
-  - pytest -v tests/e2e/test_e2e.py -m $LANG
+  - pytest -v tests/e2e/test_e2e.py -m $LANG -k "train_model_$TASK"
