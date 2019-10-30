@@ -4,7 +4,7 @@ from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
 
-MAX_LEAVES_PER_SUBROUTINE = 2000
+MAX_LEAVES_PER_SUBROUTINE = 3000
 
 class BaseBoostingAssembler(ModelAssembler):
 
@@ -46,25 +46,42 @@ class BaseBoostingAssembler(ModelAssembler):
 
         # in a large tree we need to generate multiple subroutines to avoid
         # java limitations https://github.com/BayesWitnesses/m2cgen/issues/103
-        total_num_leaves = self._count_leaves(trees)
+        trees_num_leaves = [self._count_leaves(t) for t in trees] 
 
-        if total_num_leaves > MAX_LEAVES_PER_SUBROUTINE:
-            trees_per_subroutine = int(np.floor(MAX_LEAVES_PER_SUBROUTINE / (total_num_leaves / len(trees))))
-            trees_per_subroutine = max(trees_per_subroutine, 1)
+        if sum(trees_num_leaves) > MAX_LEAVES_PER_SUBROUTINE:
             to_sum = []
 
-            for i in range(0, len(trees_ast), trees_per_subroutine):
+            subroutine_trees = []
+            subroutine_sum_leaves = 0
+            for tree, num_leaves in zip(trees_ast, trees_num_leaves):
+
+                if(len(subroutine_trees) != 0 and subroutine_sum_leaves + num_leaves > MAX_LEAVES_PER_SUBROUTINE):
+                    # exceeded the max leaves in the current subroutine, finialize this one and start a new one
+                    partial_result = utils.apply_op_to_expressions(
+                        ast.BinNumOpType.ADD,
+                        *subroutine_trees)
+                    
+                    to_sum.append(ast.SubroutineExpr(partial_result))
+
+                    subroutine_trees = []
+                    subroutine_sum_leaves = 0
+                
+                subroutine_sum_leaves += num_leaves
+                subroutine_trees.append(tree)
+
+            if(len(subroutine_trees) != 0):
                 partial_result = utils.apply_op_to_expressions(
                     ast.BinNumOpType.ADD,
-                    *trees_ast[i:i+trees_per_subroutine])
+                    *subroutine_trees)
                 to_sum.append(ast.SubroutineExpr(partial_result))
-
+                
         result_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
             ast.NumVal(base_score),
             *to_sum)
 
         return ast.SubroutineExpr(result_ast)
+
 
     def _assemble_multi_class_output(self, trees):
         # Multi-class output is calculated based on discussion in
@@ -154,8 +171,8 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
         assert False, "Unexpected child ID {}".format(child_id)
 
     @staticmethod
-    def _count_leaves(trees):
-        queue = trees.copy()
+    def _count_leaves(tree):
+        queue = [tree]
         num_leaves = 0
 
         while queue:
@@ -205,8 +222,8 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
             self._assemble_tree(false_child))
 
     @staticmethod
-    def _count_leaves(trees):
-        queue = trees.copy()
+    def _count_leaves(tree):
+        queue = [tree]
         num_leaves = 0
 
         while queue:
