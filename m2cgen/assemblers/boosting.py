@@ -4,7 +4,8 @@ from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
 
-MAX_LEAVES_PER_SUBROUTINE = 3000
+MAX_LEAVES_PER_METHOD = 3000
+
 
 class BaseBoostingAssembler(ModelAssembler):
 
@@ -46,42 +47,43 @@ class BaseBoostingAssembler(ModelAssembler):
 
         # in a large tree we need to generate multiple subroutines to avoid
         # java limitations https://github.com/BayesWitnesses/m2cgen/issues/103
-        trees_num_leaves = [self._count_leaves(t) for t in trees] 
+        trees_num_leaves = [self._count_leaves(t) for t in trees]
 
-        if sum(trees_num_leaves) > MAX_LEAVES_PER_SUBROUTINE:
+        if sum(trees_num_leaves) > MAX_LEAVES_PER_METHOD:
             to_sum = []
 
             subroutine_trees = []
             subroutine_sum_leaves = 0
             for tree, num_leaves in zip(trees_ast, trees_num_leaves):
 
-                if(len(subroutine_trees) != 0 and subroutine_sum_leaves + num_leaves > MAX_LEAVES_PER_SUBROUTINE):
-                    # exceeded the max leaves in the current subroutine, finialize this one and start a new one
+                result_total = subroutine_sum_leaves + num_leaves
+                if subroutine_trees and result_total > MAX_LEAVES_PER_METHOD:
+                    # exceeded the max leaves in the current subroutine,
+                    # finialize this one and start a new one
                     partial_result = utils.apply_op_to_expressions(
                         ast.BinNumOpType.ADD,
                         *subroutine_trees)
-                    
+
                     to_sum.append(ast.SubroutineExpr(partial_result))
 
                     subroutine_trees = []
                     subroutine_sum_leaves = 0
-                
+
                 subroutine_sum_leaves += num_leaves
                 subroutine_trees.append(tree)
 
-            if(len(subroutine_trees) != 0):
+            if len(subroutine_trees) != 0:
                 partial_result = utils.apply_op_to_expressions(
                     ast.BinNumOpType.ADD,
                     *subroutine_trees)
                 to_sum.append(ast.SubroutineExpr(partial_result))
-                
+
         result_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
             ast.NumVal(base_score),
             *to_sum)
 
         return ast.SubroutineExpr(result_ast)
-
 
     def _assemble_multi_class_output(self, trees):
         # Multi-class output is calculated based on discussion in
@@ -135,8 +137,8 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
         # assembling (if applicable).
         best_ntree_limit = getattr(model, "best_ntree_limit", None)
 
-        super().__init__(model, trees,
-                         base_score=model.base_score, tree_limit=best_ntree_limit)
+        super().__init__(model, trees, base_score=model.base_score,
+                         tree_limit=best_ntree_limit)
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
@@ -179,11 +181,10 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
             tree = queue.pop()
             if "leaf" in tree:
                 num_leaves += 1
-            elif 'children' in tree:
+            elif "children" in tree:
                 for child in tree["children"]:
                     queue.append(child)
         return num_leaves
-
 
 
 class LightGBMModelAssembler(BaseBoostingAssembler):
@@ -206,9 +207,9 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
         op = ast.CompOpType.from_str_op(tree["decision_type"])
         assert op == ast.CompOpType.LTE, "Unexpected comparison op"
 
-        # Make sure that if the 'default_left' is true the left tree branch
+        # Make sure that if the "default_left" is true the left tree branch
         # ends up in the "else" branch of the ast.IfExpr.
-        if tree['default_left']:
+        if tree["default_left"]:
             op = ast.CompOpType.GT
             true_child = tree["right_child"]
             false_child = tree["left_child"]
@@ -231,8 +232,8 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
             if "leaf_value" in tree:
                 num_leaves += 1
             else:
-                queue.append(tree['left_child'])
-                queue.append(tree['right_child'])
+                queue.append(tree["left_child"])
+                queue.append(tree["right_child"])
         return num_leaves
 
 
