@@ -48,6 +48,7 @@ def classification_binary(model):
         CLASSIFICATION,
     )
 
+
 def regression_random(model):
     return (
         model,
@@ -71,6 +72,7 @@ def classification_binary_random(model):
         CLASSIFICATION,
     )
 
+
 # Absolute tolerance. Used in np.isclose to compare 2 values.
 # We compare 6 decimal digits.
 ATOL = 1.e-6
@@ -84,9 +86,10 @@ LIGHT_GBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
 
 XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
-                      random_state=RANDOM_SEED)
+                            random_state=RANDOM_SEED)
 LIGHT_GBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
-                    random_state=RANDOM_SEED)
+                              random_state=RANDOM_SEED)
+
 
 @utils.cartesian_e2e_params(
     # These are the languages which support all models specified in the
@@ -108,9 +111,12 @@ LIGHT_GBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS)),
 
         # LightGBM (Large Trees)
-        regression_random(lightgbm.LGBMRegressor(**LIGHT_GBM_PARAMS_LARGE)),
-        classification_random(lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS_LARGE)),
-        classification_binary_random(lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS_LARGE)),
+        regression_random(
+            lightgbm.LGBMRegressor(**LIGHT_GBM_PARAMS_LARGE)),
+        classification_random(
+            lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS_LARGE)),
+        classification_binary_random(
+            lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS_LARGE)),
 
         # XGBoost
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
@@ -118,9 +124,12 @@ LIGHT_GBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 
         # XGBoost (Large Trees)
-        regression_random(xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
-        classification_random(xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
-        classification_binary_random(xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+        regression_random(
+            xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
+        classification_random(
+            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+        classification_binary_random(
+            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
 
         # Linear SVM
         regression(svm.LinearSVR(random_state=RANDOM_SEED)),
