@@ -67,11 +67,11 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
     # These are the languages which support all models specified in the
     # next list.
     [
-#        (executors.PythonExecutor, PYTHON),
-#        (executors.JavaExecutor, JAVA),
-#        (executors.CExecutor, C),
-#        (executors.GoExecutor, GO),
-#        (executors.JavascriptExecutor, JAVASCRIPT),
+        (executors.PythonExecutor, PYTHON),
+        (executors.JavaExecutor, JAVA),
+        (executors.CExecutor, C),
+        (executors.GoExecutor, GO),
+        (executors.JavascriptExecutor, JAVASCRIPT),
         (executors.VisualBasicExecutor, VISUAL_BASIC),
     ],
 
@@ -181,6 +181,7 @@ def test_e2e(estimator, executor_cls, model_trainer, is_fast):
 
     idxs_to_test = [0] if is_fast else range(len(X_test))
 
+    executor.prepare_global()
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
             y_pred_executed = executor.predict(X_test[idx])

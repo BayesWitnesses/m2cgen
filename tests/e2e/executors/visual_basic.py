@@ -38,6 +38,11 @@ EXECUTE_AND_PRINT_VECTOR = """
 
 
 class VisualBasicExecutor(base.BaseExecutor):
+
+    target_exec_dir = None
+    project_name = "test_model"
+    _dotnet = "dotnet"
+
     def __init__(self, model):
         self.model = model
         self.interpreter = interpreters.VisualBasicInterpreter()
@@ -45,12 +50,27 @@ class VisualBasicExecutor(base.BaseExecutor):
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._dotnet = "dotnet"
-
     def predict(self, X):
         exec_args = [os.path.join(self.target_exec_dir, self.project_name)]
         exec_args.extend(map(str, X))
         return utils.predict_from_commandline(exec_args)
+
+    @classmethod
+    def prepare_global(cls):
+        super(VisualBasicExecutor, cls).prepare_global()
+        if cls.target_exec_dir is None:
+            cls.target_exec_dir = os.path.join(cls._global_resource_tmp_dir,
+                                               "bin")
+
+            subprocess.call([cls._dotnet,
+                             "new",
+                             "console",
+                             "--output",
+                             cls._global_resource_tmp_dir,
+                             "--name",
+                             cls.project_name,
+                             "--language",
+                             "VB"])
 
     def prepare(self):
         if self.model_ast.output_size > 1:
@@ -61,22 +81,10 @@ class VisualBasicExecutor(base.BaseExecutor):
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
-        self.project_name = "test_model"
-        self.target_exec_dir = os.path.join(self._resource_tmp_dir,
-                                            "bin")
-
-        subprocess.call([self._dotnet,
-                         "new",
-                         "console",
-                         "--output",
-                         self._resource_tmp_dir,
-                         "--name",
-                         self.project_name,
-                         "--language",
-                         "VB"])
-
-        model_file_name = os.path.join(self._resource_tmp_dir, "Model.vb")
-        executor_file_name = os.path.join(self._resource_tmp_dir, "Program.vb")
+        model_file_name = os.path.join(self._global_resource_tmp_dir,
+                                       "Model.vb")
+        executor_file_name = os.path.join(self._global_resource_tmp_dir,
+                                          "Program.vb")
         with open(model_file_name, "w") as f:
             f.write(model_code)
         with open(executor_file_name, "w") as f:
@@ -84,7 +92,7 @@ class VisualBasicExecutor(base.BaseExecutor):
 
         subprocess.call([self._dotnet,
                          "build",
-                         os.path.join(self._resource_tmp_dir,
+                         os.path.join(self._global_resource_tmp_dir,
                                       "{}.vbproj".format(self.project_name)),
                          "--output",
                          self.target_exec_dir])
