@@ -1,4 +1,4 @@
-import numpy as np
+import math
 def score(input):
     if (input[2]) > (1.8):
         if (input[2]) > (4.250000000000001):
@@ -14,7 +14,7 @@ def score(input):
             var1 = -0.07237070828653688
     else:
         var1 = 0.12984943093573026
-    var2 = np.exp(((0) + (var0)) + (var1))
+    var2 = math.exp(((0) + (var0)) + (var1))
     if (input[2]) > (1.8):
         if (input[2]) > (4.8500000000000005):
             var3 = -1.1807342692411888
@@ -29,7 +29,7 @@ def score(input):
             var4 = 0.11960489254350348
     else:
         var4 = -0.07151978915296087
-    var5 = np.exp(((0) + (var3)) + (var4))
+    var5 = math.exp(((0) + (var3)) + (var4))
     if (input[2]) > (4.8500000000000005):
         if (input[3]) > (1.9500000000000002):
             var6 = -0.9298942558407184
@@ -50,6 +50,6 @@ def score(input):
             var7 = -0.052710589717642864
         else:
             var7 = -0.07292857712854424
-    var8 = np.exp(((0) + (var6)) + (var7))
+    var8 = math.exp(((0) + (var6)) + (var7))
     var9 = ((var2) + (var5)) + (var8)
-    return np.asarray([(var2) / (var9), (var5) / (var9), (var8) / (var9)])
+    return [(var2) / (var9), (var5) / (var9), (var8) / (var9)]
