@@ -1,4 +1,5 @@
 import pickle
+import platform
 import subprocess
 
 from sklearn import linear_model
@@ -44,8 +45,8 @@ def test_override_input(tmp_path):
 def test_piped(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
     exec_args = [
-        "cat", str(pickled_model_path), " | ", "m2cgen", "--language",
-        "python"]
+        "type" if platform.system() in ('Windows', 'Microsoft') else "cat",
+        str(pickled_model_path), " | ", "m2cgen", "--language", "python"]
     execute_test(exec_args)
 
 
