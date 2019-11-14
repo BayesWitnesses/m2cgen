@@ -101,7 +101,7 @@ public class Model {
 `m2cgen` can be used as a CLI tool to generate code using serialized model objects (pickle protocol):
 ```
 $ m2cgen <pickle_file> --language <language> [--indent <indent>]
-         [--class_name <class_name>] [--package_name <package_name>]
+         [--class_name <class_name>] [--module_name <module_name>] [--package_name <package_name>]
          [--recursion-limit <recursion_limit>]
 ```
 

@@ -51,6 +51,10 @@ parser.add_argument(
     help="Package name for the generated code "
          "(if supported by target language)")
 parser.add_argument(
+    "--module_name", "-mn", dest="module_name", type=str,
+    help="Module name for the generated code "
+         "(if supported by target language)")
+parser.add_argument(
     "--indent", "-i", dest="indent", type=int,
     default=4,
     help="Indentation for the generated code")
