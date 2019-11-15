@@ -18,13 +18,13 @@ import m2cgen
 
 
 LANGUAGE_TO_EXPORTER = {
-    "python": (m2cgen.export_to_python, ["indent"]),
+    "python": (m2cgen.export_to_python, ["output_file", "indent"]),
     "java": (
-        m2cgen.export_to_java, ["indent", "class_name", "package_name"]),
-    "c": (m2cgen.export_to_c, ["indent"]),
-    "go": (m2cgen.export_to_go, ["indent"]),
-    "javascript": (
-        m2cgen.export_to_javascript, ["indent"]),
+        m2cgen.export_to_java, ["output_file", "indent",
+                                "class_name", "package_name"]),
+    "c": (m2cgen.export_to_c, ["output_file", "indent"]),
+    "go": (m2cgen.export_to_go, ["output_file", "indent"]),
+    "javascript": (m2cgen.export_to_javascript, ["output_file", "indent"]),
 }
 
 
@@ -51,6 +51,9 @@ parser.add_argument(
     "--package_name", "-pn", dest="package_name", type=str,
     help="Package name for the generated code "
          "(if supported by target language)")
+parser.add_argument(
+    "--output_file", "-o", dest="output_file", type=str,
+    help="Path to a file in which the generated code should be written")
 parser.add_argument(
     "--indent", "-i", dest="indent", type=int,
     default=4,
@@ -85,4 +88,6 @@ def generate_code(args):
 
 def main():
     args = parse_args(sys.argv[1:])
-    print(generate_code(args))
+    code = generate_code(args)
+    if code is not None:
+        print(code)

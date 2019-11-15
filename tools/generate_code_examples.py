@@ -123,5 +123,5 @@ if __name__ == "__main__":
         model_filename = "{}.{}".format(mname, file_ext)
         model_path = os.path.join(folder, model_filename)
 
-        with open(model_path, "w") as f:
+        with open(model_path, "w", encoding="utf-8") as f:
             f.write(exporter(model))
