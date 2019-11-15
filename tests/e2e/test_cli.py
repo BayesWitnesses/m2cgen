@@ -7,10 +7,15 @@ from sklearn import linear_model
 from tests import utils
 
 
-def execute_test(exec_args):
+def execute_test(exec_args, code_path=None):
     result = subprocess.Popen(
         " ".join(exec_args), stdout=subprocess.PIPE, shell=True)
-    generated_code = result.stdout.read().decode("utf-8")
+    if code_path is None:
+        generated_code = result.stdout.read().decode("utf-8")
+    else:
+        result.communicate()
+        with open(code_path, encoding="utf-8") as f:
+            generated_code = f.read()
 
     utils.verify_python_model_is_expected(
         generated_code,
@@ -55,3 +60,11 @@ def test_dash_m(tmp_path):
     exec_args = ["python", "-m", "m2cgen", "--language", "python",
                  str(pickled_model_path)]
     execute_test(exec_args)
+
+
+def test_write_file(tmp_path):
+    pickled_model_path = _prepare_pickled_model(tmp_path)
+    code_path = str(tmp_path / "code.txt")
+    exec_args = ["m2cgen", "--language", "python",
+                 "--output_file", code_path, str(pickled_model_path)]
+    execute_test(exec_args, code_path=code_path)

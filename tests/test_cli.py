@@ -10,8 +10,8 @@ from m2cgen import cli
 from tests import utils
 
 
-def _get_mock_args(output_file=None, indent=4, package_name=None, class_name=None,
-                   infile=None, language=None):
+def _get_mock_args(output_file=None, indent=4, package_name=None,
+                   class_name=None, infile=None, language=None):
     return mock.MagicMock(
         output_file=output_file, indent=indent, package_name=package_name,
         class_name=class_name, infile=infile, language=language,
