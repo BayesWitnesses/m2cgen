@@ -116,12 +116,7 @@ if __name__ == "__main__":
     for (language, exporter, file_ext), (mtype, mname, model, trainer) in prod:
         trainer(model)
 
-        # Make sure path exists, create if doesn't.
-        folder = os.path.join(export_folder, language, mtype)
-        os.makedirs(folder, exist_ok=True)
-
         model_filename = "{}.{}".format(mname, file_ext)
-        model_path = os.path.join(folder, model_filename)
+        model_path = os.path.join(export_folder, language, mtype, model_filename)
 
-        with open(model_path, "w", encoding="utf-8") as f:
-            f.write(exporter(model))
+        exporter(model, output_file=model_path)
