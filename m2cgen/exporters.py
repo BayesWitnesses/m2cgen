@@ -24,7 +24,7 @@ def export_to_java(model, output_file=None, package_name=None,
 
     Returns
     -------
-    code : string or None
+    code : string when `output_file=None`, otherwise None
     """
     interpreter = interpreters.JavaInterpreter(
         package_name=package_name,
@@ -48,7 +48,7 @@ def export_to_python(model, output_file=None, indent=4):
 
     Returns
     -------
-    code : string or None
+    code : string when `output_file=None`, otherwise None
     """
     interpreter = interpreters.PythonInterpreter(indent=indent)
     return _export(model, interpreter, output_file)
@@ -69,7 +69,7 @@ def export_to_c(model, output_file=None, indent=4):
 
     Returns
     -------
-    code : string or None
+    code : string when `output_file=None`, otherwise None
     """
     interpreter = interpreters.CInterpreter(indent=indent)
     return _export(model, interpreter, output_file)
@@ -90,7 +90,7 @@ def export_to_go(model, output_file=None, indent=4):
 
     Returns
     -------
-    code : string or None
+    code : string when `output_file=None`, otherwise None
     """
     interpreter = interpreters.GoInterpreter(indent=indent)
     return _export(model, interpreter, output_file)
@@ -111,7 +111,7 @@ def export_to_javascript(model, output_file=None, indent=4):
 
     Returns
     -------
-    code : string or None
+    code : string when `output_file=None`, otherwise None
     """
     interpreter = interpreters.JavascriptInterpreter(indent=indent)
     return _export(model, interpreter, output_file)
