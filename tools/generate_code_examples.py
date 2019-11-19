@@ -117,6 +117,7 @@ if __name__ == "__main__":
         trainer(model)
 
         model_filename = "{}.{}".format(mname, file_ext)
-        model_path = os.path.join(export_folder, language, mtype, model_filename)
+        model_path = os.path.join(
+            export_folder, language, mtype, model_filename)
 
         exporter(model, output_file=model_path)
