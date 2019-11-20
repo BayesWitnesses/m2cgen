@@ -1,0 +1,4 @@
+include LICENSE
+recursive-include m2cgen VERSION.txt
+recursive-include m2cgen linear_algebra.*
+global-exclude *.py[cod]
