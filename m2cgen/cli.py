@@ -63,6 +63,9 @@ parser.add_argument(
     help="Sets the maximum depth of the Python interpreter stack. "
          "No limit by default",
     default=MAX_RECURSION_DEPTH)
+parser.add_argument(
+    "--version", "-v", action="version",
+    version='%(prog)s {}'.format(m2cgen.__version__))
 
 
 def parse_args(args):
