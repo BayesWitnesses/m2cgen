@@ -18,7 +18,7 @@ def score(input):
     else:
         var0 = 3
     return var0
-"""
+    """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -126,14 +126,13 @@ def test_multi_output():
             ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
 
     expected_code = """
-import numpy as np
 def score(input):
     if (1) == (1):
-        var0 = np.asarray([1, 2])
+        var0 = [1, 2]
     else:
-        var0 = np.asarray([3, 4])
+        var0 = [3, 4]
     return var0
-"""
+    """
 
     interpreter = interpreters.PythonInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -151,7 +150,8 @@ def test_bin_vector_expr():
 import numpy as np
 def score(input):
     return (np.asarray([1, 2])) * (np.asarray([3, 4]))
-"""
+    """
+
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -167,7 +167,8 @@ def test_bin_vector_num_expr():
 import numpy as np
 def score(input):
     return (np.asarray([1, 2])) * (1)
-"""
+    """
+
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -185,7 +186,9 @@ def test_depth_threshold_with_bin_expr():
     expected_code = """
 def score(input):
     var0 = (1) + ((1) + (1))
-    return (1) + ((1) + (var0))"""
+    return (1) + ((1) + (var0))
+    """
+
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -215,7 +218,9 @@ def score(input):
                     var0 = 1
                 else:
                     var0 = 1
-    return var0"""
+    return var0
+    """
+
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -249,7 +254,9 @@ def score(input):
                     var0 = 1
                 else:
                     var0 = 1
-    return var0"""
+    return var0
+    """
+
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -287,7 +294,9 @@ def score(input):
                     var0 = 1
                 else:
                     var0 = 1
-    return var0"""
+    return var0
+    """
+
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -315,9 +324,10 @@ def test_exp_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+import math
 def score(input):
-    return np.exp(1.0)"""
+    return math.exp(1.0)
+    """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -328,9 +338,10 @@ def test_pow_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+import math
 def score(input):
-    return np.power(2.0, 3.0)"""
+    return math.pow(2.0, 3.0)
+    """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -341,9 +352,10 @@ def test_tanh_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+import math
 def score(input):
-    return np.tanh(2.0)"""
+    return math.tanh(2.0)
+    """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -355,9 +367,10 @@ def test_reused_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+import math
 def score(input):
-    var0 = np.exp(1.0)
-    return (var0) / (var0)"""
+    var0 = math.exp(1.0)
+    return (var0) / (var0)
+    """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

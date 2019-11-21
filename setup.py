@@ -3,19 +3,19 @@ from setuptools import find_packages, setup
 with open("README.md", encoding="utf-8") as f:
     long_description = f.read()
 
+with open("m2cgen/VERSION.txt") as f:
+    version = f.read().strip()
+
 setup(
     name="m2cgen",
-    version="0.4.1",
+    version=version,
     url="https://github.com/BayesWitnesses/m2cgen",
     description="Code-generation for various ML models into native code.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
-    packages=find_packages(exclude=["tests.*", "tests"]),
-    package_data={
-        "": ["linear_algebra.{}".format(ext)
-             for ext in ["java", "c", "go", "js", "ps1"]],
-    },
+    packages=find_packages(exclude=["tests.*", "tests", "tools"]),
+    include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
