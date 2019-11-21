@@ -25,7 +25,7 @@ End Module
 EXECUTE_AND_PRINT_SCALAR = """
         Dim res As Double
         res = score(input_)
-        Console.Write("{0} ", res)
+        Console.Write(res)
 """
 
 EXECUTE_AND_PRINT_VECTOR = """
