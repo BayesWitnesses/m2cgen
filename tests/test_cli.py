@@ -10,12 +10,13 @@ from m2cgen import cli
 from tests import utils
 
 
-def _get_mock_args(output_file=None, indent=4, package_name=None,
-                   class_name=None, infile=None, language=None):
+def _get_mock_args(output_file=None, indent=4, module_name=None,
+                   package_name=None, class_name=None, infile=None,
+                   language=None):
     return mock.MagicMock(
-        output_file=output_file, indent=indent, package_name=package_name,
-        class_name=class_name, infile=infile, language=language,
-        recursion_limit=cli.MAX_RECURSION_DEPTH)
+        output_file=output_file, indent=indent, module_name=module_name,
+        package_name=package_name, class_name=class_name, infile=infile,
+        language=language, recursion_limit=cli.MAX_RECURSION_DEPTH)
 
 
 def _get_pickled_trained_model():
@@ -102,6 +103,16 @@ def test_package_name():
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("package foo.bar.baz;")
+
+
+def test_module_name():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="visual_basic", module_name="TestModule")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert generated_code.startswith("Module TestModule")
 
 
 def test_unsupported_args_are_ignored():

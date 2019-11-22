@@ -20,3 +20,8 @@ class BaseExecutor:
 
     def prepare(self):
         raise NotImplementedError
+
+    @classmethod
+    def prepare_global(cls, **kwargs):
+        for key, value in kwargs.items():
+            setattr(cls, "_{}".format(key), value)

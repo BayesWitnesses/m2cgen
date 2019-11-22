@@ -1,5 +1,7 @@
 import pytest
 
+from tests import utils
+
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -11,3 +13,9 @@ def pytest_addoption(parser):
 @pytest.fixture
 def is_fast(request):
     return request.config.getoption("--fast")
+
+
+@pytest.fixture(scope="module")
+def global_tmp_dir():
+    with utils.tmp_dir() as directory:
+        yield directory
