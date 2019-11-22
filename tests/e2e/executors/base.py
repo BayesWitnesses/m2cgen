@@ -6,7 +6,6 @@ from tests import utils
 class BaseExecutor:
 
     _resource_tmp_dir = None
-    _global_resource_tmp_dir = None
 
     @contextlib.contextmanager
     def prepare_then_cleanup(self):
@@ -23,7 +22,6 @@ class BaseExecutor:
         raise NotImplementedError
 
     @classmethod
-    def prepare_global(cls):
-        if cls._global_resource_tmp_dir is None:
-            with utils.tmp_dir() as tmp_dirpath:
-                cls._global_resource_tmp_dir = tmp_dirpath
+    def prepare_global(cls, **kwargs):
+        for key, value in kwargs.items():
+            setattr(cls, "_{}".format(key), value)
