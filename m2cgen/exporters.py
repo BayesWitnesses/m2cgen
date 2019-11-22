@@ -104,6 +104,69 @@ def export_to_javascript(model, indent=4):
     return _export(model, interpreter)
 
 
+def export_to_visual_basic(model, module_name="Model", indent=4):
+    """
+    Generates a Visual Basic (also can be treated as VBA
+    with some small manual changes, see a note below)
+    code representation of the given model.
+
+    .. note::
+
+        The generated code representation can be easily used as VBA code.
+        You simply need to remove the first (`Module Model`) and
+        the last (`End Module`) lines, and manually adjust the code
+        to meet the following limitations:
+        - nested floating-point expressions have level limits,
+          e.g. 8 in 32-bit environment
+          (**expression too complex**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/expression-too-complex-error-16);
+        - **fixed or static data can't be larger than 64K**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/fixed-or-static-data-can-t-be-larger-than-64k;
+        - code line length cannot contain more than 1023 characters
+          (**line too long**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/line-too-long);
+        - segment boundaries are 64K
+          (**out of memory**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/out-of-memory-error-7);
+        - nested function calls have depth limit
+          (**out of stack space**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/out-of-stack-space-error-28);
+        - compiled procedure cannot exceed 64K size limit
+          (**procedure too large**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/procedure-too-large);
+        - project's name table is limited by 32768 names
+          (**project contains too many procedure, variable,
+          and constant names**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/project-contains-too-many-procedure-variable-and-constant-names);
+        - statements cannot be extremely complex
+          (**statement too complex**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/statement-too-complex);
+        - there can't be more than 24 consecutive line-continuation characters
+          (**too many line continuations**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/too-many-line-continuations);
+        - procedure's local, nonstatic variables and
+          compiler-generated temporary variables cannot exceed 32K size limit
+          (**too many local, nonstatic variables**:
+          https://docs.microsoft.com/ru-ru/office/vba/language/reference/user-interface-help/too-many-local-nonstatic-variables);
+        - and some others...
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    module_name : string, optional
+        The name of the generated module.
+    indent : int, optional
+        The size of indents in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.VisualBasicInterpreter(module_name=module_name,
+                                                      indent=indent)
+    return _export(model, interpreter)
+
 def export_to_powershell(model, indent=4):
     """
     Generates a PowerShell code representation of the given model.
