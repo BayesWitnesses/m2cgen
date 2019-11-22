@@ -20,6 +20,7 @@ JAVA = pytest.mark.java
 C = pytest.mark.c
 GO = pytest.mark.go
 JAVASCRIPT = pytest.mark.javascript
+VISUAL_BASIC = pytest.mark.visual_basic
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -71,6 +72,7 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         (executors.CExecutor, C),
         (executors.GoExecutor, GO),
         (executors.JavascriptExecutor, JAVASCRIPT),
+        (executors.VisualBasicExecutor, VISUAL_BASIC),
     ],
 
     # These models will be tested against each language specified in the
@@ -171,7 +173,8 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
 
     # <empty>
 )
-def test_e2e(estimator, executor_cls, model_trainer, is_fast):
+def test_e2e(estimator, executor_cls, model_trainer,
+             is_fast, global_tmp_dir):
     sys.setrecursionlimit(RECURSION_LIMIT)
 
     X_test, y_pred_true = model_trainer(estimator)
@@ -179,6 +182,7 @@ def test_e2e(estimator, executor_cls, model_trainer, is_fast):
 
     idxs_to_test = [0] if is_fast else range(len(X_test))
 
+    executor.prepare_global(global_tmp_dir=global_tmp_dir)
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
             y_pred_executed = executor.predict(X_test[idx])

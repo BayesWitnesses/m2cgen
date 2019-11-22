@@ -3,6 +3,7 @@ from .python.interpreter import PythonInterpreter
 from .c.interpreter import CInterpreter
 from .go.interpreter import GoInterpreter
 from .javascript.interpreter import JavascriptInterpreter
+from .visual_basic.interpreter import VisualBasicInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -10,4 +11,5 @@ __all__ = [
     CInterpreter,
     GoInterpreter,
     JavascriptInterpreter,
+    VisualBasicInterpreter,
 ]

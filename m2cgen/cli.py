@@ -7,7 +7,6 @@ Example usage:
 
 Model can also be piped:
     # cat <path_to_file> | m2cgen --language java
-
 """
 import pickle
 import argparse
@@ -19,12 +18,12 @@ import m2cgen
 
 LANGUAGE_TO_EXPORTER = {
     "python": (m2cgen.export_to_python, ["indent"]),
-    "java": (
-        m2cgen.export_to_java, ["indent", "class_name", "package_name"]),
+    "java": (m2cgen.export_to_java, ["indent", "class_name", "package_name"]),
     "c": (m2cgen.export_to_c, ["indent"]),
     "go": (m2cgen.export_to_go, ["indent"]),
-    "javascript": (
-        m2cgen.export_to_javascript, ["indent"]),
+    "javascript": (m2cgen.export_to_javascript, ["indent"]),
+    "visual_basic": (m2cgen.export_to_visual_basic,
+                     ["module_name", "indent"]),
 }
 
 
@@ -50,6 +49,10 @@ parser.add_argument(
 parser.add_argument(
     "--package_name", "-pn", dest="package_name", type=str,
     help="Package name for the generated code "
+         "(if supported by target language)")
+parser.add_argument(
+    "--module_name", "-mn", dest="module_name", type=str,
+    help="Module name for the generated code "
          "(if supported by target language)")
 parser.add_argument(
     "--indent", "-i", dest="indent", type=int,
