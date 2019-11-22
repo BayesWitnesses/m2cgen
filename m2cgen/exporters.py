@@ -168,6 +168,8 @@ def export_to_visual_basic(model, output_file=None,
     ----------
     model : object
         The model object that should be transpiled into code.
+    output_file : string, optional
+        Path to a file in which the generated code should be written.
     module_name : string, optional
         The name of the generated module.
     indent : int, optional
