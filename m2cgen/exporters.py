@@ -167,6 +167,7 @@ def export_to_visual_basic(model, module_name="Model", indent=4):
                                                       indent=indent)
     return _export(model, interpreter)
 
+
 def export_to_powershell(model, indent=4):
     """
     Generates a PowerShell code representation of the given model.
