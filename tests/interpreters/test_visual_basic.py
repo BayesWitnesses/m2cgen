@@ -291,17 +291,6 @@ def test_exp_expr():
 
     expected_code = """
 Module Model
-Function Tanh(ByVal number As Double) As Double
-    If number > 44.0 Then  ' exp(2*x) <= 2^127
-        Tanh = 1.0
-        Exit Function
-    End If
-    If number < -44.0 Then
-        Tanh = -1.0
-        Exit Function
-    End If
-    Tanh = (Math.Exp(2 * number) - 1) / (Math.Exp(2 * number) + 1)
-End Function
 Function score(ByRef input_vector() As Double) As Double
     score = Math.Exp(1.0)
 End Function
@@ -359,17 +348,6 @@ def test_reused_expr():
 
     expected_code = """
 Module Model
-Function Tanh(ByVal number As Double) As Double
-    If number > 44.0 Then  ' exp(2*x) <= 2^127
-        Tanh = 1.0
-        Exit Function
-    End If
-    If number < -44.0 Then
-        Tanh = -1.0
-        Exit Function
-    End If
-    Tanh = (Math.Exp(2 * number) - 1) / (Math.Exp(2 * number) + 1)
-End Function
 Function score(ByRef input_vector() As Double) As Double
     Dim var0 As Double
     var0 = Math.Exp(1.0)
