@@ -137,6 +137,21 @@ End Module
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_module_name():
+    expr = ast.NumVal(1)
+
+    expected_code = """
+Module Test
+Function score(ByRef input_vector() As Double) As Double
+    score = 1
+End Function
+End Module
+"""
+
+    interpreter = VisualBasicInterpreter(module_name="Test")
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_raw_array():
     expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
 
