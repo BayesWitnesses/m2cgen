@@ -19,6 +19,8 @@ class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
     exponent_function_name = "Math.Exp"
     tanh_function_name = "Tanh"
 
+    with_tanh_expr = False
+
     def __init__(self, module_name="Model", indent=4, *args, **kwargs):
         self.module_name = module_name
         cg = VisualBasicCodeGenerator(indent=indent)
@@ -44,9 +46,10 @@ class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
                 os.path.dirname(__file__), "linear_algebra.bas")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
-        if self.with_math_module:
+        # Use own Tanh function in order to be compatible with both VB and VBA
+        if self.with_tanh_expr:
             filename = os.path.join(
-                os.path.dirname(__file__), "math.bas")
+                os.path.dirname(__file__), "tanh.bas")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
@@ -61,3 +64,8 @@ class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="^")
+
+    def interpret_tanh_expr(self, expr, **kwargs):
+        self.with_tanh_expr = True
+        return super(
+            VisualBasicInterpreter, self).interpret_tanh_expr(expr, **kwargs)
