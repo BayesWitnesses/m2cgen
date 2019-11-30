@@ -10,11 +10,13 @@ from m2cgen import cli
 from tests import utils
 
 
-def _get_mock_args(indent=4, module_name=None, package_name=None,
-                   class_name=None, infile=None, language=None):
+def _get_mock_args(indent=4, namespace=None, module_name=None,
+                   package_name=None, class_name=None,
+                   infile=None, language=None):
     return mock.MagicMock(
-        indent=indent, module_name=module_name, package_name=package_name,
-        class_name=class_name, infile=infile, language=language,
+        indent=indent, namespace=namespace, module_name=module_name,
+        package_name=package_name, class_name=class_name,
+        infile=infile, language=language,
         recursion_limit=cli.MAX_RECURSION_DEPTH)
 
 
@@ -112,6 +114,16 @@ def test_module_name():
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("Module TestModule")
+
+
+def test_namespace():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="c_sharp", namespace="Tests.ML")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert generated_code.find("namespace Tests.ML {") != -1
 
 
 def test_unsupported_args_are_ignored():

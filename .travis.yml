@@ -17,6 +17,7 @@ env:
     - LANG=powershell TASK=classification
     - LANG=python
     - LANG=visual_basic
+    - LANG=c_sharp
 
 before_install:
   # Install PowerShell Core.
@@ -27,7 +28,7 @@ before_install:
       sudo apt-get install --no-install-recommends -y powershell;
     fi
   # Install .NET Core SDK.
-  - if [[ $LANG == "visual_basic" ]]; then
+  - if [[ $LANG == "visual_basic" ]] || [[ $LANG == "c_sharp" ]]; then
       wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb;
       sudo dpkg -i packages-microsoft-prod.deb;
       sudo apt-get update;

@@ -7,6 +7,7 @@ from .exporters import (
     export_to_python,
     export_to_javascript,
     export_to_visual_basic,
+    export_to_c_sharp,
     export_to_powershell,
 )
 
@@ -17,6 +18,7 @@ __all__ = [
     export_to_go,
     export_to_javascript,
     export_to_visual_basic,
+    export_to_c_sharp,
     export_to_powershell,
 ]
 

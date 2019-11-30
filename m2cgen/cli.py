@@ -24,6 +24,8 @@ LANGUAGE_TO_EXPORTER = {
     "javascript": (m2cgen.export_to_javascript, ["indent"]),
     "visual_basic": (m2cgen.export_to_visual_basic,
                      ["module_name", "indent"]),
+    "c_sharp": (m2cgen.export_to_c_sharp,
+                ["indent", "class_name", "namespace"]),
     "powershell": (m2cgen.export_to_powershell, ["indent"]),
 }
 
@@ -54,6 +56,10 @@ parser.add_argument(
 parser.add_argument(
     "--module_name", "-mn", dest="module_name", type=str,
     help="Module name for the generated code "
+         "(if supported by target language)")
+parser.add_argument(
+    "--namespace", "-ns", dest="namespace", type=str,
+    help="Namespace for the generated code "
          "(if supported by target language)")
 parser.add_argument(
     "--indent", "-i", dest="indent", type=int,

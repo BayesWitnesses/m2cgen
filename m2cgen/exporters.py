@@ -168,6 +168,32 @@ def export_to_visual_basic(model, module_name="Model", indent=4):
     return _export(model, interpreter)
 
 
+def export_to_c_sharp(model, namespace="ML", class_name="Model", indent=4):
+    """
+    Generates a C# code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    namespace : string, optional
+        The namespace for the generated code.
+    class_name : string, optional
+        The name of the generated class.
+    indent : int, optional
+        The size of indents in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.CSharpInterpreter(
+        namespace=namespace,
+        class_name=class_name,
+        indent=indent)
+    return _export(model, interpreter)
+
+
 def export_to_powershell(model, indent=4):
     """
     Generates a PowerShell code representation of the given model.
