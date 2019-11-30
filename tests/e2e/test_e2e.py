@@ -21,6 +21,7 @@ C = pytest.mark.c
 GO = pytest.mark.go
 JAVASCRIPT = pytest.mark.javascript
 VISUAL_BASIC = pytest.mark.visual_basic
+C_SHARP = pytest.mark.c_sharp
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -73,6 +74,7 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         (executors.GoExecutor, GO),
         (executors.JavascriptExecutor, JAVASCRIPT),
         (executors.VisualBasicExecutor, VISUAL_BASIC),
+        (executors.CSharpExecutor, C_SHARP),
     ],
 
     # These models will be tested against each language specified in the

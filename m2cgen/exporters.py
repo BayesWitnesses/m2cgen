@@ -184,6 +184,35 @@ def export_to_visual_basic(model, output_file=None,
     return _export(model, interpreter, output_file)
 
 
+def export_to_c_sharp(model, output_file=None, namespace="ML", 
+                      class_name="Model", indent=4):
+    """
+    Generates a C# code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    output_file : string, optional
+        Path to a file in which the generated code should be written.
+    namespace : string, optional
+        The namespace for the generated code.
+    class_name : string, optional
+        The name of the generated class.
+    indent : int, optional
+        The size of indents in the generated code.
+
+    Returns
+    -------
+    code : string when `output_file=None`, otherwise None
+    """
+    interpreter = interpreters.CSharpInterpreter(
+        namespace=namespace,
+        class_name=class_name,
+        indent=indent)
+    return _export(model, interpreter, output_file)
+
+
 def _export(model, interpreter, output_file=None):
     assembler_cls = assemblers.get_assembler_cls(model)
     model_ast = assembler_cls(model).assemble()

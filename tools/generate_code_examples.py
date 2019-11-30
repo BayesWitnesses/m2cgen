@@ -38,6 +38,7 @@ EXAMPLE_LANGUAGES = [
     ("go", m2c.export_to_go, "go"),
     ("javascript", m2c.export_to_javascript, "js"),
     ("visual_basic", m2c.export_to_visual_basic, "vb"),
+    ("c_sharp", m2c.export_to_c_sharp, "cs"),
 ]
 
 EXAMPLE_MODELS = [

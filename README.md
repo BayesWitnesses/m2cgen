@@ -6,7 +6,7 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/m2cgen.svg?logo=python&logoColor=white)](https://pypi.org/project/m2cgen)
 [![PyPI Version](https://img.shields.io/pypi/v/m2cgen.svg?logo=pypi&logoColor=white)](https://pypi.org/project/m2cgen)
 
-**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic).
+**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#).
 
 * [Installation](#installation)
 * [Supported Languages](#supported-languages)
@@ -26,6 +26,7 @@ pip install m2cgen
 ## Supported Languages
 
 - C
+- C#
 - Go
 - Java
 - JavaScript
@@ -102,7 +103,7 @@ public class Model {
 ```
 $ m2cgen <pickle_file> --language <language> [--output_file <output_file>] [--indent <indent>]
          [--class_name <class_name>] [--module_name <module_name>] [--package_name <package_name>]
-         [--recursion-limit <recursion_limit>]
+         [--namespace <namespace>] [--recursion-limit <recursion_limit>]
 ```
 
 Piping is also supported:
