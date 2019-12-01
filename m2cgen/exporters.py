@@ -184,7 +184,7 @@ def export_to_visual_basic(model, output_file=None,
     return _export(model, interpreter, output_file)
 
 
-def export_to_c_sharp(model, output_file=None, namespace="ML", 
+def export_to_c_sharp(model, output_file=None, namespace="ML",
                       class_name="Model", indent=4):
     """
     Generates a C# code representation of the given model.
