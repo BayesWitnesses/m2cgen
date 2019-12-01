@@ -110,3 +110,53 @@ def test_regression():
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_leaves_cutoff_threshold():
+    estimator = lightgbm.LGBMClassifier(n_estimators=2, random_state=1,
+                                        max_depth=1)
+    utils.train_model_classification_binary(estimator)
+
+    assembler = assemblers.LightGBMModelAssembler(estimator,
+                                                  leaves_cutoff_threshold=1)
+    actual = assembler.assemble()
+
+    sigmoid = ast.BinNumExpr(
+        ast.NumVal(1),
+        ast.BinNumExpr(
+            ast.NumVal(1),
+            ast.ExpExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0),
+                    ast.SubroutineExpr(
+                        ast.BinNumExpr(
+                            ast.BinNumExpr(
+                                ast.NumVal(0),
+                                ast.SubroutineExpr(
+                                    ast.IfExpr(
+                                        ast.CompExpr(
+                                            ast.FeatureRef(23),
+                                            ast.NumVal(868.2000000000002),
+                                            ast.CompOpType.GT),
+                                        ast.NumVal(0.2762557140263451),
+                                        ast.NumVal(0.6399134166614473))),
+                                ast.BinNumOpType.ADD),
+                            ast.SubroutineExpr(
+                                ast.IfExpr(
+                                    ast.CompExpr(
+                                        ast.FeatureRef(27),
+                                        ast.NumVal(0.14205000000000004),
+                                        ast.CompOpType.GT),
+                                    ast.NumVal(-0.2139321843285849),
+                                    ast.NumVal(0.1151466338793227))),
+                            ast.BinNumOpType.ADD)),
+                    ast.BinNumOpType.SUB)),
+            ast.BinNumOpType.ADD),
+        ast.BinNumOpType.DIV,
+        to_reuse=True)
+
+    expected = ast.VectorVal([
+        ast.BinNumExpr(ast.NumVal(1), sigmoid, ast.BinNumOpType.SUB),
+        sigmoid])
+
+    assert utils.cmp_exprs(actual, expected)
