@@ -1,7 +1,5 @@
 import contextlib
 
-from collections import OrderedDict
-
 from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
@@ -16,8 +14,8 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
     scalar_type = "[double]"
     vector_type = "[double[]]"
 
-    operator_map = OrderedDict([("==", "-eq"), ("!=", "-ne"), (">=", "-ge"),
-                                ("<=", "-le"), (">", "-gt"), ("<", "-lt")])
+    operator_map = {"==": "-eq", "!=": "-ne", ">=": "-ge",
+                    "<=": "-le", ">": "-gt", "<": "-lt"}
 
     def __init__(self, *args, **kwargs):
         super(PowershellCodeGenerator, self).__init__(*args, **kwargs)
@@ -44,11 +42,6 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
     def math_function_invocation(self, function_name, *args):
         return function_name + "(" + ", ".join(map(str, args)) + ")"
 
-    def add_if_statement(self, if_def):
-        for key, val in self.operator_map.items():
-            if_def = if_def.replace(key, val)
-        super().add_if_statement(if_def=if_def)
-
     def get_var_name(self):
         var_name = "$var" + str(self._var_idx)
         self._var_idx += 1
@@ -68,3 +61,6 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
 
     def _get_var_type(self, is_vector):
         return self.vector_type if is_vector else self.scalar_type
+
+    def _comp_op_overwrite(self, op):
+        return self.operator_map[op]
