@@ -2,7 +2,6 @@ dist: xenial
 
 language: python
 python:
-  - 3.4
   - 3.5
   - 3.6
   - 3.7
@@ -16,18 +15,9 @@ before_install:
 install:
   - pip install -r requirements-test.txt
 
-script:
-  - flake8 .
+env:
+  - RUN_CMD="flake8 . && pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/ && coveralls"
+  - RUN_CMD="python setup.py install && rm -rfd m2cgen/ && pytest -v -m 'c or python or java or go or javascript' tests/e2e/"
+  - RUN_CMD="python setup.py install && rm -rfd m2cgen/ && pytest -v -m 'c_sharp or visual_basic' tests/e2e/"
 
-  # Since we develop a library, we want to make sure that it properly runs
-  # after installation. We already ran into an issue when some files were
-  # forgotten to be included in package_data and it was not caught by tests.
-
-  # So first we run unit tests against raw source code and report coverage.
-  - pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
-  - coveralls
-
-  # Then we install it as a library, remove source code and run e2e tests.
-  - python setup.py install
-  - rm -rfd m2cgen/
-  - pytest -v tests/e2e/
+script: "eval $RUN_CMD"
