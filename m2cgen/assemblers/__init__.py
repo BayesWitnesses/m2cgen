@@ -1,6 +1,7 @@
 from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
-from .ensemble import RandomForestModelAssembler
+from .ensemble import (RandomForestModelAssembler,
+                       LightGBMRandomForestModelAssembler)
 from .boosting import XGBoostModelAssembler, LightGBMModelAssembler
 from .svm import SVMModelAssembler
 
@@ -8,7 +9,10 @@ __all__ = [
     LinearModelAssembler,
     TreeModelAssembler,
     RandomForestModelAssembler,
+    LightGBMRandomForestModelAssembler,
     XGBoostModelAssembler,
+    LightGBMModelAssembler,
+    SVMModelAssembler,
 ]
 
 
@@ -79,5 +83,8 @@ def get_assembler_cls(model):
     if not assembler_cls:
         raise NotImplementedError(
             "Model {} is not supported".format(model_name))
+    if assembler_cls is LightGBMModelAssembler:
+        if model.booster_.dump_model()["average_output"]:
+            assembler_cls = LightGBMRandomForestModelAssembler
 
     return assembler_cls
