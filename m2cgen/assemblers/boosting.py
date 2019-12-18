@@ -202,9 +202,20 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
         model_dump = model.booster_.dump_model()
         trees = [m["tree_structure"] for m in model_dump["tree_info"]]
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
+        self.average_output = model_dump["average_output"]
 
         super().__init__(model, trees,
                          leaves_cutoff_threshold=leaves_cutoff_threshold)
+
+    def _final_transform(self, ast_to_transform):
+        if self.average_output:
+            coef = 1 / self.n_iter
+            return utils.apply_bin_op(
+                ast_to_transform,
+                ast.NumVal(coef),
+                ast.BinNumOpType.MUL)
+        else:
+            return super()._final_transform(ast_to_transform)
 
     def _assemble_tree(self, tree):
         if "leaf_value" in tree:
