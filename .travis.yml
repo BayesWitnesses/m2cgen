@@ -9,9 +9,7 @@ python:
 env:
   - TEST=API
   - TEST=E2E LANG="c or python or java or go or javascript"
-  - TEST=E2E LANG="c_sharp or visual_basic"
-  - TEST=E2E LANG=powershell TASK=regression
-  - TEST=E2E LANG=powershell TASK=classification
+  - TEST=E2E LANG="c_sharp or visual_basic or powershell"
 
 before_install:
   # Install .NET Core SDK.
@@ -41,6 +39,5 @@ script:
   - if [[ $TEST == "E2E" ]]; then
       python setup.py install;
       rm -rfd m2cgen/;
-      pytest -v tests/e2e/test_cli.py;
-      pytest -v "-m=$LANG" "-k=train_model_$TASK" tests/e2e/;
+      pytest -v "-m=$LANG" tests/e2e/;
     fi

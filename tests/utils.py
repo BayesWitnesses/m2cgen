@@ -62,15 +62,15 @@ def assert_code_equal(actual, expected):
     assert actual.strip() == expected.strip()
 
 
-def train_model_regression(estimator, test_fraction=0.1):
+def train_model_regression(estimator, test_fraction=0.02):
     return _train_model(estimator, datasets.load_boston(), test_fraction)
 
 
-def train_model_classification(estimator, test_fraction=0.1):
+def train_model_classification(estimator, test_fraction=0.02):
     return _train_model(estimator, datasets.load_iris(), test_fraction)
 
 
-def train_model_classification_binary(estimator, test_fraction=0.1):
+def train_model_classification_binary(estimator, test_fraction=0.02):
     return _train_model(estimator, datasets.load_breast_cancer(),
                         test_fraction)
 
