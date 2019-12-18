@@ -37,7 +37,7 @@ pip install m2cgen
 
 |  | Classification | Regression |
 | --- | --- | --- |
-| **Linear** | LogisticRegression, LogisticRegressionCV, RidgeClassifier, RidgeClassifierCV, SGDClassifier, PassiveAggressiveClassifier | LinearRegression, HuberRegressor, ElasticNet, ElasticNetCV, TheilSenRegressor, Lars, LarsCV, Lasso, LassoCV, LassoLars, LassoLarsIC, OrthogonalMatchingPursuit, OrthogonalMatchingPursuitCV, Ridge, RidgeCV, BayesianRidge, ARDRegression, SGDRegressor, PassiveAggressiveRegressor |
+| **Linear** | LogisticRegression, LogisticRegressionCV, RidgeClassifier, RidgeClassifierCV, SGDClassifier, PassiveAggressiveClassifier | LinearRegression, HuberRegressor, ElasticNet, ElasticNetCV, TheilSenRegressor, Lars, LarsCV, Lasso, LassoCV, LassoLars, LassoLarsCV, LassoLarsIC, OrthogonalMatchingPursuit, OrthogonalMatchingPursuitCV, Ridge, RidgeCV, BayesianRidge, ARDRegression, SGDRegressor, PassiveAggressiveRegressor |
 | **SVM** | SVC, NuSVC, LinearSVC | SVR, NuSVR, LinearSVR |
 | **Tree** | DecisionTreeClassifier, ExtraTreeClassifier | DecisionTreeRegressor, ExtraTreeRegressor |
 | **Random Forest** | RandomForestClassifier, ExtraTreesClassifier | RandomForestRegressor, ExtraTreesRegressor |

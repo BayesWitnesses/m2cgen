@@ -40,6 +40,7 @@ SUPPORTED_MODELS = {
     "Lasso": LinearModelAssembler,
     "LassoCV": LinearModelAssembler,
     "LassoLars": LinearModelAssembler,
+    "LassoLarsCV": LinearModelAssembler,
     "LassoLarsIC": LinearModelAssembler,
     "OrthogonalMatchingPursuit": LinearModelAssembler,
     "OrthogonalMatchingPursuitCV": LinearModelAssembler,
