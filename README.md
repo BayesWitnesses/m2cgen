@@ -41,7 +41,7 @@ pip install m2cgen
 | **SVM** | SVC, NuSVC, LinearSVC | SVR, NuSVR, LinearSVR |
 | **Tree** | DecisionTreeClassifier, ExtraTreeClassifier | DecisionTreeRegressor, ExtraTreeRegressor |
 | **Random Forest** | RandomForestClassifier, ExtraTreesClassifier | RandomForestRegressor, ExtraTreesRegressor |
-| **Boosting** | XGBClassifier(gbtree/dart booster only), LGBMClassifier(gbdt/dart booster only) | XGBRegressor(gbtree/dart booster only), LGBMRegressor(gbdt/dart booster only) |
+| **Boosting** | XGBClassifier(gbtree/dart booster only), LGBMClassifier(gbdt/dart/goss booster only) | XGBRegressor(gbtree/dart booster only), LGBMRegressor(gbdt/dart/goss booster only) |
 
 ## Classification Output
 ### Linear/Linear SVM
