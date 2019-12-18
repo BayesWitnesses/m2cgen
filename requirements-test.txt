@@ -4,8 +4,8 @@ scikit-learn==0.20.2
 xgboost==0.80
 lightgbm==2.2.3
 flake8==3.6.0
-pytest==4.1.1
-pytest-mock==1.10.0
-coveralls==1.5.1
-pytest-cov==2.6.1
+pytest==5.3.2
+pytest-mock==1.13.0
+coveralls==1.9.2
+pytest-cov==2.8.1
 py-mini-racer==0.1.18
