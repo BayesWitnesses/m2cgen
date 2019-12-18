@@ -90,6 +90,9 @@ LIGHTGBM_PARAMS_DART = dict(n_estimators=10, boosting_type='dart',
 LIGHTGBM_PARAMS_GOSS = dict(n_estimators=10, boosting_type='goss',
                             top_rate=0.3, other_rate=0.2,
                             random_state=RANDOM_SEED)
+LIGHTGBM_PARAMS_RF = dict(n_estimators=10, boosting_type='rf',
+                          subsample=0.7, subsample_freq=1,
+                          random_state=RANDOM_SEED)
 SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
 
 XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
@@ -130,6 +133,11 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_GOSS)),
         classification_binary(lightgbm.LGBMClassifier(
             **LIGHTGBM_PARAMS_GOSS)),
+
+        # LightGBM (RF)
+        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_RF)),
+        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
+        classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
 
         # LightGBM (Large Trees)
         regression_random(

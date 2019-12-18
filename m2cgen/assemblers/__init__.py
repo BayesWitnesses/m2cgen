@@ -9,6 +9,8 @@ __all__ = [
     TreeModelAssembler,
     RandomForestModelAssembler,
     XGBoostModelAssembler,
+    LightGBMModelAssembler,
+    SVMModelAssembler,
 ]
 
 

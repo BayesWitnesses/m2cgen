@@ -51,10 +51,12 @@ class BaseBoostingAssembler(ModelAssembler):
         if sum(trees_num_leaves) > self._leaves_cutoff_threshold:
             to_sum = self._split_into_subroutines(trees_ast, trees_num_leaves)
 
-        result_ast = utils.apply_op_to_expressions(
+        tmp_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
             ast.NumVal(base_score),
             *to_sum)
+
+        result_ast = self._final_transform(tmp_ast)
 
         return ast.SubroutineExpr(result_ast)
 
@@ -84,6 +86,9 @@ class BaseBoostingAssembler(ModelAssembler):
             ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),
             proba_expr
         ])
+
+    def _final_transform(self, ast_to_transform):
+        return ast_to_transform
 
     def _split_into_subroutines(self, trees_ast, trees_num_leaves):
         result = []
@@ -196,9 +201,21 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
     def __init__(self, model, leaves_cutoff_threshold=3000):
         model_dump = model.booster_.dump_model()
         trees = [m["tree_structure"] for m in model_dump["tree_info"]]
+        self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
+        self.average_output = model_dump["average_output"]
 
         super().__init__(model, trees,
                          leaves_cutoff_threshold=leaves_cutoff_threshold)
+
+    def _final_transform(self, ast_to_transform):
+        if self.average_output:
+            coef = 1 / self.n_iter
+            return utils.apply_bin_op(
+                ast_to_transform,
+                ast.NumVal(coef),
+                ast.BinNumOpType.MUL)
+        else:
+            return super()._final_transform(ast_to_transform)
 
     def _assemble_tree(self, tree):
         if "leaf_value" in tree:
