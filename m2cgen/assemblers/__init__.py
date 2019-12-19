@@ -9,6 +9,8 @@ __all__ = [
     TreeModelAssembler,
     RandomForestModelAssembler,
     XGBoostModelAssembler,
+    LightGBMModelAssembler,
+    SVMModelAssembler,
 ]
 
 
@@ -40,6 +42,7 @@ SUPPORTED_MODELS = {
     "Lasso": LinearModelAssembler,
     "LassoCV": LinearModelAssembler,
     "LassoLars": LinearModelAssembler,
+    "LassoLarsCV": LinearModelAssembler,
     "LassoLarsIC": LinearModelAssembler,
     "OrthogonalMatchingPursuit": LinearModelAssembler,
     "OrthogonalMatchingPursuitCV": LinearModelAssembler,
