@@ -1,7 +1,10 @@
+import json
+
 from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
-from .boosting import XGBoostModelAssembler, LightGBMModelAssembler
+from .boosting import (XGBoostModelAssembler, XGBoostLinearModelAssembler,
+                       LightGBMModelAssembler)
 from .svm import SVMModelAssembler
 
 __all__ = [
@@ -82,5 +85,11 @@ def get_assembler_cls(model):
     if not assembler_cls:
         raise NotImplementedError(
             "Model {} is not supported".format(model_name))
+
+    if assembler_cls is XGBoostModelAssembler:
+        model_dump = model.get_booster().get_dump(dump_format="json")
+        if len(model_dump) == 1 and all(i in json.loads(model_dump[0])
+                                        for i in ("weight", "bias")):
+            assembler_cls = XGBoostLinearModelAssembler
 
     return assembler_cls
