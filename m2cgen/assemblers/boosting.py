@@ -217,11 +217,6 @@ class XGBoostLinearModelAssembler(ModelAssembler):
 
         self._base_score = model.base_score
 
-        feature_names = model.get_booster().feature_names
-        self._feature_name_to_idx = {
-            name: idx for idx, name in enumerate(feature_names or [])
-        }
-
         model_dump = model.get_booster().get_dump(dump_format="json")
         self.weight = json.loads(model_dump[0])["weight"]
         self.bias = json.loads(model_dump[0])["bias"]
