@@ -1,5 +1,3 @@
-
-
 class ModelAssembler:
 
     def __init__(self, model):

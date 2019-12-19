@@ -3,6 +3,7 @@ import numpy as np
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
+from m2cgen.assemblers.linear import _linear_to_ast
 
 
 LEAVES_CUTOFF_THRESHOLD = 3000
@@ -66,7 +67,7 @@ class BaseBoostingAssembler(ModelAssembler):
     def _assemble_multi_class_output(self, trees):
         # Multi-class output is calculated based on discussion in
         # https://github.com/dmlc/xgboost/issues/1746#issuecomment-295962863
-        splits = _split_trees_by_classes(trees, self._output_size)
+        splits = _split_values_by_classes(trees, self._output_size)
 
         base_score = self._base_score
         exprs = [self._assemble_single_output(t, base_score) for t in splits]
@@ -198,6 +199,83 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
         return num_leaves
 
 
+class XGBoostLinearModelAssembler(ModelAssembler):
+
+    classifier_name = "XGBClassifier"
+
+    def __init__(self, model):
+        super().__init__(model)
+
+        self._output_size = 1
+        self._is_classification = False
+
+        model_class_name = type(model).__name__
+        if model_class_name == self.classifier_name:
+            self._is_classification = True
+            if model.n_classes_ > 2:
+                self._output_size = model.n_classes_
+
+        self._base_score = model.base_score
+
+        feature_names = model.get_booster().feature_names
+        self._feature_name_to_idx = {
+            name: idx for idx, name in enumerate(feature_names or [])
+        }
+
+        model_dump = model.get_booster().get_dump(dump_format="json")
+        self.weight = json.loads(model_dump[0])["weight"]
+        self.bias = json.loads(model_dump[0])["bias"]
+
+    def assemble(self):
+        if self._is_classification:
+            if self._output_size == 1:
+                self.bias = self.bias[0]
+                return self._assemble_bin_class_output(self.weight, self.bias)
+            else:
+                return self._assemble_multi_class_output(
+                    self.weight, self.bias)
+        else:
+            self.bias = self.bias[0]
+            return self._assemble_single_output(self.weight, self.bias)
+
+    def _assemble_single_output(self, weights, bias):
+        coef = utils.to_1d_array(weights)
+
+        expr = _linear_to_ast(coef, bias)
+
+        result_ast = utils.apply_bin_op(
+            ast.NumVal(self._base_score),
+            expr,
+            ast.BinNumOpType.ADD)
+
+        return ast.SubroutineExpr(result_ast)
+
+    def _assemble_bin_class_output(self, weights, bias):
+        # Base score is calculated based on https://github.com/dmlc/xgboost/blob/master/src/objective/regression_loss.h#L64  # noqa
+        # return -logf(1.0f / base_score - 1.0f);
+        if self._base_score != 0:
+            self._base_score = -np.log(1.0 / self._base_score - 1.0)
+
+        expr = self._assemble_single_output(weights, bias)
+        proba_expr = utils.sigmoid_expr(expr, to_reuse=True)
+
+        return ast.VectorVal([
+            ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),
+            proba_expr
+        ])
+
+    def _assemble_multi_class_output(self, weights, bias):
+        # Multi-class output is calculated based on discussion in
+        # https://github.com/dmlc/xgboost/issues/1746#issuecomment-295962863
+        splits = _split_values_by_classes(weights, self._output_size)
+
+        exprs = [self._assemble_single_output(split, bias[idx])
+                 for idx, split in enumerate(splits)]
+
+        proba_exprs = utils.softmax_exprs(exprs)
+        return ast.VectorVal(proba_exprs)
+
+
 class LightGBMModelAssembler(BaseBoostingAssembler):
 
     classifier_name = "LGBMClassifier"
@@ -263,11 +341,11 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
         return num_leaves
 
 
-def _split_trees_by_classes(trees, n_classes):
+def _split_values_by_classes(values, n_classes):
     # Splits are computed based on a comment
     # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
-    trees_by_classes = [[] for _ in range(n_classes)]
-    for i in range(len(trees)):
+    values_by_classes = [[] for _ in range(n_classes)]
+    for i in range(len(values)):
         class_idx = i % n_classes
-        trees_by_classes[class_idx].append(trees[i])
-    return trees_by_classes
+        values_by_classes[class_idx].append(values[i])
+    return values_by_classes
