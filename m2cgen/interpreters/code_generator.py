@@ -131,6 +131,9 @@ class BaseCodeGenerator:
     def _get_var_declare_type(self, expr):
         return NotImplemented
 
+    def _comp_op_overwrite(self, op):
+        return op
+
 
 class CLikeCodeGenerator(BaseCodeGenerator):
     """
