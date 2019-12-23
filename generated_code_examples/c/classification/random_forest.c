@@ -15,7 +15,7 @@ void score(double * input, double * output) {
         memcpy(var2, (double[]){1.0, 0.0, 0.0}, 3 * sizeof(double));
     } else {
         if ((input[2]) <= (4.8500004)) {
-            memcpy(var2, (double[]){0.0, 0.9795918367346939, 0.02040816326530612}, 3 * sizeof(double));
+            memcpy(var2, (double[]){0.0, 0.9622641509433962, 0.03773584905660377}, 3 * sizeof(double));
         } else {
             if ((input[3]) <= (1.75)) {
                 if ((input[3]) <= (1.6500001)) {
@@ -34,15 +34,15 @@ void score(double * input, double * output) {
     if ((input[3]) <= (0.8)) {
         memcpy(var4, (double[]){1.0, 0.0, 0.0}, 3 * sizeof(double));
     } else {
-        if ((input[0]) <= (6.05)) {
-            if ((input[2]) <= (4.9)) {
-                memcpy(var4, (double[]){0.0, 0.9032258064516129, 0.0967741935483871}, 3 * sizeof(double));
+        if ((input[0]) <= (6.1499996)) {
+            if ((input[2]) <= (4.8500004)) {
+                memcpy(var4, (double[]){0.0, 0.9090909090909091, 0.09090909090909091}, 3 * sizeof(double));
             } else {
                 memcpy(var4, (double[]){0.0, 0.0, 1.0}, 3 * sizeof(double));
             }
         } else {
             if ((input[3]) <= (1.75)) {
-                memcpy(var4, (double[]){0.0, 0.8, 0.2}, 3 * sizeof(double));
+                memcpy(var4, (double[]){0.0, 0.8666666666666667, 0.13333333333333333}, 3 * sizeof(double));
             } else {
                 memcpy(var4, (double[]){0.0, 0.0, 1.0}, 3 * sizeof(double));
             }

@@ -3,20 +3,20 @@ public class Model {
     public static double score(double[] input) {
         double var0;
         if ((input[5]) <= (6.941)) {
-            if ((input[12]) <= (14.395)) {
-                if ((input[7]) <= (1.43365)) {
+            if ((input[12]) <= (14.4)) {
+                if ((input[7]) <= (1.38485)) {
                     var0 = 45.58;
                 } else {
-                    var0 = 22.865022421524642;
+                    var0 = 22.939004149377574;
                 }
             } else {
-                var0 = 14.924358974358983;
+                var0 = 14.910404624277467;
             }
         } else {
             if ((input[5]) <= (7.4370003)) {
-                var0 = 32.09534883720931;
+                var0 = 32.11304347826088;
             } else {
-                var0 = 45.275;
+                var0 = 45.096666666666664;
             }
         }
         return var0;

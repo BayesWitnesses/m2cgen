@@ -37,8 +37,8 @@ Function score(ByRef input_vector() As Double) As Double()
         If (input_vector(2)) <= (4.8500004) Then
             Dim var2(2) As Double
             var2(0) = 0.0
-            var2(1) = 0.9795918367346939
-            var2(2) = 0.02040816326530612
+            var2(1) = 0.9622641509433962
+            var2(2) = 0.03773584905660377
             var0 = var2
         Else
             If (input_vector(3)) <= (1.75) Then
@@ -72,12 +72,12 @@ Function score(ByRef input_vector() As Double) As Double()
         var7(2) = 0.0
         var6 = var7
     Else
-        If (input_vector(0)) <= (6.05) Then
-            If (input_vector(2)) <= (4.9) Then
+        If (input_vector(0)) <= (6.1499996) Then
+            If (input_vector(2)) <= (4.8500004) Then
                 Dim var8(2) As Double
                 var8(0) = 0.0
-                var8(1) = 0.9032258064516129
-                var8(2) = 0.0967741935483871
+                var8(1) = 0.9090909090909091
+                var8(2) = 0.09090909090909091
                 var6 = var8
             Else
                 Dim var9(2) As Double
@@ -90,8 +90,8 @@ Function score(ByRef input_vector() As Double) As Double()
             If (input_vector(3)) <= (1.75) Then
                 Dim var10(2) As Double
                 var10(0) = 0.0
-                var10(1) = 0.8
-                var10(2) = 0.2
+                var10(1) = 0.8666666666666667
+                var10(2) = 0.13333333333333333
                 var6 = var10
             Else
                 Dim var11(2) As Double
