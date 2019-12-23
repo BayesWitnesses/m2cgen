@@ -5,6 +5,7 @@ from .go.interpreter import GoInterpreter
 from .javascript.interpreter import JavascriptInterpreter
 from .visual_basic.interpreter import VisualBasicInterpreter
 from .c_sharp.interpreter import CSharpInterpreter
+from .powershell.interpreter import PowershellInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -14,4 +15,5 @@ __all__ = [
     JavascriptInterpreter,
     VisualBasicInterpreter,
     CSharpInterpreter,
+    PowershellInterpreter,
 ]
