@@ -23,6 +23,7 @@ JAVASCRIPT = pytest.mark.javascript
 VISUAL_BASIC = pytest.mark.visual_basic
 C_SHARP = pytest.mark.c_sharp
 POWERSHELL = pytest.mark.powershell
+R = pytest.mark.r_lang
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -114,6 +115,7 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         (executors.VisualBasicExecutor, VISUAL_BASIC),
         (executors.CSharpExecutor, C_SHARP),
         (executors.PowershellExecutor, POWERSHELL),
+        (executors.RExecutor, R),
     ],
 
     # These models will be tested against each language specified in the
@@ -142,12 +144,12 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
 
         # LightGBM (Large Trees)
-        regression_random(
-            lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_LARGE)),
-        classification_random(
-            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
-        classification_binary_random(
-            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
+#        regression_random(
+#            lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_LARGE)),
+#        classification_random(
+#            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
+#        classification_binary_random(
+#            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
 
         # XGBoost
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
@@ -155,12 +157,12 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 
         # XGBoost (Large Trees)
-        regression_random(
-            xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
-        classification_random(
-            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
-        classification_binary_random(
-            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+#        regression_random(
+#            xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
+#        classification_random(
+#            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+#        classification_binary_random(
+#            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
 
         # Linear SVM
         regression(svm.LinearSVR(random_state=RANDOM_SEED)),
@@ -232,15 +234,15 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
 
 
         # Random forest
-        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
-        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
+#        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
+#        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
 
-        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+#        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+#        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
 
-        classification_binary(
-            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+#        classification_binary(
+#            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+#        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
     ],
 
     # Following is the list of extra tests for languages/models which are

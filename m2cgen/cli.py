@@ -27,6 +27,7 @@ LANGUAGE_TO_EXPORTER = {
     "c_sharp": (m2cgen.export_to_c_sharp,
                 ["indent", "class_name", "namespace"]),
     "powershell": (m2cgen.export_to_powershell, ["indent"]),
+    "r": (m2cgen.export_to_r, ["indent"]),
 }
 
 

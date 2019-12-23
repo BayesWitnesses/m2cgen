@@ -40,6 +40,7 @@ EXAMPLE_LANGUAGES = [
     ("visual_basic", m2c.export_to_visual_basic, "vb"),
     ("c_sharp", m2c.export_to_c_sharp, "cs"),
     ("powershell", m2c.export_to_powershell, "ps1"),
+    ("r", m2c.export_to_r, "r"),
 ]
 
 EXAMPLE_MODELS = [

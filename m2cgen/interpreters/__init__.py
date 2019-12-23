@@ -6,6 +6,7 @@ from .javascript.interpreter import JavascriptInterpreter
 from .visual_basic.interpreter import VisualBasicInterpreter
 from .c_sharp.interpreter import CSharpInterpreter
 from .powershell.interpreter import PowershellInterpreter
+from .r.interpreter import RInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -16,4 +17,5 @@ __all__ = [
     VisualBasicInterpreter,
     CSharpInterpreter,
     PowershellInterpreter,
+    RInterpreter,
 ]

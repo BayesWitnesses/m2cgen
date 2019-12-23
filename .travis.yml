@@ -8,7 +8,7 @@ python:
 
 env:
   - TEST=API
-  - TEST=E2E LANG="c or python or java or go or javascript"
+  - TEST=E2E LANG="c or python or java or go or javascript or r_lang"
   - TEST=E2E LANG="c_sharp or visual_basic or powershell"
 
 before_install:
@@ -25,6 +25,10 @@ before_install:
       sudo dpkg -i packages-microsoft-prod.deb;
       sudo apt-get update;
       sudo apt-get install --no-install-recommends -y powershell;
+    fi
+  # Install R.
+  - if [[ $LANG == *"r_lang"* ]]; then
+      sudo apt-get install --no-install-recommends -y r-base;
     fi
 
 install:

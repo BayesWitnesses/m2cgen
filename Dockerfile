@@ -9,7 +9,8 @@ RUN wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/pack
         openjdk-8-jdk \
         golang-go \
         dotnet-sdk-3.0 \
-        powershell && \
+        powershell \
+        r-base && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen
