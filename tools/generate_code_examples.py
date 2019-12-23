@@ -39,6 +39,7 @@ EXAMPLE_LANGUAGES = [
     ("javascript", m2c.export_to_javascript, "js"),
     ("visual_basic", m2c.export_to_visual_basic, "vb"),
     ("c_sharp", m2c.export_to_c_sharp, "cs"),
+    ("powershell", m2c.export_to_powershell, "ps1"),
 ]
 
 EXAMPLE_MODELS = [

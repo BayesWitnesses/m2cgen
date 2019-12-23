@@ -22,6 +22,7 @@ GO = pytest.mark.go
 JAVASCRIPT = pytest.mark.javascript
 VISUAL_BASIC = pytest.mark.visual_basic
 C_SHARP = pytest.mark.c_sharp
+POWERSHELL = pytest.mark.powershell
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -115,6 +116,7 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         (executors.JavascriptExecutor, JAVASCRIPT),
         (executors.VisualBasicExecutor, VISUAL_BASIC),
         (executors.CSharpExecutor, C_SHARP),
+        (executors.PowershellExecutor, POWERSHELL),
     ],
 
     # These models will be tested against each language specified in the
