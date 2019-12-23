@@ -1,5 +1,6 @@
 import contextlib
 
+from m2cgen.ast import CompOpType
 from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
@@ -14,8 +15,9 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
     scalar_type = "[double]"
     vector_type = "[double[]]"
 
-    operator_map = {"==": "-eq", "!=": "-ne", ">=": "-ge",
-                    "<=": "-le", ">": "-gt", "<": "-lt"}
+    operator_map = {CompOpType.EQ: "-eq", CompOpType.NOT_EQ: "-ne",
+                    CompOpType.GTE: "-ge", CompOpType.LTE: "-le",
+                    CompOpType.GT: "-gt", CompOpType.LT: "-lt"}
 
     def __init__(self, *args, **kwargs):
         super(PowershellCodeGenerator, self).__init__(*args, **kwargs)

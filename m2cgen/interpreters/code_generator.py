@@ -132,7 +132,7 @@ class BaseCodeGenerator:
         return NotImplemented
 
     def _comp_op_overwrite(self, op):
-        return op
+        return op.value
 
 
 class CLikeCodeGenerator(BaseCodeGenerator):

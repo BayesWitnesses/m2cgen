@@ -1,5 +1,6 @@
 import contextlib
 
+from m2cgen.ast import CompOpType
 from m2cgen.interpreters.code_generator import BaseCodeGenerator, CodeTemplate
 
 
@@ -69,9 +70,9 @@ class VisualBasicCodeGenerator(BaseCodeGenerator):
         return var_name
 
     def _comp_op_overwrite(self, op):
-        if op == "==":
+        if op == CompOpType.EQ:
             return "="
-        elif op == "!=":
+        elif op == CompOpType.NOT_EQ:
             return "<>"
         else:
-            return op
+            return op.value
