@@ -67,3 +67,11 @@ class VisualBasicCodeGenerator(BaseCodeGenerator):
             self.add_code_line(self.tpl_array_set_by_index(
                 array_name=var_name, index=i, value=val))
         return var_name
+
+    def _comp_op_overwrite(self, op):
+        if op == "==":
+            return "="
+        elif op == "!=":
+            return "<>"
+        else:
+            return op
