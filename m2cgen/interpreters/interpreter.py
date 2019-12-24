@@ -128,7 +128,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return var_name
 
     def interpret_comp_expr(self, expr, **kwargs):
-        op = self._cg._comp_op_overwrite(expr.op.value)
+        op = self._cg._comp_op_overwrite(expr.op)
         return self._cg.infix_expression(
             left=self._do_interpret(expr.left, **kwargs),
             op=op,
