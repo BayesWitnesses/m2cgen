@@ -17,13 +17,13 @@ class RCodeGenerator(CLikeCodeGenerator):
 
     def add_function_def(self, name, args):
         function_def = name + " <- function("
-        function_def += ",".join(args)
+        function_def += ",".join([arg for _, arg in args])
         function_def += ") {"
         self.add_code_line(function_def)
         self.increase_indent()
 
     @contextlib.contextmanager
-    def function_definition(self, name, args):
+    def function_definition(self, name, args, is_vector_output):
         self.add_function_def(name, args)
         yield
         self.add_block_termination()

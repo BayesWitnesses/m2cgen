@@ -234,15 +234,15 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
 
 
         # Random forest
-#        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
-#        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
+        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
+        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
 
-#        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-#        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
 
-#        classification_binary(
-#            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-#        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+        classification_binary(
+            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
     ],
 
     # Following is the list of extra tests for languages/models which are
