@@ -144,12 +144,12 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
 
         # LightGBM (Large Trees)
-#        regression_random(
-#            lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_LARGE)),
-#        classification_random(
-#            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
-#        classification_binary_random(
-#            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
+        regression_random(
+            lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_LARGE)),
+        classification_random(
+            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
+        classification_binary_random(
+            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
 
         # XGBoost
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
@@ -157,12 +157,12 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 
         # XGBoost (Large Trees)
-#        regression_random(
-#            xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
-#        classification_random(
-#            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
-#        classification_binary_random(
-#            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+        regression_random(
+            xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
+        classification_random(
+            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+        classification_binary_random(
+            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
 
         # Linear SVM
         regression(svm.LinearSVR(random_state=RANDOM_SEED)),

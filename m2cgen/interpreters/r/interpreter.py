@@ -11,7 +11,7 @@ class RInterpreter(ToCodeInterpreter,
                    mixins.BinExpressionDepthTrackingMixin,
                    mixins.SubroutinesAsFunctionsMixin):
 
-    bin_depth_threshold = 50
+    bin_depth_threshold = 25
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "add_vectors",
