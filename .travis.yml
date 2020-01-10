@@ -14,17 +14,21 @@ env:
 before_install:
   # Install .NET Core SDK.
   - if [[ $LANG == *"c_sharp"* ]] || [[ $LANG == *"visual_basic"* ]]; then
+      set -e;
       wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb;
       sudo dpkg -i packages-microsoft-prod.deb;
       sudo apt-get update;
       sudo apt-get install --no-install-recommends -y dotnet-sdk-3.0;
+      set +e;
     fi
   # Install PowerShell Core.
   - if [[ $LANG == *"powershell"* ]]; then
+      set -e;
       wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb;
       sudo dpkg -i packages-microsoft-prod.deb;
       sudo apt-get update;
       sudo apt-get install --no-install-recommends -y powershell;
+      set +e;
     fi
 
 install:
@@ -32,12 +36,16 @@ install:
 
 script:
   - if [[ $TEST == "API" ]]; then
+      set -e;
       flake8 .;
       pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/;
       coveralls;
+      set +e;
     fi
   - if [[ $TEST == "E2E" ]]; then
+      set -e;
       python setup.py install;
       rm -rfd m2cgen/;
       pytest -v "-m=$LANG" tests/e2e/;
+      set +e;
     fi
