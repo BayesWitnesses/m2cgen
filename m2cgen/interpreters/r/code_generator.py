@@ -29,8 +29,7 @@ class RCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     def array_index_access(self, array_name, index):
-        return self.tpl_array_index_access(
-            array_name=array_name, index=index + 1)
+        return super().array_index_access(array_name, index + 1)
 
     def vector_init(self, values):
         return "c(" + ", ".join(values) + ")"

@@ -148,6 +148,9 @@ def test_multi_output():
 
     expected_code = """
 score <- function(input) {
+    return(subroutine0(input))
+}
+subroutine0 <- function(input) {
     if ((1) == (1)) {
         var0 <- c(1, 2)
     } else {
@@ -168,14 +171,8 @@ def test_bin_vector_expr():
         ast.BinNumOpType.ADD)
 
     expected_code = """
-add_vectors <- function(v1, v2) {
-    return(v1 + v2)
-}
-mul_vector_number <- function(v1, num) {
-    return(v1 * num)
-}
 score <- function(input) {
-    return(add_vectors(c(1, 2), c(3, 4)))
+    return((c(1, 2)) + (c(3, 4)))
 }
 """
 
@@ -190,14 +187,8 @@ def test_bin_vector_num_expr():
         ast.BinNumOpType.MUL)
 
     expected_code = """
-add_vectors <- function(v1, v2) {
-    return(v1 + v2)
-}
-mul_vector_number <- function(v1, num) {
-    return(v1 * num)
-}
 score <- function(input) {
-    return(mul_vector_number(c(1, 2), 1))
+    return((c(1, 2)) * (1))
 }
 """
 
