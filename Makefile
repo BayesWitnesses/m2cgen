@@ -19,3 +19,5 @@ docker-flake8:
 
 docker-shell:
 	$(DOCKER_RUN_ARGS) bash
+
+docker-pre-pr: docker-flake8 docker-test-all
