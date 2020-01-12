@@ -13,7 +13,7 @@ def test_if_expr():
 Module Model
 Function score(ByRef input_vector() As Double) As Double
     Dim var0 As Double
-    If (1) == (input_vector(0)) Then
+    If (1) = (input_vector(0)) Then
         var0 = 2
     Else
         var0 = 3
@@ -67,7 +67,7 @@ Module Model
 Function score(ByRef input_vector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
-    If (1) == (1) Then
+    If (1) = (1) Then
         var1 = 1
     Else
         var1 = 2
@@ -108,19 +108,19 @@ Module Model
 Function score(ByRef input_vector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
-    If (1) == (1) Then
+    If (1) = (1) Then
         var1 = 1
     Else
         var1 = 2
     End If
-    If (1) == ((var1) + (2)) Then
+    If (1) = ((var1) + (2)) Then
         Dim var2 As Double
-        If (1) == (1) Then
+        If (1) = (1) Then
             var2 = 1
         Else
             var2 = 2
         End If
-        If (1) == ((var2) + (2)) Then
+        If (1) = ((var2) + (2)) Then
             var0 = input_vector(2)
         Else
             var0 = 2
@@ -184,7 +184,7 @@ def test_multi_output():
 Module Model
 Function score(ByRef input_vector() As Double) As Double()
     Dim var0() As Double
-    If (1) == (1) Then
+    If (1) = (1) Then
         Dim var1(1) As Double
         var1(0) = 1
         var1(1) = 2
