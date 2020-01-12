@@ -1,3 +1,4 @@
+import pytest
 import pickle
 import platform
 import subprocess
@@ -15,7 +16,7 @@ def execute_test(exec_args):
     utils.verify_python_model_is_expected(
         generated_code,
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-        expected_output=-41.89077994476439)
+        expected_output=-47.62913662138064)
 
 
 def _prepare_pickled_model(tmp_path):
@@ -50,6 +51,7 @@ def test_piped(tmp_path):
     execute_test(exec_args)
 
 
+@pytest.mark.skip(reason="utils.verify_python_model_is_expected doesn't support modules")
 def test_dash_m(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
     exec_args = ["python", "-m", "m2cgen", "--language", "python",
