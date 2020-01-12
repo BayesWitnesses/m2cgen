@@ -51,7 +51,8 @@ def test_piped(tmp_path):
     execute_test(exec_args)
 
 
-@pytest.mark.skip(reason="utils.verify_python_model_is_expected doesn't support modules")
+@pytest.mark.skip(reason="utils.verify_python_model_is_expected "
+                         "doesn't support modules")
 def test_dash_m(tmp_path):
     pickled_model_path = _prepare_pickled_model(tmp_path)
     exec_args = ["python", "-m", "m2cgen", "--language", "python",
