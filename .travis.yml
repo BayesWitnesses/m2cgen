@@ -12,36 +12,10 @@ env:
   - TEST=E2E LANG="c_sharp or visual_basic or powershell"
 
 before_install:
-  # Install .NET Core SDK.
-  - if [[ $LANG == *"c_sharp"* ]] || [[ $LANG == *"visual_basic"* ]]; then
-      wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb;
-      sudo dpkg -i packages-microsoft-prod.deb;
-      sudo apt-get update;
-      sudo apt-get install --no-install-recommends -y dotnet-sdk-3.0;
-    fi
-  # Install PowerShell Core.
-  - if [[ $LANG == *"powershell"* ]]; then
-      wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb;
-      sudo dpkg -i packages-microsoft-prod.deb;
-      sudo apt-get update;
-      sudo apt-get install --no-install-recommends -y powershell;
-    fi
-  # Install R.
-  - if [[ $LANG == *"r_lang"* ]]; then
-      sudo apt-get install --no-install-recommends -y r-base;
-    fi
+  - bash .travis/setup.sh
 
 install:
   - pip install -r requirements-test.txt
 
 script:
-  - if [[ $TEST == "API" ]]; then
-      flake8 .;
-      pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/;
-      coveralls;
-    fi
-  - if [[ $TEST == "E2E" ]]; then
-      python setup.py install;
-      rm -rfd m2cgen/;
-      pytest -v "-m=$LANG" tests/e2e/;
-    fi
+  - bash .travis/test.sh

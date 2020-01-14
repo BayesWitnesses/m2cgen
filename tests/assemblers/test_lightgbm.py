@@ -28,16 +28,16 @@ def test_binary_classification():
                                         ast.FeatureRef(23),
                                         ast.NumVal(868.2000000000002),
                                         ast.CompOpType.GT),
-                                    ast.NumVal(0.2762557140263451),
-                                    ast.NumVal(0.6399134166614473)),
+                                    ast.NumVal(0.25986931215073095),
+                                    ast.NumVal(0.6237178414050242)),
                                 ast.BinNumOpType.ADD),
                             ast.IfExpr(
                                 ast.CompExpr(
-                                    ast.FeatureRef(27),
-                                    ast.NumVal(0.14205000000000004),
+                                    ast.FeatureRef(7),
+                                    ast.NumVal(0.05142),
                                     ast.CompOpType.GT),
-                                ast.NumVal(-0.2139321843285849),
-                                ast.NumVal(0.1151466338793227)),
+                                ast.NumVal(-0.1909605544006228),
+                                ast.NumVal(0.1293965108676673)),
                             ast.BinNumOpType.ADD)),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
@@ -95,18 +95,18 @@ def test_regression():
                 ast.IfExpr(
                     ast.CompExpr(
                         ast.FeatureRef(5),
-                        ast.NumVal(6.8455),
+                        ast.NumVal(6.918),
                         ast.CompOpType.GT),
-                    ast.NumVal(24.007392728914056),
-                    ast.NumVal(22.35695742616179)),
+                    ast.NumVal(24.011454621684155),
+                    ast.NumVal(22.289277544391084)),
                 ast.BinNumOpType.ADD),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
                     ast.NumVal(9.63),
                     ast.CompOpType.GT),
-                ast.NumVal(-0.4903836928981587),
-                ast.NumVal(0.7222498915097475)),
+                ast.NumVal(-0.49461212269771115),
+                ast.NumVal(0.7174324413014594)),
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
@@ -138,17 +138,17 @@ def test_leaves_cutoff_threshold():
                                             ast.FeatureRef(23),
                                             ast.NumVal(868.2000000000002),
                                             ast.CompOpType.GT),
-                                        ast.NumVal(0.2762557140263451),
-                                        ast.NumVal(0.6399134166614473))),
+                                        ast.NumVal(0.25986931215073095),
+                                        ast.NumVal(0.6237178414050242))),
                                 ast.BinNumOpType.ADD),
                             ast.SubroutineExpr(
                                 ast.IfExpr(
                                     ast.CompExpr(
-                                        ast.FeatureRef(27),
-                                        ast.NumVal(0.14205000000000004),
+                                        ast.FeatureRef(7),
+                                        ast.NumVal(0.05142),
                                         ast.CompOpType.GT),
-                                    ast.NumVal(-0.2139321843285849),
-                                    ast.NumVal(0.1151466338793227))),
+                                    ast.NumVal(-0.1909605544006228),
+                                    ast.NumVal(0.1293965108676673))),
                             ast.BinNumOpType.ADD)),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
