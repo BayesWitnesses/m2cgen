@@ -1,6 +1,4 @@
-import os
-
-from m2cgen.interpreters import mixins, utils
+from m2cgen.interpreters import mixins
 from m2cgen.interpreters.interpreter import ToCodeInterpreter
 from m2cgen.interpreters.r.code_generator import RCodeGenerator
 
