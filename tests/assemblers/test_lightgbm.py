@@ -23,21 +23,23 @@ def test_binary_classification():
                         ast.BinNumExpr(
                             ast.BinNumExpr(
                                 ast.NumVal(0),
+                                ast.SubroutineExpr(
+                                    ast.IfExpr(
+                                        ast.CompExpr(
+                                            ast.FeatureRef(23),
+                                            ast.NumVal(868.2000000000002),
+                                            ast.CompOpType.GT),
+                                        ast.NumVal(0.25986931215073095),
+                                        ast.NumVal(0.6237178414050242))),
+                                ast.BinNumOpType.ADD),
+                            ast.SubroutineExpr(
                                 ast.IfExpr(
                                     ast.CompExpr(
-                                        ast.FeatureRef(23),
-                                        ast.NumVal(868.2000000000002),
+                                        ast.FeatureRef(7),
+                                        ast.NumVal(0.05142),
                                         ast.CompOpType.GT),
-                                    ast.NumVal(0.25986931215073095),
-                                    ast.NumVal(0.6237178414050242)),
-                                ast.BinNumOpType.ADD),
-                            ast.IfExpr(
-                                ast.CompExpr(
-                                    ast.FeatureRef(7),
-                                    ast.NumVal(0.05142),
-                                    ast.CompOpType.GT),
-                                ast.NumVal(-0.1909605544006228),
-                                ast.NumVal(0.1293965108676673)),
+                                    ast.NumVal(-0.1909605544006228),
+                                    ast.NumVal(0.1293965108676673))),
                             ast.BinNumOpType.ADD)),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
@@ -63,7 +65,8 @@ def test_multi_class():
         ast.SubroutineExpr(
             ast.BinNumExpr(
                 ast.NumVal(0.0),
-                ast.NumVal(-1.0986122886681098),
+                ast.SubroutineExpr(
+                  ast.NumVal(-1.0986122886681098)),
                 ast.BinNumOpType.ADD)),
         to_reuse=True)
 
@@ -92,21 +95,23 @@ def test_regression():
         ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.NumVal(0),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(5),
+                            ast.NumVal(6.918),
+                            ast.CompOpType.GT),
+                        ast.NumVal(24.011454621684155),
+                        ast.NumVal(22.289277544391084))),
+                ast.BinNumOpType.ADD),
+            ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
-                        ast.FeatureRef(5),
-                        ast.NumVal(6.918),
+                        ast.FeatureRef(12),
+                        ast.NumVal(9.63),
                         ast.CompOpType.GT),
-                    ast.NumVal(24.011454621684155),
-                    ast.NumVal(22.289277544391084)),
-                ast.BinNumOpType.ADD),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(12),
-                    ast.NumVal(9.63),
-                    ast.CompOpType.GT),
-                ast.NumVal(-0.49461212269771115),
-                ast.NumVal(0.7174324413014594)),
+                    ast.NumVal(-0.49461212269771115),
+                    ast.NumVal(0.7174324413014594))),
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
@@ -133,22 +138,24 @@ def test_leaves_cutoff_threshold():
                             ast.BinNumExpr(
                                 ast.NumVal(0),
                                 ast.SubroutineExpr(
-                                    ast.IfExpr(
-                                        ast.CompExpr(
-                                            ast.FeatureRef(23),
-                                            ast.NumVal(868.2000000000002),
-                                            ast.CompOpType.GT),
-                                        ast.NumVal(0.25986931215073095),
-                                        ast.NumVal(0.6237178414050242))),
+                                    ast.SubroutineExpr(
+                                        ast.IfExpr(
+                                            ast.CompExpr(
+                                                ast.FeatureRef(23),
+                                                ast.NumVal(868.2000000000002),
+                                                ast.CompOpType.GT),
+                                            ast.NumVal(0.25986931215073095),
+                                            ast.NumVal(0.6237178414050242)))),
                                 ast.BinNumOpType.ADD),
                             ast.SubroutineExpr(
-                                ast.IfExpr(
-                                    ast.CompExpr(
-                                        ast.FeatureRef(7),
-                                        ast.NumVal(0.05142),
-                                        ast.CompOpType.GT),
-                                    ast.NumVal(-0.1909605544006228),
-                                    ast.NumVal(0.1293965108676673))),
+                                ast.SubroutineExpr(
+                                    ast.IfExpr(
+                                        ast.CompExpr(
+                                            ast.FeatureRef(7),
+                                            ast.NumVal(0.05142),
+                                            ast.CompOpType.GT),
+                                        ast.NumVal(-0.1909605544006228),
+                                        ast.NumVal(0.1293965108676673)))),
                             ast.BinNumOpType.ADD)),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
