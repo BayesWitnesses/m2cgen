@@ -17,3 +17,9 @@ if [[ $LANG == *"powershell"* ]]; then
   sudo apt-get update
   sudo apt-get install --no-install-recommends -y powershell
 fi
+
+# Install R.
+if [[ $LANG == *"r_lang"* ]]; then
+  sudo apt-get update
+  sudo apt-get install --no-install-recommends -y r-base
+fi

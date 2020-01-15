@@ -24,21 +24,23 @@ def test_binary_classification():
                         ast.BinNumExpr(
                             ast.BinNumExpr(
                                 ast.NumVal(-0.0),
+                                ast.SubroutineExpr(
+                                    ast.IfExpr(
+                                        ast.CompExpr(
+                                            ast.FeatureRef(20),
+                                            ast.NumVal(16.7950001),
+                                            ast.CompOpType.GTE),
+                                        ast.NumVal(-0.173057005),
+                                        ast.NumVal(0.163440868))),
+                                ast.BinNumOpType.ADD),
+                            ast.SubroutineExpr(
                                 ast.IfExpr(
                                     ast.CompExpr(
-                                        ast.FeatureRef(20),
-                                        ast.NumVal(16.7950001),
+                                        ast.FeatureRef(27),
+                                        ast.NumVal(0.142349988),
                                         ast.CompOpType.GTE),
-                                    ast.NumVal(-0.173057005),
-                                    ast.NumVal(0.163440868)),
-                                ast.BinNumOpType.ADD),
-                            ast.IfExpr(
-                                ast.CompExpr(
-                                    ast.FeatureRef(27),
-                                    ast.NumVal(0.142349988),
-                                    ast.CompOpType.GTE),
-                                ast.NumVal(-0.161026895),
-                                ast.NumVal(0.149405137)),
+                                    ast.NumVal(-0.161026895),
+                                    ast.NumVal(0.149405137))),
                             ast.BinNumOpType.ADD)),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
@@ -64,7 +66,8 @@ def test_multi_class():
         ast.SubroutineExpr(
             ast.BinNumExpr(
                 ast.NumVal(0.5),
-                ast.NumVal(0.0),
+                ast.SubroutineExpr(
+                    ast.NumVal(0.0)),
                 ast.BinNumOpType.ADD)),
         to_reuse=True)
 
@@ -94,21 +97,23 @@ def test_regression():
         ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.NumVal(base_score),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(12),
+                            ast.NumVal(9.72500038),
+                            ast.CompOpType.GTE),
+                        ast.NumVal(1.6614188),
+                        ast.NumVal(2.91697121))),
+                ast.BinNumOpType.ADD),
+            ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
-                        ast.FeatureRef(12),
-                        ast.NumVal(9.72500038),
+                        ast.FeatureRef(5),
+                        ast.NumVal(6.94099998),
                         ast.CompOpType.GTE),
-                    ast.NumVal(1.6614188),
-                    ast.NumVal(2.91697121)),
-                ast.BinNumOpType.ADD),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(5),
-                    ast.NumVal(6.94099998),
-                    ast.CompOpType.GTE),
-                ast.NumVal(3.33810854),
-                ast.NumVal(1.71813202)),
+                    ast.NumVal(3.33810854),
+                    ast.NumVal(1.71813202))),
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
@@ -130,21 +135,23 @@ def test_regression_best_ntree_limit():
         ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.NumVal(base_score),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(12),
+                            ast.NumVal(9.72500038),
+                            ast.CompOpType.GTE),
+                        ast.NumVal(1.6614188),
+                        ast.NumVal(2.91697121))),
+                ast.BinNumOpType.ADD),
+            ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
-                        ast.FeatureRef(12),
-                        ast.NumVal(9.72500038),
+                        ast.FeatureRef(5),
+                        ast.NumVal(6.94099998),
                         ast.CompOpType.GTE),
-                    ast.NumVal(1.6614188),
-                    ast.NumVal(2.91697121)),
-                ast.BinNumOpType.ADD),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(5),
-                    ast.NumVal(6.94099998),
-                    ast.CompOpType.GTE),
-                ast.NumVal(3.33810854),
-                ast.NumVal(1.71813202)),
+                    ast.NumVal(3.33810854),
+                    ast.NumVal(1.71813202))),
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
@@ -166,13 +173,14 @@ def test_multi_class_best_ntree_limit():
         ast.SubroutineExpr(
             ast.BinNumExpr(
                 ast.NumVal(0.5),
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(2.45000005),
-                        ast.CompOpType.GTE),
-                    ast.NumVal(-0.0733167157),
-                    ast.NumVal(0.143414631)),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(2),
+                            ast.NumVal(2.45000005),
+                            ast.CompOpType.GTE),
+                        ast.NumVal(-0.0733167157),
+                        ast.NumVal(0.143414631))),
                 ast.BinNumOpType.ADD)),
         to_reuse=True)
 
@@ -180,13 +188,14 @@ def test_multi_class_best_ntree_limit():
         ast.SubroutineExpr(
             ast.BinNumExpr(
                 ast.NumVal(0.5),
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(2.45000005),
-                        ast.CompOpType.GTE),
-                    ast.NumVal(0.0344139598),
-                    ast.NumVal(-0.0717073306)),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(2),
+                            ast.NumVal(2.45000005),
+                            ast.CompOpType.GTE),
+                        ast.NumVal(0.0344139598),
+                        ast.NumVal(-0.0717073306))),
                 ast.BinNumOpType.ADD)),
         to_reuse=True)
 
@@ -194,13 +203,14 @@ def test_multi_class_best_ntree_limit():
         ast.SubroutineExpr(
             ast.BinNumExpr(
                 ast.NumVal(0.5),
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(3),
-                        ast.NumVal(1.6500001),
-                        ast.CompOpType.GTE),
-                    ast.NumVal(0.13432835),
-                    ast.NumVal(-0.0644444525)),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(3),
+                            ast.NumVal(1.6500001),
+                            ast.CompOpType.GTE),
+                        ast.NumVal(0.13432835),
+                        ast.NumVal(-0.0644444525))),
                 ast.BinNumOpType.ADD)),
         to_reuse=True)
 
@@ -250,21 +260,23 @@ def test_regression_saved_without_feature_names():
         ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.NumVal(base_score),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(12),
+                            ast.NumVal(9.72500038),
+                            ast.CompOpType.GTE),
+                        ast.NumVal(1.6614188),
+                        ast.NumVal(2.91697121))),
+                ast.BinNumOpType.ADD),
+            ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
-                        ast.FeatureRef(12),
-                        ast.NumVal(9.72500038),
+                        ast.FeatureRef(5),
+                        ast.NumVal(6.94099998),
                         ast.CompOpType.GTE),
-                    ast.NumVal(1.6614188),
-                    ast.NumVal(2.91697121)),
-                ast.BinNumOpType.ADD),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(5),
-                    ast.NumVal(6.94099998),
-                    ast.CompOpType.GTE),
-                ast.NumVal(3.33810854),
-                ast.NumVal(1.71813202)),
+                    ast.NumVal(3.33810854),
+                    ast.NumVal(1.71813202))),
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
@@ -291,22 +303,24 @@ def test_leaves_cutoff_threshold():
                             ast.BinNumExpr(
                                 ast.NumVal(-0.0),
                                 ast.SubroutineExpr(
-                                    ast.IfExpr(
-                                        ast.CompExpr(
-                                            ast.FeatureRef(20),
-                                            ast.NumVal(16.7950001),
-                                            ast.CompOpType.GTE),
-                                        ast.NumVal(-0.173057005),
-                                        ast.NumVal(0.163440868))),
+                                    ast.SubroutineExpr(
+                                        ast.IfExpr(
+                                            ast.CompExpr(
+                                                ast.FeatureRef(20),
+                                                ast.NumVal(16.7950001),
+                                                ast.CompOpType.GTE),
+                                            ast.NumVal(-0.173057005),
+                                            ast.NumVal(0.163440868)))),
                                 ast.BinNumOpType.ADD),
                             ast.SubroutineExpr(
-                                ast.IfExpr(
-                                    ast.CompExpr(
-                                        ast.FeatureRef(27),
-                                        ast.NumVal(0.142349988),
-                                        ast.CompOpType.GTE),
-                                    ast.NumVal(-0.161026895),
-                                    ast.NumVal(0.149405137))),
+                                ast.SubroutineExpr(
+                                    ast.IfExpr(
+                                        ast.CompExpr(
+                                            ast.FeatureRef(27),
+                                            ast.NumVal(0.142349988),
+                                            ast.CompOpType.GTE),
+                                        ast.NumVal(-0.161026895),
+                                        ast.NumVal(0.149405137)))),
                             ast.BinNumOpType.ADD)),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),

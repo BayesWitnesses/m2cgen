@@ -6,6 +6,7 @@ from tests.e2e.executors.javascript import JavascriptExecutor
 from tests.e2e.executors.visual_basic import VisualBasicExecutor
 from tests.e2e.executors.c_sharp import CSharpExecutor
 from tests.e2e.executors.powershell import PowershellExecutor
+from tests.e2e.executors.r import RExecutor
 
 __all__ = [
     JavaExecutor,
@@ -16,4 +17,5 @@ __all__ = [
     VisualBasicExecutor,
     CSharpExecutor,
     PowershellExecutor,
+    RExecutor,
 ]

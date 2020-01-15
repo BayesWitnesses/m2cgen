@@ -42,7 +42,7 @@ class BaseBoostingAssembler(ModelAssembler):
         if self._tree_limit:
             trees = trees[:self._tree_limit]
 
-        trees_ast = [self._assemble_tree(t) for t in trees]
+        trees_ast = [ast.SubroutineExpr(self._assemble_tree(t)) for t in trees]
         to_sum = trees_ast
 
         # In a large tree we need to generate multiple subroutines to avoid
