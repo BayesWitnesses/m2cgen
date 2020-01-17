@@ -12,72 +12,82 @@ public class Model {
         return new double[] {(var0) / (var3), (var1) / (var3), (var2) / (var3)};
     }
     public static double subroutine0(double[] input) {
-        double var0;
-        if ((input[2]) >= (2.5999999)) {
-            var0 = -0.0731707439;
-        } else {
-            var0 = 0.142857149;
-        }
-        double var1;
-        if ((input[2]) >= (2.5999999)) {
-            var1 = -0.0705206916;
-        } else {
-            var1 = 0.12477719;
-        }
-        return ((0.5) + (var0)) + (var1);
+        return ((0.5) + (subroutine3(input))) + (subroutine4(input));
     }
     public static double subroutine1(double[] input) {
-        double var0;
-        if ((input[2]) >= (2.5999999)) {
-            if ((input[2]) >= (4.85000038)) {
-                var0 = -0.0578680299;
-            } else {
-                var0 = 0.132596686;
-            }
-        } else {
-            var0 = -0.0714285821;
-        }
-        double var1;
-        if ((input[2]) >= (2.5999999)) {
-            if ((input[2]) >= (4.85000038)) {
-                var1 = -0.0552999191;
-            } else {
-                var1 = 0.116139404;
-            }
-        } else {
-            var1 = -0.0687687024;
-        }
-        return ((0.5) + (var0)) + (var1);
+        return ((0.5) + (subroutine5(input))) + (subroutine6(input));
     }
     public static double subroutine2(double[] input) {
+        return ((0.5) + (subroutine7(input))) + (subroutine8(input));
+    }
+    public static double subroutine3(double[] input) {
         double var0;
-        if ((input[2]) >= (4.85000038)) {
+        if ((input[2]) >= (2.45000005)) {
+            var0 = -0.0733167157;
+        } else {
+            var0 = 0.143414631;
+        }
+        return var0;
+    }
+    public static double subroutine4(double[] input) {
+        double var0;
+        if ((input[2]) >= (2.45000005)) {
+            var0 = -0.0706516728;
+        } else {
+            var0 = 0.125176534;
+        }
+        return var0;
+    }
+    public static double subroutine5(double[] input) {
+        double var0;
+        if ((input[2]) >= (2.45000005)) {
             if ((input[3]) >= (1.75)) {
-                var0 = 0.142011836;
+                var0 = -0.0668393895;
             } else {
-                var0 = 0.0405405387;
+                var0 = 0.123041473;
             }
         } else {
-            if ((input[3]) >= (1.6500001)) {
-                var0 = 0.0428571403;
-            } else {
-                var0 = -0.0730659068;
-            }
+            var0 = -0.0717073306;
         }
-        double var1;
-        if ((input[2]) >= (4.85000038)) {
+        return var0;
+    }
+    public static double subroutine6(double[] input) {
+        double var0;
+        if ((input[2]) >= (2.45000005)) {
             if ((input[3]) >= (1.75)) {
-                var1 = 0.124653712;
+                var0 = -0.0642274022;
             } else {
-                var1 = 0.035562478;
+                var0 = 0.10819874;
             }
         } else {
-            if ((input[3]) >= (1.6500001)) {
-                var1 = 0.0425687581;
+            var0 = -0.069036141;
+        }
+        return var0;
+    }
+    public static double subroutine7(double[] input) {
+        double var0;
+        if ((input[3]) >= (1.6500001)) {
+            var0 = 0.13432835;
+        } else {
+            if ((input[2]) >= (4.94999981)) {
+                var0 = 0.0724137947;
             } else {
-                var1 = -0.0704230517;
+                var0 = -0.0732467622;
             }
         }
-        return ((0.5) + (var0)) + (var1);
+        return var0;
+    }
+    public static double subroutine8(double[] input) {
+        double var0;
+        if ((input[3]) >= (1.6500001)) {
+            var0 = 0.117797568;
+        } else {
+            if ((input[2]) >= (4.94999981)) {
+                var0 = 0.0702545047;
+            } else {
+                var0 = -0.0706570372;
+            }
+        }
+        return var0;
     }
 }
