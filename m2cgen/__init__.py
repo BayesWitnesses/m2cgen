@@ -9,6 +9,7 @@ from .exporters import (
     export_to_visual_basic,
     export_to_c_sharp,
     export_to_powershell,
+    export_to_r,
 )
 
 __all__ = [
@@ -20,6 +21,7 @@ __all__ = [
     export_to_visual_basic,
     export_to_c_sharp,
     export_to_powershell,
+    export_to_r,
 ]
 
 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
