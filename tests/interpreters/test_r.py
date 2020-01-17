@@ -123,6 +123,27 @@ score <- function(input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_subroutine():
+    expr = ast.BinNumExpr(
+        ast.FeatureRef(0),
+        ast.SubroutineExpr(
+            ast.BinNumExpr(
+                ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD)),
+        ast.BinNumOpType.MUL)
+
+    expected_code = """
+score <- function(input) {
+    return((input[1]) * (subroutine0(input)))
+}
+subroutine0 <- function(input) {
+    return((1) + (2))
+}
+"""
+
+    interpreter = RInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_raw_array():
     expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
 
