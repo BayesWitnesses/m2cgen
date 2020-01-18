@@ -167,3 +167,41 @@ def test_leaves_cutoff_threshold():
         sigmoid])
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_regression_random_forest():
+    estimator = lightgbm.LGBMRegressor(boosting_type="rf", n_estimators=2,
+                                       random_state=1, max_depth=1,
+                                       subsample=0.7, subsample_freq=1)
+    utils.train_model_regression(estimator)
+
+    assembler = assemblers.LightGBMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.SubroutineExpr(
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0),
+                    ast.SubroutineExpr(
+                        ast.IfExpr(
+                            ast.CompExpr(
+                                ast.FeatureRef(5),
+                                ast.NumVal(6.954000000000001),
+                                ast.CompOpType.GT),
+                            ast.NumVal(37.24347877367631),
+                            ast.NumVal(19.936999995530854))),
+                    ast.BinNumOpType.ADD),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(5),
+                            ast.NumVal(6.971500000000001),
+                            ast.CompOpType.GT),
+                        ast.NumVal(38.48600037864964),
+                        ast.NumVal(20.183783757300255))),
+                ast.BinNumOpType.ADD),
+            ast.NumVal(0.5),
+            ast.BinNumOpType.MUL))
+
+    assert utils.cmp_exprs(actual, expected)
