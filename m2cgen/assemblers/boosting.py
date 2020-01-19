@@ -208,10 +208,7 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
         trees = [m["tree_structure"] for m in model_dump["tree_info"]]
 
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
-        if "average_output" in model_dump:
-            self.average_output = model_dump["average_output"]
-        else:
-            self.average_output = False
+        self.average_output = model_dump.get("average_output", False)
 
         super().__init__(model, trees,
                          leaves_cutoff_threshold=leaves_cutoff_threshold)
