@@ -57,7 +57,7 @@ class PhpExecutor(base.BaseExecutor):
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
         executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
-            model_file=self.self.model_name,
+            model_file=self.model_name,
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
