@@ -40,8 +40,8 @@ class BaseBoostingAssembler(ModelAssembler):
                 self._all_estimator_params, base_score=self._base_score)
 
     def _assemble_single_output(self, estimator_params,
-                                base_score=0, class_idx=0):
-        estimators_ast = self._assemble_estimators(estimator_params, class_idx)
+                                base_score=0, split_idx=0):
+        estimators_ast = self._assemble_estimators(estimator_params, split_idx)
 
         tmp_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
@@ -60,7 +60,7 @@ class BaseBoostingAssembler(ModelAssembler):
 
         base_score = self._base_score
         exprs = [
-            self._assemble_single_output(e, base_score=base_score, class_idx=i)
+            self._assemble_single_output(e, base_score=base_score, split_idx=i)
             for i, e in enumerate(splits)
         ]
 
@@ -87,7 +87,7 @@ class BaseBoostingAssembler(ModelAssembler):
     def _final_transform(self, ast_to_transform):
         return ast_to_transform
 
-    def _assemble_estimators(self, estimator_params, class_idx):
+    def _assemble_estimators(self, estimator_params, split_idx):
         raise NotImplementedError
 
 
@@ -100,7 +100,7 @@ class BaseTreeBoostingAssembler(BaseBoostingAssembler):
         assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
         self._tree_limit = tree_limit
 
-    def _assemble_estimators(self, trees, class_idx):
+    def _assemble_estimators(self, trees, split_idx):
         if self._tree_limit:
             trees = trees[:self._tree_limit]
 
@@ -230,9 +230,9 @@ class XGBoostLinearModelAssembler(BaseBoostingAssembler):
         super().__init__(model, weights,
                          base_score=model.base_score)
 
-    def _assemble_estimators(self, weights, class_idx):
+    def _assemble_estimators(self, weights, split_idx):
         coef = utils.to_1d_array(weights)
-        return [_linear_to_ast(coef, self._bias[class_idx])]
+        return [_linear_to_ast(coef, self._bias[split_idx])]
 
 
 class XGBoostModelAssemblerSelector(ModelAssembler):
