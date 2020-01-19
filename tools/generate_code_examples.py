@@ -47,62 +47,62 @@ EXAMPLE_MODELS = [
     (
         "regression", "linear",
         linear_model.LinearRegression(),
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
     ),
     (
         "classification", "linear",
         linear_model.LogisticRegression(random_state=RANDOM_SEED),
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
     ),
     (
         "regression", "decision_tree",
         tree.DecisionTreeRegressor(**TREE_PARAMS),
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
     ),
     (
         "classification", "decision_tree",
         tree.DecisionTreeClassifier(**TREE_PARAMS),
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
     ),
     (
         "regression", "random_forest",
         ensemble.RandomForestRegressor(**FOREST_PARAMS),
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
     ),
     (
         "classification", "random_forest",
         ensemble.RandomForestClassifier(**FOREST_PARAMS),
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
     ),
     (
         "regression", "xgboost",
         xgboost.XGBRegressor(**XGBOOST_PARAMS),
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
     ),
     (
         "classification", "xgboost",
         xgboost.XGBClassifier(**XGBOOST_PARAMS),
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
     ),
     (
         "regression", "lightgbm",
         lightgbm.LGBMRegressor(**LIGHT_GBM_PARAMS),
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
     ),
     (
         "classification", "lightgbm",
         lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS),
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
     ),
     (
         "regression", "svm",
         svm.NuSVR(nu=0.1),
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
     ),
     (
         "classification", "svm",
         svm.NuSVC(**SVC_PARAMS),
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
     ),
 ]
 

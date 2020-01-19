@@ -10,7 +10,7 @@ def test_single_feature():
     estimator.coef_ = [1]
     estimator.intercept_ = 3
 
-    assembler = assemblers.LinearModelAssembler(estimator)
+    assembler = assemblers.SklearnLinearModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -29,7 +29,7 @@ def test_two_features():
     estimator.coef_ = [1, 2]
     estimator.intercept_ = 3
 
-    assembler = assemblers.LinearModelAssembler(estimator)
+    assembler = assemblers.SklearnLinearModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -54,7 +54,7 @@ def test_multi_class():
     estimator.coef_ = np.array([[1, 2], [3, 4], [5, 6]])
     estimator.intercept_ = np.array([7, 8, 9])
 
-    assembler = assemblers.LinearModelAssembler(estimator)
+    assembler = assemblers.SklearnLinearModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.VectorVal([
@@ -109,7 +109,7 @@ def test_binary_class():
     estimator.coef_ = np.array([[1, 2]])
     estimator.intercept_ = np.array([3])
 
-    assembler = assemblers.LinearModelAssembler(estimator)
+    assembler = assemblers.SklearnLinearModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(

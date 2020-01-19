@@ -1,11 +1,13 @@
-from .linear import LinearModelAssembler
+from .linear import (SklearnLinearModelAssembler,
+                     StatsmodelsLinearModelAssembler)
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
 from .boosting import XGBoostModelAssembler, LightGBMModelAssembler
 from .svm import SVMModelAssembler
 
 __all__ = [
-    LinearModelAssembler,
+    SklearnLinearModelAssembler,
+    StatsmodelsLinearModelAssembler,
     TreeModelAssembler,
     RandomForestModelAssembler,
     XGBoostModelAssembler,
@@ -24,42 +26,46 @@ SUPPORTED_MODELS = {
     "XGBRegressor": XGBoostModelAssembler,
 
     # SVM
-    "LinearSVC": LinearModelAssembler,
-    "LinearSVR": LinearModelAssembler,
+    "LinearSVC": SklearnLinearModelAssembler,
+    "LinearSVR": SklearnLinearModelAssembler,
     "SVR": SVMModelAssembler,
     "NuSVR": SVMModelAssembler,
     "SVC": SVMModelAssembler,
     "NuSVC": SVMModelAssembler,
 
-    # Linear Regressors
-    "LinearRegression": LinearModelAssembler,
-    "HuberRegressor": LinearModelAssembler,
-    "ElasticNet": LinearModelAssembler,
-    "ElasticNetCV": LinearModelAssembler,
-    "TheilSenRegressor": LinearModelAssembler,
-    "Lars": LinearModelAssembler,
-    "LarsCV": LinearModelAssembler,
-    "Lasso": LinearModelAssembler,
-    "LassoCV": LinearModelAssembler,
-    "LassoLars": LinearModelAssembler,
-    "LassoLarsCV": LinearModelAssembler,
-    "LassoLarsIC": LinearModelAssembler,
-    "OrthogonalMatchingPursuit": LinearModelAssembler,
-    "OrthogonalMatchingPursuitCV": LinearModelAssembler,
-    "Ridge": LinearModelAssembler,
-    "RidgeCV": LinearModelAssembler,
-    "BayesianRidge": LinearModelAssembler,
-    "ARDRegression": LinearModelAssembler,
-    "SGDRegressor": LinearModelAssembler,
-    "PassiveAggressiveRegressor": LinearModelAssembler,
+    # Sklearn Linear Regressors
+    "LinearRegression": SklearnLinearModelAssembler,
+    "HuberRegressor": SklearnLinearModelAssembler,
+    "ElasticNet": SklearnLinearModelAssembler,
+    "ElasticNetCV": SklearnLinearModelAssembler,
+    "TheilSenRegressor": SklearnLinearModelAssembler,
+    "Lars": SklearnLinearModelAssembler,
+    "LarsCV": SklearnLinearModelAssembler,
+    "Lasso": SklearnLinearModelAssembler,
+    "LassoCV": SklearnLinearModelAssembler,
+    "LassoLars": SklearnLinearModelAssembler,
+    "LassoLarsCV": SklearnLinearModelAssembler,
+    "LassoLarsIC": SklearnLinearModelAssembler,
+    "OrthogonalMatchingPursuit": SklearnLinearModelAssembler,
+    "OrthogonalMatchingPursuitCV": SklearnLinearModelAssembler,
+    "Ridge": SklearnLinearModelAssembler,
+    "RidgeCV": SklearnLinearModelAssembler,
+    "BayesianRidge": SklearnLinearModelAssembler,
+    "ARDRegression": SklearnLinearModelAssembler,
+    "SGDRegressor": SklearnLinearModelAssembler,
+    "PassiveAggressiveRegressor": SklearnLinearModelAssembler,
+
+    # Statsmodels Linear Regressors
+    "RegressionResultsWrapper": StatsmodelsLinearModelAssembler,
+    "RegularizedResultsWrapper": StatsmodelsLinearModelAssembler,
 
     # Logistic Regressors
-    "LogisticRegression": LinearModelAssembler,
-    "LogisticRegressionCV": LinearModelAssembler,
-    "RidgeClassifier": LinearModelAssembler,
-    "RidgeClassifierCV": LinearModelAssembler,
-    "SGDClassifier": LinearModelAssembler,
-    "PassiveAggressiveClassifier": LinearModelAssembler,
+    "LogisticRegression": SklearnLinearModelAssembler,
+    "LogisticRegressionCV": SklearnLinearModelAssembler,
+    "RidgeClassifier": SklearnLinearModelAssembler,
+    "RidgeClassifierCV": SklearnLinearModelAssembler,
+    "SGDClassifier": SklearnLinearModelAssembler,
+    "PassiveAggressiveClassifier": SklearnLinearModelAssembler,
 
     # Decision trees
     "DecisionTreeRegressor": TreeModelAssembler,

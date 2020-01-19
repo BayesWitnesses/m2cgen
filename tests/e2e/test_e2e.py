@@ -3,6 +3,7 @@ import lightgbm
 import pytest
 import numpy as np
 import xgboost
+import statsmodels.api as sm
 from sklearn import linear_model, svm
 from sklearn import tree
 from sklearn import ensemble
@@ -32,7 +33,7 @@ CLASSIFICATION = pytest.mark.clf
 def regression(model):
     return (
         model,
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
         REGRESSION,
     )
 
@@ -40,7 +41,7 @@ def regression(model):
 def classification(model):
     return (
         model,
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
         CLASSIFICATION,
     )
 
@@ -48,7 +49,7 @@ def classification(model):
 def classification_binary(model):
     return (
         model,
-        utils.train_model_classification_binary,
+        utils.get_binary_classification_model_trainer(),
         CLASSIFICATION,
     )
 
@@ -56,7 +57,7 @@ def classification_binary(model):
 def regression_random(model):
     return (
         model,
-        utils.train_model_regression_random_data,
+        utils.get_regression_random_data_model_trainer(0.01),
         REGRESSION,
     )
 
@@ -64,7 +65,7 @@ def regression_random(model):
 def classification_random(model):
     return (
         model,
-        utils.train_model_classification_random_data,
+        utils.get_classification_random_data_model_trainer(0.01),
         CLASSIFICATION,
     )
 
@@ -72,7 +73,7 @@ def classification_random(model):
 def classification_binary_random(model):
     return (
         model,
-        utils.train_model_classification_binary_random_data,
+        utils.get_classification_binary_random_data_model_trainer(0.01),
         CLASSIFICATION,
     )
 
@@ -101,6 +102,8 @@ XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
                             random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
                              random_state=RANDOM_SEED)
+STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
+                                             alpha=7, L1_wt=0.2)
 
 
 @utils.cartesian_e2e_params(
@@ -122,127 +125,153 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
     # previous list.
     [
         # LightGBM
-        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS)),
-        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS)),
-        classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS)),
+#        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS)),
+#        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS)),
+#        classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS)),
 
         # LightGBM (DART)
-        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_DART)),
-        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_DART)),
-        classification_binary(lightgbm.LGBMClassifier(
-            **LIGHTGBM_PARAMS_DART)),
+#        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_DART)),
+#        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_DART)),
+#        classification_binary(lightgbm.LGBMClassifier(
+#            **LIGHTGBM_PARAMS_DART)),
 
         # LightGBM (GOSS)
-        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_GOSS)),
-        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_GOSS)),
-        classification_binary(lightgbm.LGBMClassifier(
-            **LIGHTGBM_PARAMS_GOSS)),
+#        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_GOSS)),
+#        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_GOSS)),
+#        classification_binary(lightgbm.LGBMClassifier(
+#            **LIGHTGBM_PARAMS_GOSS)),
 
         # LightGBM (RF)
-        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_RF)),
-        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
-        classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
+#        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_RF)),
+#        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
+#        classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
 
         # LightGBM (Large Trees)
-        regression_random(
-            lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_LARGE)),
-        classification_random(
-            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
-        classification_binary_random(
-            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
+#        regression_random(
+#            lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_LARGE)),
+#        classification_random(
+#            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
+#        classification_binary_random(
+#            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
 
         # XGBoost
-        regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
-        classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
-        classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
+#        regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
+#        classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
+#        classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 
         # XGBoost (Large Trees)
-        regression_random(
-            xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
-        classification_random(
-            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
-        classification_binary_random(
-            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+#        regression_random(
+#            xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
+#        classification_random(
+#            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
+#        classification_binary_random(
+#            xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
 
         # Linear SVM
-        regression(svm.LinearSVR(random_state=RANDOM_SEED)),
-        classification(svm.LinearSVC(random_state=RANDOM_SEED)),
-        classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
+#        regression(svm.LinearSVR(random_state=RANDOM_SEED)),
+#        classification(svm.LinearSVC(random_state=RANDOM_SEED)),
+#        classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 
         # SVM
-        regression(svm.SVR(kernel="rbf")),
-        regression(svm.NuSVR(kernel="rbf")),
-        classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
-        classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
-        classification_binary(svm.SVC(kernel="poly", degree=2, **SVC_PARAMS)),
-        classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
-        classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
-        classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
-        classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
+#        regression(svm.SVR(kernel="rbf")),
+#        regression(svm.NuSVR(kernel="rbf")),
+#        classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+#        classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
+#        classification_binary(svm.SVC(kernel="poly", degree=2, **SVC_PARAMS)),
+#        classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
+#        classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
+#        classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+#        classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
 
-        # Linear Regression
-        regression(linear_model.LinearRegression()),
-        regression(linear_model.HuberRegressor()),
-        regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
-        regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
-        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
-        regression(linear_model.Lars()),
-        regression(linear_model.LarsCV()),
-        regression(linear_model.Lasso(random_state=RANDOM_SEED)),
-        regression(linear_model.LassoCV(random_state=RANDOM_SEED)),
-        regression(linear_model.LassoLars()),
-        regression(linear_model.LassoLarsCV()),
-        regression(linear_model.LassoLarsIC()),
-        regression(linear_model.OrthogonalMatchingPursuit()),
-        regression(linear_model.OrthogonalMatchingPursuitCV()),
-        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
-        regression(linear_model.RidgeCV()),
-        regression(linear_model.BayesianRidge()),
+        # Sklearn Linear Regression
+#        regression(linear_model.LinearRegression()),
+#        regression(linear_model.HuberRegressor()),
+#        regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
+#        regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
+#        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
+#        regression(linear_model.Lars()),
+#        regression(linear_model.LarsCV()),
+#        regression(linear_model.Lasso(random_state=RANDOM_SEED)),
+#        regression(linear_model.LassoCV(random_state=RANDOM_SEED)),
+#        regression(linear_model.LassoLars()),
+#        regression(linear_model.LassoLarsCV()),
+#        regression(linear_model.LassoLarsIC()),
+#        regression(linear_model.OrthogonalMatchingPursuit()),
+#        regression(linear_model.OrthogonalMatchingPursuitCV()),
+#        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
+#        regression(linear_model.RidgeCV()),
+#        regression(linear_model.BayesianRidge()),
         regression(linear_model.ARDRegression()),
         regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.PassiveAggressiveRegressor(
             random_state=RANDOM_SEED)),
 
-        # Logistic Regression
-        classification(linear_model.LogisticRegression(
-            random_state=RANDOM_SEED)),
-        classification(linear_model.LogisticRegressionCV(
-            random_state=RANDOM_SEED)),
-        classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
-        classification(linear_model.RidgeClassifierCV()),
-        classification(linear_model.SGDClassifier(random_state=RANDOM_SEED)),
+        # Statsmodels Linear Regression
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.OLS,
+            dict(init=dict(fit_intercept=True)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.OLS,
+            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train)))))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train))),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
-        classification_binary(linear_model.LogisticRegression(
-            random_state=RANDOM_SEED)),
-        classification_binary(linear_model.LogisticRegressionCV(
-            random_state=RANDOM_SEED)),
-        classification_binary(linear_model.RidgeClassifier(
-            random_state=RANDOM_SEED)),
-        classification_binary(linear_model.RidgeClassifierCV()),
-        classification_binary(linear_model.SGDClassifier(
-            random_state=RANDOM_SEED)),
+        # Logistic Regression
+#        classification(linear_model.LogisticRegression(
+#            random_state=RANDOM_SEED)),
+#        classification(linear_model.LogisticRegressionCV(
+#            random_state=RANDOM_SEED)),
+#        classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
+#        classification(linear_model.RidgeClassifierCV()),
+#        classification(linear_model.SGDClassifier(random_state=RANDOM_SEED)),
+
+#        classification_binary(linear_model.LogisticRegression(
+#            random_state=RANDOM_SEED)),
+#        classification_binary(linear_model.LogisticRegressionCV(
+#            random_state=RANDOM_SEED)),
+#        classification_binary(linear_model.RidgeClassifier(
+#            random_state=RANDOM_SEED)),
+#        classification_binary(linear_model.RidgeClassifierCV()),
+#        classification_binary(linear_model.SGDClassifier(
+#            random_state=RANDOM_SEED)),
 
         # Decision trees
-        regression(tree.DecisionTreeRegressor(**TREE_PARAMS)),
-        regression(tree.ExtraTreeRegressor(**TREE_PARAMS)),
+#        regression(tree.DecisionTreeRegressor(**TREE_PARAMS)),
+#        regression(tree.ExtraTreeRegressor(**TREE_PARAMS)),
 
-        classification(tree.DecisionTreeClassifier(**TREE_PARAMS)),
-        classification(tree.ExtraTreeClassifier(**TREE_PARAMS)),
+#        classification(tree.DecisionTreeClassifier(**TREE_PARAMS)),
+#        classification(tree.ExtraTreeClassifier(**TREE_PARAMS)),
 
-        classification_binary(tree.DecisionTreeClassifier(**TREE_PARAMS)),
-        classification_binary(tree.ExtraTreeClassifier(**TREE_PARAMS)),
+#        classification_binary(tree.DecisionTreeClassifier(**TREE_PARAMS)),
+#        classification_binary(tree.ExtraTreeClassifier(**TREE_PARAMS)),
 
 
         # Random forest
-        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
-        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
+#        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
+#        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
 
-        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+#        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+#        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
 
-        classification_binary(
-            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+#        classification_binary(
+#            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+#        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
     ],
 
     # Following is the list of extra tests for languages/models which are
@@ -254,8 +283,8 @@ def test_e2e(estimator, executor_cls, model_trainer,
              is_fast, global_tmp_dir):
     sys.setrecursionlimit(RECURSION_LIMIT)
 
-    X_test, y_pred_true = model_trainer(estimator)
-    executor = executor_cls(estimator)
+    X_test, y_pred_true, fitted_estimator = model_trainer(estimator)
+    executor = executor_cls(fitted_estimator)
 
     idxs_to_test = [0] if is_fast else range(len(X_test))
 
