@@ -332,3 +332,79 @@ def test_leaves_cutoff_threshold():
         sigmoid])
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_linear_model():
+    estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
+                                     feature_selector="shuffle",
+                                     booster="gblinear")
+    utils.train_model_regression(estimator)
+
+    assembler = assemblers.XGBoostLinearModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    feature_weight_mul = [
+        ast.BinNumExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(-0.00999326),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(1),
+            ast.NumVal(0.0520094),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(2),
+            ast.NumVal(0.10447),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(3),
+            ast.NumVal(0.17387),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(4),
+            ast.NumVal(0.691745),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(5),
+            ast.NumVal(0.296357),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(6),
+            ast.NumVal(0.0288206),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(7),
+            ast.NumVal(0.417822),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(8),
+            ast.NumVal(0.0551116),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(9),
+            ast.NumVal(0.00242449),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(10),
+            ast.NumVal(0.109585),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(11),
+            ast.NumVal(0.00744202),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(12),
+            ast.NumVal(0.0731089),
+            ast.BinNumOpType.MUL),
+    ]
+
+    expected = ast.SubroutineExpr(
+        ast.BinNumExpr(
+            ast.NumVal(0.5),
+            assemblers.utils.apply_op_to_expressions(
+                ast.BinNumOpType.ADD,
+                ast.NumVal(3.13109),
+                *feature_weight_mul),
+            ast.BinNumOpType.ADD))
+
+    assert utils.cmp_exprs(actual, expected)
