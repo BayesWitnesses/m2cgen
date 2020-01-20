@@ -9,7 +9,7 @@ python:
 env:
   - TEST=API
   - TEST=E2E LANG="c or python or java or go or javascript or r_lang"
-  - TEST=E2E LANG="c_sharp or visual_basic or powershell"
+  - TEST=E2E LANG="c_sharp or visual_basic or powershell or php"
 
 before_install:
   - bash .travis/setup.sh

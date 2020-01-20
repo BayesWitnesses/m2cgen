@@ -24,6 +24,7 @@ VISUAL_BASIC = pytest.mark.visual_basic
 C_SHARP = pytest.mark.c_sharp
 POWERSHELL = pytest.mark.powershell
 R = pytest.mark.r_lang
+PHP = pytest.mark.php
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -116,6 +117,7 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         (executors.CSharpExecutor, C_SHARP),
         (executors.PowershellExecutor, POWERSHELL),
         (executors.RExecutor, R),
+        (executors.PhpExecutor, PHP),
     ],
 
     # These models will be tested against each language specified in the

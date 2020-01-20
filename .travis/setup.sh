@@ -23,3 +23,9 @@ if [[ $LANG == *"r_lang"* ]]; then
   sudo apt-get update
   sudo apt-get install --no-install-recommends -y r-base
 fi
+
+# Install PHP.
+if [[ $LANG == *"php"* ]]; then
+  sudo apt-get update
+  sudo apt-get install --no-install-recommends -y php
+fi
