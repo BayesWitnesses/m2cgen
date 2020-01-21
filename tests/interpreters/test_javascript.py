@@ -132,6 +132,19 @@ function score(input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_raw_array():
+    expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
+
+    expected_code = """
+function score(input) {
+    return [3, 4];
+}
+"""
+
+    interpreter = interpreters.JavascriptInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_multi_output():
     expr = ast.SubroutineExpr(
         ast.IfExpr(
