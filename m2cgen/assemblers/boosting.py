@@ -55,7 +55,7 @@ class BaseBoostingAssembler(ModelAssembler):
     def _assemble_multi_class_output(self, estimator_params):
         # Multi-class output is calculated based on discussion in
         # https://github.com/dmlc/xgboost/issues/1746#issuecomment-295962863
-        splits = _split_estimators_by_classes(
+        splits = _split_estimator_params_by_classes(
             estimator_params, self._output_size)
 
         base_score = self._base_score
@@ -237,13 +237,13 @@ class XGBoostLinearModelAssembler(BaseBoostingAssembler):
 
 class XGBoostModelAssemblerSelector(ModelAssembler):
 
-    def __init__(self, model):
+    def __init__(self, model, *args, **kwargs):
         model_dump = model.get_booster().get_dump(dump_format="json")
         if len(model_dump) == 1 and all(i in json.loads(model_dump[0])
                                         for i in ("weight", "bias")):
             self.assembler = XGBoostLinearModelAssembler(model)
         else:
-            self.assembler = XGBoostTreeModelAssembler(model)
+            self.assembler = XGBoostTreeModelAssembler(model, *args, **kwargs)
 
     def assemble(self):
         return self.assembler.assemble()
@@ -314,11 +314,11 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
         return num_leaves
 
 
-def _split_estimators_by_classes(values, n_classes):
+def _split_estimator_params_by_classes(values, n_classes):
     # Splits are computed based on a comment
     # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
-    estimators_by_classes = [[] for _ in range(n_classes)]
+    estimator_params_by_classes = [[] for _ in range(n_classes)]
     for i in range(len(values)):
         class_idx = i % n_classes
-        estimators_by_classes[class_idx].append(values[i])
-    return estimators_by_classes
+        estimator_params_by_classes[class_idx].append(values[i])
+    return estimator_params_by_classes

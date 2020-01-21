@@ -10,7 +10,7 @@ def test_binary_classification():
                                       max_depth=1)
     utils.train_model_classification_binary(estimator)
 
-    assembler = assemblers.XGBoostTreeModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     sigmoid = ast.BinNumExpr(
@@ -59,7 +59,7 @@ def test_multi_class():
                                       max_depth=1)
     estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
 
-    assembler = assemblers.XGBoostTreeModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     exponent = ast.ExpExpr(
@@ -90,7 +90,7 @@ def test_regression():
                                      max_depth=1, base_score=base_score)
     utils.train_model_regression(estimator)
 
-    assembler = assemblers.XGBoostTreeModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.SubroutineExpr(
@@ -128,7 +128,7 @@ def test_regression_best_ntree_limit():
 
     utils.train_model_regression(estimator)
 
-    assembler = assemblers.XGBoostTreeModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.SubroutineExpr(
@@ -166,7 +166,7 @@ def test_multi_class_best_ntree_limit():
 
     utils.train_model_classification(estimator)
 
-    assembler = assemblers.XGBoostTreeModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     estimator_exp_class1 = ast.ExpExpr(
@@ -253,7 +253,7 @@ def test_regression_saved_without_feature_names():
         estimator = xgboost.XGBRegressor(base_score=base_score)
         estimator.load_model(filename)
 
-    assembler = assemblers.XGBoostTreeModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.SubroutineExpr(
@@ -287,8 +287,8 @@ def test_leaves_cutoff_threshold():
                                       max_depth=1)
     utils.train_model_classification_binary(estimator)
 
-    assembler = assemblers.XGBoostTreeModelAssembler(estimator,
-                                                     leaves_cutoff_threshold=1)
+    assembler = assemblers.XGBoostModelAssemblerSelector(
+        estimator, leaves_cutoff_threshold=1)
     actual = assembler.assemble()
 
     sigmoid = ast.BinNumExpr(
@@ -340,7 +340,7 @@ def test_linear_model():
                                      booster="gblinear")
     utils.train_model_regression(estimator)
 
-    assembler = assemblers.XGBoostLinearModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     feature_weight_mul = [
