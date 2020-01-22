@@ -3,8 +3,11 @@ import numpy as np
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
-from sklearn import tree
-from sklearn.tree._tree import TREE_LEAF
+
+
+# refer to
+# https://github.com/scikit-learn/scikit-learn/blob/fd12d5684ad224ad7760374b1dcca2821c644feb/sklearn/tree/_tree.pyx#L64
+TREE_LEAF = -1
 
 
 class TreeModelAssembler(ModelAssembler):
@@ -13,7 +16,8 @@ class TreeModelAssembler(ModelAssembler):
         super().__init__(model)
         self._tree = model.tree_
         self._is_vector_output = False
-        if isinstance(self.model, tree.DecisionTreeClassifier):
+        if type(self.model).__name__ in {"DecisionTreeClassifier",
+                                         "ExtraTreeClassifier"}:
             self._is_vector_output = self.model.n_classes_ > 1
 
     def assemble(self):
