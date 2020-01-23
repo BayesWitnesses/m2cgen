@@ -1,14 +1,19 @@
 from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
-from .boosting import XGBoostModelAssembler, LightGBMModelAssembler
+from .boosting import (XGBoostModelAssemblerSelector,
+                       XGBoostTreeModelAssembler,
+                       XGBoostLinearModelAssembler,
+                       LightGBMModelAssembler)
 from .svm import SVMModelAssembler
 
 __all__ = [
     LinearModelAssembler,
     TreeModelAssembler,
     RandomForestModelAssembler,
-    XGBoostModelAssembler,
+    XGBoostModelAssemblerSelector,
+    XGBoostTreeModelAssembler,
+    XGBoostLinearModelAssembler,
     LightGBMModelAssembler,
     SVMModelAssembler,
 ]
@@ -20,8 +25,8 @@ SUPPORTED_MODELS = {
     "LGBMClassifier": LightGBMModelAssembler,
 
     # XGBoost
-    "XGBClassifier": XGBoostModelAssembler,
-    "XGBRegressor": XGBoostModelAssembler,
+    "XGBClassifier": XGBoostModelAssemblerSelector,
+    "XGBRegressor": XGBoostModelAssemblerSelector,
 
     # SVM
     "LinearSVC": LinearModelAssembler,
