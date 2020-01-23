@@ -109,6 +109,7 @@ $ m2cgen <pickle_file> --language <language> [--indent <indent>] [--class_name <
          [--module_name <module_name>] [--package_name <package_name>] [--namespace <namespace>]
          [--recursion-limit <recursion_limit>]
 ```
+Don't forget that for unpickling serialized model objects their classes must be defined in the top level of an importable module in the unpickling environment.
 
 Piping is also supported:
 ```
@@ -119,3 +120,7 @@ $ cat <pickle_file> | m2cgen --language <language>
 **Q: Generation fails with `RuntimeError: maximum recursion depth exceeded` error.**
 
 A: If this error occurs while generating code using an ensemble model, try to reduce the number of trained estimators within that model. Alternatively you can increase the maximum recursion depth with `sys.setrecursionlimit(<new_depth>)`.
+
+**Q: Generation fails with `ImportError: No module named <module_name_here>` error while transpiling model from a serialized model object.**
+
+A: This error indicates that pickle protocol cannot deserialize model object. For unpickling serialized model objects, it is required that their classes must be defined in the top level of an importable module in the unpickling environment. So installation of package which provided model's class definition should solve the problem.
