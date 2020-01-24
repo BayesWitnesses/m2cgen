@@ -90,6 +90,10 @@ XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
 XGBOOST_PARAMS_LINEAR = dict(base_score=0.6, n_estimators=10,
                              feature_selector="shuffle", booster="gblinear",
                              random_state=RANDOM_SEED)
+XGBOOST_PARAMS_RF = dict(base_score=0.6, n_estimators=10,
+                         random_state=RANDOM_SEED)
+XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
+                            random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_DART = dict(n_estimators=10, boosting_type='dart',
                             max_drop=30, random_state=RANDOM_SEED)
@@ -99,12 +103,9 @@ LIGHTGBM_PARAMS_GOSS = dict(n_estimators=10, boosting_type='goss',
 LIGHTGBM_PARAMS_RF = dict(n_estimators=10, boosting_type='rf',
                           subsample=0.7, subsample_freq=1,
                           random_state=RANDOM_SEED)
-SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
-
-XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
-                            random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
                              random_state=RANDOM_SEED)
+SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
 
 
 @utils.cartesian_e2e_params(
@@ -165,6 +166,10 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS_LINEAR)),
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS_LINEAR)),
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS_LINEAR)),
+
+        # XGBoost (RF)
+        regression(xgboost.XGBRFRegressor(**XGBOOST_PARAMS_RF)),
+        classification_binary(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_RF)),
 
         # XGBoost (Large Trees)
         regression_random(
