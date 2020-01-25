@@ -156,6 +156,9 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
     def __init__(self, model,
                  leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
+        if type(model).__name__ == "XGBRFClassifier" and model.n_classes_ > 2:
+            raise RuntimeError(
+                "Multiclass XGBRFClassifier is not supported yet")
         feature_names = model.get_booster().feature_names
         self._feature_name_to_idx = {
             name: idx for idx, name in enumerate(feature_names or [])
