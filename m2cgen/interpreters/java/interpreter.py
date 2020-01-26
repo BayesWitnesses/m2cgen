@@ -9,7 +9,11 @@ from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 
 class JavaInterpreter(ToCodeInterpreter,
                       mixins.LinearAlgebraMixin,
-                      mixins.SubroutinesAsFunctionsMixin):
+                      mixins.SubroutinesAsFunctionsMixin,
+                      mixins.BinExpressionDepthTrackingMixin):
+
+    bin_depth_threshold = 7
+    ast_size_threshold = 4000
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",
@@ -55,7 +59,21 @@ class JavaInterpreter(ToCodeInterpreter,
 
         return top_cg.code
 
+    def bin_depth_threshold_hook(self, expr, **kwargs):
+        if ast.ast_size(expr) > self.ast_size_threshold:
+            # If the expression that triggered the hook is large enough
+            # we should move it into a separate subroutine.
+            function_name = self._get_subroutine_name()
+            self.enqueue_subroutine(function_name, expr)
+            return self._cg.function_invocation(
+                function_name, self._feature_array_name)
+        else:
+            return self._do_interpret(expr, **kwargs)
+
     # Required by SubroutinesAsFunctionsMixin to create new code generator for
     # each subroutine.
     def create_code_generator(self):
         return JavaCodeGenerator(indent=self.indent)
+
+    def interpret_subroutine_expr(self, expr, **kwargs):
+        return self._do_interpret(expr.expr, **kwargs)

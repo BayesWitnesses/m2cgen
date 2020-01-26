@@ -230,3 +230,35 @@ class SubroutineExpr(TransparentExpr):
     def __str__(self):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "SubroutineExpr(" + args + ")"
+
+
+def ast_size(expr):
+    if isinstance(expr, (NumVal, FeatureRef)):
+        return 1
+
+    if isinstance(expr, (ExpExpr, TanhExpr)):
+        return ast_size(expr.expr) + 1
+
+    if isinstance(expr, PowExpr):
+        nested = ast_size(expr.base_expr) + ast_size(expr.exp_expr)
+        return nested + 1
+
+    bin_exprs = (BinNumExpr, BinVectorExpr, BinVectorNumExpr, CompExpr)
+    if isinstance(expr, bin_exprs):
+        return ast_size(expr.left) + ast_size(expr.right) + 1
+
+    if isinstance(expr, VectorVal):
+        return sum([ast_size(e) for e in expr.exprs]) + 1
+
+    if isinstance(expr, IfExpr):
+        nested = sum([
+            ast_size(expr.test),
+            ast_size(expr.body),
+            ast_size(expr.orelse)])
+        return nested + 1
+
+    if isinstance(expr, TransparentExpr):
+        return ast_size(expr.expr)
+
+    expr_tpe_name = type(expr).__name__
+    raise ValueError("Unexpected expression type {}".format(expr_tpe_name))

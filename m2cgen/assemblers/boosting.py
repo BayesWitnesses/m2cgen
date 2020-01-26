@@ -104,43 +104,7 @@ class BaseTreeBoostingAssembler(BaseBoostingAssembler):
         if self._tree_limit:
             trees = trees[:self._tree_limit]
 
-        trees_ast = [ast.SubroutineExpr(self._assemble_tree(t)) for t in trees]
-
-        # In a large tree we need to generate multiple subroutines to avoid
-        # java limitations https://github.com/BayesWitnesses/m2cgen/issues/103.
-        trees_num_leaves = [self._count_leaves(t) for t in trees]
-        if sum(trees_num_leaves) > self._leaves_cutoff_threshold:
-            return self._split_into_subroutines(trees_ast, trees_num_leaves)
-        else:
-            return trees_ast
-
-    def _split_into_subroutines(self, trees_ast, trees_num_leaves):
-        result = []
-        subroutine_trees = []
-        subroutine_sum_leaves = 0
-        for tree, num_leaves in zip(trees_ast, trees_num_leaves):
-            next_sum = subroutine_sum_leaves + num_leaves
-            if subroutine_trees and next_sum > self._leaves_cutoff_threshold:
-                # Exceeded the max leaves in the current subroutine,
-                # finalize this one and start a new one.
-                partial_result = utils.apply_op_to_expressions(
-                    ast.BinNumOpType.ADD,
-                    *subroutine_trees)
-
-                result.append(ast.SubroutineExpr(partial_result))
-
-                subroutine_trees = []
-                subroutine_sum_leaves = 0
-
-            subroutine_sum_leaves += num_leaves
-            subroutine_trees.append(tree)
-
-        if subroutine_trees:
-            partial_result = utils.apply_op_to_expressions(
-                ast.BinNumOpType.ADD,
-                *subroutine_trees)
-            result.append(ast.SubroutineExpr(partial_result))
-        return result
+        return [ast.SubroutineExpr(self._assemble_tree(t)) for t in trees]
 
     def _assemble_tree(self, tree):
         raise NotImplementedError
