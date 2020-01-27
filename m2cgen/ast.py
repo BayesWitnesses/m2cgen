@@ -61,7 +61,7 @@ class TanhExpr(NumExpr):
         return "TanhExpr(" + args + ")"
 
 
-class PowExpr(NumExpr, BinExpr):
+class PowExpr(NumExpr):
     def __init__(self, base_expr, exp_expr, to_reuse=False):
         assert base_expr.output_size == 1, "Only scalars are supported"
         assert exp_expr.output_size == 1, "Only scalars are supported"
