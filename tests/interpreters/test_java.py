@@ -366,7 +366,7 @@ def test_ast_size_threshold():
 
     interpreter = interpreters.JavaInterpreter()
     interpreter.bin_depth_threshold = 1
-    interpreter.ast_size_threshold = 2
+    interpreter.ast_size_per_subroutine_threshold = 2
 
     expected_code = """
 public class Model {

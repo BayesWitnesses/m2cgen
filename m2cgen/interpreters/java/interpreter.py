@@ -13,7 +13,7 @@ class JavaInterpreter(ToCodeInterpreter,
                       mixins.SubroutinesAsFunctionsMixin,
                       mixins.BinExpressionDepthTrackingMixin):
 
-    ast_size_threshold = 4600
+    ast_size_per_subroutine_threshold = 4600
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",
@@ -69,7 +69,7 @@ class JavaInterpreter(ToCodeInterpreter,
         return JavaCodeGenerator(indent=self.indent)
 
     def bin_depth_threshold_hook(self, expr, **kwargs):
-        if ast.ast_size(expr) > self.ast_size_threshold:
+        if ast.ast_size(expr) > self.ast_size_per_subroutine_threshold:
             # If the expression that triggered the hook is large enough
             # we should move it into a separate subroutine.
             function_name = self._get_subroutine_name()
@@ -90,6 +90,6 @@ class JavaInterpreter(ToCodeInterpreter,
             subtree_size = ast.ast_size(expr.right)
         else:
             subtree_size = ast.ast_size(expr.left)
-        if subtree_size < self.ast_size_threshold:
-            return self.ast_size_threshold // subtree_size
+        if subtree_size < self.ast_size_per_subroutine_threshold:
+            return self.ast_size_per_subroutine_threshold // subtree_size
         return sys.maxsize
