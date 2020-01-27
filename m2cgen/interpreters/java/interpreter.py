@@ -1,4 +1,5 @@
 import os
+import sys
 
 from m2cgen import ast
 from m2cgen.interpreters import mixins
@@ -12,7 +13,6 @@ class JavaInterpreter(ToCodeInterpreter,
                       mixins.SubroutinesAsFunctionsMixin,
                       mixins.BinExpressionDepthTrackingMixin):
 
-    bin_depth_threshold = 7
     ast_size_threshold = 4000
 
     supported_bin_vector_ops = {
@@ -32,6 +32,8 @@ class JavaInterpreter(ToCodeInterpreter,
         self.package_name = package_name
         self.class_name = class_name
         self.indent = indent
+        self._last_bin_subtree_avg = None
+        self._test_counter = 0
 
         # We don't provide any code generator as for each subroutine we will
         # create a new one and concatenate their results into top_cg created
@@ -61,6 +63,8 @@ class JavaInterpreter(ToCodeInterpreter,
 
     def bin_depth_threshold_hook(self, expr, **kwargs):
         if ast.ast_size(expr) > self.ast_size_threshold:
+            self._test_counter += 1
+            print(self._test_counter)
             # If the expression that triggered the hook is large enough
             # we should move it into a separate subroutine.
             function_name = self._get_subroutine_name()
@@ -77,3 +81,30 @@ class JavaInterpreter(ToCodeInterpreter,
 
     def interpret_subroutine_expr(self, expr, **kwargs):
         return self._do_interpret(expr.expr, **kwargs)
+
+    def _pre_interpret_hook(self, expr, **kwargs):
+        if isinstance(expr, ast.BinExpr):
+            new_threshold = self._calc_bin_depth_threshold(expr)
+            self.bin_depth_threshold = min(new_threshold, self.bin_depth_threshold)
+        return super()._pre_interpret_hook(expr, **kwargs)
+
+    def _calc_bin_depth_threshold(self, expr):
+        subtrees_size_sum = 0
+        subtrees_n = 0
+        c = expr
+
+        while isinstance(c.left, ast.BinExpr) or \
+                isinstance(c.right, ast.BinExpr):
+            if isinstance(c.left, ast.BinExpr):
+                subtrees_size_sum += ast.ast_size(c.right)
+                c = c.left
+            else:
+                subtrees_size_sum += ast.ast_size(c.left)
+                c = c.right
+            subtrees_n += 1
+
+        if subtrees_n > 0:
+            subtrees_size_avg = subtrees_size_sum // subtrees_n
+            if subtrees_size_avg < self.ast_size_threshold:
+                return self.ast_size_threshold // subtrees_size_avg
+        return sys.maxsize
