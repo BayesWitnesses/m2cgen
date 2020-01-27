@@ -32,7 +32,6 @@ class JavaInterpreter(ToCodeInterpreter,
         self.package_name = package_name
         self.class_name = class_name
         self.indent = indent
-        self._last_bin_subtree_avg = None
 
         # We don't provide any code generator as for each subroutine we will
         # create a new one and concatenate their results into top_cg created
