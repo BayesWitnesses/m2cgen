@@ -5,8 +5,9 @@
 [![License: MIT](https://img.shields.io/github/license/BayesWitnesses/m2cgen.svg)](https://github.com/BayesWitnesses/m2cgen/blob/master/LICENSE)
 [![Python Versions](https://img.shields.io/pypi/pyversions/m2cgen.svg?logo=python&logoColor=white)](https://pypi.org/project/m2cgen)
 [![PyPI Version](https://img.shields.io/pypi/v/m2cgen.svg?logo=pypi&logoColor=white)](https://pypi.org/project/m2cgen)
+[![Downloads](https://pepy.tech/badge/m2cgen)](https://pepy.tech/project/m2cgen)
 
-**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#, PowerShell, R).
+**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#, PowerShell, R, PHP).
 
 * [Installation](#installation)
 * [Supported Languages](#supported-languages)
@@ -30,6 +31,7 @@ pip install m2cgen
 - Go
 - Java
 - JavaScript
+- PHP
 - PowerShell
 - Python
 - R
@@ -43,7 +45,7 @@ pip install m2cgen
 | **SVM** | <ul><li>LinearSVC</li><li>NuSVC</li><li>SVC</li></ul> | <ul><li>LinearSVR</li><li>NuSVR</li><li>SVR</li></ul> |
 | **Tree** | <ul><li>DecisionTreeClassifier</li><li>ExtraTreeClassifier</li></ul> | <ul><li>DecisionTreeRegressor</li><li>ExtraTreeRegressor</li></ul> |
 | **Random Forest** | <ul><li>ExtraTreesClassifier</li><li>LGBMClassifier(rf booster only)</li><li>RandomForestClassifier</li></ul> | <ul><li>ExtraTreesRegressor</li><li>LGBMRegressor(rf booster only)</li><li>RandomForestRegressor</li></ul> |
-| **Boosting** | <ul><li>LGBMClassifier(gbdt/dart/goss booster only)</li><li>XGBClassifier(gbtree booster only)</li><ul> | <ul><li>LGBMRegressor(gbdt/dart/goss booster only)</li><li>XGBRegressor(gbtree booster only)</li></ul> |
+| **Boosting** | <ul><li>LGBMClassifier(gbdt/dart/goss booster only)</li><li>XGBClassifier(gbtree/gblinear booster only)</li><ul> | <ul><li>LGBMRegressor(gbdt/dart/goss booster only)</li><li>XGBRegressor(gbtree/gblinear booster only)</li></ul> |
 
 ## Classification Output
 ### Linear/Linear SVM
@@ -107,6 +109,7 @@ $ m2cgen <pickle_file> --language <language> [--indent <indent>] [--class_name <
          [--module_name <module_name>] [--package_name <package_name>] [--namespace <namespace>]
          [--recursion-limit <recursion_limit>]
 ```
+Don't forget that for unpickling serialized model objects their classes must be defined in the top level of an importable module in the unpickling environment.
 
 Piping is also supported:
 ```
@@ -117,3 +120,7 @@ $ cat <pickle_file> | m2cgen --language <language>
 **Q: Generation fails with `RuntimeError: maximum recursion depth exceeded` error.**
 
 A: If this error occurs while generating code using an ensemble model, try to reduce the number of trained estimators within that model. Alternatively you can increase the maximum recursion depth with `sys.setrecursionlimit(<new_depth>)`.
+
+**Q: Generation fails with `ImportError: No module named <module_name_here>` error while transpiling model from a serialized model object.**
+
+A: This error indicates that pickle protocol cannot deserialize model object. For unpickling serialized model objects, it is required that their classes must be defined in the top level of an importable module in the unpickling environment. So installation of package which provided model's class definition should solve the problem.

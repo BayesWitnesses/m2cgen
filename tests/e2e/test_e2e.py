@@ -25,6 +25,7 @@ VISUAL_BASIC = pytest.mark.visual_basic
 C_SHARP = pytest.mark.c_sharp
 POWERSHELL = pytest.mark.powershell
 R = pytest.mark.r_lang
+PHP = pytest.mark.php
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -87,6 +88,9 @@ TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
                       random_state=RANDOM_SEED)
+XGBOOST_PARAMS_LINEAR = dict(base_score=0.6, n_estimators=10,
+                             feature_selector="shuffle", booster="gblinear",
+                             random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_DART = dict(n_estimators=10, boosting_type='dart',
                             max_drop=30, random_state=RANDOM_SEED)
@@ -119,6 +123,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         (executors.CSharpExecutor, C_SHARP),
         (executors.PowershellExecutor, POWERSHELL),
         (executors.RExecutor, R),
+        (executors.PhpExecutor, PHP),
     ],
 
     # These models will be tested against each language specified in the
@@ -158,6 +163,11 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
 #        regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
 #        classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 #        classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
+
+        # XGBoost (LINEAR)
+        regression(xgboost.XGBRegressor(**XGBOOST_PARAMS_LINEAR)),
+        classification(xgboost.XGBClassifier(**XGBOOST_PARAMS_LINEAR)),
+        classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS_LINEAR)),
 
         # XGBoost (Large Trees)
 #        regression_random(

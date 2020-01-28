@@ -41,6 +41,7 @@ EXAMPLE_LANGUAGES = [
     ("c_sharp", m2c.export_to_c_sharp, "cs"),
     ("powershell", m2c.export_to_powershell, "ps1"),
     ("r", m2c.export_to_r, "r"),
+    ("php", m2c.export_to_php, "php"),
 ]
 
 EXAMPLE_MODELS = [

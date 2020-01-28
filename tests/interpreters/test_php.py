@@ -1,5 +1,5 @@
 from m2cgen import ast
-from m2cgen import interpreters
+from m2cgen.interpreters import PhpInterpreter
 from tests import utils
 
 
@@ -9,20 +9,20 @@ def test_if_expr():
         ast.NumVal(2),
         ast.NumVal(3))
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    var var0;
-    if ((1) == (input[0])) {
-        var0 = 2;
+<?php
+function score(array $input) {
+    $var0 = null;
+    if ((1) === ($input[0])) {
+        $var0 = 2;
     } else {
-        var0 = 3;
+        $var0 = 3;
     }
-    return var0;
+    return $var0;
 }
 """
 
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -33,14 +33,14 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    return ((input[0]) / (-2)) * (2);
+<?php
+function score(array $input) {
+    return (($input[0]) / (-2)) * (2);
 }
 """
 
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -61,25 +61,25 @@ def test_dependable_condition():
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
-function score(input) {
-    var var0;
-    var var1;
-    if ((1) == (1)) {
-        var1 = 1;
+<?php
+function score(array $input) {
+    $var0 = null;
+    $var1 = null;
+    if ((1) === (1)) {
+        $var1 = 1;
     } else {
-        var1 = 2;
+        $var1 = 2;
     }
-    if (((var1) + (2)) >= ((1) / (2))) {
-        var0 = 1;
+    if ((($var1) + (2)) >= ((1) / (2))) {
+        $var0 = 1;
     } else {
-        var0 = input[0];
+        $var0 = $input[0];
     }
-    return var0;
+    return $var0;
 }
 """
 
-    interpreter = interpreters.JavascriptInterpreter()
-
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -101,34 +101,35 @@ def test_nested_condition():
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
-function score(input) {
-    var var0;
-    var var1;
-    if ((1) == (1)) {
-        var1 = 1;
+<?php
+function score(array $input) {
+    $var0 = null;
+    $var1 = null;
+    if ((1) === (1)) {
+        $var1 = 1;
     } else {
-        var1 = 2;
+        $var1 = 2;
     }
-    if ((1) == ((var1) + (2))) {
-        var var2;
-        if ((1) == (1)) {
-            var2 = 1;
+    if ((1) === (($var1) + (2))) {
+        $var2 = null;
+        if ((1) === (1)) {
+            $var2 = 1;
         } else {
-            var2 = 2;
+            $var2 = 2;
         }
-        if ((1) == ((var2) + (2))) {
-            var0 = input[2];
+        if ((1) === (($var2) + (2))) {
+            $var0 = $input[2];
         } else {
-            var0 = 2;
+            $var0 = 2;
         }
     } else {
-        var0 = 2;
+        $var0 = 2;
     }
-    return var0;
+    return $var0;
 }
 """
 
-    interpreter = interpreters.JavascriptInterpreter()
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -136,12 +137,13 @@ def test_raw_array():
     expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
 
     expected_code = """
-function score(input) {
-    return [3, 4];
+<?php
+function score(array $input) {
+    return array(3, 4);
 }
 """
 
-    interpreter = interpreters.JavascriptInterpreter()
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -156,18 +158,19 @@ def test_multi_output():
             ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
 
     expected_code = """
-function score(input) {
-    var var0;
-    if ((1) == (1)) {
-        var0 = [1, 2];
+<?php
+function score(array $input) {
+    $var0 = array();
+    if ((1) === (1)) {
+        $var0 = array(1, 2);
     } else {
-        var0 = [3, 4];
+        $var0 = array(3, 4);
     }
-    return var0;
+    return $var0;
 }
 """
 
-    interpreter = interpreters.JavascriptInterpreter()
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -177,27 +180,28 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    return addVectors([1, 2], [3, 4]);
-}
-function addVectors(v1, v2) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
-        result[i] = v1[i] + v2[i];
+<?php
+function add_vectors(array $v1, array $v2) {
+    $result = array();
+    for ($i = 0; $i < count($v1); ++$i) {
+        $result[] = $v1[$i] + $v2[$i];
     }
-    return result;
+    return $result;
 }
-function mulVectorNumber(v1, num) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
-        result[i] = v1[i] * num;
+function mul_vector_number(array $v1, $num) {
+    $result = array();
+    for ($i = 0; $i < count($v1); ++$i) {
+        $result[] = $v1[$i] * $num;
     }
-    return result;
+    return $result;
+}
+function score(array $input) {
+    return add_vectors(array(1, 2), array(3, 4));
 }
 """
+
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -207,69 +211,70 @@ def test_bin_vector_num_expr():
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    return mulVectorNumber([1, 2], 1);
-}
-function addVectors(v1, v2) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
-        result[i] = v1[i] + v2[i];
+<?php
+function add_vectors(array $v1, array $v2) {
+    $result = array();
+    for ($i = 0; $i < count($v1); ++$i) {
+        $result[] = $v1[$i] + $v2[$i];
     }
-    return result;
+    return $result;
 }
-function mulVectorNumber(v1, num) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
-        result[i] = v1[i] * num;
+function mul_vector_number(array $v1, $num) {
+    $result = array();
+    for ($i = 0; $i < count($v1); ++$i) {
+        $result[] = $v1[$i] * $num;
     }
-    return result;
+    return $result;
+}
+function score(array $input) {
+    return mul_vector_number(array(1, 2), 1);
 }
 """
+
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    return Math.exp(1.0);
+<?php
+function score(array $input) {
+    return exp(1.0);
 }
 """
 
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
     expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    return Math.pow(2.0, 3.0);
+<?php
+function score(array $input) {
+    return pow(2.0, 3.0);
 }
 """
 
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    return Math.tanh(2.0);
+<?php
+function score(array $input) {
+    return tanh(2.0);
 }
 """
 
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -277,14 +282,14 @@ def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
 
-    interpreter = interpreters.JavascriptInterpreter()
-
     expected_code = """
-function score(input) {
-    var var0;
-    var0 = Math.exp(1.0);
-    return (var0) / (var0);
+<?php
+function score(array $input) {
+    $var0 = null;
+    $var0 = exp(1.0);
+    return ($var0) / ($var0);
 }
 """
 
+    interpreter = PhpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

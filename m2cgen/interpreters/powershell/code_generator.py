@@ -45,9 +45,7 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
         return function_name + "(" + ", ".join(map(str, args)) + ")"
 
     def get_var_name(self):
-        var_name = "$var" + str(self._var_idx)
-        self._var_idx += 1
-        return var_name
+        return "$" + super().get_var_name()
 
     def add_var_declaration(self, size):
         var_name = self.get_var_name()

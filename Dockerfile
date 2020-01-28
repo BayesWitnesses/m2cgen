@@ -19,7 +19,8 @@ RUN apt-get update && \
         golang-go \
         dotnet-sdk-3.0 \
         powershell \
-        r-base && \
+        r-base \
+        php && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen

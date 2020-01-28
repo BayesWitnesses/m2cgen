@@ -10,7 +10,7 @@ def test_binary_classification():
                                       max_depth=1)
     utils.get_binary_classification_model_trainer()(estimator)
 
-    assembler = assemblers.XGBoostModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     sigmoid = ast.BinNumExpr(
@@ -59,7 +59,7 @@ def test_multi_class():
                                       max_depth=1)
     estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
 
-    assembler = assemblers.XGBoostModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     exponent = ast.ExpExpr(
@@ -90,7 +90,7 @@ def test_regression():
                                      max_depth=1, base_score=base_score)
     utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.XGBoostModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.SubroutineExpr(
@@ -128,7 +128,7 @@ def test_regression_best_ntree_limit():
 
     utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.XGBoostModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.SubroutineExpr(
@@ -166,7 +166,7 @@ def test_multi_class_best_ntree_limit():
 
     utils.get_classification_model_trainer()(estimator)
 
-    assembler = assemblers.XGBoostModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     estimator_exp_class1 = ast.ExpExpr(
@@ -253,7 +253,7 @@ def test_regression_saved_without_feature_names():
         estimator = xgboost.XGBRegressor(base_score=base_score)
         estimator.load_model(filename)
 
-    assembler = assemblers.XGBoostModelAssembler(estimator)
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.SubroutineExpr(
@@ -287,8 +287,8 @@ def test_leaves_cutoff_threshold():
                                       max_depth=1)
     utils.get_binary_classification_model_trainer()(estimator)
 
-    assembler = assemblers.XGBoostModelAssembler(estimator,
-                                                 leaves_cutoff_threshold=1)
+    assembler = assemblers.XGBoostModelAssemblerSelector(
+        estimator, leaves_cutoff_threshold=1)
     actual = assembler.assemble()
 
     sigmoid = ast.BinNumExpr(
@@ -330,5 +330,81 @@ def test_leaves_cutoff_threshold():
     expected = ast.VectorVal([
         ast.BinNumExpr(ast.NumVal(1), sigmoid, ast.BinNumOpType.SUB),
         sigmoid])
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_linear_model():
+    estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
+                                     feature_selector="shuffle",
+                                     booster="gblinear")
+    utils.train_model_regression(estimator)
+
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
+    actual = assembler.assemble()
+
+    feature_weight_mul = [
+        ast.BinNumExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(-0.00999326),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(1),
+            ast.NumVal(0.0520094),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(2),
+            ast.NumVal(0.10447),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(3),
+            ast.NumVal(0.17387),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(4),
+            ast.NumVal(0.691745),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(5),
+            ast.NumVal(0.296357),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(6),
+            ast.NumVal(0.0288206),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(7),
+            ast.NumVal(0.417822),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(8),
+            ast.NumVal(0.0551116),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(9),
+            ast.NumVal(0.00242449),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(10),
+            ast.NumVal(0.109585),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(11),
+            ast.NumVal(0.00744202),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(12),
+            ast.NumVal(0.0731089),
+            ast.BinNumOpType.MUL),
+    ]
+
+    expected = ast.SubroutineExpr(
+        ast.BinNumExpr(
+            ast.NumVal(0.5),
+            assemblers.utils.apply_op_to_expressions(
+                ast.BinNumOpType.ADD,
+                ast.NumVal(3.13109),
+                *feature_weight_mul),
+            ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)

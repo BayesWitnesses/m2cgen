@@ -3,24 +3,23 @@ import numpy as np
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
+from m2cgen.assemblers.linear import _linear_to_ast
+
+
+LEAVES_CUTOFF_THRESHOLD = 3000
 
 
 class BaseBoostingAssembler(ModelAssembler):
 
     classifier_name = None
 
-    def __init__(self, model, trees, base_score=0, tree_limit=None,
-                 leaves_cutoff_threshold=3000):
+    def __init__(self, model, estimator_params, base_score=0):
         super().__init__(model)
-        self.all_trees = trees
+        self._all_estimator_params = estimator_params
         self._base_score = base_score
-        self._leaves_cutoff_threshold = leaves_cutoff_threshold
 
         self._output_size = 1
         self._is_classification = False
-
-        assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
-        self._tree_limit = tree_limit
 
         model_class_name = type(model).__name__
         if model_class_name == self.classifier_name:
@@ -31,54 +30,52 @@ class BaseBoostingAssembler(ModelAssembler):
     def assemble(self):
         if self._is_classification:
             if self._output_size == 1:
-                return self._assemble_bin_class_output(self.all_trees)
+                return self._assemble_bin_class_output(
+                    self._all_estimator_params)
             else:
-                return self._assemble_multi_class_output(self.all_trees)
+                return self._assemble_multi_class_output(
+                    self._all_estimator_params)
         else:
             return self._assemble_single_output(
-                self.all_trees, self._base_score)
+                self._all_estimator_params, base_score=self._base_score)
 
-    def _assemble_single_output(self, trees, base_score=0):
-        if self._tree_limit:
-            trees = trees[:self._tree_limit]
-
-        trees_ast = [ast.SubroutineExpr(self._assemble_tree(t)) for t in trees]
-        to_sum = trees_ast
-
-        # In a large tree we need to generate multiple subroutines to avoid
-        # java limitations https://github.com/BayesWitnesses/m2cgen/issues/103.
-        trees_num_leaves = [self._count_leaves(t) for t in trees]
-        if sum(trees_num_leaves) > self._leaves_cutoff_threshold:
-            to_sum = self._split_into_subroutines(trees_ast, trees_num_leaves)
+    def _assemble_single_output(self, estimator_params,
+                                base_score=0, split_idx=0):
+        estimators_ast = self._assemble_estimators(estimator_params, split_idx)
 
         tmp_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
             ast.NumVal(base_score),
-            *to_sum)
+            *estimators_ast)
 
         result_ast = self._final_transform(tmp_ast)
 
         return ast.SubroutineExpr(result_ast)
 
-    def _assemble_multi_class_output(self, trees):
+    def _assemble_multi_class_output(self, estimator_params):
         # Multi-class output is calculated based on discussion in
         # https://github.com/dmlc/xgboost/issues/1746#issuecomment-295962863
-        splits = _split_trees_by_classes(trees, self._output_size)
+        splits = _split_estimator_params_by_classes(
+            estimator_params, self._output_size)
 
         base_score = self._base_score
-        exprs = [self._assemble_single_output(t, base_score) for t in splits]
+        exprs = [
+            self._assemble_single_output(e, base_score=base_score, split_idx=i)
+            for i, e in enumerate(splits)
+        ]
 
         proba_exprs = utils.softmax_exprs(exprs)
         return ast.VectorVal(proba_exprs)
 
-    def _assemble_bin_class_output(self, trees):
+    def _assemble_bin_class_output(self, estimator_params):
         # Base score is calculated based on https://github.com/dmlc/xgboost/blob/master/src/objective/regression_loss.h#L64  # noqa
         # return -logf(1.0f / base_score - 1.0f);
         base_score = 0
         if self._base_score != 0:
             base_score = -np.log(1.0 / self._base_score - 1.0)
 
-        expr = self._assemble_single_output(trees, base_score)
+        expr = self._assemble_single_output(
+            estimator_params, base_score=base_score)
 
         proba_expr = utils.sigmoid_expr(expr, to_reuse=True)
 
@@ -89,6 +86,33 @@ class BaseBoostingAssembler(ModelAssembler):
 
     def _final_transform(self, ast_to_transform):
         return ast_to_transform
+
+    def _assemble_estimators(self, estimator_params, split_idx):
+        raise NotImplementedError
+
+
+class BaseTreeBoostingAssembler(BaseBoostingAssembler):
+
+    def __init__(self, model, trees, base_score=0, tree_limit=None,
+                 leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
+        super().__init__(model, trees, base_score=base_score)
+        self._leaves_cutoff_threshold = leaves_cutoff_threshold
+        assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
+        self._tree_limit = tree_limit
+
+    def _assemble_estimators(self, trees, split_idx):
+        if self._tree_limit:
+            trees = trees[:self._tree_limit]
+
+        trees_ast = [ast.SubroutineExpr(self._assemble_tree(t)) for t in trees]
+
+        # In a large tree we need to generate multiple subroutines to avoid
+        # java limitations https://github.com/BayesWitnesses/m2cgen/issues/103.
+        trees_num_leaves = [self._count_leaves(t) for t in trees]
+        if sum(trees_num_leaves) > self._leaves_cutoff_threshold:
+            return self._split_into_subroutines(trees_ast, trees_num_leaves)
+        else:
+            return trees_ast
 
     def _split_into_subroutines(self, trees_ast, trees_num_leaves):
         result = []
@@ -126,11 +150,12 @@ class BaseBoostingAssembler(ModelAssembler):
         raise NotImplementedError
 
 
-class XGBoostModelAssembler(BaseBoostingAssembler):
+class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
     classifier_name = "XGBClassifier"
 
-    def __init__(self, model, leaves_cutoff_threshold=3000):
+    def __init__(self, model,
+                 leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
         feature_names = model.get_booster().feature_names
         self._feature_name_to_idx = {
             name: idx for idx, name in enumerate(feature_names or [])
@@ -194,15 +219,47 @@ class XGBoostModelAssembler(BaseBoostingAssembler):
         return num_leaves
 
 
-class LightGBMModelAssembler(BaseBoostingAssembler):
+class XGBoostLinearModelAssembler(BaseBoostingAssembler):
+
+    classifier_name = "XGBClassifier"
+
+    def __init__(self, model):
+        model_dump = model.get_booster().get_dump(dump_format="json")
+        weights = json.loads(model_dump[0])["weight"]
+        self._bias = json.loads(model_dump[0])["bias"]
+        super().__init__(model, weights,
+                         base_score=model.base_score)
+
+    def _assemble_estimators(self, weights, split_idx):
+        coef = utils.to_1d_array(weights)
+        return [_linear_to_ast(coef, self._bias[split_idx])]
+
+
+class XGBoostModelAssemblerSelector(ModelAssembler):
+
+    def __init__(self, model, *args, **kwargs):
+        model_dump = model.get_booster().get_dump(dump_format="json")
+        if len(model_dump) == 1 and all(i in json.loads(model_dump[0])
+                                        for i in ("weight", "bias")):
+            self.assembler = XGBoostLinearModelAssembler(model)
+        else:
+            self.assembler = XGBoostTreeModelAssembler(model, *args, **kwargs)
+
+    def assemble(self):
+        return self.assembler.assemble()
+
+
+class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
     classifier_name = "LGBMClassifier"
 
-    def __init__(self, model, leaves_cutoff_threshold=3000):
+    def __init__(self, model,
+                 leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
         model_dump = model.booster_.dump_model()
         trees = [m["tree_structure"] for m in model_dump["tree_info"]]
+
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
-        self.average_output = model_dump["average_output"]
+        self.average_output = model_dump.get("average_output", False)
 
         super().__init__(model, trees,
                          leaves_cutoff_threshold=leaves_cutoff_threshold)
@@ -257,11 +314,11 @@ class LightGBMModelAssembler(BaseBoostingAssembler):
         return num_leaves
 
 
-def _split_trees_by_classes(trees, n_classes):
+def _split_estimator_params_by_classes(values, n_classes):
     # Splits are computed based on a comment
     # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
-    trees_by_classes = [[] for _ in range(n_classes)]
-    for i in range(len(trees)):
+    estimator_params_by_classes = [[] for _ in range(n_classes)]
+    for i in range(len(values)):
         class_idx = i % n_classes
-        trees_by_classes[class_idx].append(trees[i])
-    return trees_by_classes
+        estimator_params_by_classes[class_idx].append(values[i])
+    return estimator_params_by_classes
