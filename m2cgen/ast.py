@@ -232,33 +232,41 @@ class SubroutineExpr(TransparentExpr):
         return "SubroutineExpr(" + args + ")"
 
 
-def ast_size(expr):
+def count_exprs(expr, exclude_list=None):
+    init = 1
+    excluded = exclude_list if exclude_list else {}
+    if next(filter(lambda t: issubclass(type(expr), t), excluded), None):
+        init = 0
+
     if isinstance(expr, (NumVal, FeatureRef)):
-        return 1
+        return init
 
     if isinstance(expr, (ExpExpr, TanhExpr)):
-        return ast_size(expr.expr) + 1
+        return count_exprs(expr.expr, exclude_list) + init
 
     if isinstance(expr, PowExpr):
-        nested = ast_size(expr.base_expr) + ast_size(expr.exp_expr)
-        return nested + 1
+        nested = count_exprs(expr.base_expr, exclude_list) + \
+                 count_exprs(expr.exp_expr, exclude_list)
+        return nested + init
 
     bin_exprs = (BinNumExpr, BinVectorExpr, BinVectorNumExpr, CompExpr)
     if isinstance(expr, bin_exprs):
-        return ast_size(expr.left) + ast_size(expr.right) + 1
+        nested = count_exprs(expr.left, exclude_list) + \
+                 count_exprs(expr.right, exclude_list)
+        return nested + init
 
     if isinstance(expr, VectorVal):
-        return sum([ast_size(e) for e in expr.exprs]) + 1
+        return sum([count_exprs(e, exclude_list) for e in expr.exprs]) + init
 
     if isinstance(expr, IfExpr):
         nested = sum([
-            ast_size(expr.test),
-            ast_size(expr.body),
-            ast_size(expr.orelse)])
-        return nested + 1
+            count_exprs(expr.test, exclude_list),
+            count_exprs(expr.body, exclude_list),
+            count_exprs(expr.orelse, exclude_list)])
+        return nested + init
 
     if isinstance(expr, TransparentExpr):
-        return ast_size(expr.expr)
+        return count_exprs(expr.expr, exclude_list)
 
     expr_tpe_name = type(expr).__name__
     raise ValueError("Unexpected expression type {}".format(expr_tpe_name))

@@ -1,5 +1,5 @@
 import os
-import sys
+import math
 
 from m2cgen import ast
 from m2cgen.interpreters import mixins
@@ -13,6 +13,7 @@ class JavaInterpreter(ToCodeInterpreter,
                       mixins.SubroutinesAsFunctionsMixin,
                       mixins.BinExpressionDepthTrackingMixin):
 
+    bin_depth_threshold = 100
     ast_size_per_subroutine_threshold = 4600
 
     supported_bin_vector_ops = {
@@ -21,6 +22,7 @@ class JavaInterpreter(ToCodeInterpreter,
 
     supported_bin_vector_num_ops = {
         ast.BinNumOpType.MUL: "mulVectorNumber",
+        ast.BinNumOpType.DIV: "divVectorNumber",
     }
 
     exponent_function_name = "Math.exp"
@@ -68,7 +70,9 @@ class JavaInterpreter(ToCodeInterpreter,
         return JavaCodeGenerator(indent=self.indent)
 
     def bin_depth_threshold_hook(self, expr, **kwargs):
-        if ast.ast_size(expr) > self.ast_size_per_subroutine_threshold:
+        # The condition below is a sanity check to ensure that the expression
+        # is actually worth moving into a separate subroutine.
+        if ast.count_exprs(expr) > self.ast_size_per_subroutine_threshold:
             # If the expression that triggered the hook is large enough
             # we should move it into a separate subroutine.
             function_name = self._get_subroutine_name()
@@ -85,10 +89,11 @@ class JavaInterpreter(ToCodeInterpreter,
         return super()._pre_interpret_hook(expr, **kwargs)
 
     def _calc_bin_depth_threshold(self, expr):
-        if isinstance(expr.left, ast.BinExpr):
-            subtree_size = ast.ast_size(expr.right)
-        else:
-            subtree_size = ast.ast_size(expr.left)
-        if subtree_size < self.ast_size_per_subroutine_threshold:
-            return self.ast_size_per_subroutine_threshold // subtree_size
-        return sys.maxsize
+        cnt = None
+        if not isinstance(expr.left, ast.BinExpr):
+            cnt = ast.count_exprs(expr.left, exclude_list={ast.BinExpr})
+        elif not isinstance(expr.right, ast.BinExpr):
+            cnt = ast.count_exprs(expr.right, exclude_list={ast.BinExpr})
+        if cnt and cnt < self.ast_size_per_subroutine_threshold:
+            return math.ceil(self.ast_size_per_subroutine_threshold / cnt)
+        return self.bin_depth_threshold

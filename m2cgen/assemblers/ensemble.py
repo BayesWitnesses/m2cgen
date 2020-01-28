@@ -7,17 +7,16 @@ from m2cgen.assemblers import TreeModelAssembler
 class RandomForestModelAssembler(ModelAssembler):
 
     def assemble(self):
-        coef = 1.0 / self.model.n_estimators
         trees = self.model.estimators_
 
         def assemble_tree_expr(t):
             assembler = TreeModelAssembler(t)
 
-            return utils.apply_bin_op(
-                ast.SubroutineExpr(assembler.assemble()),
-                ast.NumVal(coef),
-                ast.BinNumOpType.MUL)
+            return ast.SubroutineExpr(assembler.assemble())
 
         assembled_trees = [assemble_tree_expr(t) for t in trees]
-        return utils.apply_op_to_expressions(
-            ast.BinNumOpType.ADD, *assembled_trees)
+        return utils.apply_bin_op(
+            utils.apply_op_to_expressions(ast.BinNumOpType.ADD,
+                                          *assembled_trees),
+            ast.NumVal(self.model.n_estimators),
+            ast.BinNumOpType.DIV)

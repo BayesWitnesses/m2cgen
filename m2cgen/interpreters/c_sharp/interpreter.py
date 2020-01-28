@@ -15,6 +15,7 @@ class CSharpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
 
     supported_bin_vector_num_ops = {
         ast.BinNumOpType.MUL: "MulVectorNumber",
+        ast.BinNumOpType.DIV: "DivVectorNumber",
     }
 
     exponent_function_name = "Exp"

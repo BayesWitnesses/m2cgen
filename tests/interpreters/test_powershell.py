@@ -191,6 +191,14 @@ function Mul-Vector-Number([double[]] $v1, [double] $num) {
     }
     return $result
 }
+function Div-Vector-Number([double[]] $v1, [double] $num) {
+    [int] $length = $v1.Length
+    [double[]] $result = @(0) * $length
+    for ([int] $i = 0; $i -lt $length; ++$i) {
+        $result[$i] = $v1[$i] / $num
+    }
+    return $result
+}
 function Score([double[]] $InputVector) {
     return Add-Vectors $(@($(1), $(2))) $(@($(3), $(4)))
 }
@@ -220,6 +228,14 @@ function Mul-Vector-Number([double[]] $v1, [double] $num) {
     [double[]] $result = @(0) * $length
     for ([int] $i = 0; $i -lt $length; ++$i) {
         $result[$i] = $v1[$i] * $num
+    }
+    return $result
+}
+function Div-Vector-Number([double[]] $v1, [double] $num) {
+    [int] $length = $v1.Length
+    [double[]] $result = @(0) * $length
+    for ([int] $i = 0; $i -lt $length; ++$i) {
+        $result[$i] = $v1[$i] / $num
     }
     return $result
 }

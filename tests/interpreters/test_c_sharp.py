@@ -252,10 +252,16 @@ namespace ML {
             }
             return result;
         }
+        private static double[] DivVectorNumber(double[] v1, double num) {
+            double[] result = new double[v1.Length];
+            for (int i = 0; i < v1.Length; ++i) {
+                result[i] = v1[i] / num;
+            }
+            return result;
+        }
     }
 }
 """
-
     interpreter = CSharpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -283,6 +289,13 @@ namespace ML {
             double[] result = new double[v1.Length];
             for (int i = 0; i < v1.Length; ++i) {
                 result[i] = v1[i] * num;
+            }
+            return result;
+        }
+        private static double[] DivVectorNumber(double[] v1, double num) {
+            double[] result = new double[v1.Length];
+            for (int i = 0; i < v1.Length; ++i) {
+                result[i] = v1[i] / num;
             }
             return result;
         }

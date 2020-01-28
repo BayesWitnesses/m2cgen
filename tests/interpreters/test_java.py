@@ -249,6 +249,13 @@ public class Model {
         }
         return result;
     }
+    public static double[] divVectorNumber(double[] v1, double num) {
+        double[] result = new double[v1.length];
+        for (int i = 0; i < v1.length; i++) {
+            result[i] = v1[i] / num;
+        }
+        return result;
+    }
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -278,6 +285,13 @@ public class Model {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] * num;
+        }
+        return result;
+    }
+    public static double[] divVectorNumber(double[] v1, double num) {
+        double[] result = new double[v1.length];
+        for (int i = 0; i < v1.length; i++) {
+            result[i] = v1[i] / num;
         }
         return result;
     }

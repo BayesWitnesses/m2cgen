@@ -109,10 +109,6 @@ class BaseTreeBoostingAssembler(BaseBoostingAssembler):
     def _assemble_tree(self, tree):
         raise NotImplementedError
 
-    @staticmethod
-    def _count_leaves(trees):
-        raise NotImplementedError
-
 
 class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
@@ -167,20 +163,6 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
             if child["nodeid"] == child_id:
                 return self._assemble_tree(child)
         assert False, "Unexpected child ID {}".format(child_id)
-
-    @staticmethod
-    def _count_leaves(tree):
-        queue = [tree]
-        num_leaves = 0
-
-        while queue:
-            tree = queue.pop()
-            if "leaf" in tree:
-                num_leaves += 1
-            elif "children" in tree:
-                for child in tree["children"]:
-                    queue.append(child)
-        return num_leaves
 
 
 class XGBoostLinearModelAssembler(BaseBoostingAssembler):
@@ -262,20 +244,6 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
             ast.CompExpr(feature_ref, threshold, op),
             self._assemble_tree(true_child),
             self._assemble_tree(false_child))
-
-    @staticmethod
-    def _count_leaves(tree):
-        queue = [tree]
-        num_leaves = 0
-
-        while queue:
-            tree = queue.pop()
-            if "leaf_value" in tree:
-                num_leaves += 1
-            else:
-                queue.append(tree["left_child"])
-                queue.append(tree["right_child"])
-        return num_leaves
 
 
 def _split_estimator_params_by_classes(values, n_classes):

@@ -17,3 +17,13 @@ function mulVectorNumber(v1, num) {
 
     return result;
 }
+
+function divVectorNumber(v1, num) {
+    let result = new Array(v1.length);
+
+    for (let i = 0; i < v1.length; i++) {
+        result[i] = v1[i] / num;
+    }
+
+    return result;
+}
