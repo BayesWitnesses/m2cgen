@@ -73,8 +73,6 @@ class JavaInterpreter(ToCodeInterpreter,
         # The condition below is a sanity check to ensure that the expression
         # is actually worth moving into a separate subroutine.
         if ast.count_exprs(expr) > self.ast_size_per_subroutine_threshold:
-            # If the expression that triggered the hook is large enough
-            # we should move it into a separate subroutine.
             function_name = self._get_subroutine_name()
             self.enqueue_subroutine(function_name, expr)
             return self._cg.function_invocation(
