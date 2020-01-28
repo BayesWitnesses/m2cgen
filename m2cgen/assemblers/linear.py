@@ -41,7 +41,6 @@ class SklearnLinearModelAssembler(BaseLinearModelAssembler):
 
 class StatsmodelsLinearModelAssembler(BaseLinearModelAssembler):
 
-
     def __init__(self, model):
         super(StatsmodelsLinearModelAssembler, self).__init__(model)
         const_idx = self.model.model.data.const_idx
@@ -55,8 +54,9 @@ class StatsmodelsLinearModelAssembler(BaseLinearModelAssembler):
                 else 0.0)
 
     def _get_coef(self):
+        idxs = np.arange(len(self.model.params))
         return (
-            self.model.params[np.arange(len(self.model.params)) != self.const_idx]
+            self.model.params[idxs != self.const_idx]
             if self.model.k_constant
             else self.model.params)
 

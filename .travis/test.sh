@@ -13,5 +13,5 @@ fi
 if [[ $TEST == "E2E" ]]; then
   python setup.py install
   rm -rfd m2cgen/
-  pytest -v --capture=no "-m=$LANG" tests/e2e/
+  pytest -v "-m=$LANG" tests/e2e/
 fi

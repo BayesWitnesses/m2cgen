@@ -35,7 +35,8 @@ class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
             X = sm.add_constant(X)
         est = self.model(y, X, **init_params)
         if "fit_regularized" in self.params:
-            self.fitted_model_ = est.fit_regularized(**self.params["fit_regularized"])
+            self.fitted_model_ = est.fit_regularized(
+                **self.params["fit_regularized"])
         else:
             self.fitted_model_ = est.fit(**self.params.get("fit", {}))
         self.__class__.__name__ = type(self.fitted_model_).__name__
@@ -244,8 +245,6 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         result_params.append(pytest.param(
             model, executor, trainer, marks=[executor_mark, trainer_mark],
         ))
-        print(trainer.__name__)
-        print(trainer)
 
     param_names = "estimator,executor_cls,model_trainer"
 
