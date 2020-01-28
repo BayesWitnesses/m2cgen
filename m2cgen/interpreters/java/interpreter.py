@@ -13,6 +13,8 @@ class JavaInterpreter(ToCodeInterpreter,
                       mixins.SubroutinesAsFunctionsMixin,
                       mixins.BinExpressionDepthTrackingMixin):
 
+    # The below numbers have been determined experimentally and are subject
+    # to adjustments in future.
     bin_depth_threshold = 100
     ast_size_per_subroutine_threshold = 4600
 
@@ -87,6 +89,10 @@ class JavaInterpreter(ToCodeInterpreter,
         return super()._pre_interpret_hook(expr, **kwargs)
 
     def _calc_bin_depth_threshold(self, expr):
+        # The logic below counts the number of non-binary expressions
+        # in a non-recursive branch of a binary expression to account
+        # for large tree-like models and adjust the bin depth threshold
+        # if necessary.
         cnt = None
         if not isinstance(expr.left, ast.BinExpr):
             cnt = ast.count_exprs(expr.left, exclude_list={ast.BinExpr})
