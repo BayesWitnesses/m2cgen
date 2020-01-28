@@ -338,7 +338,7 @@ def test_linear_model():
     estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
                                      feature_selector="shuffle",
                                      booster="gblinear")
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
