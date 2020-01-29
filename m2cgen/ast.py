@@ -232,41 +232,31 @@ class SubroutineExpr(TransparentExpr):
         return "SubroutineExpr(" + args + ")"
 
 
+NESTED_EXPRS_MAPPINGS = [
+    ((BinExpr, CompExpr), lambda e: [e.left, e.right]),
+    (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
+    (VectorVal, lambda e: e.exprs),
+    (IfExpr, lambda e: [e.test, e.body, e.orelse]),
+    ((ExpExpr, TanhExpr, TransparentExpr), lambda e: [e.expr]),
+]
+
+
 def count_exprs(expr, exclude_list=None):
+    expr_tpe = type(expr)
+    excluded = tuple(exclude_list) if exclude_list else ()
+
     init = 1
-    excluded = exclude_list if exclude_list else {}
-    if next(filter(lambda t: issubclass(type(expr), t), excluded), None):
+    if issubclass(expr_tpe, excluded) or issubclass(expr_tpe, TransparentExpr):
         init = 0
 
     if isinstance(expr, (NumVal, FeatureRef)):
         return init
 
-    if isinstance(expr, (ExpExpr, TanhExpr)):
-        return count_exprs(expr.expr, exclude_list) + init
+    for tpes, nested_f in NESTED_EXPRS_MAPPINGS:
+        if issubclass(expr_tpe, tpes):
+            return init + sum(map(
+                lambda e: count_exprs(e, exclude_list),
+                nested_f(expr)))
 
-    if isinstance(expr, PowExpr):
-        nested = count_exprs(expr.base_expr, exclude_list) + \
-                 count_exprs(expr.exp_expr, exclude_list)
-        return nested + init
-
-    bin_exprs = (BinNumExpr, BinVectorExpr, BinVectorNumExpr, CompExpr)
-    if isinstance(expr, bin_exprs):
-        nested = count_exprs(expr.left, exclude_list) + \
-                 count_exprs(expr.right, exclude_list)
-        return nested + init
-
-    if isinstance(expr, VectorVal):
-        return sum([count_exprs(e, exclude_list) for e in expr.exprs]) + init
-
-    if isinstance(expr, IfExpr):
-        nested = sum([
-            count_exprs(expr.test, exclude_list),
-            count_exprs(expr.body, exclude_list),
-            count_exprs(expr.orelse, exclude_list)])
-        return nested + init
-
-    if isinstance(expr, TransparentExpr):
-        return count_exprs(expr.expr, exclude_list)
-
-    expr_tpe_name = type(expr).__name__
+    expr_tpe_name = expr_tpe.__name__
     raise ValueError("Unexpected expression type {}".format(expr_tpe_name))
