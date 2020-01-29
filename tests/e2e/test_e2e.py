@@ -180,22 +180,22 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 
         # SVM
-        regression(svm.SVR(kernel="rbf")),
         regression(svm.NuSVR(kernel="rbf")),
-        classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+        regression(svm.SVR(kernel="rbf")),
+        classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
+        classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+        classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="poly", degree=2, **SVC_PARAMS)),
+        classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
-        classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
-        classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
-        classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
 
         # Linear Regression
-        regression(linear_model.LinearRegression()),
-        regression(linear_model.HuberRegressor()),
+        regression(linear_model.ARDRegression()),
+        regression(linear_model.BayesianRidge()),
         regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
         regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
-        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.HuberRegressor()),
         regression(linear_model.Lars()),
         regression(linear_model.LarsCV()),
         regression(linear_model.Lasso(random_state=RANDOM_SEED)),
@@ -203,15 +203,15 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         regression(linear_model.LassoLars()),
         regression(linear_model.LassoLarsCV()),
         regression(linear_model.LassoLarsIC()),
+        regression(linear_model.LinearRegression()),
         regression(linear_model.OrthogonalMatchingPursuit()),
         regression(linear_model.OrthogonalMatchingPursuitCV()),
-        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
-        regression(linear_model.RidgeCV()),
-        regression(linear_model.BayesianRidge()),
-        regression(linear_model.ARDRegression()),
-        regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.PassiveAggressiveRegressor(
             random_state=RANDOM_SEED)),
+        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
+        regression(linear_model.RidgeCV()),
+        regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
 
         # Logistic Regression
         classification(linear_model.LogisticRegression(
@@ -244,15 +244,15 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
 
 
         # Random forest
-        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
         regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
+        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
 
-        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
         classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
 
+        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
         classification_binary(
             ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
     ],
 
     # Following is the list of extra tests for languages/models which are
