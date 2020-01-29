@@ -213,10 +213,14 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         regression(linear_model.PassiveAggressiveRegressor(
             random_state=RANDOM_SEED)),
 
-        # Logistic Regression
+        # Linear Classifiers
         classification(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
         classification(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.Perceptron(
             random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifierCV()),
@@ -225,6 +229,10 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         classification_binary(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
         classification_binary(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.Perceptron(
             random_state=RANDOM_SEED)),
         classification_binary(linear_model.RidgeClassifier(
             random_state=RANDOM_SEED)),

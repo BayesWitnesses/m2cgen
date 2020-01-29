@@ -58,13 +58,14 @@ SUPPORTED_MODELS = {
     "SGDRegressor": LinearModelAssembler,
     "PassiveAggressiveRegressor": LinearModelAssembler,
 
-    # Logistic Regressors
+    # Linear Classifiers
     "LogisticRegression": LinearModelAssembler,
     "LogisticRegressionCV": LinearModelAssembler,
     "RidgeClassifier": LinearModelAssembler,
     "RidgeClassifierCV": LinearModelAssembler,
     "SGDClassifier": LinearModelAssembler,
     "PassiveAggressiveClassifier": LinearModelAssembler,
+    "Perceptron": LinearModelAssembler,
 
     # Decision trees
     "DecisionTreeRegressor": TreeModelAssembler,
