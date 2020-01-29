@@ -1,4 +1,4 @@
-from .linear import LinearModelAssembler
+from .linear import LinearModelAssembler, RANSACModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
 from .boosting import (XGBoostModelAssemblerSelector,
@@ -9,6 +9,7 @@ from .svm import SVMModelAssembler
 
 __all__ = [
     LinearModelAssembler,
+    RANSACModelAssembler,
     TreeModelAssembler,
     RandomForestModelAssembler,
     XGBoostModelAssemblerSelector,
@@ -57,6 +58,7 @@ SUPPORTED_MODELS = {
     "ARDRegression": LinearModelAssembler,
     "SGDRegressor": LinearModelAssembler,
     "PassiveAggressiveRegressor": LinearModelAssembler,
+    "RANSACRegressor": RANSACModelAssembler,
 
     # Logistic Regressors
     "LogisticRegression": LinearModelAssembler,

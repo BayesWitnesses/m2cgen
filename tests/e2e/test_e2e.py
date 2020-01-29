@@ -212,6 +212,9 @@ LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
         regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.PassiveAggressiveRegressor(
             random_state=RANDOM_SEED)),
+        regression(linear_model.RANSACRegressor(
+            base_estimator=tree.ExtraTreeRegressor(**TREE_PARAMS),
+            random_state=RANDOM_SEED)),
 
         # Logistic Regression
         classification(linear_model.LogisticRegression(

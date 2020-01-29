@@ -22,6 +22,15 @@ class LinearModelAssembler(ModelAssembler):
         return ast.VectorVal(exprs)
 
 
+class RANSACModelAssembler(ModelAssembler):
+
+    def assemble(self):
+        # import here to avoid circular import
+        from m2cgen.assemblers import get_assembler_cls
+        base_model = self.model.estimator_
+        return get_assembler_cls(base_model)(base_model).assemble()
+
+
 def _linear_to_ast(coef, intercept):
     feature_weight_mul_ops = []
 
