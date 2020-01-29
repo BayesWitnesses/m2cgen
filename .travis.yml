@@ -8,8 +8,8 @@ python:
 
 env:
   - TEST=API
-  - TEST=E2E LANG="c or python or java or go or javascript"
-  - TEST=E2E LANG="c_sharp or visual_basic or powershell or php"
+  - TEST=E2E LANG="c or python or java or go or javascript or php"
+  - TEST=E2E LANG="c_sharp or visual_basic or powershell"
   - TEST=E2E LANG="r_lang"
 
 before_install:
@@ -19,4 +19,4 @@ install:
   - pip install -r requirements-test.txt
 
 script:
-  - travis_wait 30 bash .travis/test.sh
+  - bash .travis/test.sh
