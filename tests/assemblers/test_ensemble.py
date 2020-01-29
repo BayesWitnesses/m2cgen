@@ -25,8 +25,8 @@ def test_single_condition():
                     ast.NumVal(1.0),
                     ast.NumVal(2.0))),
             ast.BinNumOpType.ADD),
-        ast.NumVal(2),
-        ast.BinNumOpType.DIV)
+        ast.NumVal(0.5),
+        ast.BinNumOpType.MUL)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -58,8 +58,8 @@ def test_two_conditions():
                     ast.NumVal(2.0),
                     ast.NumVal(3.0))),
             ast.BinNumOpType.ADD),
-        ast.NumVal(2),
-        ast.BinNumOpType.DIV)
+        ast.NumVal(0.5),
+        ast.BinNumOpType.MUL)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -100,7 +100,7 @@ def test_multi_class():
                         ast.NumVal(0.0),
                         ast.NumVal(1.0)]))),
             ast.BinNumOpType.ADD),
-        ast.NumVal(2),
-        ast.BinNumOpType.DIV)
+        ast.NumVal(0.5),
+        ast.BinNumOpType.MUL)
 
     assert utils.cmp_exprs(actual, expected)

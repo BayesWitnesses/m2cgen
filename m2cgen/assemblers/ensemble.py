@@ -18,5 +18,5 @@ class RandomForestModelAssembler(ModelAssembler):
         return utils.apply_bin_op(
             utils.apply_op_to_expressions(ast.BinNumOpType.ADD,
                                           *assembled_trees),
-            ast.NumVal(self.model.n_estimators),
-            ast.BinNumOpType.DIV)
+            ast.NumVal(1 / self.model.n_estimators),
+            ast.BinNumOpType.MUL)
