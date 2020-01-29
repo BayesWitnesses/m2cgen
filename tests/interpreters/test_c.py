@@ -179,10 +179,6 @@ void mul_vector_number(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
 }
-void div_vector_number(double *v1, double num, int size, double *result) {
-    for(int i = 0; i < size; ++i)
-        result[i] = v1[i] / num;
-}
 void score(double * input, double * output) {
     double var0[2];
     add_vectors((double[]){1, 2}, (double[]){3, 4}, 2, var0);
@@ -208,10 +204,6 @@ void add_vectors(double *v1, double *v2, int size, double *result) {
 void mul_vector_number(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
-}
-void div_vector_number(double *v1, double num, int size, double *result) {
-    for(int i = 0; i < size; ++i)
-        result[i] = v1[i] / num;
 }
 void score(double * input, double * output) {
     double var0[2];

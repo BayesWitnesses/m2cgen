@@ -24,16 +24,3 @@ Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
 
     mulVectorNumber = result
 End Function
-Function divVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
-    Dim resLength As Integer
-    resLength = UBound(v1) - LBound(v1)
-    Dim result() As Double
-    ReDim result(resLength)
-
-    Dim i As Integer
-    For i = LBound(v1) To UBound(v1)
-        result(i) = v1(i) / num
-    Next i
-
-    divVectorNumber = result
-End Function

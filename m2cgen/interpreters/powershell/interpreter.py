@@ -16,7 +16,6 @@ class PowershellInterpreter(ToCodeInterpreter,
 
     supported_bin_vector_num_ops = {
         ast.BinNumOpType.MUL: "Mul-Vector-Number",
-        ast.BinNumOpType.DIV: "Div-Vector-Number",
     }
 
     exponent_function_name = "[math]::Exp"

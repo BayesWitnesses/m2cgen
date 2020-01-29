@@ -196,13 +196,6 @@ function mul_vector_number(array $v1, $num) {
     }
     return $result;
 }
-function div_vector_number(array $v1, $num) {
-    $result = array();
-    for ($i = 0; $i < count($v1); ++$i) {
-        $result[] = $v1[$i] / $num;
-    }
-    return $result;
-}
 function score(array $input) {
     return add_vectors(array(1, 2), array(3, 4));
 }
@@ -231,13 +224,6 @@ function mul_vector_number(array $v1, $num) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
         $result[] = $v1[$i] * $num;
-    }
-    return $result;
-}
-function div_vector_number(array $v1, $num) {
-    $result = array();
-    for ($i = 0; $i < count($v1); ++$i) {
-        $result[] = $v1[$i] / $num;
     }
     return $result;
 }

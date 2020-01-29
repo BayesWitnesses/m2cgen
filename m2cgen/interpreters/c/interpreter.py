@@ -15,7 +15,6 @@ class CInterpreter(ToCodeInterpreter,
 
     supported_bin_vector_num_ops = {
         ast.BinNumOpType.MUL: "mul_vector_number",
-        ast.BinNumOpType.DIV: "div_vector_number",
     }
 
     exponent_function_name = "exp"

@@ -238,19 +238,6 @@ Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
 
     mulVectorNumber = result
 End Function
-Function divVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
-    Dim resLength As Integer
-    resLength = UBound(v1) - LBound(v1)
-    Dim result() As Double
-    ReDim result(resLength)
-
-    Dim i As Integer
-    For i = LBound(v1) To UBound(v1)
-        result(i) = v1(i) / num
-    Next i
-
-    divVectorNumber = result
-End Function
 Function score(ByRef input_vector() As Double) As Double()
     Dim var0(1) As Double
     var0(0) = 1
@@ -300,19 +287,6 @@ Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Next i
 
     mulVectorNumber = result
-End Function
-Function divVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
-    Dim resLength As Integer
-    resLength = UBound(v1) - LBound(v1)
-    Dim result() As Double
-    ReDim result(resLength)
-
-    Dim i As Integer
-    For i = LBound(v1) To UBound(v1)
-        result(i) = v1(i) / num
-    Next i
-
-    divVectorNumber = result
 End Function
 Function score(ByRef input_vector() As Double) As Double()
     Dim var0(1) As Double

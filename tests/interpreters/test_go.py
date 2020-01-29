@@ -181,13 +181,6 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
     }
     return result
 }
-func divVectorNumber(v1 []float64, num float64) []float64 {
-    result := make([]float64, len(v1))
-    for i := 0; i < len(v1); i++ {
-        result[i] = v1[i] / num
-    }
-    return result
-}
 func score(input []float64) []float64 {
     return addVectors([]float64{1, 2}, []float64{3, 4})
 }"""
@@ -214,13 +207,6 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
     result := make([]float64, len(v1))
     for i := 0; i < len(v1); i++ {
         result[i] = v1[i] * num
-    }
-    return result
-}
-func divVectorNumber(v1 []float64, num float64) []float64 {
-    result := make([]float64, len(v1))
-    for i := 0; i < len(v1); i++ {
-        result[i] = v1[i] / num
     }
     return result
 }

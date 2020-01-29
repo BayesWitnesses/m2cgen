@@ -14,7 +14,6 @@ class GoInterpreter(ToCodeInterpreter,
 
     supported_bin_vector_num_ops = {
         ast.BinNumOpType.MUL: "mulVectorNumber",
-        ast.BinNumOpType.DIV: "divVectorNumber",
     }
 
     exponent_function_name = "math.Exp"

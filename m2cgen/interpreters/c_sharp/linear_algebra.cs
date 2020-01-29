@@ -12,10 +12,3 @@ private static double[] MulVectorNumber(double[] v1, double num) {
     }
     return result;
 }
-private static double[] DivVectorNumber(double[] v1, double num) {
-    double[] result = new double[v1.Length];
-    for (int i = 0; i < v1.Length; ++i) {
-        result[i] = v1[i] / num;
-    }
-    return result;
-}
