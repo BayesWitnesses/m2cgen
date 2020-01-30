@@ -26,7 +26,9 @@ SUPPORTED_MODELS = {
 
     # XGBoost
     "XGBClassifier": XGBoostModelAssemblerSelector,
+    "XGBRFClassifier": XGBoostModelAssemblerSelector,
     "XGBRegressor": XGBoostModelAssemblerSelector,
+    "XGBRFRegressor": XGBoostModelAssemblerSelector,
 
     # SVM
     "LinearSVC": LinearModelAssembler,
