@@ -22,27 +22,29 @@ __all__ = [
 
 SUPPORTED_MODELS = {
     # LightGBM
-    "LGBMRegressor": LightGBMModelAssembler,
     "LGBMClassifier": LightGBMModelAssembler,
+    "LGBMRegressor": LightGBMModelAssembler,
 
     # XGBoost
     "XGBClassifier": XGBoostModelAssemblerSelector,
+    "XGBRFClassifier": XGBoostModelAssemblerSelector,
     "XGBRegressor": XGBoostModelAssemblerSelector,
+    "XGBRFRegressor": XGBoostModelAssemblerSelector,
 
     # SVM
     "LinearSVC": LinearModelAssembler,
     "LinearSVR": LinearModelAssembler,
-    "SVR": SVMModelAssembler,
+    "NuSVC": SVMModelAssembler,
     "NuSVR": SVMModelAssembler,
     "SVC": SVMModelAssembler,
-    "NuSVC": SVMModelAssembler,
+    "SVR": SVMModelAssembler,
 
     # Linear Regressors
-    "LinearRegression": LinearModelAssembler,
-    "HuberRegressor": LinearModelAssembler,
+    "ARDRegression": LinearModelAssembler,
+    "BayesianRidge": LinearModelAssembler,
     "ElasticNet": LinearModelAssembler,
     "ElasticNetCV": LinearModelAssembler,
-    "TheilSenRegressor": LinearModelAssembler,
+    "HuberRegressor": LinearModelAssembler,
     "Lars": LinearModelAssembler,
     "LarsCV": LinearModelAssembler,
     "Lasso": LinearModelAssembler,
@@ -50,35 +52,35 @@ SUPPORTED_MODELS = {
     "LassoLars": LinearModelAssembler,
     "LassoLarsCV": LinearModelAssembler,
     "LassoLarsIC": LinearModelAssembler,
+    "LinearRegression": LinearModelAssembler,
     "OrthogonalMatchingPursuit": LinearModelAssembler,
     "OrthogonalMatchingPursuitCV": LinearModelAssembler,
-    "Ridge": LinearModelAssembler,
-    "RidgeCV": LinearModelAssembler,
-    "BayesianRidge": LinearModelAssembler,
-    "ARDRegression": LinearModelAssembler,
-    "SGDRegressor": LinearModelAssembler,
     "PassiveAggressiveRegressor": LinearModelAssembler,
     "RANSACRegressor": RANSACModelAssembler,
+    "Ridge": LinearModelAssembler,
+    "RidgeCV": LinearModelAssembler,
+    "SGDRegressor": LinearModelAssembler,
+    "TheilSenRegressor": LinearModelAssembler,
 
     # Logistic Regressors
     "LogisticRegression": LinearModelAssembler,
     "LogisticRegressionCV": LinearModelAssembler,
+    "PassiveAggressiveClassifier": LinearModelAssembler,
     "RidgeClassifier": LinearModelAssembler,
     "RidgeClassifierCV": LinearModelAssembler,
     "SGDClassifier": LinearModelAssembler,
-    "PassiveAggressiveClassifier": LinearModelAssembler,
 
     # Decision trees
-    "DecisionTreeRegressor": TreeModelAssembler,
     "DecisionTreeClassifier": TreeModelAssembler,
-    "ExtraTreeRegressor": TreeModelAssembler,
+    "DecisionTreeRegressor": TreeModelAssembler,
     "ExtraTreeClassifier": TreeModelAssembler,
+    "ExtraTreeRegressor": TreeModelAssembler,
 
     # Ensembles
-    "RandomForestRegressor": RandomForestModelAssembler,
-    "RandomForestClassifier": RandomForestModelAssembler,
-    "ExtraTreesRegressor": RandomForestModelAssembler,
     "ExtraTreesClassifier": RandomForestModelAssembler,
+    "ExtraTreesRegressor": RandomForestModelAssembler,
+    "RandomForestClassifier": RandomForestModelAssembler,
+    "RandomForestRegressor": RandomForestModelAssembler,
 }
 
 

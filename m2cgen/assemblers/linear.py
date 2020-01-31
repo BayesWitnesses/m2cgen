@@ -25,7 +25,7 @@ class LinearModelAssembler(ModelAssembler):
 class RANSACModelAssembler(ModelAssembler):
 
     def assemble(self):
-        # import here to avoid circular import
+        # import here to avoid circular import error
         from m2cgen.assemblers import get_assembler_cls
         base_model = self.model.estimator_
         return get_assembler_cls(base_model)(base_model).assemble()
