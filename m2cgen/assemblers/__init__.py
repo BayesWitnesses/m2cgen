@@ -23,27 +23,29 @@ __all__ = [
 
 SUPPORTED_MODELS = {
     # LightGBM
-    "LGBMRegressor": LightGBMModelAssembler,
     "LGBMClassifier": LightGBMModelAssembler,
+    "LGBMRegressor": LightGBMModelAssembler,
 
     # XGBoost
     "XGBClassifier": XGBoostModelAssemblerSelector,
+    "XGBRFClassifier": XGBoostModelAssemblerSelector,
     "XGBRegressor": XGBoostModelAssemblerSelector,
+    "XGBRFRegressor": XGBoostModelAssemblerSelector,
 
     # SVM
     "LinearSVC": SklearnLinearModelAssembler,
     "LinearSVR": SklearnLinearModelAssembler,
-    "SVR": SVMModelAssembler,
+    "NuSVC": SVMModelAssembler,
     "NuSVR": SVMModelAssembler,
     "SVC": SVMModelAssembler,
-    "NuSVC": SVMModelAssembler,
+    "SVR": SVMModelAssembler,
 
     # Sklearn Linear Regressors
-    "LinearRegression": SklearnLinearModelAssembler,
-    "HuberRegressor": SklearnLinearModelAssembler,
+    "ARDRegression": SklearnLinearModelAssembler,
+    "BayesianRidge": SklearnLinearModelAssembler,
     "ElasticNet": SklearnLinearModelAssembler,
     "ElasticNetCV": SklearnLinearModelAssembler,
-    "TheilSenRegressor": SklearnLinearModelAssembler,
+    "HuberRegressor": SklearnLinearModelAssembler,
     "Lars": SklearnLinearModelAssembler,
     "LarsCV": SklearnLinearModelAssembler,
     "Lasso": SklearnLinearModelAssembler,
@@ -51,14 +53,14 @@ SUPPORTED_MODELS = {
     "LassoLars": SklearnLinearModelAssembler,
     "LassoLarsCV": SklearnLinearModelAssembler,
     "LassoLarsIC": SklearnLinearModelAssembler,
+    "LinearRegression": SklearnLinearModelAssembler,
     "OrthogonalMatchingPursuit": SklearnLinearModelAssembler,
     "OrthogonalMatchingPursuitCV": SklearnLinearModelAssembler,
+    "PassiveAggressiveRegressor": SklearnLinearModelAssembler,
     "Ridge": SklearnLinearModelAssembler,
     "RidgeCV": SklearnLinearModelAssembler,
-    "BayesianRidge": SklearnLinearModelAssembler,
-    "ARDRegression": SklearnLinearModelAssembler,
     "SGDRegressor": SklearnLinearModelAssembler,
-    "PassiveAggressiveRegressor": SklearnLinearModelAssembler,
+    "TheilSenRegressor": SklearnLinearModelAssembler,
 
     # Statsmodels Linear Regressors
     "RegressionResultsWrapper": StatsmodelsLinearModelAssembler,
@@ -67,22 +69,22 @@ SUPPORTED_MODELS = {
     # Logistic Regressors
     "LogisticRegression": SklearnLinearModelAssembler,
     "LogisticRegressionCV": SklearnLinearModelAssembler,
+    "PassiveAggressiveClassifier": SklearnLinearModelAssembler,
     "RidgeClassifier": SklearnLinearModelAssembler,
     "RidgeClassifierCV": SklearnLinearModelAssembler,
     "SGDClassifier": SklearnLinearModelAssembler,
-    "PassiveAggressiveClassifier": SklearnLinearModelAssembler,
 
     # Decision trees
-    "DecisionTreeRegressor": TreeModelAssembler,
     "DecisionTreeClassifier": TreeModelAssembler,
-    "ExtraTreeRegressor": TreeModelAssembler,
+    "DecisionTreeRegressor": TreeModelAssembler,
     "ExtraTreeClassifier": TreeModelAssembler,
+    "ExtraTreeRegressor": TreeModelAssembler,
 
     # Ensembles
-    "RandomForestRegressor": RandomForestModelAssembler,
-    "RandomForestClassifier": RandomForestModelAssembler,
-    "ExtraTreesRegressor": RandomForestModelAssembler,
     "ExtraTreesClassifier": RandomForestModelAssembler,
+    "ExtraTreesRegressor": RandomForestModelAssembler,
+    "RandomForestClassifier": RandomForestModelAssembler,
+    "RandomForestRegressor": RandomForestModelAssembler,
 }
 
 

@@ -408,3 +408,38 @@ def test_linear_model():
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_regression_random_forest():
+    base_score = 0.6
+    estimator = xgboost.XGBRFRegressor(n_estimators=2, random_state=1,
+                                       max_depth=1, base_score=base_score)
+    utils.get_regression_model_trainer()(estimator)
+
+    assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.SubroutineExpr(
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.6),
+                ast.SubroutineExpr(
+                    ast.IfExpr(
+                        ast.CompExpr(
+                            ast.FeatureRef(5),
+                            ast.NumVal(6.8375001),
+                            ast.CompOpType.GTE),
+                        ast.NumVal(17.3671646),
+                        ast.NumVal(9.48354053))),
+                ast.BinNumOpType.ADD),
+            ast.SubroutineExpr(
+                ast.IfExpr(
+                    ast.CompExpr(
+                        ast.FeatureRef(12),
+                        ast.NumVal(9.72500038),
+                        ast.CompOpType.GTE),
+                    ast.NumVal(8.31587982),
+                    ast.NumVal(14.7766275))),
+            ast.BinNumOpType.ADD))
+
+    assert utils.cmp_exprs(actual, expected)

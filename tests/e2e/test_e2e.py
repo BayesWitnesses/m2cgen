@@ -91,6 +91,10 @@ XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
 XGBOOST_PARAMS_LINEAR = dict(base_score=0.6, n_estimators=10,
                              feature_selector="shuffle", booster="gblinear",
                              random_state=RANDOM_SEED)
+XGBOOST_PARAMS_RF = dict(base_score=0.6, n_estimators=10,
+                         random_state=RANDOM_SEED)
+XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
+                            random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_DART = dict(n_estimators=10, boosting_type='dart',
                             max_drop=30, random_state=RANDOM_SEED)
@@ -100,12 +104,9 @@ LIGHTGBM_PARAMS_GOSS = dict(n_estimators=10, boosting_type='goss',
 LIGHTGBM_PARAMS_RF = dict(n_estimators=10, boosting_type='rf',
                           subsample=0.7, subsample_freq=1,
                           random_state=RANDOM_SEED)
-SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
-
-XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
-                            random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
                              random_state=RANDOM_SEED)
+SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
 STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
                                              alpha=7, L1_wt=0.2)
 
@@ -169,6 +170,10 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS_LINEAR)),
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS_LINEAR)),
 
+        # XGBoost (RF)
+        regression(xgboost.XGBRFRegressor(**XGBOOST_PARAMS_RF)),
+        classification_binary(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_RF)),
+
         # XGBoost (Large Trees)
         regression_random(
             xgboost.XGBRegressor(**XGBOOST_PARAMS_LARGE)),
@@ -183,22 +188,22 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 
         # SVM
-        regression(svm.SVR(kernel="rbf")),
         regression(svm.NuSVR(kernel="rbf")),
-        classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+        regression(svm.SVR(kernel="rbf")),
+        classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
+        classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+        classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="poly", degree=2, **SVC_PARAMS)),
+        classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
-        classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
-        classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
-        classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
 
         # Sklearn Linear Regression
-        regression(linear_model.LinearRegression()),
-        regression(linear_model.HuberRegressor()),
+        regression(linear_model.ARDRegression()),
+        regression(linear_model.BayesianRidge()),
         regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
         regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
-        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.HuberRegressor()),
         regression(linear_model.Lars()),
         regression(linear_model.LarsCV()),
         regression(linear_model.Lasso(random_state=RANDOM_SEED)),
@@ -206,17 +211,26 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(linear_model.LassoLars()),
         regression(linear_model.LassoLarsCV()),
         regression(linear_model.LassoLarsIC()),
+        regression(linear_model.LinearRegression()),
         regression(linear_model.OrthogonalMatchingPursuit()),
         regression(linear_model.OrthogonalMatchingPursuitCV()),
-        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
-        regression(linear_model.RidgeCV()),
-        regression(linear_model.BayesianRidge()),
-        regression(linear_model.ARDRegression()),
-        regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.PassiveAggressiveRegressor(
             random_state=RANDOM_SEED)),
+        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
+        regression(linear_model.RidgeCV()),
+        regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
 
         # Statsmodels Linear Regression
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.OLS,
             dict(init=dict(fit_intercept=True)))),
@@ -231,15 +245,6 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             sm.WLS,
             dict(init=dict(fit_intercept=True, weights=np.arange(
                 len(utils.get_regression_model_trainer().y_train))),
-                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
-        regression(utils.StatsmodelsSklearnLikeWrapper(
-            sm.GLS,
-            dict(init=dict(sigma=np.eye(
-                len(utils.get_regression_model_trainer().y_train)) + 1)))),
-        regression(utils.StatsmodelsSklearnLikeWrapper(
-            sm.GLS,
-            dict(init=dict(sigma=np.eye(
-                len(utils.get_regression_model_trainer().y_train)) + 1),
                  fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
         # Logistic Regression
@@ -273,15 +278,15 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
 
 
         # Random forest
-        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
         regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
+        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
 
-        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
         classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
 
+        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
         classification_binary(
             ensemble.RandomForestClassifier(**FOREST_PARAMS)),
-        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
     ],
 
     # Following is the list of extra tests for languages/models which are
