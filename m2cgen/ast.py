@@ -242,21 +242,22 @@ NESTED_EXPRS_MAPPINGS = [
 
 
 def count_exprs(expr, exclude_list=None):
-    expr_tpe = type(expr)
+    expr_type = type(expr)
     excluded = tuple(exclude_list) if exclude_list else ()
 
     init = 1
-    if issubclass(expr_tpe, excluded) or issubclass(expr_tpe, TransparentExpr):
+    if issubclass(expr_type, excluded) or \
+            issubclass(expr_type, TransparentExpr):
         init = 0
 
     if isinstance(expr, (NumVal, FeatureRef)):
         return init
 
     for tpes, nested_f in NESTED_EXPRS_MAPPINGS:
-        if issubclass(expr_tpe, tpes):
+        if issubclass(expr_type, tpes):
             return init + sum(map(
                 lambda e: count_exprs(e, exclude_list),
                 nested_f(expr)))
 
-    expr_tpe_name = expr_tpe.__name__
-    raise ValueError("Unexpected expression type {}".format(expr_tpe_name))
+    expr_type_name = expr_type.__name__
+    raise ValueError("Unexpected expression type {}".format(expr_type_name))
