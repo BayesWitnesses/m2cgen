@@ -11,7 +11,7 @@ LEAVES_CUTOFF_THRESHOLD = 3000
 
 class BaseBoostingAssembler(ModelAssembler):
 
-    classifier_name = None
+    classifier_names = {}
 
     def __init__(self, model, estimator_params, base_score=0):
         super().__init__(model)
@@ -22,7 +22,7 @@ class BaseBoostingAssembler(ModelAssembler):
         self._is_classification = False
 
         model_class_name = type(model).__name__
-        if model_class_name == self.classifier_name:
+        if model_class_name in self.classifier_names:
             self._is_classification = True
             if model.n_classes_ > 2:
                 self._output_size = model.n_classes_
@@ -112,10 +112,13 @@ class BaseTreeBoostingAssembler(BaseBoostingAssembler):
 
 class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
-    classifier_name = "XGBClassifier"
+    classifier_names = {"XGBClassifier", "XGBRFClassifier"}
 
     def __init__(self, model,
                  leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
+        if type(model).__name__ == "XGBRFClassifier" and model.n_classes_ > 2:
+            raise RuntimeError(
+                "Multiclass XGBRFClassifier is not supported yet")
         feature_names = model.get_booster().feature_names
         self._feature_name_to_idx = {
             name: idx for idx, name in enumerate(feature_names or [])
@@ -167,7 +170,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
 class XGBoostLinearModelAssembler(BaseBoostingAssembler):
 
-    classifier_name = "XGBClassifier"
+    classifier_names = {"XGBClassifier"}
 
     def __init__(self, model):
         model_dump = model.get_booster().get_dump(dump_format="json")
@@ -197,7 +200,7 @@ class XGBoostModelAssemblerSelector(ModelAssembler):
 
 class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
-    classifier_name = "LGBMClassifier"
+    classifier_names = {"LGBMClassifier"}
 
     def __init__(self, model,
                  leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
