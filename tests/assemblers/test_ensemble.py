@@ -16,9 +16,6 @@ def test_single_condition():
         ast.BinNumExpr(
             ast.SubroutineExpr(
                 ast.NumVal(1.0)),
-            ast.NumVal(0.5),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
             ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
@@ -27,9 +24,9 @@ def test_single_condition():
                         ast.CompOpType.LTE),
                     ast.NumVal(1.0),
                     ast.NumVal(2.0))),
-            ast.NumVal(0.5),
-            ast.BinNumOpType.MUL),
-        ast.BinNumOpType.ADD)
+            ast.BinNumOpType.ADD),
+        ast.NumVal(0.5),
+        ast.BinNumOpType.MUL)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -52,9 +49,6 @@ def test_two_conditions():
                         ast.CompOpType.LTE),
                     ast.NumVal(1.0),
                     ast.NumVal(2.0))),
-            ast.NumVal(0.5),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
             ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
@@ -63,9 +57,9 @@ def test_two_conditions():
                         ast.CompOpType.LTE),
                     ast.NumVal(2.0),
                     ast.NumVal(3.0))),
-            ast.NumVal(0.5),
-            ast.BinNumOpType.MUL),
-        ast.BinNumOpType.ADD)
+            ast.BinNumOpType.ADD),
+        ast.NumVal(0.5),
+        ast.BinNumOpType.MUL)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -79,8 +73,8 @@ def test_multi_class():
     assembler = assemblers.RandomForestModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.BinVectorExpr(
-        ast.BinVectorNumExpr(
+    expected = ast.BinVectorNumExpr(
+        ast.BinVectorExpr(
             ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
@@ -93,9 +87,6 @@ def test_multi_class():
                     ast.VectorVal([
                         ast.NumVal(1.0),
                         ast.NumVal(0.0)]))),
-            ast.NumVal(0.5),
-            ast.BinNumOpType.MUL),
-        ast.BinVectorNumExpr(
             ast.SubroutineExpr(
                 ast.IfExpr(
                     ast.CompExpr(
@@ -108,8 +99,8 @@ def test_multi_class():
                     ast.VectorVal([
                         ast.NumVal(0.0),
                         ast.NumVal(1.0)]))),
-            ast.NumVal(0.5),
-            ast.BinNumOpType.MUL),
-        ast.BinNumOpType.ADD)
+            ast.BinNumOpType.ADD),
+        ast.NumVal(0.5),
+        ast.BinNumOpType.MUL)
 
     assert utils.cmp_exprs(actual, expected)

@@ -61,7 +61,7 @@ class TanhExpr(NumExpr):
         return "TanhExpr(" + args + ")"
 
 
-class PowExpr(NumExpr, BinExpr):
+class PowExpr(NumExpr):
     def __init__(self, base_expr, exp_expr, to_reuse=False):
         assert base_expr.output_size == 1, "Only scalars are supported"
         assert exp_expr.output_size == 1, "Only scalars are supported"
@@ -230,3 +230,34 @@ class SubroutineExpr(TransparentExpr):
     def __str__(self):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "SubroutineExpr(" + args + ")"
+
+
+NESTED_EXPRS_MAPPINGS = [
+    ((BinExpr, CompExpr), lambda e: [e.left, e.right]),
+    (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
+    (VectorVal, lambda e: e.exprs),
+    (IfExpr, lambda e: [e.test, e.body, e.orelse]),
+    ((ExpExpr, TanhExpr, TransparentExpr), lambda e: [e.expr]),
+]
+
+
+def count_exprs(expr, exclude_list=None):
+    expr_type = type(expr)
+    excluded = tuple(exclude_list) if exclude_list else ()
+
+    init = 1
+    if issubclass(expr_type, excluded) or \
+            issubclass(expr_type, TransparentExpr):
+        init = 0
+
+    if isinstance(expr, (NumVal, FeatureRef)):
+        return init
+
+    for tpes, nested_f in NESTED_EXPRS_MAPPINGS:
+        if issubclass(expr_type, tpes):
+            return init + sum(map(
+                lambda e: count_exprs(e, exclude_list),
+                nested_f(expr)))
+
+    expr_type_name = expr_type.__name__
+    raise ValueError("Unexpected expression type {}".format(expr_type_name))
