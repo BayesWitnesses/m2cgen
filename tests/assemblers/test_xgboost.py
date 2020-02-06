@@ -282,58 +282,6 @@ def test_regression_saved_without_feature_names():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_leaves_cutoff_threshold():
-    estimator = xgboost.XGBClassifier(n_estimators=2, random_state=1,
-                                      max_depth=1)
-    utils.get_binary_classification_model_trainer()(estimator)
-
-    assembler = assemblers.XGBoostModelAssemblerSelector(
-        estimator, leaves_cutoff_threshold=1)
-    actual = assembler.assemble()
-
-    sigmoid = ast.BinNumExpr(
-        ast.NumVal(1),
-        ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0),
-                    ast.SubroutineExpr(
-                        ast.BinNumExpr(
-                            ast.BinNumExpr(
-                                ast.NumVal(-0.0),
-                                ast.SubroutineExpr(
-                                    ast.SubroutineExpr(
-                                        ast.IfExpr(
-                                            ast.CompExpr(
-                                                ast.FeatureRef(20),
-                                                ast.NumVal(16.7950001),
-                                                ast.CompOpType.GTE),
-                                            ast.NumVal(-0.173057005),
-                                            ast.NumVal(0.163440868)))),
-                                ast.BinNumOpType.ADD),
-                            ast.SubroutineExpr(
-                                ast.SubroutineExpr(
-                                    ast.IfExpr(
-                                        ast.CompExpr(
-                                            ast.FeatureRef(27),
-                                            ast.NumVal(0.142349988),
-                                            ast.CompOpType.GTE),
-                                        ast.NumVal(-0.161026895),
-                                        ast.NumVal(0.149405137)))),
-                            ast.BinNumOpType.ADD)),
-                    ast.BinNumOpType.SUB)),
-            ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV,
-        to_reuse=True)
-
-    expected = ast.VectorVal([
-        ast.BinNumExpr(ast.NumVal(1), sigmoid, ast.BinNumOpType.SUB),
-        sigmoid])
-
-    assert utils.cmp_exprs(actual, expected)
-
-
 def test_linear_model():
     estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
                                      feature_selector="shuffle",

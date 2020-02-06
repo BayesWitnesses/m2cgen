@@ -27,7 +27,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
 
         # We track depth of the binary expressions and call a hook if it
         # reaches specified threshold .
-        if bin_depth == self.bin_depth_threshold:
+        if bin_depth >= self.bin_depth_threshold:
             return self.bin_depth_threshold_hook(expr, **kwargs), kwargs
 
         kwargs["bin_depth"] = bin_depth + 1

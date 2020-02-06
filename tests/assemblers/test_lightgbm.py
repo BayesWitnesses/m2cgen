@@ -117,58 +117,6 @@ def test_regression():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_leaves_cutoff_threshold():
-    estimator = lightgbm.LGBMClassifier(n_estimators=2, random_state=1,
-                                        max_depth=1)
-    utils.get_binary_classification_model_trainer()(estimator)
-
-    assembler = assemblers.LightGBMModelAssembler(estimator,
-                                                  leaves_cutoff_threshold=1)
-    actual = assembler.assemble()
-
-    sigmoid = ast.BinNumExpr(
-        ast.NumVal(1),
-        ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0),
-                    ast.SubroutineExpr(
-                        ast.BinNumExpr(
-                            ast.BinNumExpr(
-                                ast.NumVal(0),
-                                ast.SubroutineExpr(
-                                    ast.SubroutineExpr(
-                                        ast.IfExpr(
-                                            ast.CompExpr(
-                                                ast.FeatureRef(23),
-                                                ast.NumVal(868.2000000000002),
-                                                ast.CompOpType.GT),
-                                            ast.NumVal(0.25986931215073095),
-                                            ast.NumVal(0.6237178414050242)))),
-                                ast.BinNumOpType.ADD),
-                            ast.SubroutineExpr(
-                                ast.SubroutineExpr(
-                                    ast.IfExpr(
-                                        ast.CompExpr(
-                                            ast.FeatureRef(7),
-                                            ast.NumVal(0.05142),
-                                            ast.CompOpType.GT),
-                                        ast.NumVal(-0.1909605544006228),
-                                        ast.NumVal(0.1293965108676673)))),
-                            ast.BinNumOpType.ADD)),
-                    ast.BinNumOpType.SUB)),
-            ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV,
-        to_reuse=True)
-
-    expected = ast.VectorVal([
-        ast.BinNumExpr(ast.NumVal(1), sigmoid, ast.BinNumOpType.SUB),
-        sigmoid])
-
-    assert utils.cmp_exprs(actual, expected)
-
-
 def test_regression_random_forest():
     estimator = lightgbm.LGBMRegressor(boosting_type="rf", n_estimators=2,
                                        random_state=1, max_depth=1,

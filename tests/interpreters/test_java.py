@@ -159,7 +159,7 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
-def test_subroutine():
+def test_ignores_subroutine_expr():
     expr = ast.BinNumExpr(
         ast.FeatureRef(0),
         ast.SubroutineExpr(
@@ -171,10 +171,7 @@ def test_subroutine():
 public class Model {
 
     public static double score(double[] input) {
-        return (input[0]) * (subroutine0(input));
-    }
-    public static double subroutine0(double[] input) {
-        return (1) + (2);
+        return (input[0]) * ((1) + (2));
     }
 }"""
 
@@ -198,22 +195,18 @@ public class Model {
 
 
 def test_multi_output():
-    expr = ast.SubroutineExpr(
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.NumVal(1),
-                ast.NumVal(1),
-                ast.CompOpType.EQ),
-            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
+    expr = ast.IfExpr(
+        ast.CompExpr(
+            ast.NumVal(1),
+            ast.NumVal(1),
+            ast.CompOpType.EQ),
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 public class Model {
 
     public static double[] score(double[] input) {
-        return subroutine0(input);
-    }
-    public static double[] subroutine0(double[] input) {
         double[] var0;
         if ((1) == (1)) {
             var0 = new double[] {1, 2};
@@ -353,6 +346,175 @@ public class Model {
         double var0;
         var0 = Math.exp(1.0);
         return (var0) / (var0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_depth_threshold_with_bin_expr():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
+
+    interpreter = interpreters.JavaInterpreter()
+    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_per_subroutine_threshold = 1
+
+    expected_code = """
+public class Model {
+
+    public static double score(double[] input) {
+        return (1) + ((1) + (subroutine0(input)));
+    }
+    public static double subroutine0(double[] input) {
+        return (1) + ((1) + (1));
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_depth_threshold_without_bin_expr():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        expr = ast.IfExpr(
+            ast.CompExpr(
+                ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
+            ast.NumVal(1),
+            expr)
+
+    interpreter = interpreters.JavaInterpreter()
+    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_per_subroutine_threshold = 1
+
+    expected_code = """
+public class Model {
+
+    public static double score(double[] input) {
+        double var0;
+        if ((1) == (1)) {
+            var0 = 1;
+        } else {
+            if ((1) == (1)) {
+                var0 = 1;
+            } else {
+                if ((1) == (1)) {
+                    var0 = 1;
+                } else {
+                    if ((1) == (1)) {
+                        var0 = 1;
+                    } else {
+                        var0 = 1;
+                    }
+                }
+            }
+        }
+        return var0;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_deep_mixed_exprs_not_reaching_threshold():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        inner = ast.NumVal(1)
+        for _ in range(2):
+            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+
+        expr = ast.IfExpr(
+            ast.CompExpr(
+                inner, ast.NumVal(1), ast.CompOpType.EQ),
+            ast.NumVal(1),
+            expr)
+
+    interpreter = interpreters.JavaInterpreter()
+    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_per_subroutine_threshold = 1
+
+    expected_code = """
+public class Model {
+
+    public static double score(double[] input) {
+        double var0;
+        if (((1) + ((1) + (1))) == (1)) {
+            var0 = 1;
+        } else {
+            if (((1) + ((1) + (1))) == (1)) {
+                var0 = 1;
+            } else {
+                if (((1) + ((1) + (1))) == (1)) {
+                    var0 = 1;
+                } else {
+                    if (((1) + ((1) + (1))) == (1)) {
+                        var0 = 1;
+                    } else {
+                        var0 = 1;
+                    }
+                }
+            }
+        }
+        return var0;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_deep_mixed_exprs_exceeding_threshold():
+    expr = ast.NumVal(1)
+    for i in range(4):
+        inner = ast.NumVal(1)
+        for i in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+
+        expr = ast.IfExpr(
+            ast.CompExpr(
+                inner, ast.NumVal(1), ast.CompOpType.EQ),
+            ast.NumVal(1),
+            expr)
+
+    interpreter = interpreters.JavaInterpreter()
+    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_per_subroutine_threshold = 1
+
+    expected_code = """
+public class Model {
+
+    public static double score(double[] input) {
+        double var0;
+        if (((1) + ((1) + (subroutine0(input)))) == (1)) {
+            var0 = 1;
+        } else {
+            if (((1) + ((1) + (subroutine1(input)))) == (1)) {
+                var0 = 1;
+            } else {
+                if (((1) + ((1) + (subroutine2(input)))) == (1)) {
+                    var0 = 1;
+                } else {
+                    if (((1) + ((1) + (subroutine3(input)))) == (1)) {
+                        var0 = 1;
+                    } else {
+                        var0 = 1;
+                    }
+                }
+            }
+        }
+        return var0;
+    }
+    public static double subroutine0(double[] input) {
+        return (1) + ((1) + (1));
+    }
+    public static double subroutine1(double[] input) {
+        return (1) + ((1) + (1));
+    }
+    public static double subroutine2(double[] input) {
+        return (1) + ((1) + (1));
+    }
+    public static double subroutine3(double[] input) {
+        return (1) + ((1) + (1));
     }
 }"""
 
