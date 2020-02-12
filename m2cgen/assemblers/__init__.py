@@ -62,10 +62,11 @@ SUPPORTED_MODELS = {
     "SGDRegressor": LinearModelAssembler,
     "TheilSenRegressor": LinearModelAssembler,
 
-    # Logistic Regressors
+    # Linear Classifiers
     "LogisticRegression": LinearModelAssembler,
     "LogisticRegressionCV": LinearModelAssembler,
     "PassiveAggressiveClassifier": LinearModelAssembler,
+    "Perceptron": LinearModelAssembler,
     "RidgeClassifier": LinearModelAssembler,
     "RidgeClassifierCV": LinearModelAssembler,
     "SGDClassifier": LinearModelAssembler,

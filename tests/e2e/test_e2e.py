@@ -221,10 +221,14 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
 
-        # Logistic Regression
+        # Linear Classifiers
         classification(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
         classification(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.Perceptron(
             random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifierCV()),
@@ -233,6 +237,10 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         classification_binary(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
         classification_binary(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.Perceptron(
             random_state=RANDOM_SEED)),
         classification_binary(linear_model.RidgeClassifier(
             random_state=RANDOM_SEED)),
