@@ -247,10 +247,14 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
                 len(utils.get_regression_model_trainer().y_train))),
                  fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
-        # Logistic Regression
+        # Linear Classifiers
         classification(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
         classification(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.Perceptron(
             random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifierCV()),
@@ -259,6 +263,10 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
         classification_binary(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.Perceptron(
             random_state=RANDOM_SEED)),
         classification_binary(linear_model.RidgeClassifier(
             random_state=RANDOM_SEED)),

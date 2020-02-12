@@ -66,10 +66,11 @@ SUPPORTED_MODELS = {
     "RegressionResultsWrapper": StatsmodelsLinearModelAssembler,
     "RegularizedResultsWrapper": StatsmodelsLinearModelAssembler,
 
-    # Logistic Regressors
+    # Linear Classifiers
     "LogisticRegression": SklearnLinearModelAssembler,
     "LogisticRegressionCV": SklearnLinearModelAssembler,
     "PassiveAggressiveClassifier": SklearnLinearModelAssembler,
+    "Perceptron": SklearnLinearModelAssembler,
     "RidgeClassifier": SklearnLinearModelAssembler,
     "RidgeClassifierCV": SklearnLinearModelAssembler,
     "SGDClassifier": SklearnLinearModelAssembler,
