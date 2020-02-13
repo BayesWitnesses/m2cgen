@@ -6,9 +6,11 @@ from .boosting import (XGBoostModelAssemblerSelector,
                        XGBoostLinearModelAssembler,
                        LightGBMModelAssembler)
 from .svm import SVMModelAssembler
+from .meta import RANSACModelAssembler
 
 __all__ = [
     LinearModelAssembler,
+    RANSACModelAssembler,
     TreeModelAssembler,
     RandomForestModelAssembler,
     XGBoostModelAssemblerSelector,
@@ -55,6 +57,7 @@ SUPPORTED_MODELS = {
     "OrthogonalMatchingPursuit": LinearModelAssembler,
     "OrthogonalMatchingPursuitCV": LinearModelAssembler,
     "PassiveAggressiveRegressor": LinearModelAssembler,
+    "RANSACRegressor": RANSACModelAssembler,
     "Ridge": LinearModelAssembler,
     "RidgeCV": LinearModelAssembler,
     "SGDRegressor": LinearModelAssembler,

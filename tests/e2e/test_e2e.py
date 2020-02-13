@@ -213,6 +213,9 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         regression(linear_model.OrthogonalMatchingPursuitCV()),
         regression(linear_model.PassiveAggressiveRegressor(
             random_state=RANDOM_SEED)),
+        regression(linear_model.RANSACRegressor(
+            base_estimator=tree.ExtraTreeRegressor(**TREE_PARAMS),
+            random_state=RANDOM_SEED)),
         regression(linear_model.Ridge(random_state=RANDOM_SEED)),
         regression(linear_model.RidgeCV()),
         regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
