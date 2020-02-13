@@ -1,4 +1,4 @@
-from .linear import LinearModelAssembler, RANSACModelAssembler
+from .linear import LinearModelAssembler
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
 from .boosting import (XGBoostModelAssemblerSelector,
@@ -6,6 +6,7 @@ from .boosting import (XGBoostModelAssemblerSelector,
                        XGBoostLinearModelAssembler,
                        LightGBMModelAssembler)
 from .svm import SVMModelAssembler
+from .meta import RANSACModelAssembler
 
 __all__ = [
     LinearModelAssembler,
