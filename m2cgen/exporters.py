@@ -2,7 +2,8 @@ from m2cgen import assemblers
 from m2cgen import interpreters
 
 
-def export_to_java(model, package_name=None, class_name="Model", indent=4):
+def export_to_java(model, package_name=None, class_name="Model", indent=4,
+                   function_name="score"):
     """
     Generates a Java code representation of the given model.
 
@@ -16,6 +17,8 @@ def export_to_java(model, package_name=None, class_name="Model", indent=4):
         The name of the generated class.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
@@ -24,11 +27,13 @@ def export_to_java(model, package_name=None, class_name="Model", indent=4):
     interpreter = interpreters.JavaInterpreter(
         package_name=package_name,
         class_name=class_name,
-        indent=indent)
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_python(model, indent=4):
+def export_to_python(model, indent=4, function_name="score"):
     """
     Generates a Python code representation of the given model.
 
@@ -38,16 +43,21 @@ def export_to_python(model, indent=4):
         The model object that should be transpiled into code.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.PythonInterpreter(indent=indent)
+    interpreter = interpreters.PythonInterpreter(
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_c(model, indent=4):
+def export_to_c(model, indent=4, function_name="score"):
     """
     Generates a C code representation of the given model.
 
@@ -57,16 +67,21 @@ def export_to_c(model, indent=4):
         The model object that should be transpiled into code.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.CInterpreter(indent=indent)
+    interpreter = interpreters.CInterpreter(
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_go(model, indent=4):
+def export_to_go(model, indent=4, function_name="score"):
     """
     Generates a Go code representation of the given model.
 
@@ -76,16 +91,21 @@ def export_to_go(model, indent=4):
         The model object that should be transpiled into code.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.GoInterpreter(indent=indent)
+    interpreter = interpreters.GoInterpreter(
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_javascript(model, indent=4):
+def export_to_javascript(model, indent=4, function_name="score"):
     """
     Generates a JavaScript code representation of the given model.
 
@@ -95,16 +115,22 @@ def export_to_javascript(model, indent=4):
         The model object that should be transpiled into code.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.JavascriptInterpreter(indent=indent)
+    interpreter = interpreters.JavascriptInterpreter(
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_visual_basic(model, module_name="Model", indent=4):
+def export_to_visual_basic(model, module_name="Model", indent=4,
+                           function_name="score"):
     """
     Generates a Visual Basic (also can be treated as VBA
     with some small manual changes, see a note below)
@@ -158,17 +184,23 @@ def export_to_visual_basic(model, module_name="Model", indent=4):
         The name of the generated module.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.VisualBasicInterpreter(module_name=module_name,
-                                                      indent=indent)
+    interpreter = interpreters.VisualBasicInterpreter(
+        module_name=module_name,
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_c_sharp(model, namespace="ML", class_name="Model", indent=4):
+def export_to_c_sharp(model, namespace="ML", class_name="Model", indent=4,
+                      function_name="Score"):
     """
     Generates a C# code representation of the given model.
 
@@ -182,6 +214,8 @@ def export_to_c_sharp(model, namespace="ML", class_name="Model", indent=4):
         The name of the generated class.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'Score')
 
     Returns
     -------
@@ -190,11 +224,13 @@ def export_to_c_sharp(model, namespace="ML", class_name="Model", indent=4):
     interpreter = interpreters.CSharpInterpreter(
         namespace=namespace,
         class_name=class_name,
-        indent=indent)
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_powershell(model, indent=4):
+def export_to_powershell(model, indent=4, function_name="Score"):
     """
     Generates a PowerShell code representation of the given model.
 
@@ -204,16 +240,21 @@ def export_to_powershell(model, indent=4):
         The model object that should be transpiled into code.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'Score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.PowershellInterpreter(indent=indent)
+    interpreter = interpreters.PowershellInterpreter(
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_r(model, indent=4):
+def export_to_r(model, indent=4, function_name="score"):
     """
     Generates a R code representation of the given model.
 
@@ -223,16 +264,21 @@ def export_to_r(model, indent=4):
         The model object that should be transpiled into code.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.RInterpreter(indent=indent)
+    interpreter = interpreters.RInterpreter(
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 
-def export_to_php(model, indent=4):
+def export_to_php(model, indent=4, function_name="score"):
     """
     Generates a PHP code representation of the given model.
 
@@ -242,12 +288,17 @@ def export_to_php(model, indent=4):
         The model object that should be transpiled into code.
     indent : int, optional
         The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code (defaults to 'score')
 
     Returns
     -------
     code : string
     """
-    interpreter = interpreters.PhpInterpreter(indent=indent)
+    interpreter = interpreters.PhpInterpreter(
+        indent=indent,
+        function_name=function_name
+    )
     return _export(model, interpreter)
 
 

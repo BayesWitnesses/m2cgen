@@ -31,10 +31,11 @@ class JavaInterpreter(ToCodeInterpreter,
     tanh_function_name = "Math.tanh"
 
     def __init__(self, package_name=None, class_name="Model", indent=4,
-                 *args, **kwargs):
+                 function_name="score", *args, **kwargs):
         self.package_name = package_name
         self.class_name = class_name
         self.indent = indent
+        self.function_name = function_name
 
         # We don't provide any code generator as for each subroutine we will
         # create a new one and concatenate their results into top_cg created
@@ -52,7 +53,7 @@ class JavaInterpreter(ToCodeInterpreter,
             # Since we use SubroutinesAsFunctionsMixin, we already have logic
             # of adding methods. We create first subroutine for incoming
             # expression and call `process_subroutine_queue` method.
-            self.enqueue_subroutine("score", expr)
+            self.enqueue_subroutine(self.function_name, expr)
             self.process_subroutine_queue(top_cg)
 
             if self.with_linear_algebra:

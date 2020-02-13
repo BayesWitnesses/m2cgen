@@ -20,7 +20,9 @@ class PhpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
     power_function_name = "pow"
     tanh_function_name = "tanh"
 
-    def __init__(self, indent=4, *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", *args, **kwargs):
+        self.function_name = function_name
+
         cg = PhpCodeGenerator(indent=indent)
         super(PhpInterpreter, self).__init__(cg, *args, **kwargs)
 

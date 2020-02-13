@@ -21,7 +21,9 @@ class CInterpreter(ToCodeInterpreter,
     power_function_name = "pow"
     tanh_function_name = "tanh"
 
-    def __init__(self, indent=4, *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", *args, **kwargs):
+        self.function_name = function_name
+
         cg = CCodeGenerator(indent=indent)
         super(CInterpreter, self).__init__(cg, *args, **kwargs)
 

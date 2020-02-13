@@ -17,18 +17,19 @@ import m2cgen
 
 
 LANGUAGE_TO_EXPORTER = {
-    "python": (m2cgen.export_to_python, ["indent"]),
-    "java": (m2cgen.export_to_java, ["indent", "class_name", "package_name"]),
-    "c": (m2cgen.export_to_c, ["indent"]),
-    "go": (m2cgen.export_to_go, ["indent"]),
-    "javascript": (m2cgen.export_to_javascript, ["indent"]),
+    "python": (m2cgen.export_to_python, ["indent", "function_name"]),
+    "java": (m2cgen.export_to_java, ["indent", "class_name", "package_name",
+                                     "function_name"]),
+    "c": (m2cgen.export_to_c, ["indent", "function_name"]),
+    "go": (m2cgen.export_to_go, ["indent", "function_name"]),
+    "javascript": (m2cgen.export_to_javascript, ["indent", "function_name"]),
     "visual_basic": (m2cgen.export_to_visual_basic,
-                     ["module_name", "indent"]),
+                     ["module_name", "indent", "function_name"]),
     "c_sharp": (m2cgen.export_to_c_sharp,
-                ["indent", "class_name", "namespace"]),
-    "powershell": (m2cgen.export_to_powershell, ["indent"]),
-    "r": (m2cgen.export_to_r, ["indent"]),
-    "php": (m2cgen.export_to_php, ["indent"]),
+                ["indent", "class_name", "namespace", "function_name"]),
+    "powershell": (m2cgen.export_to_powershell, ["indent", "function_name"]),
+    "r": (m2cgen.export_to_r, ["indent", "function_name"]),
+    "php": (m2cgen.export_to_php, ["indent", "function_name"]),
 }
 
 
@@ -48,6 +49,10 @@ parser.add_argument(
     choices=LANGUAGE_TO_EXPORTER.keys(),
     help="Target language",
     required=True)
+parser.add_argument(
+    "--function_name", "-fn", dest="function_name", type=str,
+    default="score",
+    help="Name of the function in the generated code (defaults to 'score')")
 parser.add_argument(
     "--class_name", "-cn", dest="class_name", type=str,
     help="Name of the generated class (if supported by target language)")
