@@ -10,13 +10,13 @@ from m2cgen import cli
 from tests import utils
 
 
-def _get_mock_args(indent=4, namespace=None, module_name=None,
-                   package_name=None, class_name=None,
+def _get_mock_args(indent=4, function_name="score", namespace=None,
+                   module_name=None, package_name=None, class_name=None,
                    infile=None, language=None):
     return mock.MagicMock(
-        indent=indent, namespace=namespace, module_name=module_name,
-        package_name=package_name, class_name=class_name,
-        infile=infile, language=language,
+        indent=indent, function_name=function_name, namespace=namespace,
+        module_name=module_name, package_name=package_name,
+        class_name=class_name, infile=infile, language=language,
         recursion_limit=cli.MAX_RECURSION_DEPTH)
 
 
