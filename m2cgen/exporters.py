@@ -250,6 +250,28 @@ def export_to_php(model, indent=4):
     interpreter = interpreters.PhpInterpreter(indent=indent)
     return _export(model, interpreter)
 
+def export_to_dart(model, class_name="Model", indent=4):
+    """
+    Generates a Dart code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    class_name : string, optional
+        The name of the generated class.
+    indent : int, optional
+        The size of indents in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.DartInterpreter(
+        class_name=class_name,
+        indent=indent)
+    return _export(model, interpreter)
+
 
 def _export(model, interpreter):
     assembler_cls = assemblers.get_assembler_cls(model)

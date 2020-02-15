@@ -8,6 +8,7 @@ from .c_sharp.interpreter import CSharpInterpreter
 from .powershell.interpreter import PowershellInterpreter
 from .r.interpreter import RInterpreter
 from .php.interpreter import PhpInterpreter
+from .dart.interpreter import DartInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -20,4 +21,5 @@ __all__ = [
     PowershellInterpreter,
     RInterpreter,
     PhpInterpreter,
+    DartInterpreter
 ]
