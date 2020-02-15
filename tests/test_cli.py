@@ -86,6 +86,16 @@ def test_generate_code():
         expected_output=-47.62913662138064)
 
 
+def test_function_name():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="python", function_name="predict")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert generated_code.startswith("def predict")
+
+
 def test_class_name():
     infile = _get_pickled_trained_model()
     mock_args = _get_mock_args(
