@@ -26,6 +26,7 @@ class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
     def __init__(self, model, params):
         self.model = model
         self.params = params
+        # mock class name to show appropriate model name in tests
         self.__class__.__name__ = model.__name__
 
     def fit(self, X, y):
@@ -39,6 +40,7 @@ class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
                 **self.params["fit_regularized"])
         else:
             self.fitted_model_ = est.fit(**self.params.get("fit", {}))
+        # mock class name to show appropriate model name in tests
         self.__class__.__name__ = type(self.fitted_model_).__name__
         return self.fitted_model_
 
@@ -57,32 +59,32 @@ class ModelTrainer:
         self.test_fraction = test_fraction
         np.random.seed(seed=7)
         if dataset_name == "boston":
-            self.__name__ = "train_model_regression"
+            self.name = "train_model_regression"
             dataset = datasets.load_boston()
             self.X, self.y = shuffle(
                 dataset.data, dataset.target, random_state=13)
         elif dataset_name == "iris":
-            self.__name__ = "train_model_classification"
+            self.name = "train_model_classification"
             dataset = datasets.load_iris()
             self.X, self.y = shuffle(
                 dataset.data, dataset.target, random_state=13)
         elif dataset_name == "breast_cancer":
-            self.__name__ = "train_model_classification_binary"
+            self.name = "train_model_classification_binary"
             dataset = datasets.load_breast_cancer()
             self.X, self.y = shuffle(
                 dataset.data, dataset.target, random_state=13)
         elif dataset_name == "regression_rnd":
-            self.__name__ = "train_model_regression_random_data"
+            self.name = "train_model_regression_random_data"
             N = 1000
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.random(size=(N, 1))
         elif dataset_name == "classification_rnd":
-            self.__name__ = "train_model_classification_random_data"
+            self.name = "train_model_classification_random_data"
             N = 1000
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(3, size=(N,))
         elif dataset_name == "classification_binary_rnd":
-            self.__name__ = "train_model_classification_binary_random_data"
+            self.name = "train_model_classification_binary_random_data"
             N = 1000
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(2, size=(N,))
@@ -240,7 +242,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         # We use custom id since pytest for some reason can't show name of
         # the model in the automatic id. Which sucks.
         ids.append("{} - {} - {}".format(
-            type(model).__name__, executor_mark.name, trainer.__name__))
+            type(model).__name__, executor_mark.name, trainer.name))
 
         result_params.append(pytest.param(
             model, executor, trainer, marks=[executor_mark, trainer_mark],
