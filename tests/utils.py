@@ -57,6 +57,7 @@ class ModelTrainer:
     def __init__(self, dataset_name, test_fraction):
         self.dataset_name = dataset_name
         self.test_fraction = test_fraction
+        self.fitted_estimator = None
         np.random.seed(seed=7)
         if dataset_name == "boston":
             self.name = "train_model_regression"
@@ -95,29 +96,43 @@ class ModelTrainer:
         self.X_train, self.y_train = self.X[:offset], self.y[:offset]
         self.X_test, self.y_test = self.X[offset:], self.y[offset:]
 
+    def fit(self, estimator=None):
+        if estimator is not None:
+            self.fitted_estimator = estimator.fit(self.X_train, self.y_train)
+        return self
+
     @classmethod
-    def get_instance(cls, dataset_name, test_fraction=0.02):
-        key = dataset_name + " {}".format(test_fraction)
+    def get_instance(cls, dataset_name, test_fraction=0.02, estimator=None):
+        dataset_key = "{} {}".format(dataset_name, test_fraction)
+        key = dataset_key + " {}".format(type(estimator).__name__)
         if key not in cls._class_instances:
-            cls._class_instances[key] = ModelTrainer(
-                dataset_name, test_fraction)
+            # to calculate models' initial params we need only dataset shapes,
+            # so cache empty trainer for possible future usage
+            empty_trainer = cls._class_instances.setdefault(
+                dataset_key + " {}".format(type(None).__name__),
+                ModelTrainer(dataset_name, test_fraction))
+            cls._class_instances[key] = empty_trainer.fit(estimator)
         return cls._class_instances[key]
 
-    def __call__(self, estimator):
-        fitted_estimator = estimator.fit(self.X_train, self.y_train)
+    def __call__(self):
+        if self.fitted_estimator is not None:
+            if isinstance(
+                    self.fitted_estimator,
+                    (LinearClassifierMixin, SVC, NuSVC)):
+                y_pred = self.fitted_estimator.decision_function(self.X_test)
+            elif isinstance(
+                    self.fitted_estimator,
+                    DecisionTreeClassifier):
+                y_pred = self.fitted_estimator \
+                    .predict_proba(self.X_test.astype(np.float32))
+            elif isinstance(
+                    self.fitted_estimator,
+                    (forest.ForestClassifier, XGBClassifier, LGBMClassifier)):
+                y_pred = self.fitted_estimator.predict_proba(self.X_test)
+            else:
+                y_pred = self.fitted_estimator.predict(self.X_test)
 
-        if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC)):
-            y_pred = estimator.decision_function(self.X_test)
-        elif isinstance(estimator, DecisionTreeClassifier):
-            y_pred = estimator.predict_proba(self.X_test.astype(np.float32))
-        elif isinstance(
-                estimator,
-                (forest.ForestClassifier, XGBClassifier, LGBMClassifier)):
-            y_pred = estimator.predict_proba(self.X_test)
-        else:
-            y_pred = estimator.predict(self.X_test)
-
-        return self.X_test, y_pred, fitted_estimator
+            return self.X_test, y_pred, self.fitted_estimator
 
 
 def cmp_exprs(left, right):
