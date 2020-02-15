@@ -37,7 +37,7 @@ class DartCodeGenerator(CLikeCodeGenerator):
     @contextlib.contextmanager
     def method_definition(self, name, args, is_vector_output, is_private=True):
         self.add_method_def(name, args, is_vector_output,
-            is_private=is_private)
+                            is_private=is_private)
         yield
         self.add_block_termination()
 
