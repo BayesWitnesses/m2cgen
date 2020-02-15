@@ -250,6 +250,7 @@ def export_to_php(model, indent=4):
     interpreter = interpreters.PhpInterpreter(indent=indent)
     return _export(model, interpreter)
 
+
 def export_to_dart(model, class_name="Model", indent=4):
     """
     Generates a Dart code representation of the given model.
