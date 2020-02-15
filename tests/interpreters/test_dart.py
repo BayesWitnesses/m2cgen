@@ -292,11 +292,25 @@ class Model {
 
 
 def test_tanh_expr():
-    # TODO update this once tanh is available
     expr = ast.TanhExpr(ast.NumVal(2.0))
+
+    expected_code = """
+import 'dart:math';
+class Model {
+    static double score(List<double> input) {
+        return tanh(2.0);
+    }
+    static double tanh(double x) {
+        if (x > 22.0)
+            return 1.0;
+        if (x < -22.0)
+            return -1.0;
+        return ((exp(2*x) - 1)/(exp(2*x) + 1));
+    }
+}
+"""
     interpreter = DartInterpreter()
-    with utils.pytest.raises(TypeError):
-        interpreter.interpret(expr)
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():

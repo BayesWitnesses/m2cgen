@@ -19,7 +19,9 @@ class DartInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
 
     exponent_function_name = "exp"
     power_function_name = "pow"
-    tanh_function_name = NotImplemented
+    tanh_function_name = "tanh"
+
+    with_tanh_expr = False
 
     def __init__(self, class_name="Model", indent=4,
                  *args, **kwargs):
@@ -50,7 +52,18 @@ class DartInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
                     os.path.dirname(__file__), "linear_algebra.dart")
                 self._cg.add_code_lines(utils.get_file_content(filename))
 
+            # Use own tanh function in order to be compatible with Dart
+            if self.with_tanh_expr:
+                filename = os.path.join(
+                    os.path.dirname(__file__), "tanh.dart")
+                self._cg.add_code_lines(utils.get_file_content(filename))
+
         if self.with_math_module:
             self._cg.add_dependency("dart:math")
 
         return self._cg.code
+
+    def interpret_tanh_expr(self, expr, **kwargs):
+        self.with_tanh_expr = True
+        return super(
+            DartInterpreter, self).interpret_tanh_expr(expr, **kwargs)
