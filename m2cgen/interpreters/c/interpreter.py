@@ -39,7 +39,7 @@ class CInterpreter(ToCodeInterpreter,
             args += [(True, "output")]
 
         with self._cg.function_definition(
-                name="score",
+                name=self.function_name,
                 args=args,
                 is_scalar_output=expr.output_size == 1):
 

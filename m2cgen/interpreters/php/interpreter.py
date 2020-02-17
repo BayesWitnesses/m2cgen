@@ -31,7 +31,7 @@ class PhpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
         self._reset_reused_expr_cache()
 
         with self._cg.function_definition(
-                name="score",
+                name=self.function_name,
                 args=[(True, self._feature_array_name)]):
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
