@@ -18,7 +18,7 @@ def export_to_java(model, package_name=None, class_name="Model", indent=4,
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -44,7 +44,7 @@ def export_to_python(model, indent=4, function_name="score"):
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -68,7 +68,7 @@ def export_to_c(model, indent=4, function_name="score"):
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -92,7 +92,7 @@ def export_to_go(model, indent=4, function_name="score"):
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -116,7 +116,7 @@ def export_to_javascript(model, indent=4, function_name="score"):
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -185,7 +185,7 @@ def export_to_visual_basic(model, module_name="Model", indent=4,
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -215,7 +215,7 @@ def export_to_c_sharp(model, namespace="ML", class_name="Model", indent=4,
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'Score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -241,7 +241,7 @@ def export_to_powershell(model, indent=4, function_name="Score"):
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'Score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -265,7 +265,7 @@ def export_to_r(model, indent=4, function_name="score"):
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------
@@ -289,7 +289,7 @@ def export_to_php(model, indent=4, function_name="score"):
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
-        Name of the function in the generated code (defaults to 'score')
+        Name of the function in the generated code.
 
     Returns
     -------

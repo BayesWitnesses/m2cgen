@@ -39,39 +39,39 @@ MAX_RECURSION_DEPTH = np.iinfo(np.intc).max
 
 parser = argparse.ArgumentParser(
     prog="m2cgen",
-    description="Generate code in native language for provided model")
+    description="Generate code in native language for provided model.")
 parser.add_argument(
     "infile", type=argparse.FileType("rb"), nargs="?",
     default=sys.stdin.buffer,
-    help="File with pickle representation of the model")
+    help="File with pickle representation of the model.")
 parser.add_argument(
     "--language", "-l", type=str,
     choices=LANGUAGE_TO_EXPORTER.keys(),
-    help="Target language",
+    help="Target language.",
     required=True)
 parser.add_argument(
     "--function_name", "-fn", dest="function_name", type=str,
     default="score",
-    help="Name of the function in the generated code (defaults to 'score')")
+    help="Name of the function in the generated code.")
 parser.add_argument(
     "--class_name", "-cn", dest="class_name", type=str,
-    help="Name of the generated class (if supported by target language)")
+    help="Name of the generated class (if supported by target language).")
 parser.add_argument(
     "--package_name", "-pn", dest="package_name", type=str,
     help="Package name for the generated code "
-         "(if supported by target language)")
+         "(if supported by target language).")
 parser.add_argument(
     "--module_name", "-mn", dest="module_name", type=str,
     help="Module name for the generated code "
-         "(if supported by target language)")
+         "(if supported by target language).")
 parser.add_argument(
     "--namespace", "-ns", dest="namespace", type=str,
     help="Namespace for the generated code "
-         "(if supported by target language)")
+         "(if supported by target language).")
 parser.add_argument(
     "--indent", "-i", dest="indent", type=int,
     default=4,
-    help="Indentation for the generated code")
+    help="Indentation for the generated code.")
 parser.add_argument(
     "--recursion-limit", "-rl", type=int,
     help="Sets the maximum depth of the Python interpreter stack. "
