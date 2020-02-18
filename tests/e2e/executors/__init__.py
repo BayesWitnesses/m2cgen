@@ -8,6 +8,7 @@ from tests.e2e.executors.c_sharp import CSharpExecutor
 from tests.e2e.executors.powershell import PowershellExecutor
 from tests.e2e.executors.r import RExecutor
 from tests.e2e.executors.php import PhpExecutor
+from tests.e2e.executors.dart import DartExecutor
 
 __all__ = [
     JavaExecutor,
@@ -20,4 +21,5 @@ __all__ = [
     PowershellExecutor,
     RExecutor,
     PhpExecutor,
+    DartExecutor,
 ]

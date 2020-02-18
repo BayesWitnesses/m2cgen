@@ -28,6 +28,7 @@ pip install m2cgen
 
 - C
 - C#
+- Dart
 - Go
 - Java
 - JavaScript
@@ -36,7 +37,6 @@ pip install m2cgen
 - Python
 - R
 - Visual Basic
-- Dart
 
 ## Supported Models
 

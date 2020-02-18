@@ -1,4 +1,4 @@
-static double tanh(double x) {
+double tanh(double x) {
     if (x > 22.0)
         return 1.0;
     if (x < -22.0)
