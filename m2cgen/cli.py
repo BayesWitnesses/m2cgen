@@ -11,6 +11,7 @@ Model can also be piped:
 import pickle
 import argparse
 import sys
+import inspect
 import numpy as np
 
 import m2cgen
@@ -51,7 +52,7 @@ parser.add_argument(
     required=True)
 parser.add_argument(
     "--function_name", "-fn", dest="function_name", type=str,
-    default="score",
+    default=None,
     help="Name of the function in the generated code.")
 parser.add_argument(
     "--class_name", "-cn", dest="class_name", type=str,
@@ -99,6 +100,16 @@ def generate_code(args):
         arg_value = getattr(args, arg_name)
         if arg_value is not None:
             kwargs[arg_name] = arg_value
+
+        # Special handling for the function_name parameter, which needs to be
+        # the same as the default value of the keyword argument of the exporter
+        # (this is due to languages like C# which prefer their method names to
+        # follow PascalCase unlike all the other supported languages -- see
+        # https://github.com/BayesWitnesses/m2cgen/pull/166/files#r379867601
+        # for more).
+        if arg_name == 'function_name' and arg_value is None:
+            param = inspect.signature(exporter).parameters['function_name']
+            kwargs[arg_name] = param.default
 
     return exporter(model, **kwargs)
 

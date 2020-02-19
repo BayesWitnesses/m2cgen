@@ -10,7 +10,7 @@ from m2cgen import cli
 from tests import utils
 
 
-def _get_mock_args(indent=4, function_name="score", namespace=None,
+def _get_mock_args(indent=4, function_name=None, namespace=None,
                    module_name=None, package_name=None, class_name=None,
                    infile=None, language=None):
     return mock.MagicMock(
@@ -94,6 +94,16 @@ def test_function_name():
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("def predict")
+
+
+def test_function_name_csharp_default():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="c_sharp")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert 'public static double Score' in generated_code
 
 
 def test_class_name():
