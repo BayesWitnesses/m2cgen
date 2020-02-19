@@ -21,5 +21,5 @@ __all__ = [
     PowershellInterpreter,
     RInterpreter,
     PhpInterpreter,
-    DartInterpreter
+    DartInterpreter,
 ]
