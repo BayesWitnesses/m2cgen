@@ -13,7 +13,7 @@ class DartCodeGenerator(CLikeCodeGenerator):
 
     def add_function_def(self, name, args, is_vector_output):
         return_type = self._get_var_declare_type(is_vector_output)
-        function_def = f"{return_type} {name}("
+        function_def = return_type + " " + name + "("
         function_def += ",".join([
             self._get_var_declare_type(is_vector) + " " + n
             for is_vector, n in args])
@@ -36,5 +36,5 @@ class DartCodeGenerator(CLikeCodeGenerator):
             else self.scalar_type)
 
     def add_dependency(self, dep):
-        dep_str = f"import '{dep}';"
+        dep_str = "import '" + dep + "';"
         self.prepend_code_line(dep_str)
