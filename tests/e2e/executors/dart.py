@@ -1,6 +1,5 @@
 import os
 import string
-import subprocess
 
 from m2cgen import assemblers, interpreters
 from tests import utils
@@ -57,9 +56,8 @@ class DartExecutor(base.BaseExecutor):
         executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
             model_code=model_code,
             print_code=print_code)
-            
+
         executor_file_name = os.path.join(
             self._resource_tmp_dir, "{}.dart".format(self.executor_name))
         with open(executor_file_name, "w") as f:
             f.write(executor_code)
-
