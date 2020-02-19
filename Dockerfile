@@ -7,6 +7,8 @@ RUN apt-get update && \
     add-apt-repository ppa:deadsnakes/ppa && \
     wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
+    sh -c 'wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -' && \
+    sh -c 'wget -qO- https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list' && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         gcc \
@@ -20,7 +22,8 @@ RUN apt-get update && \
         dotnet-sdk-3.0 \
         powershell \
         r-base \
-        php && \
+        php \
+        dart && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen
