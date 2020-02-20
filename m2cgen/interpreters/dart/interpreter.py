@@ -7,7 +7,9 @@ from m2cgen.interpreters.interpreter import ToCodeInterpreter
 from m2cgen.interpreters.dart.code_generator import DartCodeGenerator
 
 
-class DartInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
+class DartInterpreter(ToCodeInterpreter,
+                      mixins.LinearAlgebraMixin,
+                      mixins.BinExpressionDepthTrackingMixin):
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",
@@ -16,6 +18,8 @@ class DartInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
     supported_bin_vector_num_ops = {
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
+
+    bin_depth_threshold = 465
 
     exponent_function_name = "exp"
     power_function_name = "pow"

@@ -251,7 +251,7 @@ def export_to_php(model, indent=4):
     return _export(model, interpreter)
 
 
-def export_to_dart(model, class_name="Model", indent=4):
+def export_to_dart(model, indent=4):
     """
     Generates a Dart code representation of the given model.
 
@@ -259,8 +259,6 @@ def export_to_dart(model, class_name="Model", indent=4):
     ----------
     model : object
         The model object that should be transpiled into code.
-    class_name : string, optional
-        The name of the generated class.
     indent : int, optional
         The size of indents in the generated code.
 
@@ -268,9 +266,7 @@ def export_to_dart(model, class_name="Model", indent=4):
     -------
     code : string
     """
-    interpreter = interpreters.DartInterpreter(
-        class_name=class_name,
-        indent=indent)
+    interpreter = interpreters.DartInterpreter(indent=indent)
     return _export(model, interpreter)
 
 
