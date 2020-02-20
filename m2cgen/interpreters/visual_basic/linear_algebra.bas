@@ -1,4 +1,4 @@
-Function addVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
+Function AddVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
     Dim result() As Double
@@ -9,9 +9,9 @@ Function addVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
         result(i) = v1(i) + v2(i)
     Next i
 
-    addVectors = result
+    AddVectors = result
 End Function
-Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
+Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
     Dim result() As Double
@@ -22,5 +22,5 @@ Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
         result(i) = v1(i) * num
     Next i
 
-    mulVectorNumber = result
+    MulVectorNumber = result
 End Function

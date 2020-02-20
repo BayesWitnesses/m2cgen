@@ -7,14 +7,14 @@ from tests.e2e.executors import base
 
 EXECUTOR_CODE_TPL = """
 <?php
-$$input_array = array();
+$$inputArray = array();
 for ($$i = 1; $$i < $$argc; ++$$i) {
-    $$input_array[] = floatval($$argv[$$i]);
+    $$inputArray[] = floatval($$argv[$$i]);
 }
 
 require '${model_file}.php';
 
-$$res = score($$input_array);
+$$res = score($$inputArray);
 
 ${print_code}
 """

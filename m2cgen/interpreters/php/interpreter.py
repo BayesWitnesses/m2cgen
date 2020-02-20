@@ -9,11 +9,11 @@ from m2cgen.interpreters.interpreter import ToCodeInterpreter
 class PhpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "add_vectors",
+        ast.BinNumOpType.ADD: "addVectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mul_vector_number",
+        ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
     exponent_function_name = "exp"

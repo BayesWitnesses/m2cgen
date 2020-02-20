@@ -10,11 +10,11 @@ EXECUTOR_CODE_TPL = """
 Module Program
 
     Sub Main(ByVal cmdArgs() As String)
-        Dim input_() As Double
-        ReDim input_(UBound(cmdArgs) - LBound(cmdArgs))
+        Dim inputVector() As Double
+        ReDim inputVector(UBound(cmdArgs) - LBound(cmdArgs))
         Dim i As Integer
         For i = LBound(cmdArgs) To UBound(cmdArgs)
-            input_(i) = CDbl(cmdArgs(i))
+            inputVector(i) = CDbl(cmdArgs(i))
         Next i
         ${print_code}
     End Sub
@@ -24,13 +24,13 @@ End Module
 
 EXECUTE_AND_PRINT_SCALAR = """
         Dim res As Double
-        res = score(input_)
+        res = Score(inputVector)
         Console.Write(res)
 """
 
 EXECUTE_AND_PRINT_VECTOR = """
         Dim res() As Double
-        res = score(input_)
+        res = Score(inputVector)
         For i = LBound(res) To UBound(res)
             Console.Write("{0} ", res(i))
         Next i

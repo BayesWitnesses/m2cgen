@@ -182,14 +182,14 @@ def test_bin_vector_expr():
 
     expected_code = """
 <?php
-function add_vectors(array $v1, array $v2) {
+function addVectors(array $v1, array $v2) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
         $result[] = $v1[$i] + $v2[$i];
     }
     return $result;
 }
-function mul_vector_number(array $v1, $num) {
+function mulVectorNumber(array $v1, $num) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
         $result[] = $v1[$i] * $num;
@@ -197,7 +197,7 @@ function mul_vector_number(array $v1, $num) {
     return $result;
 }
 function score(array $input) {
-    return add_vectors(array(1, 2), array(3, 4));
+    return addVectors(array(1, 2), array(3, 4));
 }
 """
 
@@ -213,14 +213,14 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 <?php
-function add_vectors(array $v1, array $v2) {
+function addVectors(array $v1, array $v2) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
         $result[] = $v1[$i] + $v2[$i];
     }
     return $result;
 }
-function mul_vector_number(array $v1, $num) {
+function mulVectorNumber(array $v1, $num) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
         $result[] = $v1[$i] * $num;
@@ -228,7 +228,7 @@ function mul_vector_number(array $v1, $num) {
     return $result;
 }
 function score(array $input) {
-    return mul_vector_number(array(1, 2), 1);
+    return mulVectorNumber(array(1, 2), 1);
 }
 """
 
