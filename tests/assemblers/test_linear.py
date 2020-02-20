@@ -168,8 +168,7 @@ def test_ransac_unknown_base_estimator():
 
 def test_statsmodels_wo_const():
     estimator = utils.StatsmodelsSklearnLikeWrapper(sm.GLS, {})
-    _, __, estimator = utils.get_regression_model_trainer(
-        estimator=estimator)()
+    _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.StatsmodelsLinearModelAssembler(estimator)
     actual = assembler.assemble()
@@ -241,8 +240,7 @@ def test_statsmodels_w_const():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLS,
         dict(init=dict(fit_intercept=True)))
-    _, __, estimator = utils.get_regression_model_trainer(
-        estimator=estimator)()
+    _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.StatsmodelsLinearModelAssembler(estimator)
     actual = assembler.assemble()

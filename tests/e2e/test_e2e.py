@@ -34,8 +34,7 @@ CLASSIFICATION = pytest.mark.clf
 def regression(model):
     return (
         model,
-        utils.get_regression_model_trainer(
-            estimator=model),
+        utils.get_regression_model_trainer(),
         REGRESSION,
     )
 
@@ -43,8 +42,7 @@ def regression(model):
 def classification(model):
     return (
         model,
-        utils.get_classification_model_trainer(
-            estimator=model),
+        utils.get_classification_model_trainer(),
         CLASSIFICATION,
     )
 
@@ -52,8 +50,7 @@ def classification(model):
 def classification_binary(model):
     return (
         model,
-        utils.get_binary_classification_model_trainer(
-            estimator=model),
+        utils.get_binary_classification_model_trainer(),
         CLASSIFICATION,
     )
 
@@ -61,8 +58,7 @@ def classification_binary(model):
 def regression_random(model):
     return (
         model,
-        utils.get_regression_random_data_model_trainer(
-            test_fraction=0.01, estimator=model),
+        utils.get_regression_random_data_model_trainer(0.01),
         REGRESSION,
     )
 
@@ -70,8 +66,7 @@ def regression_random(model):
 def classification_random(model):
     return (
         model,
-        utils.get_classification_random_data_model_trainer(
-            test_fraction=0.01, estimator=model),
+        utils.get_classification_random_data_model_trainer(0.01),
         CLASSIFICATION,
     )
 
@@ -79,8 +74,7 @@ def classification_random(model):
 def classification_binary_random(model):
     return (
         model,
-        utils.get_classification_binary_random_data_model_trainer(
-            test_fraction=0.01, estimator=model),
+        utils.get_classification_binary_random_data_model_trainer(0.01),
         CLASSIFICATION,
     )
 
@@ -315,7 +309,7 @@ def test_e2e(estimator, executor_cls, model_trainer,
              is_fast, global_tmp_dir):
     sys.setrecursionlimit(RECURSION_LIMIT)
 
-    X_test, y_pred_true, fitted_estimator = model_trainer()
+    X_test, y_pred_true, fitted_estimator = model_trainer(estimator)
     executor = executor_cls(fitted_estimator)
 
     idxs_to_test = [0] if is_fast else range(len(X_test))
