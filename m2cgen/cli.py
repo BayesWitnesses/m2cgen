@@ -52,6 +52,9 @@ parser.add_argument(
     required=True)
 parser.add_argument(
     "--function_name", "-fn", dest="function_name", type=str,
+    # The default value is conditional and will be set in the argument's
+    # post-processing, based on the signature of the `export` function
+    # that belongs to the specified target language.
     default=None,
     help="Name of the function in the generated code.")
 parser.add_argument(
