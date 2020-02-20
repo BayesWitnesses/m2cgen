@@ -22,7 +22,7 @@ def _get_mock_args(indent=4, function_name=None, namespace=None,
 
 def _get_pickled_trained_model():
     estimator = linear_model.LinearRegression()
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     infile = io.BytesIO()
     pickle.dump(estimator, infile)

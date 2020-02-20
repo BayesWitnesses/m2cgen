@@ -8,7 +8,7 @@ from m2cgen import assemblers, ast
 def test_binary_classification():
     estimator = xgboost.XGBClassifier(n_estimators=2, random_state=1,
                                       max_depth=1)
-    utils.train_model_classification_binary(estimator)
+    utils.get_binary_classification_model_trainer()(estimator)
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
@@ -88,7 +88,7 @@ def test_regression():
     base_score = 0.6
     estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
                                      max_depth=1, base_score=base_score)
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
@@ -126,7 +126,7 @@ def test_regression_best_ntree_limit():
 
     estimator.best_ntree_limit = 2
 
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
@@ -164,7 +164,7 @@ def test_multi_class_best_ntree_limit():
 
     estimator.best_ntree_limit = 1
 
-    utils.train_model_classification(estimator)
+    utils.get_classification_model_trainer()(estimator)
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
@@ -245,7 +245,7 @@ def test_regression_saved_without_feature_names():
     base_score = 0.6
     estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
                                      max_depth=1, base_score=base_score)
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     with utils.tmp_dir() as tmp_dirpath:
         filename = os.path.join(tmp_dirpath, "tmp.file")
@@ -286,7 +286,7 @@ def test_linear_model():
     estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
                                      feature_selector="shuffle",
                                      booster="gblinear")
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
@@ -362,7 +362,7 @@ def test_regression_random_forest():
     base_score = 0.6
     estimator = xgboost.XGBRFRegressor(n_estimators=2, random_state=1,
                                        max_depth=1, base_score=base_score)
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
