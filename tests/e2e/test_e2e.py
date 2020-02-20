@@ -18,8 +18,8 @@ RECURSION_LIMIT = 5000
 # pytest marks
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
-C = pytest.mark.c
-GO = pytest.mark.go
+C = pytest.mark.c_lang
+GO = pytest.mark.go_lang
 JAVASCRIPT = pytest.mark.javascript
 VISUAL_BASIC = pytest.mark.visual_basic
 C_SHARP = pytest.mark.c_sharp
