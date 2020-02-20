@@ -22,15 +22,16 @@ class RInterpreter(ToCodeInterpreter,
     exponent_function_name = "exp"
     tanh_function_name = "tanh"
 
-    def __init__(self, indent=4, *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.indent = indent
+        self.function_name = function_name
 
         super().__init__(None, *args, **kwargs)
 
     def interpret(self, expr):
         top_cg = self.create_code_generator()
 
-        self.enqueue_subroutine("score", expr)
+        self.enqueue_subroutine(self.function_name, expr)
         self.process_subroutine_queue(top_cg)
 
         return top_cg.code

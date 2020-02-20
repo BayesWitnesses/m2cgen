@@ -10,13 +10,13 @@ from m2cgen import cli
 from tests import utils
 
 
-def _get_mock_args(indent=4, namespace=None, module_name=None,
-                   package_name=None, class_name=None,
+def _get_mock_args(indent=4, function_name=None, namespace=None,
+                   module_name=None, package_name=None, class_name=None,
                    infile=None, language=None):
     return mock.MagicMock(
-        indent=indent, namespace=namespace, module_name=module_name,
-        package_name=package_name, class_name=class_name,
-        infile=infile, language=language,
+        indent=indent, function_name=function_name, namespace=namespace,
+        module_name=module_name, package_name=package_name,
+        class_name=class_name, infile=infile, language=language,
         recursion_limit=cli.MAX_RECURSION_DEPTH)
 
 
@@ -84,6 +84,26 @@ def test_generate_code():
         generated_code,
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
         expected_output=-47.62913662138064)
+
+
+def test_function_name():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="python", function_name="predict")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert generated_code.startswith("def predict")
+
+
+def test_function_name_csharp_default():
+    infile = _get_pickled_trained_model()
+    mock_args = _get_mock_args(
+        infile=infile, language="c_sharp")
+
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert 'public static double Score' in generated_code
 
 
 def test_class_name():

@@ -22,10 +22,11 @@ class CSharpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
     tanh_function_name = "Tanh"
 
     def __init__(self, namespace="ML", class_name="Model", indent=4,
-                 *args, **kwargs):
+                 function_name="Score", *args, **kwargs):
         self.namespace = namespace
         self.class_name = class_name
         self.indent = indent
+        self.function_name = function_name
 
         cg = CSharpCodeGenerator(indent=indent)
         super(CSharpInterpreter, self).__init__(cg, *args, **kwargs)
@@ -34,7 +35,7 @@ class CSharpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
         self._cg.reset_state()
         self._reset_reused_expr_cache()
 
-        method_name = "Score"
+        method_name = self.function_name
         args = [(True, self._feature_array_name)]
 
         with self._cg.namespace_definition(self.namespace):

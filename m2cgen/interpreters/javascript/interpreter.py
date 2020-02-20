@@ -23,9 +23,10 @@ class JavascriptInterpreter(ToCodeInterpreter,
     power_function_name = "Math.pow"
     tanh_function_name = "Math.tanh"
 
-    def __init__(self, indent=4,
+    def __init__(self, indent=4, function_name="score",
                  *args, **kwargs):
         self.indent = indent
+        self.function_name = function_name
 
         cg = JavascriptCodeGenerator(indent=indent)
         super(JavascriptInterpreter, self).__init__(cg, *args, **kwargs)
@@ -37,7 +38,7 @@ class JavascriptInterpreter(ToCodeInterpreter,
         args = [self._feature_array_name]
 
         with self._cg.function_definition(
-                name="score",
+                name=self.function_name,
                 args=args):
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)

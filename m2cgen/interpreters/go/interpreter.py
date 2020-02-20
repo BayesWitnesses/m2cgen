@@ -20,7 +20,9 @@ class GoInterpreter(ToCodeInterpreter,
     power_function_name = "math.Pow"
     tanh_function_name = "math.Tanh"
 
-    def __init__(self, indent=4, *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", *args, **kwargs):
+        self.function_name = function_name
+
         cg = GoCodeGenerator(indent=indent)
         super(GoInterpreter, self).__init__(cg, *args, **kwargs)
 
@@ -31,7 +33,7 @@ class GoInterpreter(ToCodeInterpreter,
         args = [(True, self._feature_array_name)]
 
         with self._cg.function_definition(
-                name="score",
+                name=self.function_name,
                 args=args,
                 is_scalar_output=expr.output_size == 1):
 
