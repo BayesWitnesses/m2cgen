@@ -27,18 +27,11 @@ LANGUAGE_TO_EXPORTER = {
     "visual_basic": (m2cgen.export_to_visual_basic,
                      ["module_name", "indent", "function_name"]),
     "c_sharp": (m2cgen.export_to_c_sharp,
-<<<<<<< HEAD
-                ["indent", "class_name", "namespace"]),
-    "powershell": (m2cgen.export_to_powershell, ["indent"]),
-    "r": (m2cgen.export_to_r, ["indent"]),
-    "php": (m2cgen.export_to_php, ["indent"]),
-    "dart": (m2cgen.export_to_dart, ["indent", "function_name"]),
-=======
                 ["indent", "class_name", "namespace", "function_name"]),
     "powershell": (m2cgen.export_to_powershell, ["indent", "function_name"]),
     "r": (m2cgen.export_to_r, ["indent", "function_name"]),
     "php": (m2cgen.export_to_php, ["indent", "function_name"]),
->>>>>>> 3086e9a5b048c6389c074558d25b98ac2b5bb675
+    "dart": (m2cgen.export_to_dart, ["indent", "function_name"]),
 }
 
 
