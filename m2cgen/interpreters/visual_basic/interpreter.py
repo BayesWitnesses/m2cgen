@@ -21,8 +21,10 @@ class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
 
     with_tanh_expr = False
 
-    def __init__(self, module_name="Model", indent=4, *args, **kwargs):
+    def __init__(self, module_name="Model", indent=4, function_name="score",
+                 *args, **kwargs):
         self.module_name = module_name
+        self.function_name = function_name
         cg = VisualBasicCodeGenerator(indent=indent)
         kwargs["feature_array_name"] = "input_vector"
         super(VisualBasicInterpreter, self).__init__(cg, *args, **kwargs)
@@ -32,7 +34,7 @@ class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
         self._reset_reused_expr_cache()
 
         args = [(True, self._feature_array_name)]
-        func_name = "score"
+        func_name = self.function_name
 
         with self._cg.function_definition(
                 name=func_name,

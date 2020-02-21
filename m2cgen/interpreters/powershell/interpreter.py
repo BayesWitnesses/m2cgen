@@ -22,7 +22,9 @@ class PowershellInterpreter(ToCodeInterpreter,
     power_function_name = "[math]::Pow"
     tanh_function_name = "[math]::Tanh"
 
-    def __init__(self, indent=4, *args, **kwargs):
+    def __init__(self, indent=4, function_name="Score", *args, **kwargs):
+        self.function_name = function_name
+
         cg = PowershellCodeGenerator(indent=indent)
         kwargs["feature_array_name"] = "InputVector"
         super(PowershellInterpreter, self).__init__(cg, *args, **kwargs)
@@ -32,7 +34,7 @@ class PowershellInterpreter(ToCodeInterpreter,
         self._reset_reused_expr_cache()
 
         with self._cg.function_definition(
-                name="Score",
+                name=self.function_name,
                 args=[(True, self._feature_array_name)],
                 is_scalar_output=expr.output_size == 1):
             last_result = self._do_interpret(expr)

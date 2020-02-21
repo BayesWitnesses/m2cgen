@@ -23,7 +23,7 @@ def _prepare_pickled_model(tmp_path):
     p = tmp_path / "model.pickle"
 
     estimator = linear_model.LinearRegression()
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     p.write_bytes(pickle.dumps(estimator))
 

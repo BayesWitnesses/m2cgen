@@ -7,7 +7,7 @@ from m2cgen import assemblers, ast
 def test_binary_classification():
     estimator = lightgbm.LGBMClassifier(n_estimators=2, random_state=1,
                                         max_depth=1)
-    utils.train_model_classification_binary(estimator)
+    utils.get_binary_classification_model_trainer()(estimator)
 
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
@@ -86,7 +86,7 @@ def test_multi_class():
 def test_regression():
     estimator = lightgbm.LGBMRegressor(n_estimators=2, random_state=1,
                                        max_depth=1)
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
@@ -121,7 +121,7 @@ def test_regression_random_forest():
     estimator = lightgbm.LGBMRegressor(boosting_type="rf", n_estimators=2,
                                        random_state=1, max_depth=1,
                                        subsample=0.7, subsample_freq=1)
-    utils.train_model_regression(estimator)
+    utils.get_regression_model_trainer()(estimator)
 
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
