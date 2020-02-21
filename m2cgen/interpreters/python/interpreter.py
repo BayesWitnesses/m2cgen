@@ -14,7 +14,9 @@ class PythonInterpreter(ToCodeInterpreter,
     power_function_name = "math.pow"
     tanh_function_name = "math.tanh"
 
-    def __init__(self, indent=4, *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", *args, **kwargs):
+        self.function_name = function_name
+
         cg = PythonCodeGenerator(indent=indent)
         super(PythonInterpreter, self).__init__(cg, *args, **kwargs)
 
@@ -23,7 +25,7 @@ class PythonInterpreter(ToCodeInterpreter,
         self._reset_reused_expr_cache()
 
         with self._cg.function_definition(
-                name="score",
+                name=self.function_name,
                 args=[self._feature_array_name]):
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)

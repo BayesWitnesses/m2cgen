@@ -7,10 +7,11 @@ import tempfile
 
 import numpy as np
 import pytest
-from lightgbm import LGBMClassifier
+import statsmodels.api as sm
 
+from lightgbm import LGBMClassifier
 from sklearn import datasets
-from sklearn.base import clone
+from sklearn.base import BaseEstimator, RegressorMixin, clone
 from sklearn.ensemble import forest
 from sklearn.utils import shuffle
 from sklearn.linear_model.base import LinearClassifierMixin
@@ -19,6 +20,104 @@ from sklearn.svm import SVC, NuSVC
 from xgboost import XGBClassifier
 
 from m2cgen import ast
+
+
+class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
+    def __init__(self, model, params):
+        self.model = model
+        self.params = params
+        # mock class name to show appropriate model name in tests
+        self.__class__.__name__ = model.__name__
+
+    def fit(self, X, y):
+        init_params = self.params.get("init", {})
+        self.fit_intercept_ = init_params.pop("fit_intercept", False)
+        if self.fit_intercept_:
+            X = sm.add_constant(X)
+        est = self.model(y, X, **init_params)
+        if "fit_regularized" in self.params:
+            self.fitted_model_ = est.fit_regularized(
+                **self.params["fit_regularized"])
+        else:
+            self.fitted_model_ = est.fit(**self.params.get("fit", {}))
+        # mock class name to show appropriate model name in tests
+        self.__class__.__name__ = type(self.fitted_model_).__name__
+        return self.fitted_model_
+
+    def predict(self, X):
+        if self.fit_intercept_:
+            X = sm.add_constant(X)
+        return self.fitted_model_.predict(X)
+
+
+class ModelTrainer:
+
+    _class_instances = {}
+
+    def __init__(self, dataset_name, test_fraction):
+        self.dataset_name = dataset_name
+        self.test_fraction = test_fraction
+        np.random.seed(seed=7)
+        if dataset_name == "boston":
+            self.name = "train_model_regression"
+            dataset = datasets.load_boston()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
+        elif dataset_name == "iris":
+            self.name = "train_model_classification"
+            dataset = datasets.load_iris()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
+        elif dataset_name == "breast_cancer":
+            self.name = "train_model_classification_binary"
+            dataset = datasets.load_breast_cancer()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
+        elif dataset_name == "regression_rnd":
+            self.name = "train_model_regression_random_data"
+            N = 1000
+            self.X = np.random.random(size=(N, 200))
+            self.y = np.random.random(size=(N, 1))
+        elif dataset_name == "classification_rnd":
+            self.name = "train_model_classification_random_data"
+            N = 1000
+            self.X = np.random.random(size=(N, 200))
+            self.y = np.random.randint(3, size=(N,))
+        elif dataset_name == "classification_binary_rnd":
+            self.name = "train_model_classification_binary_random_data"
+            N = 1000
+            self.X = np.random.random(size=(N, 200))
+            self.y = np.random.randint(2, size=(N,))
+        else:
+            raise ValueError("Unknown dataset name: {}".format(dataset_name))
+
+        offset = int(self.X.shape[0] * (1 - test_fraction))
+        self.X_train, self.y_train = self.X[:offset], self.y[:offset]
+        self.X_test, self.y_test = self.X[offset:], self.y[offset:]
+
+    @classmethod
+    def get_instance(cls, dataset_name, test_fraction=0.02):
+        key = dataset_name + " {}".format(test_fraction)
+        if key not in cls._class_instances:
+            cls._class_instances[key] = ModelTrainer(
+                dataset_name, test_fraction)
+        return cls._class_instances[key]
+
+    def __call__(self, estimator):
+        fitted_estimator = estimator.fit(self.X_train, self.y_train)
+
+        if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC)):
+            y_pred = estimator.decision_function(self.X_test)
+        elif isinstance(estimator, DecisionTreeClassifier):
+            y_pred = estimator.predict_proba(self.X_test.astype(np.float32))
+        elif isinstance(
+                estimator,
+                (forest.ForestClassifier, XGBClassifier, LGBMClassifier)):
+            y_pred = estimator.predict_proba(self.X_test)
+        else:
+            y_pred = estimator.predict(self.X_test)
+
+        return self.X_test, y_pred, fitted_estimator
 
 
 def cmp_exprs(left, right):
@@ -62,73 +161,28 @@ def assert_code_equal(actual, expected):
     assert actual.strip() == expected.strip()
 
 
-def train_model_regression(estimator, test_fraction=0.02):
-    return _train_model(estimator, datasets.load_boston(), test_fraction)
+get_regression_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "boston")
 
 
-def train_model_classification(estimator, test_fraction=0.02):
-    return _train_model(estimator, datasets.load_iris(), test_fraction)
+get_classification_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "iris")
 
 
-def train_model_classification_binary(estimator, test_fraction=0.02):
-    return _train_model(estimator, datasets.load_breast_cancer(),
-                        test_fraction)
+get_binary_classification_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "breast_cancer")
 
 
-def train_model_regression_random_data(estimator, test_fraction=0.01):
-    np.random.seed(seed=7)
-    N = 1000
-    data = np.random.random(size=(N, 200))
-    target = np.random.random(size=(N, 1))
-
-    return _train_model(estimator, (data, target), test_fraction)
+get_regression_random_data_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "regression_rnd")
 
 
-def train_model_classification_random_data(estimator, test_fraction=0.01):
-    np.random.seed(seed=7)
-    N = 1000
-
-    data = np.random.random(size=(N, 200))
-    target = np.random.randint(3, size=(N,))
-
-    return _train_model(estimator, (data, target), test_fraction)
+get_classification_random_data_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "classification_rnd")
 
 
-def train_model_classification_binary_random_data(estimator,
-                                                  test_fraction=0.01):
-    np.random.seed(seed=7)
-    N = 1000
-
-    data = np.random.random(size=(N, 200))
-    target = np.random.randint(2, size=(N,))
-
-    return _train_model(estimator, (data, target), test_fraction)
-
-
-def _train_model(estimator, dataset, test_fraction):
-    if isinstance(dataset, tuple):
-        X, y = dataset
-    else:
-        X, y = shuffle(dataset.data, dataset.target, random_state=13)
-
-    offset = int(X.shape[0] * (1 - test_fraction))
-    X_train, y_train = X[:offset], y[:offset]
-    X_test = X[offset:]
-
-    estimator.fit(X_train, y_train)
-
-    if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC)):
-        y_pred = estimator.decision_function(X_test)
-    elif isinstance(estimator, DecisionTreeClassifier):
-        y_pred = estimator.predict_proba(X_test.astype(np.float32))
-    elif isinstance(
-            estimator,
-            (forest.ForestClassifier, XGBClassifier, LGBMClassifier)):
-        y_pred = estimator.predict_proba(X_test)
-    else:
-        y_pred = estimator.predict(X_test)
-
-    return X_test, y_pred
+get_classification_binary_random_data_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "classification_binary_rnd")
 
 
 @contextlib.contextmanager
@@ -188,7 +242,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         # We use custom id since pytest for some reason can't show name of
         # the model in the automatic id. Which sucks.
         ids.append("{} - {} - {}".format(
-            type(model).__name__, executor_mark.name, trainer.__name__))
+            type(model).__name__, executor_mark.name, trainer.name))
 
         result_params.append(pytest.param(
             model, executor, trainer, marks=[executor_mark, trainer_mark],

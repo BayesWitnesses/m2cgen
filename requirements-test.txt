@@ -9,3 +9,4 @@ pytest-mock==1.13.0
 coveralls==1.9.2
 pytest-cov==2.8.1
 py-mini-racer==0.1.18
+statsmodels==0.10.2

@@ -3,6 +3,7 @@ import lightgbm
 import pytest
 import numpy as np
 import xgboost
+import statsmodels.api as sm
 from sklearn import linear_model, svm
 from sklearn import tree
 from sklearn import ensemble
@@ -17,8 +18,8 @@ RECURSION_LIMIT = 5000
 # pytest marks
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
-C = pytest.mark.c
-GO = pytest.mark.go
+C = pytest.mark.c_lang
+GO = pytest.mark.go_lang
 JAVASCRIPT = pytest.mark.javascript
 VISUAL_BASIC = pytest.mark.visual_basic
 C_SHARP = pytest.mark.c_sharp
@@ -34,7 +35,7 @@ CLASSIFICATION = pytest.mark.clf
 def regression(model):
     return (
         model,
-        utils.train_model_regression,
+        utils.get_regression_model_trainer(),
         REGRESSION,
     )
 
@@ -42,7 +43,7 @@ def regression(model):
 def classification(model):
     return (
         model,
-        utils.train_model_classification,
+        utils.get_classification_model_trainer(),
         CLASSIFICATION,
     )
 
@@ -50,7 +51,7 @@ def classification(model):
 def classification_binary(model):
     return (
         model,
-        utils.train_model_classification_binary,
+        utils.get_binary_classification_model_trainer(),
         CLASSIFICATION,
     )
 
@@ -58,7 +59,7 @@ def classification_binary(model):
 def regression_random(model):
     return (
         model,
-        utils.train_model_regression_random_data,
+        utils.get_regression_random_data_model_trainer(0.01),
         REGRESSION,
     )
 
@@ -66,7 +67,7 @@ def regression_random(model):
 def classification_random(model):
     return (
         model,
-        utils.train_model_classification_random_data,
+        utils.get_classification_random_data_model_trainer(0.01),
         CLASSIFICATION,
     )
 
@@ -74,7 +75,7 @@ def classification_random(model):
 def classification_binary_random(model):
     return (
         model,
-        utils.train_model_classification_binary_random_data,
+        utils.get_classification_binary_random_data_model_trainer(0.01),
         CLASSIFICATION,
     )
 
@@ -107,6 +108,8 @@ LIGHTGBM_PARAMS_RF = dict(n_estimators=10, boosting_type='rf',
 LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
                              random_state=RANDOM_SEED)
 SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
+STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
+                                             alpha=7, L1_wt=0.2)
 
 
 @utils.cartesian_e2e_params(
@@ -197,7 +200,7 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
 
-        # Linear Regression
+        # Sklearn Linear Regression
         regression(linear_model.ARDRegression()),
         regression(linear_model.BayesianRidge()),
         regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
@@ -222,6 +225,32 @@ SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
         regression(linear_model.RidgeCV()),
         regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
+
+        # Statsmodels Linear Regression
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.OLS,
+            dict(init=dict(fit_intercept=True)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.OLS,
+            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train)))))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train))),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
         # Linear Classifiers
         classification(linear_model.LogisticRegression(
@@ -282,8 +311,8 @@ def test_e2e(estimator, executor_cls, model_trainer,
              is_fast, global_tmp_dir):
     sys.setrecursionlimit(RECURSION_LIMIT)
 
-    X_test, y_pred_true = model_trainer(estimator)
-    executor = executor_cls(estimator)
+    X_test, y_pred_true, fitted_estimator = model_trainer(estimator)
+    executor = executor_cls(fitted_estimator)
 
     idxs_to_test = [0] if is_fast else range(len(X_test))
 
