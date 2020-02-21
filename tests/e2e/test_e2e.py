@@ -4,6 +4,8 @@ import pytest
 import numpy as np
 import xgboost
 import statsmodels.api as sm
+import lightning.classification as light_clf
+import lightning.regression as light_reg
 from sklearn import linear_model, svm
 from sklearn import tree
 from sklearn import ensemble
@@ -182,10 +184,21 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary_random(
             xgboost.XGBClassifier(**XGBOOST_PARAMS_LARGE)),
 
-        # Linear SVM
+        # Sklearn Linear SVM
         regression(svm.LinearSVR(random_state=RANDOM_SEED)),
         classification(svm.LinearSVC(random_state=RANDOM_SEED)),
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
+
+        # lightning Linear SVM
+        regression(light_reg.LinearSVR(random_state=RANDOM_SEED)),
+        classification(light_clf.LinearSVC(
+            criterion="accuracy", random_state=RANDOM_SEED)),
+        classification(light_clf.LinearSVC(
+            criterion="auc", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.LinearSVC(
+            criterion="accuracy", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.LinearSVC(
+            criterion="auc", random_state=RANDOM_SEED)),
 
         # SVM
         regression(svm.NuSVR(kernel="rbf")),
@@ -250,7 +263,15 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
                 len(utils.get_regression_model_trainer().y_train))),
                  fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
-        # Linear Classifiers
+        # lightning Linear Regression
+        regression(light_reg.AdaGradRegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.CDRegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.FistaRegressor()),
+        regression(light_reg.SAGARegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.SAGRegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.SDCARegressor(random_state=RANDOM_SEED)),
+
+        # Sklearn Linear Classifiers
         classification(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
         classification(linear_model.LogisticRegressionCV(
@@ -259,9 +280,11 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             random_state=RANDOM_SEED)),
         classification(linear_model.Perceptron(
             random_state=RANDOM_SEED)),
-        classification(linear_model.RidgeClassifier(random_state=RANDOM_SEED)),
+        classification(linear_model.RidgeClassifier(
+            random_state=RANDOM_SEED)),
         classification(linear_model.RidgeClassifierCV()),
-        classification(linear_model.SGDClassifier(random_state=RANDOM_SEED)),
+        classification(linear_model.SGDClassifier(
+            random_state=RANDOM_SEED)),
 
         classification_binary(linear_model.LogisticRegression(
             random_state=RANDOM_SEED)),
@@ -275,6 +298,40 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             random_state=RANDOM_SEED)),
         classification_binary(linear_model.RidgeClassifierCV()),
         classification_binary(linear_model.SGDClassifier(
+            random_state=RANDOM_SEED)),
+
+        # lightning Linear Classifiers
+        classification(light_clf.AdaGradClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.CDClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.CDClassifier(
+            penalty="l1/l2", multiclass=True, random_state=RANDOM_SEED)),
+        classification(light_clf.FistaClassifier()),
+        classification(light_clf.FistaClassifier(multiclass=True)),
+        classification(light_clf.SDCAClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SAGClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SAGAClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SGDClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SGDClassifier(
+            multiclass=True, random_state=RANDOM_SEED)),
+
+        classification_binary(light_clf.AdaGradClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.CDClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.FistaClassifier()),
+        classification_binary(light_clf.SDCAClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.SAGClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.SAGAClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.SGDClassifier(
             random_state=RANDOM_SEED)),
 
         # Decision trees

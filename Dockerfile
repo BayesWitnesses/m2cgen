@@ -26,6 +26,7 @@ RUN apt-get update && \
 WORKDIR /m2cgen
 
 COPY requirements-test.txt ./
-RUN pip3 install --no-cache-dir -r requirements-test.txt
+RUN pip3 install --no-cache-dir Cython && \
+    pip3 install --no-cache-dir -r requirements-test.txt
 
 CMD python3 setup.py develop && pytest -v -x --fast
