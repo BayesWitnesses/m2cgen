@@ -27,9 +27,9 @@ class DartInterpreter(ToCodeInterpreter,
 
     with_tanh_expr = False
 
-    def __init__(self, indent=4,
-                 *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.indent = indent
+        self.function_name = function_name
 
         cg = DartCodeGenerator(indent=indent)
         super(DartInterpreter, self).__init__(cg, *args, **kwargs)
@@ -38,11 +38,10 @@ class DartInterpreter(ToCodeInterpreter,
         self._cg.reset_state()
         self._reset_reused_expr_cache()
 
-        function_name = "score"
         args = [(True, self._feature_array_name)]
 
         with self._cg.function_definition(
-                name=function_name,
+                name=self.function_name,
                 args=args,
                 is_vector_output=expr.output_size > 1):
             last_result = self._do_interpret(expr)
