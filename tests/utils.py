@@ -38,6 +38,9 @@ class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
         if "fit_regularized" in self.params:
             self.fitted_model_ = est.fit_regularized(
                 **self.params["fit_regularized"])
+        elif "iterative_fit" in self.params:
+            self.fitted_model_ = est.iterative_fit(
+                **self.params["iterative_fit"])
         else:
             self.fitted_model_ = est.fit(**self.params.get("fit", {}))
         # mock class name to show appropriate model name in tests

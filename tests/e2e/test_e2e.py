@@ -237,6 +237,15 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
                 len(utils.get_regression_model_trainer().y_train)) + 1),
                  fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLSAR,
+            dict(init=dict(fit_intercept=True, rho=3)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLSAR,
+            dict(iterative_fit=dict(maxiter=2)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLSAR,
+            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.OLS,
             dict(init=dict(fit_intercept=True)))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
