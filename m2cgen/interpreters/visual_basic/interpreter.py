@@ -9,11 +9,11 @@ from m2cgen.interpreters.visual_basic.code_generator \
 
 class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "addVectors",
+        ast.BinNumOpType.ADD: "AddVectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mulVectorNumber",
+        ast.BinNumOpType.MUL: "MulVectorNumber",
     }
 
     exponent_function_name = "Math.Exp"
@@ -21,12 +21,12 @@ class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
 
     with_tanh_expr = False
 
-    def __init__(self, module_name="Model", indent=4, function_name="score",
+    def __init__(self, module_name="Model", indent=4, function_name="Score",
                  *args, **kwargs):
         self.module_name = module_name
         self.function_name = function_name
         cg = VisualBasicCodeGenerator(indent=indent)
-        kwargs["feature_array_name"] = "input_vector"
+        kwargs["feature_array_name"] = "inputVector"
         super(VisualBasicInterpreter, self).__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):

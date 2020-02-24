@@ -1,12 +1,12 @@
 <?php
-function add_vectors(array $v1, array $v2) {
+function addVectors(array $v1, array $v2) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
         $result[] = $v1[$i] + $v2[$i];
     }
     return $result;
 }
-function mul_vector_number(array $v1, $num) {
+function mulVectorNumber(array $v1, $num) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
         $result[] = $v1[$i] * $num;
@@ -50,5 +50,5 @@ function score(array $input) {
             }
         }
     }
-    return add_vectors(mul_vector_number($var0, 0.5), mul_vector_number($var1, 0.5));
+    return addVectors(mulVectorNumber($var0, 0.5), mulVectorNumber($var1, 0.5));
 }

@@ -11,14 +11,14 @@ def test_if_expr():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double
+Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
-    If (1) = (input_vector(0)) Then
+    If (1) = (inputVector(0)) Then
         var0 = 2
     Else
         var0 = 3
     End If
-    score = var0
+    Score = var0
 End Function
 End Module
 """
@@ -36,8 +36,8 @@ def test_bin_num_expr():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double
-    score = ((input_vector(0)) / (-2)) * (2)
+Function Score(ByRef inputVector() As Double) As Double
+    Score = ((inputVector(0)) / (-2)) * (2)
 End Function
 End Module
 """
@@ -64,7 +64,7 @@ def test_dependable_condition():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double
+Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
     If (1) = (1) Then
@@ -75,9 +75,9 @@ Function score(ByRef input_vector() As Double) As Double
     If ((var1) + (2)) >= ((1) / (2)) Then
         var0 = 1
     Else
-        var0 = input_vector(0)
+        var0 = inputVector(0)
     End If
-    score = var0
+    Score = var0
 End Function
 End Module
 """
@@ -105,7 +105,7 @@ def test_nested_condition():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double
+Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
     If (1) = (1) Then
@@ -121,14 +121,14 @@ Function score(ByRef input_vector() As Double) As Double
             var2 = 2
         End If
         If (1) = ((var2) + (2)) Then
-            var0 = input_vector(2)
+            var0 = inputVector(2)
         Else
             var0 = 2
         End If
     Else
         var0 = 2
     End If
-    score = var0
+    Score = var0
 End Function
 End Module
 """
@@ -142,8 +142,8 @@ def test_module_name():
 
     expected_code = """
 Module Test
-Function score(ByRef input_vector() As Double) As Double
-    score = 1
+Function Score(ByRef inputVector() As Double) As Double
+    Score = 1
 End Function
 End Module
 """
@@ -157,11 +157,11 @@ def test_raw_array():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double()
+Function Score(ByRef inputVector() As Double) As Double()
     Dim var0(1) As Double
     var0(0) = 3
     var0(1) = 4
-    score = var0
+    Score = var0
 End Function
 End Module
 """
@@ -182,7 +182,7 @@ def test_multi_output():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double()
+Function Score(ByRef inputVector() As Double) As Double()
     Dim var0() As Double
     If (1) = (1) Then
         Dim var1(1) As Double
@@ -195,7 +195,7 @@ Function score(ByRef input_vector() As Double) As Double()
         var2(1) = 4
         var0 = var2
     End If
-    score = var0
+    Score = var0
 End Function
 End Module
 """
@@ -212,7 +212,7 @@ def test_bin_vector_expr():
 
     expected_code = """
 Module Model
-Function addVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
+Function AddVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
     Dim result() As Double
@@ -223,9 +223,9 @@ Function addVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
         result(i) = v1(i) + v2(i)
     Next i
 
-    addVectors = result
+    AddVectors = result
 End Function
-Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
+Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
     Dim result() As Double
@@ -236,16 +236,16 @@ Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
         result(i) = v1(i) * num
     Next i
 
-    mulVectorNumber = result
+    MulVectorNumber = result
 End Function
-Function score(ByRef input_vector() As Double) As Double()
+Function Score(ByRef inputVector() As Double) As Double()
     Dim var0(1) As Double
     var0(0) = 1
     var0(1) = 2
     Dim var1(1) As Double
     var1(0) = 3
     var1(1) = 4
-    score = addVectors(var0, var1)
+    Score = AddVectors(var0, var1)
 End Function
 End Module
 """
@@ -262,7 +262,7 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 Module Model
-Function addVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
+Function AddVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
     Dim result() As Double
@@ -273,9 +273,9 @@ Function addVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
         result(i) = v1(i) + v2(i)
     Next i
 
-    addVectors = result
+    AddVectors = result
 End Function
-Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
+Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
     Dim result() As Double
@@ -286,13 +286,13 @@ Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
         result(i) = v1(i) * num
     Next i
 
-    mulVectorNumber = result
+    MulVectorNumber = result
 End Function
-Function score(ByRef input_vector() As Double) As Double()
+Function Score(ByRef inputVector() As Double) As Double()
     Dim var0(1) As Double
     var0(0) = 1
     var0(1) = 2
-    score = mulVectorNumber(var0, 1)
+    Score = MulVectorNumber(var0, 1)
 End Function
 End Module
 """
@@ -306,8 +306,8 @@ def test_exp_expr():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double
-    score = Math.Exp(1.0)
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Math.Exp(1.0)
 End Function
 End Module
 """
@@ -321,8 +321,8 @@ def test_pow_expr():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double
-    score = (2.0) ^ (3.0)
+Function Score(ByRef inputVector() As Double) As Double
+    Score = (2.0) ^ (3.0)
 End Function
 End Module
 """
@@ -347,8 +347,8 @@ Function Tanh(ByVal number As Double) As Double
     End If
     Tanh = (Math.Exp(2 * number) - 1) / (Math.Exp(2 * number) + 1)
 End Function
-Function score(ByRef input_vector() As Double) As Double
-    score = Tanh(2.0)
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Tanh(2.0)
 End Function
 End Module
 """
@@ -363,10 +363,10 @@ def test_reused_expr():
 
     expected_code = """
 Module Model
-Function score(ByRef input_vector() As Double) As Double
+Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     var0 = Math.Exp(1.0)
-    score = (var0) / (var0)
+    Score = (var0) / (var0)
 End Function
 End Module
 """

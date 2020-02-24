@@ -130,7 +130,7 @@ def export_to_javascript(model, indent=4, function_name="score"):
 
 
 def export_to_visual_basic(model, module_name="Model", indent=4,
-                           function_name="score"):
+                           function_name="Score"):
     """
     Generates a Visual Basic (also can be treated as VBA
     with some small manual changes, see a note below)

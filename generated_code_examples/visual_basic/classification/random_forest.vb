@@ -25,24 +25,24 @@ Function mulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
 
     mulVectorNumber = result
 End Function
-Function score(ByRef input_vector() As Double) As Double()
+Function Score(ByRef inputVector() As Double) As Double()
     Dim var0() As Double
-    If (input_vector(3)) <= (0.8) Then
+    If (inputVector(3)) <= (0.8) Then
         Dim var1(2) As Double
         var1(0) = 1.0
         var1(1) = 0.0
         var1(2) = 0.0
         var0 = var1
     Else
-        If (input_vector(2)) <= (4.8500004) Then
+        If (inputVector(2)) <= (4.8500004) Then
             Dim var2(2) As Double
             var2(0) = 0.0
             var2(1) = 0.9795918367346939
             var2(2) = 0.02040816326530612
             var0 = var2
         Else
-            If (input_vector(3)) <= (1.75) Then
-                If (input_vector(3)) <= (1.6500001) Then
+            If (inputVector(3)) <= (1.75) Then
+                If (inputVector(3)) <= (1.6500001) Then
                     Dim var3(2) As Double
                     var3(0) = 0.0
                     var3(1) = 0.25
@@ -65,15 +65,15 @@ Function score(ByRef input_vector() As Double) As Double()
         End If
     End If
     Dim var6() As Double
-    If (input_vector(3)) <= (0.8) Then
+    If (inputVector(3)) <= (0.8) Then
         Dim var7(2) As Double
         var7(0) = 1.0
         var7(1) = 0.0
         var7(2) = 0.0
         var6 = var7
     Else
-        If (input_vector(0)) <= (6.05) Then
-            If (input_vector(2)) <= (4.9) Then
+        If (inputVector(0)) <= (6.05) Then
+            If (inputVector(2)) <= (4.9) Then
                 Dim var8(2) As Double
                 var8(0) = 0.0
                 var8(1) = 0.9032258064516129
@@ -87,7 +87,7 @@ Function score(ByRef input_vector() As Double) As Double()
                 var6 = var9
             End If
         Else
-            If (input_vector(3)) <= (1.75) Then
+            If (inputVector(3)) <= (1.75) Then
                 Dim var10(2) As Double
                 var10(0) = 0.0
                 var10(1) = 0.8
@@ -102,6 +102,6 @@ Function score(ByRef input_vector() As Double) As Double()
             End If
         End If
     End If
-    score = addVectors(mulVectorNumber(var0, 0.5), mulVectorNumber(var6, 0.5))
+    Score = addVectors(mulVectorNumber(var0, 0.5), mulVectorNumber(var6, 0.5))
 End Function
 End Module
