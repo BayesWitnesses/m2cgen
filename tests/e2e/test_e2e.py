@@ -18,14 +18,15 @@ RECURSION_LIMIT = 5000
 # pytest marks
 PYTHON = pytest.mark.python
 JAVA = pytest.mark.java
-C = pytest.mark.c
-GO = pytest.mark.go
+C = pytest.mark.c_lang
+GO = pytest.mark.go_lang
 JAVASCRIPT = pytest.mark.javascript
 VISUAL_BASIC = pytest.mark.visual_basic
 C_SHARP = pytest.mark.c_sharp
 POWERSHELL = pytest.mark.powershell
 R = pytest.mark.r_lang
 PHP = pytest.mark.php
+DART = pytest.mark.dart
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -125,6 +126,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         (executors.PowershellExecutor, POWERSHELL),
         (executors.RExecutor, R),
         (executors.PhpExecutor, PHP),
+        (executors.DartExecutor, DART),
     ],
 
     # These models will be tested against each language specified in the

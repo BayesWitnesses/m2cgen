@@ -31,6 +31,7 @@ LANGUAGE_TO_EXPORTER = {
     "powershell": (m2cgen.export_to_powershell, ["indent", "function_name"]),
     "r": (m2cgen.export_to_r, ["indent", "function_name"]),
     "php": (m2cgen.export_to_php, ["indent", "function_name"]),
+    "dart": (m2cgen.export_to_dart, ["indent", "function_name"]),
 }
 
 
