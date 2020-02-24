@@ -26,6 +26,7 @@ C_SHARP = pytest.mark.c_sharp
 POWERSHELL = pytest.mark.powershell
 R = pytest.mark.r_lang
 PHP = pytest.mark.php
+DART = pytest.mark.dart
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -125,6 +126,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         (executors.PowershellExecutor, POWERSHELL),
         (executors.RExecutor, R),
         (executors.PhpExecutor, PHP),
+        (executors.DartExecutor, DART),
     ],
 
     # These models will be tested against each language specified in the
