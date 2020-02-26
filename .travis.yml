@@ -10,7 +10,7 @@ env:
   - TEST=API
   - TEST=E2E LANG="c_lang or python or java or go_lang or javascript or php"
   - TEST=E2E LANG="c_sharp or visual_basic or powershell"
-  - TEST=E2E LANG="r_lang"
+  - TEST=E2E LANG="r_lang or dart"
 
 before_install:
   - bash .travis/setup.sh

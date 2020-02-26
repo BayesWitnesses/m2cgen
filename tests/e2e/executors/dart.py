@@ -6,47 +6,42 @@ from tests import utils
 from tests.e2e.executors import base
 
 EXECUTOR_CODE_TPL = """
-<?php
-$$inputArray = array();
-for ($$i = 1; $$i < $$argc; ++$$i) {
-    $$inputArray[] = floatval($$argv[$$i]);
+${model_code}
+
+void main(List<String> args) {
+    List<double> input_ = args.map((x) => double.parse(x)).toList();
+    ${print_code}
 }
-
-require '${model_file}.php';
-
-$$res = score($$inputArray);
-
-${print_code}
 """
 
 EXECUTE_AND_PRINT_SCALAR = """
-echo($res);
+    double res = score(input_);
+    print(res);
 """
 
 EXECUTE_AND_PRINT_VECTOR = """
-echo(implode(" ", $res));
+    List<double> res = score(input_);
+    print(res.join(" "));
 """
 
 
-class PhpExecutor(base.BaseExecutor):
+class DartExecutor(base.BaseExecutor):
 
     executor_name = "score"
-    model_name = "model"
 
     def __init__(self, model):
         self.model = model
-        self.interpreter = interpreters.PhpInterpreter()
+        self.interpreter = interpreters.DartInterpreter()
 
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._php = "php"
+        self._dart = "dart"
 
     def predict(self, X):
         file_name = os.path.join(self._resource_tmp_dir,
-                                 "{}.php".format(self.executor_name))
-        exec_args = [self._php,
-                     "-f",
+                                 "{}.dart".format(self.executor_name))
+        exec_args = [self._dart,
                      file_name,
                      *map(str, X)]
         return utils.predict_from_commandline(exec_args)
@@ -56,16 +51,13 @@ class PhpExecutor(base.BaseExecutor):
             print_code = EXECUTE_AND_PRINT_VECTOR
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
-            model_file=self.model_name,
-            print_code=print_code)
+
         model_code = self.interpreter.interpret(self.model_ast)
+        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+            model_code=model_code,
+            print_code=print_code)
 
         executor_file_name = os.path.join(
-            self._resource_tmp_dir, "{}.php".format(self.executor_name))
-        model_file_name = os.path.join(
-            self._resource_tmp_dir, "{}.php".format(self.model_name))
+            self._resource_tmp_dir, "{}.dart".format(self.executor_name))
         with open(executor_file_name, "w") as f:
             f.write(executor_code)
-        with open(model_file_name, "w") as f:
-            f.write(model_code)

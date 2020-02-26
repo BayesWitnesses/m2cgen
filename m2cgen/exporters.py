@@ -130,7 +130,7 @@ def export_to_javascript(model, indent=4, function_name="score"):
 
 
 def export_to_visual_basic(model, module_name="Model", indent=4,
-                           function_name="score"):
+                           function_name="Score"):
     """
     Generates a Visual Basic (also can be treated as VBA
     with some small manual changes, see a note below)
@@ -298,6 +298,30 @@ def export_to_php(model, indent=4, function_name="score"):
     interpreter = interpreters.PhpInterpreter(
         indent=indent,
         function_name=function_name
+    )
+    return _export(model, interpreter)
+
+
+def export_to_dart(model, indent=4, function_name="score"):
+    """
+    Generates a Dart code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    indent : int, optional
+        The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.DartInterpreter(
+        indent=indent,
+        function_name=function_name,
     )
     return _export(model, interpreter)
 
