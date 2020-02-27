@@ -42,7 +42,7 @@ SUPPORTED_MODELS = {
     "sklearn.svm.classes.SVC": SVMModelAssembler,
     "sklearn.svm.classes.SVR": SVMModelAssembler,
 
-    # lightning SVM
+    # Lightning SVM
     "lightning.impl.dual_cd.LinearSVC": SklearnLinearModelAssembler,
     "lightning.impl.dual_cd.LinearSVR": SklearnLinearModelAssembler,
 
@@ -88,7 +88,7 @@ SUPPORTED_MODELS = {
     "statsmodels.base.elastic_net.RegularizedResultsWrapper":
         StatsmodelsLinearModelAssembler,
 
-    # lightning Linear Regressors
+    # Lightning Linear Regressors
     "lightning.impl.adagrad.AdaGradRegressor": SklearnLinearModelAssembler,
     "lightning.impl.primal_cd.CDRegressor": SklearnLinearModelAssembler,
     "lightning.impl.fista.FistaRegressor": SklearnLinearModelAssembler,
@@ -112,7 +112,7 @@ SUPPORTED_MODELS = {
     "sklearn.linear_model.stochastic_gradient.SGDClassifier":
         SklearnLinearModelAssembler,
 
-    # lightning Linear Classifiers
+    # Lightning Linear Classifiers
     "lightning.impl.adagrad.AdaGradClassifier": SklearnLinearModelAssembler,
     "lightning.impl.primal_cd.CDClassifier": SklearnLinearModelAssembler,
     "lightning.impl.fista.FistaClassifier": SklearnLinearModelAssembler,

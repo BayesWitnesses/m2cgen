@@ -191,7 +191,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification(svm.LinearSVC(random_state=RANDOM_SEED)),
         classification_binary(svm.LinearSVC(random_state=RANDOM_SEED)),
 
-        # lightning Linear SVM
+        # Lightning Linear SVM
         regression(light_reg.LinearSVR(random_state=RANDOM_SEED)),
         classification(light_clf.LinearSVC(
             criterion="accuracy", random_state=RANDOM_SEED)),
@@ -274,7 +274,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
                 len(utils.get_regression_model_trainer().y_train))),
                  fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
-        # lightning Linear Regression
+        # Lightning Linear Regression
         regression(light_reg.AdaGradRegressor(random_state=RANDOM_SEED)),
         regression(light_reg.CDRegressor(random_state=RANDOM_SEED)),
         regression(light_reg.FistaRegressor()),
@@ -311,7 +311,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(linear_model.SGDClassifier(
             random_state=RANDOM_SEED)),
 
-        # lightning Linear Classifiers
+        # Lightning Linear Classifiers
         classification(light_clf.AdaGradClassifier(
             random_state=RANDOM_SEED)),
         classification(light_clf.CDClassifier(
@@ -320,11 +320,11 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             penalty="l1/l2", multiclass=True, random_state=RANDOM_SEED)),
         classification(light_clf.FistaClassifier()),
         classification(light_clf.FistaClassifier(multiclass=True)),
-        classification(light_clf.SDCAClassifier(
+        classification(light_clf.SAGAClassifier(
             random_state=RANDOM_SEED)),
         classification(light_clf.SAGClassifier(
             random_state=RANDOM_SEED)),
-        classification(light_clf.SAGAClassifier(
+        classification(light_clf.SDCAClassifier(
             random_state=RANDOM_SEED)),
         classification(light_clf.SGDClassifier(
             random_state=RANDOM_SEED)),
@@ -336,11 +336,11 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(light_clf.CDClassifier(
             random_state=RANDOM_SEED)),
         classification_binary(light_clf.FistaClassifier()),
-        classification_binary(light_clf.SDCAClassifier(
+        classification_binary(light_clf.SAGAClassifier(
             random_state=RANDOM_SEED)),
         classification_binary(light_clf.SAGClassifier(
             random_state=RANDOM_SEED)),
-        classification_binary(light_clf.SAGAClassifier(
+        classification_binary(light_clf.SDCAClassifier(
             random_state=RANDOM_SEED)),
         classification_binary(light_clf.SGDClassifier(
             random_state=RANDOM_SEED)),
