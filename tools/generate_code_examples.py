@@ -42,6 +42,7 @@ EXAMPLE_LANGUAGES = [
     ("powershell", m2c.export_to_powershell, "ps1"),
     ("r", m2c.export_to_r, "r"),
     ("php", m2c.export_to_php, "php"),
+    ("dart", m2c.export_to_dart, "dart"),
 ]
 
 EXAMPLE_MODELS = [
