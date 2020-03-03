@@ -25,123 +25,97 @@ __all__ = [
 
 SUPPORTED_MODELS = {
     # LightGBM
-    "lightgbm.sklearn.LGBMClassifier": LightGBMModelAssembler,
-    "lightgbm.sklearn.LGBMRegressor": LightGBMModelAssembler,
+    "lightgbm_LGBMClassifier": LightGBMModelAssembler,
+    "lightgbm_LGBMRegressor": LightGBMModelAssembler,
 
     # XGBoost
-    "xgboost.sklearn.XGBClassifier": XGBoostModelAssemblerSelector,
-    "xgboost.sklearn.XGBRFClassifier": XGBoostModelAssemblerSelector,
-    "xgboost.sklearn.XGBRegressor": XGBoostModelAssemblerSelector,
-    "xgboost.sklearn.XGBRFRegressor": XGBoostModelAssemblerSelector,
+    "xgboost_XGBClassifier": XGBoostModelAssemblerSelector,
+    "xgboost_XGBRFClassifier": XGBoostModelAssemblerSelector,
+    "xgboost_XGBRegressor": XGBoostModelAssemblerSelector,
+    "xgboost_XGBRFRegressor": XGBoostModelAssemblerSelector,
 
     # Sklearn SVM
-    "sklearn.svm.classes.LinearSVC": SklearnLinearModelAssembler,
-    "sklearn.svm.classes.LinearSVR": SklearnLinearModelAssembler,
-    "sklearn.svm.classes.NuSVC": SVMModelAssembler,
-    "sklearn.svm.classes.NuSVR": SVMModelAssembler,
-    "sklearn.svm.classes.SVC": SVMModelAssembler,
-    "sklearn.svm.classes.SVR": SVMModelAssembler,
+    "sklearn_LinearSVC": SklearnLinearModelAssembler,
+    "sklearn_LinearSVR": SklearnLinearModelAssembler,
+    "sklearn_NuSVC": SVMModelAssembler,
+    "sklearn_NuSVR": SVMModelAssembler,
+    "sklearn_SVC": SVMModelAssembler,
+    "sklearn_SVR": SVMModelAssembler,
 
     # Lightning SVM
-    "lightning.impl.dual_cd.LinearSVC": SklearnLinearModelAssembler,
-    "lightning.impl.dual_cd.LinearSVR": SklearnLinearModelAssembler,
+    "lightning_LinearSVC": SklearnLinearModelAssembler,
+    "lightning_LinearSVR": SklearnLinearModelAssembler,
 
     # Sklearn Linear Regressors
-    "sklearn.linear_model.bayes.ARDRegression": SklearnLinearModelAssembler,
-    "sklearn.linear_model.bayes.BayesianRidge": SklearnLinearModelAssembler,
-    "sklearn.linear_model.coordinate_descent.ElasticNet":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.coordinate_descent.ElasticNetCV":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.huber.HuberRegressor": SklearnLinearModelAssembler,
-    "sklearn.linear_model.least_angle.Lars": SklearnLinearModelAssembler,
-    "sklearn.linear_model.least_angle.LarsCV": SklearnLinearModelAssembler,
-    "sklearn.linear_model.coordinate_descent.Lasso":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.coordinate_descent.LassoCV":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.least_angle.LassoLars":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.least_angle.LassoLarsCV":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.least_angle.LassoLarsIC":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.base.LinearRegression":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.omp.OrthogonalMatchingPursuit":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.omp.OrthogonalMatchingPursuitCV":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.passive_aggressive.PassiveAggressiveRegressor":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.ransac.RANSACRegressor": RANSACModelAssembler,
-    "sklearn.linear_model.ridge.Ridge": SklearnLinearModelAssembler,
-    "sklearn.linear_model.ridge.RidgeCV": SklearnLinearModelAssembler,
-    "sklearn.linear_model.stochastic_gradient.SGDRegressor":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.theil_sen.TheilSenRegressor":
-        SklearnLinearModelAssembler,
+    "sklearn_ARDRegression": SklearnLinearModelAssembler,
+    "sklearn_BayesianRidge": SklearnLinearModelAssembler,
+    "sklearn_ElasticNet": SklearnLinearModelAssembler,
+    "sklearn_ElasticNetCV": SklearnLinearModelAssembler,
+    "sklearn_HuberRegressor": SklearnLinearModelAssembler,
+    "sklearn_Lars": SklearnLinearModelAssembler,
+    "sklearn_LarsCV": SklearnLinearModelAssembler,
+    "sklearn_Lasso": SklearnLinearModelAssembler,
+    "sklearn_LassoCV": SklearnLinearModelAssembler,
+    "sklearn_LassoLars": SklearnLinearModelAssembler,
+    "sklearn_LassoLarsCV": SklearnLinearModelAssembler,
+    "sklearn_LassoLarsIC": SklearnLinearModelAssembler,
+    "sklearn_LinearRegression": SklearnLinearModelAssembler,
+    "sklearn_OrthogonalMatchingPursuit": SklearnLinearModelAssembler,
+    "sklearn_OrthogonalMatchingPursuitCV": SklearnLinearModelAssembler,
+    "sklearn_PassiveAggressiveRegressor": SklearnLinearModelAssembler,
+    "sklearn_RANSACRegressor": RANSACModelAssembler,
+    "sklearn_Ridge": SklearnLinearModelAssembler,
+    "sklearn_RidgeCV": SklearnLinearModelAssembler,
+    "sklearn_SGDRegressor": SklearnLinearModelAssembler,
+    "sklearn_TheilSenRegressor": SklearnLinearModelAssembler,
 
     # Statsmodels Linear Regressors
-    "statsmodels.regression.linear_model.RegressionResultsWrapper":
-        StatsmodelsLinearModelAssembler,
-    "statsmodels.base.elastic_net.RegularizedResultsWrapper":
-        StatsmodelsLinearModelAssembler,
+    "statsmodels_RegressionResultsWrapper": StatsmodelsLinearModelAssembler,
+    "statsmodels_RegularizedResultsWrapper": StatsmodelsLinearModelAssembler,
 
     # Lightning Linear Regressors
-    "lightning.impl.adagrad.AdaGradRegressor": SklearnLinearModelAssembler,
-    "lightning.impl.primal_cd.CDRegressor": SklearnLinearModelAssembler,
-    "lightning.impl.fista.FistaRegressor": SklearnLinearModelAssembler,
-    "lightning.impl.sag.SAGARegressor": SklearnLinearModelAssembler,
-    "lightning.impl.sag.SAGRegressor": SklearnLinearModelAssembler,
-    "lightning.impl.sdca.SDCARegressor": SklearnLinearModelAssembler,
+    "lightning_AdaGradRegressor": SklearnLinearModelAssembler,
+    "lightning_CDRegressor": SklearnLinearModelAssembler,
+    "lightning_FistaRegressor": SklearnLinearModelAssembler,
+    "lightning_SAGARegressor": SklearnLinearModelAssembler,
+    "lightning_SAGRegressor": SklearnLinearModelAssembler,
+    "lightning_SDCARegressor": SklearnLinearModelAssembler,
 
     # Sklearn Linear Classifiers
-    "sklearn.linear_model.logistic.LogisticRegression":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.logistic.LogisticRegressionCV":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.passive_aggressive.PassiveAggressiveClassifier":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.perceptron.Perceptron":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.ridge.RidgeClassifier":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.ridge.RidgeClassifierCV":
-        SklearnLinearModelAssembler,
-    "sklearn.linear_model.stochastic_gradient.SGDClassifier":
-        SklearnLinearModelAssembler,
+    "sklearn_LogisticRegression": SklearnLinearModelAssembler,
+    "sklearn_LogisticRegressionCV": SklearnLinearModelAssembler,
+    "sklearn_PassiveAggressiveClassifier": SklearnLinearModelAssembler,
+    "sklearn_Perceptron": SklearnLinearModelAssembler,
+    "sklearn_RidgeClassifier": SklearnLinearModelAssembler,
+    "sklearn_RidgeClassifierCV": SklearnLinearModelAssembler,
+    "sklearn_SGDClassifier": SklearnLinearModelAssembler,
 
     # Lightning Linear Classifiers
-    "lightning.impl.adagrad.AdaGradClassifier": SklearnLinearModelAssembler,
-    "lightning.impl.primal_cd.CDClassifier": SklearnLinearModelAssembler,
-    "lightning.impl.fista.FistaClassifier": SklearnLinearModelAssembler,
-    "lightning.impl.sag.SAGAClassifier": SklearnLinearModelAssembler,
-    "lightning.impl.sag.SAGClassifier": SklearnLinearModelAssembler,
-    "lightning.impl.sdca.SDCAClassifier": SklearnLinearModelAssembler,
-    "lightning.impl.sgd.SGDClassifier": SklearnLinearModelAssembler,
+    "lightning_AdaGradClassifier": SklearnLinearModelAssembler,
+    "lightning_CDClassifier": SklearnLinearModelAssembler,
+    "lightning_FistaClassifier": SklearnLinearModelAssembler,
+    "lightning_SAGAClassifier": SklearnLinearModelAssembler,
+    "lightning_SAGClassifier": SklearnLinearModelAssembler,
+    "lightning_SDCAClassifier": SklearnLinearModelAssembler,
+    "lightning_SGDClassifier": SklearnLinearModelAssembler,
 
     # Decision trees
-    "sklearn.tree.tree.DecisionTreeClassifier": TreeModelAssembler,
-    "sklearn.tree.tree.DecisionTreeRegressor": TreeModelAssembler,
-    "sklearn.tree.tree.ExtraTreeClassifier": TreeModelAssembler,
-    "sklearn.tree.tree.ExtraTreeRegressor": TreeModelAssembler,
+    "sklearn_DecisionTreeClassifier": TreeModelAssembler,
+    "sklearn_DecisionTreeRegressor": TreeModelAssembler,
+    "sklearn_ExtraTreeClassifier": TreeModelAssembler,
+    "sklearn_ExtraTreeRegressor": TreeModelAssembler,
 
     # Ensembles
-    "sklearn.ensemble.forest.ExtraTreesClassifier":
-        RandomForestModelAssembler,
-    "sklearn.ensemble.forest.ExtraTreesRegressor":
-        RandomForestModelAssembler,
-    "sklearn.ensemble.forest.RandomForestClassifier":
-        RandomForestModelAssembler,
-    "sklearn.ensemble.forest.RandomForestRegressor":
-        RandomForestModelAssembler,
+    "sklearn_ExtraTreesClassifier": RandomForestModelAssembler,
+    "sklearn_ExtraTreesRegressor": RandomForestModelAssembler,
+    "sklearn_RandomForestClassifier": RandomForestModelAssembler,
+    "sklearn_RandomForestRegressor": RandomForestModelAssembler,
 }
 
 
 def _get_full_model_name(model):
     type_name = type(model)
-    return "{}.{}".format(type_name.__module__,
+    return "{}_{}".format(type_name.__module__.split(".")[0],
                           type_name.__name__)
 
 

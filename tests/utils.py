@@ -249,10 +249,8 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
 
         # We use custom id since pytest for some reason can't show name of
         # the model in the automatic id. Which sucks.
-        model_name_parts = _get_full_model_name(model).split(".")
         ids.append("{} - {} - {}".format(
-            "{}.{}".format(model_name_parts[0], model_name_parts[-1]),
-            executor_mark.name, trainer.name))
+            _get_full_model_name(model), executor_mark.name, trainer.name))
 
         result_params.append(pytest.param(
             model, executor, trainer, marks=[executor_mark, trainer_mark],
