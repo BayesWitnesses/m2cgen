@@ -16,6 +16,7 @@ before_install:
   - bash .travis/setup.sh
 
 install:
+  - pip install Cython
   - pip install -r requirements-test.txt
 
 script:

@@ -10,6 +10,7 @@ import pytest
 import statsmodels.api as sm
 
 from lightgbm import LGBMClassifier
+from lightning.impl.base import BaseClassifier as LightBaseClassifier
 from sklearn import datasets
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 from sklearn.ensemble import forest
@@ -20,13 +21,15 @@ from sklearn.svm import SVC, NuSVC
 from xgboost import XGBClassifier
 
 from m2cgen import ast
+from m2cgen.assemblers import _get_full_model_name
 
 
 class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
     def __init__(self, model, params):
         self.model = model
         self.params = params
-        # mock class name to show appropriate model name in tests
+        # mock class module and name to show appropriate model name in tests
+        self.__class__.__module__ = model.__module__
         self.__class__.__name__ = model.__name__
 
     def fit(self, X, y):
@@ -43,7 +46,8 @@ class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
                 **self.params["iterative_fit"])
         else:
             self.fitted_model_ = est.fit(**self.params.get("fit", {}))
-        # mock class name to show appropriate model name in tests
+        # mock class module and name to show appropriate model name in tests
+        self.__class__.__module__ = type(self.fitted_model_).__module__
         self.__class__.__name__ = type(self.fitted_model_).__name__
         return self.fitted_model_
 
@@ -109,7 +113,8 @@ class ModelTrainer:
     def __call__(self, estimator):
         fitted_estimator = estimator.fit(self.X_train, self.y_train)
 
-        if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC)):
+        if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC,
+                                  LightBaseClassifier)):
             y_pred = estimator.decision_function(self.X_test)
         elif isinstance(estimator, DecisionTreeClassifier):
             y_pred = estimator.predict_proba(self.X_test.astype(np.float32))
@@ -245,7 +250,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         # We use custom id since pytest for some reason can't show name of
         # the model in the automatic id. Which sucks.
         ids.append("{} - {} - {}".format(
-            type(model).__name__, executor_mark.name, trainer.name))
+            _get_full_model_name(model), executor_mark.name, trainer.name))
 
         result_params.append(pytest.param(
             model, executor, trainer, marks=[executor_mark, trainer_mark],

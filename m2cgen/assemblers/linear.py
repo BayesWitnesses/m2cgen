@@ -33,7 +33,8 @@ class BaseLinearModelAssembler(ModelAssembler):
 class SklearnLinearModelAssembler(BaseLinearModelAssembler):
 
     def _get_intercept(self):
-        return self.model.intercept_
+        return getattr(self.model, "intercept_",
+                       np.zeros(self._get_coef().shape[0]))
 
     def _get_coef(self):
         return self.model.coef_
