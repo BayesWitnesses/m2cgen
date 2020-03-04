@@ -1,10 +1,10 @@
 import contextlib
 
-from m2cgen.interpreters.code_generator import BaseCodeGenerator
+from m2cgen.interpreters.code_generator import BaseImperativeCodeGenerator
 from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
 
-class PythonCodeGenerator(BaseCodeGenerator):
+class PythonCodeGenerator(BaseImperativeCodeGenerator):
 
     tpl_num_value = CT("${value}")
     tpl_infix_expression = CT("(${left}) ${op} (${right})")

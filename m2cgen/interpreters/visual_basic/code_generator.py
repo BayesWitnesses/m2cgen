@@ -1,10 +1,11 @@
 import contextlib
 
 from m2cgen.ast import CompOpType
-from m2cgen.interpreters.code_generator import BaseCodeGenerator, CodeTemplate
+from m2cgen.interpreters.code_generator \
+    import BaseImperativeCodeGenerator, CodeTemplate
 
 
-class VisualBasicCodeGenerator(BaseCodeGenerator):
+class VisualBasicCodeGenerator(BaseImperativeCodeGenerator):
     tpl_num_value = CodeTemplate("${value}")
     tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
     tpl_var_declaration = \
