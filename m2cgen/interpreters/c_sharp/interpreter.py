@@ -3,11 +3,12 @@ import os
 from m2cgen import ast
 from m2cgen.interpreters import mixins
 from m2cgen.interpreters import utils
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.c_sharp.code_generator import CSharpCodeGenerator
 
 
-class CSharpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
+class CSharpInterpreter(ImperativeToCodeInterpreter,
+                        mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "AddVectors",

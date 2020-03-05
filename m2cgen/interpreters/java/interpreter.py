@@ -4,11 +4,11 @@ import math
 from m2cgen import ast
 from m2cgen.interpreters import mixins
 from m2cgen.interpreters import utils
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 
 
-class JavaInterpreter(ToCodeInterpreter,
+class JavaInterpreter(ImperativeToCodeInterpreter,
                       mixins.LinearAlgebraMixin,
                       mixins.SubroutinesAsFunctionsMixin,
                       mixins.BinExpressionDepthTrackingMixin):

@@ -1,9 +1,9 @@
 from m2cgen.interpreters import mixins
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.r.code_generator import RCodeGenerator
 
 
-class RInterpreter(ToCodeInterpreter,
+class RInterpreter(ImperativeToCodeInterpreter,
                    mixins.LinearAlgebraMixin,
                    mixins.BinExpressionDepthTrackingMixin,
                    mixins.SubroutinesAsFunctionsMixin):

@@ -88,7 +88,7 @@ class BaseCodeGenerator:
         return op.value
 
 
-class BaseImperativeCodeGenerator(BaseCodeGenerator):
+class ImperativeCodeGenerator(BaseCodeGenerator):
     """
     This class provides basic functionality to generate code. It is
     language-agnostic, but exposes set of attributes which subclasses should
@@ -104,10 +104,6 @@ class BaseImperativeCodeGenerator(BaseCodeGenerator):
     tpl_block_termination = NotImplemented
     tpl_var_assignment = NotImplemented
 
-    def __init__(self, indent=4):
-        self._indent = indent
-        self.reset_state()
-
     def reset_state(self):
         super().reset_state()
         self._var_idx = 0
@@ -116,29 +112,6 @@ class BaseImperativeCodeGenerator(BaseCodeGenerator):
         var_name = "var" + str(self._var_idx)
         self._var_idx += 1
         return var_name
-
-    # All code modifications should be implemented via following methods.
-
-    def add_code_line(self, line):
-        if not line:
-            return
-        indent = " " * self._current_indent
-        self.code += indent + line + "\n"
-
-    def add_code_lines(self, lines):
-        if isinstance(lines, str):
-            lines = lines.split("\n")
-        for l in lines:
-            self.add_code_line(l)
-
-    def prepend_code_line(self, line):
-        self.code = line + "\n" + self.code
-
-    def prepend_code_lines(self, lines):
-        if isinstance(lines, str):
-            lines = lines.strip().split("\n")
-        for l in lines[::-1]:
-            self.prepend_code_line(l)
 
     # Following statements compute expressions using templates AND add
     # it to the result.
@@ -178,7 +151,7 @@ class BaseImperativeCodeGenerator(BaseCodeGenerator):
         return NotImplemented
 
 
-class CLikeCodeGenerator(BaseImperativeCodeGenerator):
+class CLikeCodeGenerator(ImperativeCodeGenerator):
     """
     This code generator provides C-like syntax so that subclasses will only
     have to provide logic for wrapping expressions into functions/classes/etc.

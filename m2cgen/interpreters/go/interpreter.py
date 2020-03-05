@@ -3,10 +3,10 @@ import os
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.go.code_generator import GoCodeGenerator
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 
 
-class GoInterpreter(ToCodeInterpreter,
+class GoInterpreter(ImperativeToCodeInterpreter,
                     mixins.LinearAlgebraMixin):
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",
