@@ -37,3 +37,9 @@ if [[ $LANG == *"dart"* ]]; then
   sudo apt-get update
   sudo apt-get install --no-install-recommends -y dart
 fi
+
+# Install Haskell.
+if [[ $LANG == *"haskell"* ]]; then
+  sudo apt-get update
+  sudo apt-get install --no-install-recommends -y haskell-platform
+fi

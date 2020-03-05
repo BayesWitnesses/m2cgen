@@ -12,6 +12,7 @@ from .exporters import (
     export_to_r,
     export_to_php,
     export_to_dart,
+    export_to_haskell,
 )
 
 __all__ = [
@@ -26,6 +27,7 @@ __all__ = [
     export_to_r,
     export_to_php,
     export_to_dart,
+    export_to_haskell,
 ]
 
 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
