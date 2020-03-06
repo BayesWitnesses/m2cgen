@@ -1,9 +1,14 @@
 import numpy as np
+
 from m2cgen import ast
 
 
 def mul(l, r, to_reuse=False):
     return ast.BinNumExpr(l, r, ast.BinNumOpType.MUL, to_reuse=to_reuse)
+
+
+def div(l, r, to_reuse=False):
+    return ast.BinNumExpr(l, r, ast.BinNumOpType.DIV, to_reuse=to_reuse)
 
 
 def add(l, r, to_reuse=False):

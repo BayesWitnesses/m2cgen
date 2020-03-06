@@ -330,6 +330,24 @@ namespace ML {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    expected_code = """
+using static System.Math;
+namespace ML {
+    public static class Model {
+        public static double Score(double[] input) {
+            return Sqrt(2.0);
+        }
+    }
+}
+"""
+
+    interpreter = CSharpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 

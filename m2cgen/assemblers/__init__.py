@@ -6,7 +6,7 @@ from .boosting import (XGBoostModelAssemblerSelector,
                        XGBoostTreeModelAssembler,
                        XGBoostLinearModelAssembler,
                        LightGBMModelAssembler)
-from .svm import SVMModelAssembler
+from .svm import SklearnSVMModelAssembler, LightningSVMModelAssembler
 from .meta import RANSACModelAssembler
 
 __all__ = [
@@ -19,7 +19,8 @@ __all__ = [
     XGBoostTreeModelAssembler,
     XGBoostLinearModelAssembler,
     LightGBMModelAssembler,
-    SVMModelAssembler,
+    SklearnSVMModelAssembler,
+    LightningSVMModelAssembler,
 ]
 
 
@@ -37,12 +38,13 @@ SUPPORTED_MODELS = {
     # Sklearn SVM
     "sklearn_LinearSVC": SklearnLinearModelAssembler,
     "sklearn_LinearSVR": SklearnLinearModelAssembler,
-    "sklearn_NuSVC": SVMModelAssembler,
-    "sklearn_NuSVR": SVMModelAssembler,
-    "sklearn_SVC": SVMModelAssembler,
-    "sklearn_SVR": SVMModelAssembler,
+    "sklearn_NuSVC": SklearnSVMModelAssembler,
+    "sklearn_NuSVR": SklearnSVMModelAssembler,
+    "sklearn_SVC": SklearnSVMModelAssembler,
+    "sklearn_SVR": SklearnSVMModelAssembler,
 
     # Lightning SVM
+    "lightning_KernelSVC": LightningSVMModelAssembler,
     "lightning_LinearSVC": SklearnLinearModelAssembler,
     "lightning_LinearSVR": SklearnLinearModelAssembler,
 

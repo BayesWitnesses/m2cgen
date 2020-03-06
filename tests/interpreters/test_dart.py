@@ -408,6 +408,20 @@ double score(List<double> input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    expected_code = """
+import 'dart:math';
+double score(List<double> input) {
+    return sqrt(2.0);
+}
+"""
+
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
