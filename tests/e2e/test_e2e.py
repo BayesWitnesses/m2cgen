@@ -265,6 +265,9 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             sm.OLS,
             dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.QuantReg,
+            dict(init=dict(fit_intercept=True)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.WLS,
             dict(init=dict(fit_intercept=True, weights=np.arange(
                 len(utils.get_regression_model_trainer().y_train)))))),
