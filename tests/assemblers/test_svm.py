@@ -113,17 +113,16 @@ def test_cosine_kernel():
     def kernel_ast(sup_vec_value):
         return ast.SubroutineExpr(
             ast.BinNumExpr(
-                ast.NumVal(sup_vec_value),
                 ast.BinNumExpr(
+                    ast.NumVal(sup_vec_value),
                     ast.FeatureRef(0),
-                    ast.SqrtExpr(
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.FeatureRef(0),
-                            ast.BinNumOpType.MUL),
-                        to_reuse=True),
-                    ast.BinNumOpType.DIV),
-                ast.BinNumOpType.MUL))
+                    ast.BinNumOpType.MUL),
+                ast.SqrtExpr(
+                    ast.BinNumExpr(
+                        ast.FeatureRef(0),
+                        ast.FeatureRef(0),
+                        ast.BinNumOpType.MUL)),
+                ast.BinNumOpType.DIV))
 
     expected = _create_expected_single_output_ast(
         estimator.coef_, estimator.intercept_,

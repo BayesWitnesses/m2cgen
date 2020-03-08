@@ -193,16 +193,19 @@ class LightningSVMModelAssembler(SklearnSVMModelAssembler):
 
     def _cosine_kernel(self, support_vector):
         support_vector_norm = np.linalg.norm(support_vector)
+        if support_vector_norm == 0.0:
+            support_vector_norm = 1.0
         feature_norm = ast.SqrtExpr(
             utils.apply_op_to_expressions(
                 ast.BinNumOpType.ADD,
                 *[utils.mul(ast.FeatureRef(i), ast.FeatureRef(i))
-                  for i in range(len(support_vector))]),
-            to_reuse=True)
+                  for i in range(len(support_vector))]))
         elem_wise = [
-            utils.mul(ast.NumVal(support_element_norm),
-                      utils.div(ast.FeatureRef(i), feature_norm))
+            utils.mul(ast.NumVal(support_element_norm), ast.FeatureRef(i))
             for i, support_element_norm
             in enumerate(support_vector / support_vector_norm)
         ]
-        return utils.apply_op_to_expressions(ast.BinNumOpType.ADD, *elem_wise)
+        kernel = utils.apply_op_to_expressions(
+            ast.BinNumOpType.ADD, *elem_wise)
+        kernel = utils.div(kernel, feature_norm)
+        return kernel
