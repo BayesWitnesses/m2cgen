@@ -7,9 +7,6 @@ from m2cgen.assemblers.base import ModelAssembler
 from m2cgen.assemblers.linear import _linear_to_ast
 
 
-LEAVES_CUTOFF_THRESHOLD = 3000
-
-
 class BaseBoostingAssembler(ModelAssembler):
 
     classifier_names = {}
@@ -94,10 +91,8 @@ class BaseBoostingAssembler(ModelAssembler):
 
 class BaseTreeBoostingAssembler(BaseBoostingAssembler):
 
-    def __init__(self, model, trees, base_score=0, tree_limit=None,
-                 leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
+    def __init__(self, model, trees, base_score=0, tree_limit=None):
         super().__init__(model, trees, base_score=base_score)
-        self._leaves_cutoff_threshold = leaves_cutoff_threshold
         assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
         self._tree_limit = tree_limit
 
@@ -115,8 +110,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
     classifier_names = {"XGBClassifier", "XGBRFClassifier"}
 
-    def __init__(self, model,
-                 leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
+    def __init__(self, model):
         if type(model).__name__ == "XGBRFClassifier" and model.n_classes_ > 2:
             raise RuntimeError(
                 "Multiclass XGBRFClassifier is not supported yet")
@@ -133,8 +127,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         best_ntree_limit = getattr(model, "best_ntree_limit", None)
 
         super().__init__(model, trees, base_score=model.base_score,
-                         tree_limit=best_ntree_limit,
-                         leaves_cutoff_threshold=leaves_cutoff_threshold)
+                         tree_limit=best_ntree_limit)
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
@@ -203,16 +196,14 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
     classifier_names = {"LGBMClassifier"}
 
-    def __init__(self, model,
-                 leaves_cutoff_threshold=LEAVES_CUTOFF_THRESHOLD):
+    def __init__(self, model):
         model_dump = model.booster_.dump_model()
         trees = [m["tree_structure"] for m in model_dump["tree_info"]]
 
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
         self.average_output = model_dump.get("average_output", False)
 
-        super().__init__(model, trees,
-                         leaves_cutoff_threshold=leaves_cutoff_threshold)
+        super().__init__(model, trees)
 
     def _final_transform(self, ast_to_transform):
         if self.average_output:
