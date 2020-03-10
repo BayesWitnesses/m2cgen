@@ -15,7 +15,7 @@ docker-generate-examples:
 	$(DOCKER_RUN_ARGS) bash -c "python3 setup.py develop && python3 tools/generate_code_examples.py generated_code_examples"
 
 docker-flake8:
-	$(DOCKER_RUN_ARGS) bash -c "flake8 ."
+	$(DOCKER_RUN_ARGS) bash -c "flake8 --exclude tmp,generated_code_examples ."
 
 docker-shell:
 	$(DOCKER_RUN_ARGS) bash

@@ -5,8 +5,7 @@ from m2cgen.interpreters.r.code_generator import RCodeGenerator
 
 class RInterpreter(ToCodeInterpreter,
                    mixins.LinearAlgebraMixin,
-                   mixins.BinExpressionDepthTrackingMixin,
-                   mixins.SubroutinesAsFunctionsMixin):
+                   mixins.SubroutinesMixin):
 
     # R doesn't allow to have more than 50 nested if, [, [[, {, ( calls.
     # It raises contextstack overflow error not only for explicitly nested
@@ -18,6 +17,8 @@ class RInterpreter(ToCodeInterpreter,
     # This value is just a heuristic and is subject to change in the future
     # based on the users' feedback.
     bin_depth_threshold = 25
+    ast_size_check_frequency = 2
+    ast_size_per_subroutine_threshold = 200
 
     exponent_function_name = "exp"
     tanh_function_name = "tanh"
