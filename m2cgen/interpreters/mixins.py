@@ -24,7 +24,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
 
     def _pre_interpret_hook(self, expr, bin_depth=0, **kwargs):
         if not isinstance(expr, ast.BinExpr):
-            return None, kwargs
+            return super()._pre_interpret_hook(expr, **kwargs)
 
         # We track depth of the binary expressions and call a hook if it
         # reaches specified threshold .
@@ -32,7 +32,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
             return self.bin_depth_threshold_hook(expr, **kwargs), kwargs
 
         kwargs["bin_depth"] = bin_depth + 1
-        return None, kwargs
+        return super()._pre_interpret_hook(expr, **kwargs)
 
     # Default implementation. Simply adds new variable.
     def bin_depth_threshold_hook(self, expr, **kwargs):
@@ -93,7 +93,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
 Subroutine = namedtuple('Subroutine', ['name', 'expr'])
 
 
-class SubroutinesMixin(BinExpressionDepthTrackingMixin):
+class SubroutinesMixin(BaseToCodeInterpreter):
     """
     This mixin provides ability to split the code into subroutines based on
     the size of the AST.
@@ -135,13 +135,15 @@ class SubroutinesMixin(BinExpressionDepthTrackingMixin):
     def enqueue_subroutine(self, name, expr):
         self.subroutine_expr_queue.append(Subroutine(name, expr))
 
-    def _pre_interpret_hook(self, expr, bin_depth=0, **kwargs):
-        if isinstance(expr, ast.BinExpr):
+    def _pre_interpret_hook(self, expr, ast_size_check_counter=0, **kwargs):
+        if isinstance(expr, ast.BinExpr) and not expr.to_reuse:
             frequency = self._adjust_ast_check_frequency(expr)
             self.ast_size_check_frequency = min(
                 frequency, self.ast_size_check_frequency)
 
-            if bin_depth >= self.ast_size_check_frequency:
+            ast_size_check_counter += 1
+            if ast_size_check_counter >= self.ast_size_check_frequency:
+                ast_size_check_counter = 0
                 ast_size = ast.count_exprs(expr)
                 if ast_size > self.ast_size_per_subroutine_threshold:
                     function_name = self._get_subroutine_name()
@@ -149,7 +151,9 @@ class SubroutinesMixin(BinExpressionDepthTrackingMixin):
                     return self._cg.function_invocation(
                         function_name, self._feature_array_name), kwargs
 
-        return super()._pre_interpret_hook(expr, bin_depth=bin_depth, **kwargs)
+            kwargs['ast_size_check_counter'] = ast_size_check_counter
+
+        return super()._pre_interpret_hook(expr, **kwargs)
 
     def _adjust_ast_check_frequency(self, expr):
         """

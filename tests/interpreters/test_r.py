@@ -306,21 +306,25 @@ def test_deep_mixed_exprs_exceeding_threshold():
 
     interpreter = RInterpreter()
     interpreter.bin_depth_threshold = 1
-    interpreter.ast_size_check_frequency = 1
+    interpreter.ast_size_check_frequency = 2
     interpreter.ast_size_per_subroutine_threshold = 6
 
     expected_code = """
 score <- function(input) {
-    if (((1) + (subroutine0(input))) == (1)) {
+    var1 <- subroutine0(input)
+    if (((1) + (var1)) == (1)) {
         var0 <- 1
     } else {
-        if (((1) + (subroutine1(input))) == (1)) {
+        var2 <- subroutine1(input)
+        if (((1) + (var2)) == (1)) {
             var0 <- 1
         } else {
-            if (((1) + (subroutine2(input))) == (1)) {
+            var3 <- subroutine2(input)
+            if (((1) + (var3)) == (1)) {
                 var0 <- 1
             } else {
-                if (((1) + (subroutine3(input))) == (1)) {
+                var4 <- subroutine3(input)
+                if (((1) + (var4)) == (1)) {
                     var0 <- 1
                 } else {
                     var0 <- 1
