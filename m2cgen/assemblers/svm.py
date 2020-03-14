@@ -54,7 +54,12 @@ class BaseSVMModelAssembler(ModelAssembler):
         return kernel_exprs
 
     def _get_supported_kernels(self):
-        return {}
+        return {
+            "rbf": self._rbf_kernel,
+            "sigmoid": self._sigmoid_kernel,
+            "poly": self._poly_kernel,
+            "linear": self._linear_kernel
+        }
 
     def _get_gamma(self):
         raise NotImplementedError
@@ -73,14 +78,6 @@ class BaseSVMModelAssembler(ModelAssembler):
 
 
 class SklearnSVMModelAssembler(BaseSVMModelAssembler):
-
-    def _get_supported_kernels(self):
-        return {
-            "rbf": self._rbf_kernel,
-            "sigmoid": self._sigmoid_kernel,
-            "poly": self._poly_kernel,
-            "linear": self._linear_kernel
-        }
 
     def _get_gamma(self):
         return self.model._gamma

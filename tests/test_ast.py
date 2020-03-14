@@ -45,6 +45,7 @@ def test_count_all_exprs_types():
         ast.BinVectorExpr(
             ast.VectorVal([
                 ast.ExpExpr(ast.NumVal(2)),
+                ast.SqrtExpr(ast.NumVal(2)),
                 ast.PowExpr(ast.NumVal(2), ast.NumVal(3)),
                 ast.TanhExpr(ast.NumVal(1)),
                 ast.BinNumExpr(
@@ -56,6 +57,7 @@ def test_count_all_exprs_types():
                 ast.NumVal(1),
                 ast.NumVal(2),
                 ast.NumVal(3),
+                ast.NumVal(4),
                 ast.FeatureRef(1)
             ]),
             ast.BinNumOpType.SUB),
@@ -67,4 +69,4 @@ def test_count_all_exprs_types():
             )),
         ast.BinNumOpType.MUL)
 
-    assert ast.count_exprs(expr) == 24
+    assert ast.count_exprs(expr) == 27
