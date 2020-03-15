@@ -23,6 +23,10 @@ def lte(l, r):
     return ast.CompExpr(l, r, ast.CompOpType.LTE)
 
 
+def eq(l, r):
+    return ast.CompExpr(l, r, ast.CompOpType.EQ)
+
+
 BIN_EXPR_CLASSES = {
     (False, False): ast.BinNumExpr,
     (True, True): ast.BinVectorExpr,

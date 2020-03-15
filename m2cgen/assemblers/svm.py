@@ -196,7 +196,12 @@ class LightningSVMModelAssembler(SklearnSVMModelAssembler):
             utils.apply_op_to_expressions(
                 ast.BinNumOpType.ADD,
                 *[utils.mul(ast.FeatureRef(i), ast.FeatureRef(i))
-                  for i in range(len(support_vector))]))
+                  for i in range(len(support_vector))]),
+            to_reuse=True)
+        safe_feature_norm = ast.IfExpr(
+            utils.eq(feature_norm, ast.NumVal(0.0)),
+            ast.NumVal(1.0),
+            feature_norm)
         kernel = self._linear_kernel(support_vector / support_vector_norm)
-        kernel = utils.div(kernel, feature_norm)
+        kernel = utils.div(kernel, safe_feature_norm)
         return kernel
