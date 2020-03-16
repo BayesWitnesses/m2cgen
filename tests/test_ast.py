@@ -25,7 +25,7 @@ def test_count_exprs():
         )
     ) == 6
 
-    assert ast.count_exprs(ast.SubroutineExpr(ast.NumVal(1))) == 1
+    assert ast.count_exprs(ast.NumVal(1)) == 1
 
 
 def test_count_exprs_exclude_list():
@@ -61,12 +61,11 @@ def test_count_all_exprs_types():
                 ast.FeatureRef(1)
             ]),
             ast.BinNumOpType.SUB),
-        ast.SubroutineExpr(
-            ast.IfExpr(
-                ast.CompExpr(ast.NumVal(2), ast.NumVal(0), ast.CompOpType.GT),
-                ast.NumVal(3),
-                ast.NumVal(4),
-            )),
+        ast.IfExpr(
+            ast.CompExpr(ast.NumVal(2), ast.NumVal(0), ast.CompOpType.GT),
+            ast.NumVal(3),
+            ast.NumVal(4),
+        ),
         ast.BinNumOpType.MUL)
 
     assert ast.count_exprs(expr) == 27

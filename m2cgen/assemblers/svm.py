@@ -50,7 +50,8 @@ class BaseSVMModelAssembler(ModelAssembler):
         kernel_exprs = []
         for v in support_vectors:
             kernel = self._kernel_fun(v)
-            kernel_exprs.append(ast.SubroutineExpr(kernel, to_reuse=to_reuse))
+            kernel.to_reuse = to_reuse
+            kernel_exprs.append(kernel)
         return kernel_exprs
 
     def _get_supported_kernels(self):

@@ -135,14 +135,13 @@ func score(input []float64) []float64 {
 
 
 def test_multi_output():
-    expr = ast.SubroutineExpr(
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.NumVal(1),
-                ast.NumVal(1),
-                ast.CompOpType.EQ),
-            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
+    expr = ast.IfExpr(
+        ast.CompExpr(
+            ast.NumVal(1),
+            ast.NumVal(1),
+            ast.CompOpType.EQ),
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 func score(input []float64) []float64 {

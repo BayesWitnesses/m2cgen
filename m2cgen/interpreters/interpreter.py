@@ -29,13 +29,7 @@ class BaseInterpreter:
         if result is not None:
             return result
 
-        try:
-            handler = self._select_handler(expr)
-        except NotImplementedError:
-            if isinstance(expr, ast.TransparentExpr):
-                reuse = True if expr.to_reuse else None
-                return self._do_interpret(expr.expr, to_reuse=reuse, **kwargs)
-            raise
+        handler = self._select_handler(expr)
 
         # Note that the reuse flag passed in the arguments has a higher
         # precedence than one specified in the expression. One use case for

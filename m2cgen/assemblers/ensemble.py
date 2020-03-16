@@ -12,7 +12,7 @@ class RandomForestModelAssembler(ModelAssembler):
         def assemble_tree_expr(t):
             assembler = TreeModelAssembler(t)
 
-            return ast.SubroutineExpr(assembler.assemble())
+            return assembler.assemble()
 
         assembled_trees = [assemble_tree_expr(t) for t in trees]
         return utils.apply_bin_op(
