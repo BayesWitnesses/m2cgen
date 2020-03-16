@@ -162,9 +162,7 @@ public class Model {
 def test_ignores_subroutine_expr():
     expr = ast.BinNumExpr(
         ast.FeatureRef(0),
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD)),
+        ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD),
         ast.BinNumOpType.MUL)
 
     expected_code = """

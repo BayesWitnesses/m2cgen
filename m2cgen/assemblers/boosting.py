@@ -48,7 +48,7 @@ class BaseBoostingAssembler(ModelAssembler):
 
         result_ast = self._final_transform(tmp_ast)
 
-        return ast.SubroutineExpr(result_ast)
+        return result_ast
 
     def _assemble_multi_class_output(self, estimator_params):
         # Multi-class output is calculated based on discussion in
@@ -100,7 +100,7 @@ class BaseTreeBoostingAssembler(BaseBoostingAssembler):
         if self._tree_limit:
             trees = trees[:self._tree_limit]
 
-        return [ast.SubroutineExpr(self._assemble_tree(t)) for t in trees]
+        return [self._assemble_tree(t) for t in trees]
 
     def _assemble_tree(self, tree):
         raise NotImplementedError
