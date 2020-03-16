@@ -374,7 +374,7 @@ def test_depth_threshold_with_bin_expr():
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """
@@ -401,7 +401,7 @@ def test_depth_threshold_without_bin_expr():
             expr)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 2
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """
@@ -447,7 +447,7 @@ def test_deep_mixed_exprs_not_reaching_threshold():
             expr)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """
@@ -493,7 +493,7 @@ def test_deep_mixed_exprs_exceeding_threshold():
             expr)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """
