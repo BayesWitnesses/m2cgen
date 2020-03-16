@@ -202,16 +202,31 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(light_clf.LinearSVC(
             criterion="auc", random_state=RANDOM_SEED)),
 
-        # SVM
+        # Sklearn SVM
         regression(svm.NuSVR(kernel="rbf")),
         regression(svm.SVR(kernel="rbf")),
         classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
-        classification_binary(svm.SVC(kernel="poly", degree=2, **SVC_PARAMS)),
+        classification_binary(svm.SVC(
+            kernel="poly",
+            C=1.5, degree=2, gamma=0.1, coef0=2.0, **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
+
+        # Lightning SVM
+        classification_binary(light_clf.KernelSVC(
+            kernel="rbf", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="linear", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="poly", alpha=1.5, solver="cg",
+            degree=2, gamma=0.1, coef0=2.0, random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="sigmoid", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="cosine", random_state=RANDOM_SEED)),
 
         # Sklearn Linear Regression
         regression(linear_model.ARDRegression()),

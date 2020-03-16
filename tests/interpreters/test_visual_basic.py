@@ -331,6 +331,21 @@ End Module
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    expected_code = """
+Module Model
+Function Score(ByRef inputVector() As Double) As Double
+    Score = (2.0) ^ (0.5)
+End Function
+End Module
+"""
+
+    interpreter = VisualBasicInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 

@@ -49,6 +49,18 @@ class ExpExpr(NumExpr):
         return "ExpExpr(" + args + ")"
 
 
+class SqrtExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "SqrtExpr(" + args + ")"
+
+
 class TanhExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
         assert expr.output_size == 1, "Only scalars are supported"
@@ -237,7 +249,7 @@ NESTED_EXPRS_MAPPINGS = [
     (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
     (VectorVal, lambda e: e.exprs),
     (IfExpr, lambda e: [e.test, e.body, e.orelse]),
-    ((ExpExpr, TanhExpr, TransparentExpr), lambda e: [e.expr]),
+    ((ExpExpr, SqrtExpr, TanhExpr, TransparentExpr), lambda e: [e.expr]),
 ]
 
 

@@ -1,38 +1,27 @@
+import numpy as np
+
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
 
 
-class SVMModelAssembler(ModelAssembler):
+class BaseSVMModelAssembler(ModelAssembler):
 
     def __init__(self, model):
         super().__init__(model)
 
-        supported_kernels = {
-            "rbf": self._rbf_kernel,
-            "sigmoid": self._sigmoid_kernel,
-            "poly": self._poly_kernel,
-            "linear": self._linear_kernel
-        }
         kernel_type = model.kernel
+        supported_kernels = self._get_supported_kernels()
         if kernel_type not in supported_kernels:
             raise ValueError("Unsupported kernel type {}".format(kernel_type))
         self._kernel_fun = supported_kernels[kernel_type]
 
-        n_features = len(model.support_vectors_[0])
-
-        gamma = model.gamma
-        if gamma == "auto" or gamma == "auto_deprecated":
-            gamma = 1.0 / n_features
+        gamma = self._get_gamma()
         self._gamma_expr = ast.NumVal(gamma)
         self._neg_gamma_expr = utils.sub(ast.NumVal(0), ast.NumVal(gamma),
                                          to_reuse=True)
 
-        self._output_size = 1
-        if type(model).__name__ in ("SVC", "NuSVC"):
-            n_classes = len(model.n_support_)
-            if n_classes > 2:
-                self._output_size = n_classes
+        self._output_size = self._get_output_size()
 
     def assemble(self):
         if self._output_size > 1:
@@ -42,8 +31,8 @@ class SVMModelAssembler(ModelAssembler):
 
     def _assemble_single_output(self):
         support_vectors = self.model.support_vectors_
-        coef = self.model.dual_coef_[0]
-        intercept = self.model.intercept_[0]
+        coef = self._get_single_coef()
+        intercept = self._get_single_intercept()
 
         kernel_exprs = self._apply_kernel(support_vectors)
 
@@ -56,6 +45,50 @@ class SVMModelAssembler(ModelAssembler):
             ast.BinNumOpType.ADD,
             ast.NumVal(intercept),
             *kernel_weight_mul_ops)
+
+    def _apply_kernel(self, support_vectors, to_reuse=False):
+        kernel_exprs = []
+        for v in support_vectors:
+            kernel = self._kernel_fun(v)
+            kernel_exprs.append(ast.SubroutineExpr(kernel, to_reuse=to_reuse))
+        return kernel_exprs
+
+    def _get_supported_kernels(self):
+        return {
+            "rbf": self._rbf_kernel,
+            "sigmoid": self._sigmoid_kernel,
+            "poly": self._poly_kernel,
+            "linear": self._linear_kernel
+        }
+
+    def _get_gamma(self):
+        raise NotImplementedError
+
+    def _get_output_size(self):
+        raise NotImplementedError
+
+    def _assemble_multi_class_output(self):
+        raise NotImplementedError
+
+    def _get_single_coef(self):
+        raise NotImplementedError
+
+    def _get_single_intercept(self):
+        raise NotImplementedError
+
+
+class SklearnSVMModelAssembler(BaseSVMModelAssembler):
+
+    def _get_gamma(self):
+        return self.model._gamma
+
+    def _get_output_size(self):
+        output_size = 1
+        if type(self.model).__name__ in {"SVC", "NuSVC"}:
+            n_classes = len(self.model.n_support_)
+            if n_classes > 2:
+                output_size = n_classes
+        return output_size
 
     def _assemble_multi_class_output(self):
         support_vectors = self.model.support_vectors_
@@ -96,12 +129,11 @@ class SVMModelAssembler(ModelAssembler):
 
         return ast.VectorVal(decisions)
 
-    def _apply_kernel(self, support_vectors, to_reuse=False):
-        kernel_exprs = []
-        for v in support_vectors:
-            kernel = self._kernel_fun(v)
-            kernel_exprs.append(ast.SubroutineExpr(kernel, to_reuse=to_reuse))
-        return kernel_exprs
+    def _get_single_coef(self):
+        return self.model.dual_coef_[0]
+
+    def _get_single_intercept(self):
+        return self.model.intercept_[0]
 
     def _rbf_kernel(self, support_vector):
         elem_wise = [
@@ -135,3 +167,41 @@ class SVMModelAssembler(ModelAssembler):
         kernel = self._linear_kernel(support_vector)
         kernel = utils.mul(self._gamma_expr, kernel)
         return utils.add(kernel, ast.NumVal(self.model.coef0))
+
+
+class LightningSVMModelAssembler(SklearnSVMModelAssembler):
+
+    def _get_supported_kernels(self):
+        kernels = super()._get_supported_kernels()
+        kernels["cosine"] = self._cosine_kernel
+        return kernels
+
+    def _get_gamma(self):
+        return self.model.gamma
+
+    def _get_output_size(self):
+        return 1
+
+    def _assemble_multi_class_output(self):
+        raise NotImplementedError
+
+    def _get_single_coef(self):
+        return self.model.coef_[0]
+
+    def _cosine_kernel(self, support_vector):
+        support_vector_norm = np.linalg.norm(support_vector)
+        if support_vector_norm == 0.0:
+            support_vector_norm = 1.0
+        feature_norm = ast.SqrtExpr(
+            utils.apply_op_to_expressions(
+                ast.BinNumOpType.ADD,
+                *[utils.mul(ast.FeatureRef(i), ast.FeatureRef(i))
+                  for i in range(len(support_vector))]),
+            to_reuse=True)
+        safe_feature_norm = ast.IfExpr(
+            utils.eq(feature_norm, ast.NumVal(0.0)),
+            ast.NumVal(1.0),
+            feature_norm)
+        kernel = self._linear_kernel(support_vector / support_vector_norm)
+        kernel = utils.div(kernel, safe_feature_norm)
+        return kernel
