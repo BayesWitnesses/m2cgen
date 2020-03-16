@@ -317,6 +317,22 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+
+    public static double score(double[] input) {
+        return Math.sqrt(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 

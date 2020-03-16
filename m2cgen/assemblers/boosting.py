@@ -1,5 +1,6 @@
 import json
 import numpy as np
+
 from m2cgen import ast
 from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler

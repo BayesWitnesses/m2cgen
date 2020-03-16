@@ -244,6 +244,20 @@ func score(input []float64) float64 {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return math.Sqrt(2.0)
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
