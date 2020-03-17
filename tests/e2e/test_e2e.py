@@ -281,18 +281,6 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             sm.OLS,
             dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
-            sm.QuantReg,
-            dict(init=dict(fit_intercept=True)))),
-        regression(utils.StatsmodelsSklearnLikeWrapper(
-            sm.WLS,
-            dict(init=dict(fit_intercept=True, weights=np.arange(
-                len(utils.get_regression_model_trainer().y_train)))))),
-        regression(utils.StatsmodelsSklearnLikeWrapper(
-            sm.WLS,
-            dict(init=dict(fit_intercept=True, weights=np.arange(
-                len(utils.get_regression_model_trainer().y_train))),
-                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
-        regression(utils.StatsmodelsSklearnLikeWrapper(
             ProcessMLE,
             dict(init=dict(exog_scale=np.ones(
                 (len(utils.get_regression_model_trainer().y_train), 2)),
@@ -309,6 +297,18 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
                     len(utils.get_regression_model_trainer().y_train) // 3),
                 np.ones(3))),
                  fit=dict(maxiter=2)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.QuantReg,
+            dict(init=dict(fit_intercept=True)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train)))))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train))),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
         # Lightning Linear Regression
         regression(light_reg.AdaGradRegressor(random_state=RANDOM_SEED)),
