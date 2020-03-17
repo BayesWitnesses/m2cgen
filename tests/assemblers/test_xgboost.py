@@ -20,28 +20,25 @@ def test_binary_classification():
             ast.ExpExpr(
                 ast.BinNumExpr(
                     ast.NumVal(0),
-                    ast.SubroutineExpr(
+                    ast.BinNumExpr(
                         ast.BinNumExpr(
-                            ast.BinNumExpr(
-                                ast.NumVal(-0.0),
-                                ast.SubroutineExpr(
-                                    ast.IfExpr(
-                                        ast.CompExpr(
-                                            ast.FeatureRef(20),
-                                            ast.NumVal(16.7950001),
-                                            ast.CompOpType.GTE),
-                                        ast.NumVal(-0.173057005),
-                                        ast.NumVal(0.163440868))),
-                                ast.BinNumOpType.ADD),
-                            ast.SubroutineExpr(
-                                ast.IfExpr(
-                                    ast.CompExpr(
-                                        ast.FeatureRef(27),
-                                        ast.NumVal(0.142349988),
-                                        ast.CompOpType.GTE),
-                                    ast.NumVal(-0.161026895),
-                                    ast.NumVal(0.149405137))),
-                            ast.BinNumOpType.ADD)),
+                            ast.NumVal(-0.0),
+                            ast.IfExpr(
+                                ast.CompExpr(
+                                    ast.FeatureRef(20),
+                                    ast.NumVal(16.7950001),
+                                    ast.CompOpType.GTE),
+                                ast.NumVal(-0.173057005),
+                                ast.NumVal(0.163440868)),
+                            ast.BinNumOpType.ADD),
+                        ast.IfExpr(
+                            ast.CompExpr(
+                                ast.FeatureRef(27),
+                                ast.NumVal(0.142349988),
+                                ast.CompOpType.GTE),
+                            ast.NumVal(-0.161026895),
+                            ast.NumVal(0.149405137)),
+                        ast.BinNumOpType.ADD),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
         ast.BinNumOpType.DIV,
@@ -63,12 +60,10 @@ def test_multi_class():
     actual = assembler.assemble()
 
     exponent = ast.ExpExpr(
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(0.5),
-                ast.SubroutineExpr(
-                    ast.NumVal(0.0)),
-                ast.BinNumOpType.ADD)),
+        ast.BinNumExpr(
+            ast.NumVal(0.5),
+            ast.NumVal(0.0),
+            ast.BinNumOpType.ADD),
         to_reuse=True)
 
     exponent_sum = ast.BinNumExpr(
@@ -93,28 +88,25 @@ def test_regression():
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    expected = ast.SubroutineExpr(
+    expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(base_score),
-                ast.SubroutineExpr(
-                    ast.IfExpr(
-                        ast.CompExpr(
-                            ast.FeatureRef(12),
-                            ast.NumVal(9.72500038),
-                            ast.CompOpType.GTE),
-                        ast.NumVal(1.6614188),
-                        ast.NumVal(2.91697121))),
-                ast.BinNumOpType.ADD),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(5),
-                        ast.NumVal(6.94099998),
-                        ast.CompOpType.GTE),
-                    ast.NumVal(3.33810854),
-                    ast.NumVal(1.71813202))),
-            ast.BinNumOpType.ADD))
+            ast.NumVal(base_score),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(12),
+                    ast.NumVal(9.72500038),
+                    ast.CompOpType.GTE),
+                ast.NumVal(1.6614188),
+                ast.NumVal(2.91697121)),
+            ast.BinNumOpType.ADD),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(5),
+                ast.NumVal(6.94099998),
+                ast.CompOpType.GTE),
+            ast.NumVal(3.33810854),
+            ast.NumVal(1.71813202)),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -131,28 +123,25 @@ def test_regression_best_ntree_limit():
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    expected = ast.SubroutineExpr(
+    expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(base_score),
-                ast.SubroutineExpr(
-                    ast.IfExpr(
-                        ast.CompExpr(
-                            ast.FeatureRef(12),
-                            ast.NumVal(9.72500038),
-                            ast.CompOpType.GTE),
-                        ast.NumVal(1.6614188),
-                        ast.NumVal(2.91697121))),
-                ast.BinNumOpType.ADD),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(5),
-                        ast.NumVal(6.94099998),
-                        ast.CompOpType.GTE),
-                    ast.NumVal(3.33810854),
-                    ast.NumVal(1.71813202))),
-            ast.BinNumOpType.ADD))
+            ast.NumVal(base_score),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(12),
+                    ast.NumVal(9.72500038),
+                    ast.CompOpType.GTE),
+                ast.NumVal(1.6614188),
+                ast.NumVal(2.91697121)),
+            ast.BinNumOpType.ADD),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(5),
+                ast.NumVal(6.94099998),
+                ast.CompOpType.GTE),
+            ast.NumVal(3.33810854),
+            ast.NumVal(1.71813202)),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -170,48 +159,42 @@ def test_multi_class_best_ntree_limit():
     actual = assembler.assemble()
 
     estimator_exp_class1 = ast.ExpExpr(
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(0.5),
-                ast.SubroutineExpr(
-                    ast.IfExpr(
-                        ast.CompExpr(
-                            ast.FeatureRef(2),
-                            ast.NumVal(2.45000005),
-                            ast.CompOpType.GTE),
-                        ast.NumVal(-0.0733167157),
-                        ast.NumVal(0.143414631))),
-                ast.BinNumOpType.ADD)),
+        ast.BinNumExpr(
+            ast.NumVal(0.5),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(2),
+                    ast.NumVal(2.45000005),
+                    ast.CompOpType.GTE),
+                ast.NumVal(-0.0733167157),
+                ast.NumVal(0.143414631)),
+            ast.BinNumOpType.ADD),
         to_reuse=True)
 
     estimator_exp_class2 = ast.ExpExpr(
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(0.5),
-                ast.SubroutineExpr(
-                    ast.IfExpr(
-                        ast.CompExpr(
-                            ast.FeatureRef(2),
-                            ast.NumVal(2.45000005),
-                            ast.CompOpType.GTE),
-                        ast.NumVal(0.0344139598),
-                        ast.NumVal(-0.0717073306))),
-                ast.BinNumOpType.ADD)),
+        ast.BinNumExpr(
+            ast.NumVal(0.5),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(2),
+                    ast.NumVal(2.45000005),
+                    ast.CompOpType.GTE),
+                ast.NumVal(0.0344139598),
+                ast.NumVal(-0.0717073306)),
+            ast.BinNumOpType.ADD),
         to_reuse=True)
 
     estimator_exp_class3 = ast.ExpExpr(
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(0.5),
-                ast.SubroutineExpr(
-                    ast.IfExpr(
-                        ast.CompExpr(
-                            ast.FeatureRef(3),
-                            ast.NumVal(1.6500001),
-                            ast.CompOpType.GTE),
-                        ast.NumVal(0.13432835),
-                        ast.NumVal(-0.0644444525))),
-                ast.BinNumOpType.ADD)),
+        ast.BinNumExpr(
+            ast.NumVal(0.5),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(3),
+                    ast.NumVal(1.6500001),
+                    ast.CompOpType.GTE),
+                ast.NumVal(0.13432835),
+                ast.NumVal(-0.0644444525)),
+            ast.BinNumOpType.ADD),
         to_reuse=True)
 
     exp_sum = ast.BinNumExpr(
@@ -256,28 +239,25 @@ def test_regression_saved_without_feature_names():
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    expected = ast.SubroutineExpr(
+    expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(base_score),
-                ast.SubroutineExpr(
-                    ast.IfExpr(
-                        ast.CompExpr(
-                            ast.FeatureRef(12),
-                            ast.NumVal(9.72500038),
-                            ast.CompOpType.GTE),
-                        ast.NumVal(1.6614188),
-                        ast.NumVal(2.91697121))),
-                ast.BinNumOpType.ADD),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(5),
-                        ast.NumVal(6.94099998),
-                        ast.CompOpType.GTE),
-                    ast.NumVal(3.33810854),
-                    ast.NumVal(1.71813202))),
-            ast.BinNumOpType.ADD))
+            ast.NumVal(base_score),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(12),
+                    ast.NumVal(9.72500038),
+                    ast.CompOpType.GTE),
+                ast.NumVal(1.6614188),
+                ast.NumVal(2.91697121)),
+            ast.BinNumOpType.ADD),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(5),
+                ast.NumVal(6.94099998),
+                ast.CompOpType.GTE),
+            ast.NumVal(3.33810854),
+            ast.NumVal(1.71813202)),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -346,14 +326,13 @@ def test_linear_model():
             ast.BinNumOpType.MUL),
     ]
 
-    expected = ast.SubroutineExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0.5),
-            assemblers.utils.apply_op_to_expressions(
-                ast.BinNumOpType.ADD,
-                ast.NumVal(3.13109),
-                *feature_weight_mul),
-            ast.BinNumOpType.ADD))
+    expected = ast.BinNumExpr(
+        ast.NumVal(0.5),
+        assemblers.utils.apply_op_to_expressions(
+            ast.BinNumOpType.ADD,
+            ast.NumVal(3.13109),
+            *feature_weight_mul),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -367,27 +346,24 @@ def test_regression_random_forest():
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    expected = ast.SubroutineExpr(
+    expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(0.6),
-                ast.SubroutineExpr(
-                    ast.IfExpr(
-                        ast.CompExpr(
-                            ast.FeatureRef(5),
-                            ast.NumVal(6.8375001),
-                            ast.CompOpType.GTE),
-                        ast.NumVal(17.3671646),
-                        ast.NumVal(9.48354053))),
-                ast.BinNumOpType.ADD),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(12),
-                        ast.NumVal(9.72500038),
-                        ast.CompOpType.GTE),
-                    ast.NumVal(8.31587982),
-                    ast.NumVal(14.7766275))),
-            ast.BinNumOpType.ADD))
+            ast.NumVal(0.6),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.8375001),
+                    ast.CompOpType.GTE),
+                ast.NumVal(17.3671646),
+                ast.NumVal(9.48354053)),
+            ast.BinNumOpType.ADD),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(12),
+                ast.NumVal(9.72500038),
+                ast.CompOpType.GTE),
+            ast.NumVal(8.31587982),
+            ast.NumVal(14.7766275)),
+        ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)

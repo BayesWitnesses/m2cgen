@@ -30,11 +30,10 @@ def test_linear_kernel():
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
-        return ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(sup_vec_value),
-                ast.FeatureRef(0),
-                ast.BinNumOpType.MUL))
+        return ast.BinNumExpr(
+            ast.NumVal(sup_vec_value),
+            ast.FeatureRef(0),
+            ast.BinNumOpType.MUL)
 
     expected = _create_expected_single_output_ast(
         estimator.dual_coef_, estimator.intercept_,
@@ -52,18 +51,17 @@ def test_sigmoid_kernel():
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
-        return ast.SubroutineExpr(
-            ast.TanhExpr(
+        return ast.TanhExpr(
+            ast.BinNumExpr(
                 ast.BinNumExpr(
+                    ast.NumVal(estimator.gamma),
                     ast.BinNumExpr(
-                        ast.NumVal(estimator.gamma),
-                        ast.BinNumExpr(
-                            ast.NumVal(sup_vec_value),
-                            ast.FeatureRef(0),
-                            ast.BinNumOpType.MUL),
+                        ast.NumVal(sup_vec_value),
+                        ast.FeatureRef(0),
                         ast.BinNumOpType.MUL),
-                    ast.NumVal(0.0),
-                    ast.BinNumOpType.ADD)))
+                    ast.BinNumOpType.MUL),
+                ast.NumVal(0.0),
+                ast.BinNumOpType.ADD))
 
     expected = _create_expected_single_output_ast(
         estimator.dual_coef_, estimator.intercept_,
@@ -81,19 +79,18 @@ def test_poly_kernel():
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
-        return ast.SubroutineExpr(
-            ast.PowExpr(
+        return ast.PowExpr(
+            ast.BinNumExpr(
                 ast.BinNumExpr(
+                    ast.NumVal(estimator.gamma),
                     ast.BinNumExpr(
-                        ast.NumVal(estimator.gamma),
-                        ast.BinNumExpr(
-                            ast.NumVal(sup_vec_value),
-                            ast.FeatureRef(0),
-                            ast.BinNumOpType.MUL),
+                        ast.NumVal(sup_vec_value),
+                        ast.FeatureRef(0),
                         ast.BinNumOpType.MUL),
-                    ast.NumVal(0.0),
-                    ast.BinNumOpType.ADD),
-                ast.NumVal(estimator.degree)))
+                    ast.BinNumOpType.MUL),
+                ast.NumVal(0.0),
+                ast.BinNumOpType.ADD),
+            ast.NumVal(estimator.degree))
 
     expected = _create_expected_single_output_ast(
         estimator.dual_coef_, estimator.intercept_,
@@ -111,30 +108,29 @@ def test_cosine_kernel():
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
-        return ast.SubroutineExpr(
+        return ast.BinNumExpr(
             ast.BinNumExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(sup_vec_value),
-                    ast.FeatureRef(0),
-                    ast.BinNumOpType.MUL),
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.SqrtExpr(
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.FeatureRef(0),
-                                ast.BinNumOpType.MUL),
-                            to_reuse=True),
-                        ast.NumVal(0.0),
-                        ast.CompOpType.EQ),
-                    ast.NumVal(1.0),
+                ast.NumVal(sup_vec_value),
+                ast.FeatureRef(0),
+                ast.BinNumOpType.MUL),
+            ast.IfExpr(
+                ast.CompExpr(
                     ast.SqrtExpr(
                         ast.BinNumExpr(
                             ast.FeatureRef(0),
                             ast.FeatureRef(0),
                             ast.BinNumOpType.MUL),
-                        to_reuse=True)),
-                ast.BinNumOpType.DIV))
+                        to_reuse=True),
+                    ast.NumVal(0.0),
+                    ast.CompOpType.EQ),
+                ast.NumVal(1.0),
+                ast.SqrtExpr(
+                    ast.BinNumExpr(
+                        ast.FeatureRef(0),
+                        ast.FeatureRef(0),
+                        ast.BinNumOpType.MUL),
+                    to_reuse=True)),
+            ast.BinNumOpType.DIV)
 
     expected = _create_expected_single_output_ast(
         estimator.coef_, estimator.intercept_,
@@ -233,15 +229,14 @@ def _rbf_kernel_ast(estimator, sup_vec_value, to_reuse=False):
         ast.BinNumOpType.SUB,
         to_reuse=True)
 
-    return ast.SubroutineExpr(
-        ast.ExpExpr(
-            ast.BinNumExpr(
-                negative_gamma_ast,
-                ast.PowExpr(
-                    ast.BinNumExpr(
-                        ast.NumVal(sup_vec_value),
-                        ast.FeatureRef(0),
-                        ast.BinNumOpType.SUB),
-                    ast.NumVal(2)),
-                ast.BinNumOpType.MUL)),
+    return ast.ExpExpr(
+        ast.BinNumExpr(
+            negative_gamma_ast,
+            ast.PowExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(sup_vec_value),
+                    ast.FeatureRef(0),
+                    ast.BinNumOpType.SUB),
+                ast.NumVal(2)),
+            ast.BinNumOpType.MUL),
         to_reuse=to_reuse)

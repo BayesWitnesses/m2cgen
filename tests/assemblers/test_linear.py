@@ -65,48 +65,45 @@ def test_multi_class():
     actual = assembler.assemble()
 
     expected = ast.VectorVal([
-        ast.SubroutineExpr(
+        ast.BinNumExpr(
             ast.BinNumExpr(
+                ast.NumVal(7),
                 ast.BinNumExpr(
-                    ast.NumVal(7),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(1),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(1),
-                    ast.NumVal(2),
+                    ast.FeatureRef(0),
+                    ast.NumVal(1),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.BinNumOpType.ADD),
             ast.BinNumExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(8),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(3),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(1),
-                    ast.NumVal(4),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.FeatureRef(1),
+                ast.NumVal(2),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
             ast.BinNumExpr(
+                ast.NumVal(8),
                 ast.BinNumExpr(
-                    ast.NumVal(9),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(5),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(1),
-                    ast.NumVal(6),
+                    ast.FeatureRef(0),
+                    ast.NumVal(3),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD))])
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(1),
+                ast.NumVal(4),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.NumVal(9),
+                ast.BinNumExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(5),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(1),
+                ast.NumVal(6),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD)])
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -622,83 +619,80 @@ def test_lightning_multi_class():
     actual = assembler.assemble()
 
     expected = ast.VectorVal([
-        ast.SubroutineExpr(
+        ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.BinNumExpr(
                     ast.BinNumExpr(
+                        ast.NumVal(0.0),
                         ast.BinNumExpr(
-                            ast.NumVal(0.0),
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.NumVal(0.0935146297),
-                                ast.BinNumOpType.MUL),
-                            ast.BinNumOpType.ADD),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(1),
-                            ast.NumVal(0.3213921354),
+                            ast.FeatureRef(0),
+                            ast.NumVal(0.0935146297),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(-0.4855914264),
+                        ast.FeatureRef(1),
+                        ast.NumVal(0.3213921354),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
-                    ast.FeatureRef(3),
-                    ast.NumVal(-0.2214295302),
+                    ast.FeatureRef(2),
+                    ast.NumVal(-0.4855914264),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(3),
+                ast.NumVal(-0.2214295302),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.BinNumExpr(
                     ast.BinNumExpr(
+                        ast.NumVal(0.0),
                         ast.BinNumExpr(
-                            ast.NumVal(0.0),
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.NumVal(-0.1103262586),
-                                ast.BinNumOpType.MUL),
-                            ast.BinNumOpType.ADD),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(1),
-                            ast.NumVal(-0.1662457692),
+                            ast.FeatureRef(0),
+                            ast.NumVal(-0.1103262586),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(0.0379823341),
+                        ast.FeatureRef(1),
+                        ast.NumVal(-0.1662457692),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
-                    ast.FeatureRef(3),
-                    ast.NumVal(-0.0128634938),
+                    ast.FeatureRef(2),
+                    ast.NumVal(0.0379823341),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(3),
+                ast.NumVal(-0.0128634938),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.BinNumExpr(
                     ast.BinNumExpr(
+                        ast.NumVal(0.0),
                         ast.BinNumExpr(
-                            ast.NumVal(0.0),
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.NumVal(-0.1685751402),
-                                ast.BinNumOpType.MUL),
-                            ast.BinNumOpType.ADD),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(1),
-                            ast.NumVal(-0.2045901693),
+                            ast.FeatureRef(0),
+                            ast.NumVal(-0.1685751402),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(0.2932121798),
+                        ast.FeatureRef(1),
+                        ast.NumVal(-0.2045901693),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
-                    ast.FeatureRef(3),
-                    ast.NumVal(0.2138148665),
+                    ast.FeatureRef(2),
+                    ast.NumVal(0.2932121798),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD))])
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(3),
+                ast.NumVal(0.2138148665),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD)])
 
     assert utils.cmp_exprs(actual, expected)

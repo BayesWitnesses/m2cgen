@@ -19,8 +19,7 @@ class BaseLinearModelAssembler(ModelAssembler):
 
         exprs = []
         for idx in range(coef.shape[0]):
-            exprs.append(ast.SubroutineExpr(
-                _linear_to_ast(coef[idx], intercept[idx])))
+            exprs.append(_linear_to_ast(coef[idx], intercept[idx]))
         return ast.VectorVal(exprs)
 
     def _get_intercept(self):
