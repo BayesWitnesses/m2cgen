@@ -9,5 +9,5 @@ pytest-mock==1.13.0
 coveralls==1.9.2
 pytest-cov==2.8.1
 py-mini-racer==0.1.18
-statsmodels==0.10.2
+statsmodels==0.11.1
 git+git://github.com/scikit-learn-contrib/lightning.git@b96f9c674968496e854078163c8814049a7b9f43
