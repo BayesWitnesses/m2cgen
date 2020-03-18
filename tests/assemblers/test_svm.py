@@ -108,6 +108,12 @@ def test_cosine_kernel():
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
+        feature_norm = ast.SqrtExpr(
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.FeatureRef(0),
+                ast.BinNumOpType.MUL),
+            to_reuse=True)
         return ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.NumVal(sup_vec_value),
@@ -115,21 +121,11 @@ def test_cosine_kernel():
                 ast.BinNumOpType.MUL),
             ast.IfExpr(
                 ast.CompExpr(
-                    ast.SqrtExpr(
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.FeatureRef(0),
-                            ast.BinNumOpType.MUL),
-                        to_reuse=True),
+                    feature_norm,
                     ast.NumVal(0.0),
                     ast.CompOpType.EQ),
                 ast.NumVal(1.0),
-                ast.SqrtExpr(
-                    ast.BinNumExpr(
-                        ast.FeatureRef(0),
-                        ast.FeatureRef(0),
-                        ast.BinNumOpType.MUL),
-                    to_reuse=True)),
+                feature_norm),
             ast.BinNumOpType.DIV)
 
     expected = _create_expected_single_output_ast(
