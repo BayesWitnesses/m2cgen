@@ -61,6 +61,15 @@ class StatsmodelsLinearModelAssembler(BaseLinearModelAssembler):
             else self.model.params)
 
 
+class ProcessMLEModelAssembler(BaseLinearModelAssembler):
+
+    def _get_intercept(self):
+        return 0.0
+
+    def _get_coef(self):
+        return self.model.params[:self.model.k_exog]
+
+
 def _linear_to_ast(coef, intercept):
     feature_weight_mul_ops = []
 

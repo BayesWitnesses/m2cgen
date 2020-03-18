@@ -4,6 +4,7 @@ import pytest
 import numpy as np
 import xgboost
 import statsmodels.api as sm
+from statsmodels.regression.process_regression import ProcessMLE
 import lightning.classification as light_clf
 import lightning.regression as light_reg
 from sklearn import linear_model, svm
@@ -279,6 +280,23 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.OLS,
             dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            ProcessMLE,
+            dict(init=dict(exog_scale=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           exog_smooth=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           exog_noise=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           time=np.kron(
+                np.ones(
+                    len(utils.get_regression_model_trainer().y_train) // 3),
+                np.arange(3)),
+                           groups=np.kron(
+                np.arange(
+                    len(utils.get_regression_model_trainer().y_train) // 3),
+                np.ones(3))),
+                 fit=dict(maxiter=2)))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.QuantReg,
             dict(init=dict(fit_intercept=True)))),

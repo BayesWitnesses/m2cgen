@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import statsmodels.api as sm
+from statsmodels.regression.process_regression import ProcessMLE
 from lightning.regression import AdaGradRegressor
 from lightning.classification import AdaGradClassifier
 from sklearn import linear_model
@@ -316,6 +317,90 @@ def test_statsmodels_unknown_constant_position():
 
     assembler = assemblers.StatsmodelsLinearModelAssembler(estimator)
     assembler.assemble()
+
+
+def test_statsmodels_processmle():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        ProcessMLE,
+        dict(init=dict(exog_scale=np.ones(
+            (len(utils.get_regression_model_trainer().y_train), 2)),
+                       exog_smooth=np.ones(
+            (len(utils.get_regression_model_trainer().y_train), 2)),
+                       exog_noise=np.ones(
+            (len(utils.get_regression_model_trainer().y_train), 2)),
+                       time=np.kron(
+            np.ones(len(utils.get_regression_model_trainer().y_train) // 3),
+            np.arange(3)),
+                       groups=np.kron(
+            np.arange(len(utils.get_regression_model_trainer().y_train) // 3),
+            np.ones(3))),
+             fit=dict(maxiter=1)))
+    _, __, estimator = utils.get_regression_model_trainer()(estimator)
+
+    assembler = assemblers.ProcessMLEModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    feature_weight_mul = [
+        ast.BinNumExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(-0.0932673973),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(1),
+            ast.NumVal(0.0480819091),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(2),
+            ast.NumVal(-0.0063734439),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(3),
+            ast.NumVal(2.7510656855),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(4),
+            ast.NumVal(-3.0836268637),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(5),
+            ast.NumVal(5.9605290000),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(6),
+            ast.NumVal(-0.0077880716),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(7),
+            ast.NumVal(-0.9685365627),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(8),
+            ast.NumVal(0.1688777882),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(9),
+            ast.NumVal(-0.0092446419),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(10),
+            ast.NumVal(-0.3924930042),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(11),
+            ast.NumVal(0.01506511708295605),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(12),
+            ast.NumVal(-0.4177000096),
+            ast.BinNumOpType.MUL),
+    ]
+
+    expected = assemblers.utils.apply_op_to_expressions(
+        ast.BinNumOpType.ADD,
+        ast.NumVal(0.0),
+        *feature_weight_mul)
+
+    assert utils.cmp_exprs(actual, expected)
 
 
 def test_lightning_regression():
