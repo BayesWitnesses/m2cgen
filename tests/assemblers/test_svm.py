@@ -202,6 +202,81 @@ def test_multi_class_rbf_kernel():
     assert utils.cmp_exprs(actual, expected)
 
 
+def test_lightning_multi_class_rbf_kernel():
+    estimator = KernelSVC(kernel="rbf", random_state=1, gamma=2.0)
+
+    estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
+
+    assembler = assemblers.LightningSVMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    kernels = [
+        _rbf_kernel_ast(estimator, float(i))
+        for i in range(1, 4)
+    ]
+
+    expected = ast.VectorVal([
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0.0),
+                    ast.BinNumExpr(
+                        kernels[0],
+                        ast.NumVal(0.5342246289),
+                        ast.BinNumOpType.MUL),
+                    ast.BinNumOpType.ADD),
+                ast.BinNumExpr(
+                    kernels[1],
+                    ast.NumVal(-0.5046204480),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                kernels[2],
+                ast.NumVal(-0.4659431306),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0.0),
+                    ast.BinNumExpr(
+                        kernels[0],
+                        ast.NumVal(-0.5386765707),
+                        ast.BinNumOpType.MUL),
+                    ast.BinNumOpType.ADD),
+                ast.BinNumExpr(
+                    kernels[1],
+                    ast.NumVal(0.5729019463),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                kernels[2],
+                ast.NumVal(-0.5386765707),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0.0),
+                    ast.BinNumExpr(
+                        kernels[0],
+                        ast.NumVal(-0.4659431306),
+                        ast.BinNumOpType.MUL),
+                    ast.BinNumOpType.ADD),
+                ast.BinNumExpr(
+                    kernels[1],
+                    ast.NumVal(-0.5046204480),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                kernels[2],
+                ast.NumVal(0.5342246289),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD)])
+
+    assert utils.cmp_exprs(actual, expected)
+
+
 def _create_expected_single_output_ast(coef, intercept, kernels_ast):
     return ast.BinNumExpr(
         ast.BinNumExpr(

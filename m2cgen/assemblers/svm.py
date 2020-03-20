@@ -29,10 +29,10 @@ class BaseSVMModelAssembler(ModelAssembler):
         else:
             return self._assemble_single_output()
 
-    def _assemble_single_output(self):
+    def _assemble_single_output(self, idx=0):
         support_vectors = self.model.support_vectors_
-        coef = self._get_single_coef()
-        intercept = self._get_single_intercept()
+        coef = self._get_single_coef(idx)
+        intercept = self._get_single_intercept(idx)
 
         kernel_exprs = self._apply_kernel(support_vectors)
 
@@ -71,10 +71,10 @@ class BaseSVMModelAssembler(ModelAssembler):
     def _assemble_multi_class_output(self):
         raise NotImplementedError
 
-    def _get_single_coef(self):
+    def _get_single_coef(self, idx=0):
         raise NotImplementedError
 
-    def _get_single_intercept(self):
+    def _get_single_intercept(self, idx=0):
         raise NotImplementedError
 
 
@@ -130,11 +130,11 @@ class SklearnSVMModelAssembler(BaseSVMModelAssembler):
 
         return ast.VectorVal(decisions)
 
-    def _get_single_coef(self):
-        return self.model.dual_coef_[0]
+    def _get_single_coef(self, idx=0):
+        return self.model.dual_coef_[idx]
 
-    def _get_single_intercept(self):
-        return self.model.intercept_[0]
+    def _get_single_intercept(self, idx=0):
+        return self.model.intercept_[idx]
 
     def _rbf_kernel(self, support_vector):
         elem_wise = [
@@ -181,13 +181,23 @@ class LightningSVMModelAssembler(SklearnSVMModelAssembler):
         return self.model.gamma
 
     def _get_output_size(self):
-        return 1
+        output_size = 1
+        n_classes = len(self.model.classes_)
+        if n_classes > 2:
+            output_size = n_classes
+        return output_size
 
     def _assemble_multi_class_output(self):
-        raise NotImplementedError
+        exprs = []
+        for idx in range(self.model.classes_.shape[0]):
+            exprs.append(self._assemble_single_output(idx))
+        return ast.VectorVal(exprs)
 
-    def _get_single_coef(self):
-        return self.model.coef_[0]
+    def _get_single_coef(self, idx=0):
+        return self.model.coef_[idx]
+
+    def _get_single_intercept(self, idx=0):
+        return 0.0
 
     def _cosine_kernel(self, support_vector):
         support_vector_norm = np.linalg.norm(support_vector)

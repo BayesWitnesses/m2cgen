@@ -206,8 +206,10 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         # Sklearn SVM
         regression(svm.NuSVR(kernel="rbf")),
         regression(svm.SVR(kernel="rbf")),
+
         classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+
         classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
         classification_binary(svm.SVC(
@@ -217,6 +219,9 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
 
         # Lightning SVM
+        classification(light_clf.KernelSVC(
+            kernel="rbf", random_state=RANDOM_SEED)),
+
         classification_binary(light_clf.KernelSVC(
             kernel="rbf", random_state=RANDOM_SEED)),
         classification_binary(light_clf.KernelSVC(
