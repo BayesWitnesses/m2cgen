@@ -126,7 +126,8 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         # assembling (if applicable).
         best_ntree_limit = getattr(model, "best_ntree_limit", None)
 
-        super().__init__(model, trees, base_score=model.base_score,
+        super().__init__(model, trees,
+                         base_score=model.get_params()["base_score"],
                          tree_limit=best_ntree_limit)
 
     def _assemble_tree(self, tree):
@@ -171,7 +172,7 @@ class XGBoostLinearModelAssembler(BaseBoostingAssembler):
         weights = json.loads(model_dump[0])["weight"]
         self._bias = json.loads(model_dump[0])["bias"]
         super().__init__(model, weights,
-                         base_score=model.base_score)
+                         base_score=model.get_params()["base_score"])
 
     def _assemble_estimators(self, weights, split_idx):
         coef = utils.to_1d_array(weights)
