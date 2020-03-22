@@ -263,7 +263,9 @@ def test_regression_saved_without_feature_names():
 
 
 def test_linear_model():
+    # Default updater ("shotgun") is nondeterministic
     estimator = xgboost.XGBRegressor(n_estimators=2, random_state=1,
+                                     updater="coord_descent",
                                      feature_selector="shuffle",
                                      booster="gblinear")
     utils.get_regression_model_trainer()(estimator)
@@ -274,55 +276,55 @@ def test_linear_model():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(-0.194544),
+            ast.NumVal(-0.151436),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.0863706),
+            ast.NumVal(0.084474),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(-0.0822264),
+            ast.NumVal(-0.10035),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(7.92531),
+            ast.NumVal(4.71537),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(1.28786),
+            ast.NumVal(1.39071),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(0.230787),
+            ast.NumVal(0.330592),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(0.0583001),
+            ast.NumVal(0.0610453),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(0.592638),
+            ast.NumVal(0.476255),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(0.0156075),
+            ast.NumVal(-0.0677851),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(-0.00132031),
+            ast.NumVal(-0.000543615),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(0.0466984),
+            ast.NumVal(0.0717916),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.010268),
+            ast.NumVal(0.010832),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.120203),
+            ast.NumVal(-0.139375),
             ast.BinNumOpType.MUL),
     ]
 
@@ -330,7 +332,7 @@ def test_linear_model():
         ast.NumVal(0.5),
         assemblers.utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
-            ast.NumVal(11.2093),
+            ast.NumVal(11.1287),
             *feature_weight_mul),
         ast.BinNumOpType.ADD)
 
