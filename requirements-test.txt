@@ -1,7 +1,7 @@
 numpy==1.16.1
 scipy==1.1.0
 scikit-learn==0.20.2
-xgboost==0.90
+xgboost==1.0.2
 lightgbm==2.2.3
 flake8==3.6.0
 pytest==5.3.2
