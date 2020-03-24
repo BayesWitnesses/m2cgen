@@ -49,7 +49,7 @@ pip install m2cgen
 | **Boosting** | <ul><li>LGBMClassifier(gbdt/dart/goss booster only)</li><li>XGBClassifier(gbtree/gblinear booster only)</li><ul> | <ul><li>LGBMRegressor(gbdt/dart/goss booster only)</li><li>XGBRegressor(gbtree/gblinear booster only)</li></ul> |
 
 ## Classification Output
-### Linear/Linear SVM
+### Linear / Linear SVM / Kernel SVM
 #### Binary
 Scalar value; signed distance of the sample to the hyperplane for the second class.
 #### Multiclass
@@ -65,13 +65,13 @@ Vector value; one-vs-one score for each class, shape (n_samples, n_classes * (n_
 #### Comment
 The output is consistent with the output of ```BaseSVC.decision_function``` when the `decision_function_shape` is set to `ovo`.
 
-### Tree/Random Forest/XGBoost/LightGBM
+### Tree / Random Forest / Boosting
 #### Binary
 Vector value; class probabilities.
 #### Multiclass
 Vector value; class probabilities.
 #### Comment
-The output is consistent with the output of the `predict_proba` method of `DecisionTreeClassifier`/`ForestClassifier`/`XGBClassifier`/`LGBMClassifier`.
+The output is consistent with the output of the `predict_proba` method of `DecisionTreeClassifier` / `ExtraTreeClassifier` / `ExtraTreesClassifier` / `RandomForestClassifier` / `XGBRFClassifier` / `XGBClassifier` / `LGBMClassifier`.
 
 ## Usage
 
