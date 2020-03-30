@@ -35,50 +35,51 @@ CLASSIFICATION = pytest.mark.clf
 
 
 # Set of helper functions to make parametrization less verbose.
-def regression(model):
+def regression(model, test_fraction=0.02):
     return (
         model,
-        utils.get_regression_model_trainer(),
+        utils.get_regression_model_trainer(test_fraction),
         REGRESSION,
     )
 
 
-def classification(model):
+def classification(model, test_fraction=0.02):
     return (
         model,
-        utils.get_classification_model_trainer(),
+        utils.get_classification_model_trainer(test_fraction),
         CLASSIFICATION,
     )
 
 
-def classification_binary(model):
+def classification_binary(model, test_fraction=0.02):
     return (
         model,
-        utils.get_binary_classification_model_trainer(),
+        utils.get_binary_classification_model_trainer(test_fraction),
         CLASSIFICATION,
     )
 
 
-def regression_random(model):
+def regression_random(model, test_fraction=0.02):
     return (
         model,
-        utils.get_regression_random_data_model_trainer(0.01),
+        utils.get_regression_random_data_model_trainer(test_fraction),
         REGRESSION,
     )
 
 
-def classification_random(model):
+def classification_random(model, test_fraction=0.02):
     return (
         model,
-        utils.get_classification_random_data_model_trainer(0.01),
+        utils.get_classification_random_data_model_trainer(test_fraction),
         CLASSIFICATION,
     )
 
 
-def classification_binary_random(model):
+def classification_binary_random(model, test_fraction=0.02):
     return (
         model,
-        utils.get_classification_binary_random_data_model_trainer(0.01),
+        utils.get_classification_binary_random_data_model_trainer(
+            test_fraction),
         CLASSIFICATION,
     )
 
@@ -92,6 +93,8 @@ TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
                       random_state=RANDOM_SEED)
+XGBOOST_HIST_PARAMS = dict(base_score=0.6, n_estimators=10,
+                           tree_method="hist", random_state=RANDOM_SEED)
 XGBOOST_PARAMS_LINEAR = dict(base_score=0.6, n_estimators=10,
                              feature_selector="shuffle", booster="gblinear",
                              random_state=RANDOM_SEED)
@@ -169,6 +172,14 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
+
+        # XGBoost (tree method "hist")
+        regression(xgboost.XGBRegressor(**XGBOOST_HIST_PARAMS),
+                   test_fraction=0.2),
+        classification(xgboost.XGBClassifier(**XGBOOST_HIST_PARAMS),
+                       test_fraction=0.2),
+        classification_binary(xgboost.XGBClassifier(**XGBOOST_HIST_PARAMS),
+                              test_fraction=0.2),
 
         # XGBoost (LINEAR)
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS_LINEAR)),
