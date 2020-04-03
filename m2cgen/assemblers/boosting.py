@@ -134,7 +134,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         if "leaf" in tree:
             return ast.NumVal(tree["leaf"])
 
-        threshold = ast.NumVal(np.float32(tree["split_condition"]))
+        threshold = ast.NumVal(tree["split_condition"], dtype=np.float32)
         split = tree["split"]
         feature_idx = self._feature_name_to_idx.get(split, split)
         feature_ref = ast.FeatureRef(feature_idx)
