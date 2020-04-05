@@ -1,3 +1,4 @@
+import numpy as np
 from m2cgen import ast
 
 
@@ -69,3 +70,9 @@ def test_count_all_exprs_types():
         ast.BinNumOpType.MUL)
 
     assert ast.count_exprs(expr) == 27
+
+
+def test_num_val():
+    assert type(ast.NumVal(1).value) == int
+    assert type(ast.NumVal(1, dtype=np.float32).value) == np.float32
+    assert type(ast.NumVal(1, dtype=np.float64).value) == np.float64
