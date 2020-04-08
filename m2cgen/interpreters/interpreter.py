@@ -1,6 +1,7 @@
 import re
 
 from m2cgen import ast
+from m2cgen.interpreters.utils import CacheResult
 
 
 class BaseInterpreter:
@@ -41,7 +42,7 @@ class BaseInterpreter:
             return handler(expr, **kwargs)
 
         if expr in self._cached_expr_results:
-            return self._cached_expr_results[expr]
+            return self._cached_expr_results[expr].var_name
 
         result = handler(expr, **kwargs)
         return self._cache_reused_expr(expr, result)
@@ -99,6 +100,9 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         super().__init__(cg, feature_array_name=feature_array_name)
         self.with_vectors = False
         self.with_math_module = False
+
+    def interpret_if_expr(self, expr, **kwargs):
+        raise NotImplementedError
 
     def interpret_comp_expr(self, expr, **kwargs):
         op = self._cg._comp_op_overwrite(expr.op)
@@ -193,5 +197,6 @@ class ImperativeToCodeInterpreter(ToCodeInterpreter):
     def _cache_reused_expr(self, expr, expr_result):
         var_name = self._cg.add_var_declaration(expr.output_size)
         self._cg.add_var_assignment(var_name, expr_result, expr.output_size)
-        self._cached_expr_results[expr] = var_name
+        self._cached_expr_results[expr] = CacheResult(
+            var_name=var_name, expr_result=None)
         return var_name

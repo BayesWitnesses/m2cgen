@@ -7,7 +7,7 @@ from tests import utils
 from tests.e2e.executors import base
 
 EXECUTOR_CODE_TPL = """
-module Main where
+module ${executor_name} where
 import System.Environment (getArgs)
 import ${model_name}
 
@@ -15,7 +15,6 @@ main = do
     args <- getArgs
     let inputArray = [read i::Double | i <- args]
     let res = score inputArray
-
     ${print_code}
 """
 
@@ -51,6 +50,7 @@ class HaskellExecutor(base.BaseExecutor):
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
         executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+            executor_name=self.executor_name,
             model_name=self.model_name,
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)

@@ -10,11 +10,42 @@ class HaskellCodeGenerator(BaseCodeGenerator):
     tpl_module_definition = CodeTemplate("module ${module_name} where")
 
     def __init__(self, *args, **kwargs):
-        super(HaskellCodeGenerator, self).__init__(*args, **kwargs)
+        self._func_idx = 0
+        super().__init__(*args, **kwargs)
+
+    def reset_state(self):
+        super().reset_state()
+        self._func_idx = 0
 
     def array_index_access(self, array_name, index):
         return self.tpl_infix_expression(
             left=array_name, op="!!", right=index)
+
+    def add_if_statement(self, if_def):
+        self.add_code_line("if ({})".format(if_def))
+        self.increase_indent()
+        self.add_code_line("then")
+        self.increase_indent()
+
+    def add_else_statement(self):
+        self.decrease_indent()
+        self.add_code_line("else")
+        self.increase_indent()
+
+    def add_if_termination(self):
+        self.decrease_indent()
+        self.decrease_indent()
+
+    def get_func_name(self):
+        func_name = "func" + str(self._func_idx)
+        self._func_idx += 1
+        return func_name
+
+    def add_function(self, function_name, function_body):
+        self.add_code_line("{} =".format(function_name))
+        self.increase_indent()
+        self.add_code_lines(function_body)
+        self.decrease_indent()
 
     def function_invocation(self, function_name, *args):
         return (function_name + " " +
