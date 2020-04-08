@@ -143,14 +143,13 @@ List<double> score(List<double> input) {
 
 
 def test_multi_output():
-    expr = ast.SubroutineExpr(
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.NumVal(1),
-                ast.NumVal(1),
-                ast.CompOpType.EQ),
-            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
+    expr = ast.IfExpr(
+        ast.CompExpr(
+            ast.NumVal(1),
+            ast.NumVal(1),
+            ast.CompOpType.EQ),
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 List<double> score(List<double> input) {
@@ -401,6 +400,20 @@ def test_pow_expr():
 import 'dart:math';
 double score(List<double> input) {
     return pow(2.0, 3.0);
+}
+"""
+
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    expected_code = """
+import 'dart:math';
+double score(List<double> input) {
+    return sqrt(2.0);
 }
 """
 

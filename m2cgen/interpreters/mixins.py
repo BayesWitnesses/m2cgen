@@ -1,4 +1,5 @@
 import sys
+import math
 from collections import namedtuple
 
 from m2cgen import ast
@@ -23,7 +24,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
 
     def _pre_interpret_hook(self, expr, bin_depth=0, **kwargs):
         if not isinstance(expr, ast.BinExpr):
-            return None, kwargs
+            return super()._pre_interpret_hook(expr, **kwargs)
 
         # We track depth of the binary expressions and call a hook if it
         # reaches specified threshold .
@@ -31,7 +32,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
             return self.bin_depth_threshold_hook(expr, **kwargs), kwargs
 
         kwargs["bin_depth"] = bin_depth + 1
-        return None, kwargs
+        return super()._pre_interpret_hook(expr, **kwargs)
 
     # Default implementation. Simply adds new variable.
     def bin_depth_threshold_hook(self, expr, **kwargs):
@@ -92,9 +93,10 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
 Subroutine = namedtuple('Subroutine', ['name', 'expr'])
 
 
-class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
+class SubroutinesMixin(BaseToCodeInterpreter):
     """
-    This mixin provides ability to interpret each SubroutineExpr as a function.
+    This mixin provides ability to split the code into subroutines based on
+    the size of the AST.
 
     Subclasses only need to implement `create_code_generator` method.
 
@@ -107,6 +109,10 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
     `enqueue_subroutine` and then call method `process_subroutine_queue` with
     instance of code generator, which will be populated with the result code.
     """
+
+    # disabled by default
+    ast_size_check_frequency = sys.maxsize
+    ast_size_per_subroutine_threshold = sys.maxsize
 
     def __init__(self, *args, **kwargs):
         self._subroutine_idx = 0
@@ -123,19 +129,49 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
         while len(self.subroutine_expr_queue):
             self._reset_reused_expr_cache()
             subroutine = self.subroutine_expr_queue.pop(0)
-            subroutine_code = self.process_subroutine(subroutine)
+            subroutine_code = self._process_subroutine(subroutine)
             top_code_generator.add_code_lines(subroutine_code)
 
-    def interpret_subroutine_expr(self, expr, **kwargs):
-        """
-        This method will be called whenever new subroutine is encountered.
-        """
-        function_name = self._get_subroutine_name()
-        self.enqueue_subroutine(function_name, expr.expr)
-        return self._cg.function_invocation(
-            function_name, self._feature_array_name)
+    def enqueue_subroutine(self, name, expr):
+        self.subroutine_expr_queue.append(Subroutine(name, expr))
 
-    def process_subroutine(self, subroutine):
+    def _pre_interpret_hook(self, expr, ast_size_check_counter=0, **kwargs):
+        if isinstance(expr, ast.BinExpr) and not expr.to_reuse:
+            frequency = self._adjust_ast_check_frequency(expr)
+            self.ast_size_check_frequency = min(
+                frequency, self.ast_size_check_frequency)
+
+            ast_size_check_counter += 1
+            if ast_size_check_counter >= self.ast_size_check_frequency:
+                ast_size_check_counter = 0
+                ast_size = ast.count_exprs(expr)
+                if ast_size > self.ast_size_per_subroutine_threshold:
+                    function_name = self._get_subroutine_name()
+                    self.enqueue_subroutine(function_name, expr)
+                    return self._cg.function_invocation(
+                        function_name, self._feature_array_name), kwargs
+
+            kwargs['ast_size_check_counter'] = ast_size_check_counter
+
+        return super()._pre_interpret_hook(expr, **kwargs)
+
+    def _adjust_ast_check_frequency(self, expr):
+        """
+        The logic below counts the number of non-binary expressions
+        in a non-recursive branch of a binary expression to account
+        for large tree-like models and adjust the size check frequency
+        if necessary.
+        """
+        cnt = None
+        if not isinstance(expr.left, ast.BinExpr):
+            cnt = ast.count_exprs(expr.left, exclude_list={ast.BinExpr})
+        elif not isinstance(expr.right, ast.BinExpr):
+            cnt = ast.count_exprs(expr.right, exclude_list={ast.BinExpr})
+        if cnt and cnt < self.ast_size_per_subroutine_threshold:
+            return math.ceil(self.ast_size_per_subroutine_threshold / cnt)
+        return self.ast_size_check_frequency
+
+    def _process_subroutine(self, subroutine):
         """
         Handles single subroutine. Creates new code generator and defines a
         function for a given subroutine.
@@ -152,9 +188,6 @@ class SubroutinesAsFunctionsMixin(BaseToCodeInterpreter):
             self._cg.add_return_statement(last_result)
 
         return self._cg.code
-
-    def enqueue_subroutine(self, name, expr):
-        self.subroutine_expr_queue.append(Subroutine(name, expr))
 
     def _get_subroutine_name(self):
         subroutine_name = "subroutine" + str(self._subroutine_idx)

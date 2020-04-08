@@ -6,7 +6,7 @@ from m2cgen.interpreters.r.code_generator import RCodeGenerator
 class RInterpreter(ImperativeToCodeInterpreter,
                    mixins.LinearAlgebraMixin,
                    mixins.BinExpressionDepthTrackingMixin,
-                   mixins.SubroutinesAsFunctionsMixin):
+                   mixins.SubroutinesMixin):
 
     # R doesn't allow to have more than 50 nested if, [, [[, {, ( calls.
     # It raises contextstack overflow error not only for explicitly nested
@@ -19,7 +19,11 @@ class RInterpreter(ImperativeToCodeInterpreter,
     # based on the users' feedback.
     bin_depth_threshold = 25
 
+    ast_size_check_frequency = 2
+    ast_size_per_subroutine_threshold = 200
+
     exponent_function_name = "exp"
+    sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):

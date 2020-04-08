@@ -197,14 +197,13 @@ namespace ML {
 
 
 def test_multi_output():
-    expr = ast.SubroutineExpr(
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.NumVal(1),
-                ast.NumVal(1),
-                ast.CompOpType.EQ),
-            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
+    expr = ast.IfExpr(
+        ast.CompExpr(
+            ast.NumVal(1),
+            ast.NumVal(1),
+            ast.CompOpType.EQ),
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 namespace ML {
@@ -321,6 +320,24 @@ namespace ML {
     public static class Model {
         public static double Score(double[] input) {
             return Pow(2.0, 3.0);
+        }
+    }
+}
+"""
+
+    interpreter = CSharpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    expected_code = """
+using static System.Math;
+namespace ML {
+    public static class Model {
+        public static double Score(double[] input) {
+            return Sqrt(2.0);
         }
     }
 }

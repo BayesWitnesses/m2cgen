@@ -128,14 +128,13 @@ def score(input):
 
 
 def test_multi_output():
-    expr = ast.SubroutineExpr(
-        ast.IfExpr(
+    expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1),
                 ast.NumVal(1),
                 ast.CompOpType.EQ),
             ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
+            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 def score(input):
@@ -353,6 +352,20 @@ def test_pow_expr():
 import math
 def score(input):
     return math.pow(2.0, 3.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import math
+def score(input):
+    return math.sqrt(2.0)
     """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

@@ -123,27 +123,6 @@ score <- function(input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
-def test_subroutine():
-    expr = ast.BinNumExpr(
-        ast.FeatureRef(0),
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD)),
-        ast.BinNumOpType.MUL)
-
-    expected_code = """
-score <- function(input) {
-    return((input[1]) * (subroutine0(input)))
-}
-subroutine0 <- function(input) {
-    return((1) + (2))
-}
-"""
-
-    interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
 def test_raw_array():
     expr = ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])
 
@@ -158,20 +137,16 @@ score <- function(input) {
 
 
 def test_multi_output():
-    expr = ast.SubroutineExpr(
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.NumVal(1),
-                ast.NumVal(1),
-                ast.CompOpType.EQ),
-            ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
-            ast.VectorVal([ast.NumVal(3), ast.NumVal(4)])))
+    expr = ast.IfExpr(
+        ast.CompExpr(
+            ast.NumVal(1),
+            ast.NumVal(1),
+            ast.CompOpType.EQ),
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 score <- function(input) {
-    return(subroutine0(input))
-}
-subroutine0 <- function(input) {
     if ((1) == (1)) {
         var0 <- c(1, 2)
     } else {
@@ -329,24 +304,27 @@ def test_deep_mixed_exprs_exceeding_threshold():
             ast.NumVal(1),
             expr)
 
-    interpreter = CustomRInterpreter()
+    interpreter = RInterpreter()
+    interpreter.bin_depth_threshold = 1
+    interpreter.ast_size_check_frequency = 2
+    interpreter.ast_size_per_subroutine_threshold = 6
 
     expected_code = """
 score <- function(input) {
-    var1 <- (1) + ((1) + (1))
-    if (((1) + ((1) + (var1))) == (1)) {
+    var1 <- subroutine0(input)
+    if (((1) + (var1)) == (1)) {
         var0 <- 1
     } else {
-        var2 <- (1) + ((1) + (1))
-        if (((1) + ((1) + (var2))) == (1)) {
+        var2 <- subroutine1(input)
+        if (((1) + (var2)) == (1)) {
             var0 <- 1
         } else {
-            var3 <- (1) + ((1) + (1))
-            if (((1) + ((1) + (var3))) == (1)) {
+            var3 <- subroutine2(input)
+            if (((1) + (var3)) == (1)) {
                 var0 <- 1
             } else {
-                var4 <- (1) + ((1) + (1))
-                if (((1) + ((1) + (var4))) == (1)) {
+                var4 <- subroutine3(input)
+                if (((1) + (var4)) == (1)) {
                     var0 <- 1
                 } else {
                     var0 <- 1
@@ -355,6 +333,26 @@ score <- function(input) {
         }
     }
     return(var0)
+}
+subroutine0 <- function(input) {
+    var1 <- (1) + (1)
+    var0 <- (1) + (var1)
+    return((1) + (var0))
+}
+subroutine1 <- function(input) {
+    var1 <- (1) + (1)
+    var0 <- (1) + (var1)
+    return((1) + (var0))
+}
+subroutine2 <- function(input) {
+    var1 <- (1) + (1)
+    var0 <- (1) + (var1)
+    return((1) + (var0))
+}
+subroutine3 <- function(input) {
+    var1 <- (1) + (1)
+    var0 <- (1) + (var1)
+    return((1) + (var0))
 }
 """
 
@@ -380,6 +378,19 @@ def test_pow_expr():
     expected_code = """
 score <- function(input) {
     return((2.0) ^ (3.0))
+}
+"""
+
+    interpreter = RInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    expected_code = """
+score <- function(input) {
+    return(sqrt(2.0))
 }
 """
 

@@ -14,16 +14,14 @@ def test_single_condition():
 
     expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.SubroutineExpr(
-                ast.NumVal(1.0)),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(1.5),
-                        ast.CompOpType.LTE),
-                    ast.NumVal(1.0),
-                    ast.NumVal(2.0))),
+            ast.NumVal(1.0),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(1.5),
+                    ast.CompOpType.LTE),
+                ast.NumVal(1.0),
+                ast.NumVal(2.0)),
             ast.BinNumOpType.ADD),
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)
@@ -41,22 +39,20 @@ def test_two_conditions():
 
     expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(1.5),
-                        ast.CompOpType.LTE),
-                    ast.NumVal(1.0),
-                    ast.NumVal(2.0))),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(2.5),
-                        ast.CompOpType.LTE),
-                    ast.NumVal(2.0),
-                    ast.NumVal(3.0))),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(1.5),
+                    ast.CompOpType.LTE),
+                ast.NumVal(1.0),
+                ast.NumVal(2.0)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(2.5),
+                    ast.CompOpType.LTE),
+                ast.NumVal(2.0),
+                ast.NumVal(3.0)),
             ast.BinNumOpType.ADD),
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)
@@ -75,30 +71,28 @@ def test_multi_class():
 
     expected = ast.BinVectorNumExpr(
         ast.BinVectorExpr(
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(1.5),
-                        ast.CompOpType.LTE),
-                    ast.VectorVal([
-                        ast.NumVal(0.0),
-                        ast.NumVal(1.0)]),
-                    ast.VectorVal([
-                        ast.NumVal(1.0),
-                        ast.NumVal(0.0)]))),
-            ast.SubroutineExpr(
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(2.5),
-                        ast.CompOpType.LTE),
-                    ast.VectorVal([
-                        ast.NumVal(1.0),
-                        ast.NumVal(0.0)]),
-                    ast.VectorVal([
-                        ast.NumVal(0.0),
-                        ast.NumVal(1.0)]))),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(1.5),
+                    ast.CompOpType.LTE),
+                ast.VectorVal([
+                    ast.NumVal(0.0),
+                    ast.NumVal(1.0)]),
+                ast.VectorVal([
+                    ast.NumVal(1.0),
+                    ast.NumVal(0.0)])),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(2.5),
+                    ast.CompOpType.LTE),
+                ast.VectorVal([
+                    ast.NumVal(1.0),
+                    ast.NumVal(0.0)]),
+                ast.VectorVal([
+                    ast.NumVal(0.0),
+                    ast.NumVal(1.0)])),
             ast.BinNumOpType.ADD),
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)

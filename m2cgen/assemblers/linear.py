@@ -19,8 +19,7 @@ class BaseLinearModelAssembler(ModelAssembler):
 
         exprs = []
         for idx in range(coef.shape[0]):
-            exprs.append(ast.SubroutineExpr(
-                _linear_to_ast(coef[idx], intercept[idx])))
+            exprs.append(_linear_to_ast(coef[idx], intercept[idx]))
         return ast.VectorVal(exprs)
 
     def _get_intercept(self):
@@ -60,6 +59,15 @@ class StatsmodelsLinearModelAssembler(BaseLinearModelAssembler):
             self.model.params[idxs != self.const_idx]
             if self.model.k_constant
             else self.model.params)
+
+
+class ProcessMLEModelAssembler(BaseLinearModelAssembler):
+
+    def _get_intercept(self):
+        return 0.0
+
+    def _get_coef(self):
+        return self.model.params[:self.model.k_exog]
 
 
 def _linear_to_ast(coef, intercept):

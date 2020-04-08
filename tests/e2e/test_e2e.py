@@ -4,6 +4,7 @@ import pytest
 import numpy as np
 import xgboost
 import statsmodels.api as sm
+from statsmodels.regression.process_regression import ProcessMLE
 import lightning.classification as light_clf
 import lightning.regression as light_reg
 from sklearn import linear_model, svm
@@ -35,50 +36,51 @@ CLASSIFICATION = pytest.mark.clf
 
 
 # Set of helper functions to make parametrization less verbose.
-def regression(model):
+def regression(model, test_fraction=0.02):
     return (
         model,
-        utils.get_regression_model_trainer(),
+        utils.get_regression_model_trainer(test_fraction),
         REGRESSION,
     )
 
 
-def classification(model):
+def classification(model, test_fraction=0.02):
     return (
         model,
-        utils.get_classification_model_trainer(),
+        utils.get_classification_model_trainer(test_fraction),
         CLASSIFICATION,
     )
 
 
-def classification_binary(model):
+def classification_binary(model, test_fraction=0.02):
     return (
         model,
-        utils.get_binary_classification_model_trainer(),
+        utils.get_binary_classification_model_trainer(test_fraction),
         CLASSIFICATION,
     )
 
 
-def regression_random(model):
+def regression_random(model, test_fraction=0.02):
     return (
         model,
-        utils.get_regression_random_data_model_trainer(0.01),
+        utils.get_regression_random_data_model_trainer(test_fraction),
         REGRESSION,
     )
 
 
-def classification_random(model):
+def classification_random(model, test_fraction=0.02):
     return (
         model,
-        utils.get_classification_random_data_model_trainer(0.01),
+        utils.get_classification_random_data_model_trainer(test_fraction),
         CLASSIFICATION,
     )
 
 
-def classification_binary_random(model):
+def classification_binary_random(model, test_fraction=0.02):
     return (
         model,
-        utils.get_classification_binary_random_data_model_trainer(0.01),
+        utils.get_classification_binary_random_data_model_trainer(
+            test_fraction),
         CLASSIFICATION,
     )
 
@@ -92,6 +94,8 @@ TREE_PARAMS = dict(random_state=RANDOM_SEED)
 FOREST_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
 XGBOOST_PARAMS = dict(base_score=0.6, n_estimators=10,
                       random_state=RANDOM_SEED)
+XGBOOST_HIST_PARAMS = dict(base_score=0.6, n_estimators=10,
+                           tree_method="hist", random_state=RANDOM_SEED)
 XGBOOST_PARAMS_LINEAR = dict(base_score=0.6, n_estimators=10,
                              feature_selector="shuffle", booster="gblinear",
                              random_state=RANDOM_SEED)
@@ -171,6 +175,14 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
         classification_binary(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
 
+        # XGBoost (tree method "hist")
+        regression(xgboost.XGBRegressor(**XGBOOST_HIST_PARAMS),
+                   test_fraction=0.2),
+        classification(xgboost.XGBClassifier(**XGBOOST_HIST_PARAMS),
+                       test_fraction=0.2),
+        classification_binary(xgboost.XGBClassifier(**XGBOOST_HIST_PARAMS),
+                              test_fraction=0.2),
+
         # XGBoost (LINEAR)
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS_LINEAR)),
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS_LINEAR)),
@@ -204,16 +216,36 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(light_clf.LinearSVC(
             criterion="auc", random_state=RANDOM_SEED)),
 
-        # SVM
+        # Sklearn SVM
         regression(svm.NuSVR(kernel="rbf")),
         regression(svm.SVR(kernel="rbf")),
+
         classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
+
         classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
-        classification_binary(svm.SVC(kernel="poly", degree=2, **SVC_PARAMS)),
+        classification_binary(svm.SVC(
+            kernel="poly",
+            C=1.5, degree=2, gamma=0.1, coef0=2.0, **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="sigmoid", **SVC_PARAMS)),
+
+        # Lightning SVM
+        classification(light_clf.KernelSVC(
+            kernel="rbf", random_state=RANDOM_SEED)),
+
+        classification_binary(light_clf.KernelSVC(
+            kernel="rbf", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="linear", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="poly", alpha=1.5, solver="cg",
+            degree=2, gamma=0.1, coef0=2.0, random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="sigmoid", random_state=RANDOM_SEED)),
+        classification_binary(light_clf.KernelSVC(
+            kernel="cosine", random_state=RANDOM_SEED)),
 
         # Sklearn Linear Regression
         regression(linear_model.ARDRegression()),
@@ -266,6 +298,26 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.OLS,
             dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            ProcessMLE,
+            dict(init=dict(exog_scale=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           exog_smooth=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           exog_noise=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           time=np.kron(
+                np.ones(
+                    len(utils.get_regression_model_trainer().y_train) // 3),
+                np.arange(3)),
+                           groups=np.kron(
+                np.arange(
+                    len(utils.get_regression_model_trainer().y_train) // 3),
+                np.ones(3))),
+                 fit=dict(maxiter=2)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.QuantReg,
+            dict(init=dict(fit_intercept=True)))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.WLS,
             dict(init=dict(fit_intercept=True, weights=np.arange(

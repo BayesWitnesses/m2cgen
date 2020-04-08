@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import statsmodels.api as sm
+from statsmodels.regression.process_regression import ProcessMLE
 from lightning.regression import AdaGradRegressor
 from lightning.classification import AdaGradClassifier
 from sklearn import linear_model
@@ -64,48 +65,45 @@ def test_multi_class():
     actual = assembler.assemble()
 
     expected = ast.VectorVal([
-        ast.SubroutineExpr(
+        ast.BinNumExpr(
             ast.BinNumExpr(
+                ast.NumVal(7),
                 ast.BinNumExpr(
-                    ast.NumVal(7),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(1),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(1),
-                    ast.NumVal(2),
+                    ast.FeatureRef(0),
+                    ast.NumVal(1),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.BinNumOpType.ADD),
             ast.BinNumExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(8),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(3),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(1),
-                    ast.NumVal(4),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.FeatureRef(1),
+                ast.NumVal(2),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
             ast.BinNumExpr(
+                ast.NumVal(8),
                 ast.BinNumExpr(
-                    ast.NumVal(9),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(0),
-                        ast.NumVal(5),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(1),
-                    ast.NumVal(6),
+                    ast.FeatureRef(0),
+                    ast.NumVal(3),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD))])
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(1),
+                ast.NumVal(4),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
+            ast.BinNumExpr(
+                ast.NumVal(9),
+                ast.BinNumExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(5),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(1),
+                ast.NumVal(6),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD)])
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -319,6 +317,90 @@ def test_statsmodels_unknown_constant_position():
 
     assembler = assemblers.StatsmodelsLinearModelAssembler(estimator)
     assembler.assemble()
+
+
+def test_statsmodels_processmle():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        ProcessMLE,
+        dict(init=dict(exog_scale=np.ones(
+            (len(utils.get_regression_model_trainer().y_train), 2)),
+                       exog_smooth=np.ones(
+            (len(utils.get_regression_model_trainer().y_train), 2)),
+                       exog_noise=np.ones(
+            (len(utils.get_regression_model_trainer().y_train), 2)),
+                       time=np.kron(
+            np.ones(len(utils.get_regression_model_trainer().y_train) // 3),
+            np.arange(3)),
+                       groups=np.kron(
+            np.arange(len(utils.get_regression_model_trainer().y_train) // 3),
+            np.ones(3))),
+             fit=dict(maxiter=1)))
+    _, __, estimator = utils.get_regression_model_trainer()(estimator)
+
+    assembler = assemblers.ProcessMLEModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    feature_weight_mul = [
+        ast.BinNumExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(-0.0932673973),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(1),
+            ast.NumVal(0.0480819091),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(2),
+            ast.NumVal(-0.0063734439),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(3),
+            ast.NumVal(2.7510656855),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(4),
+            ast.NumVal(-3.0836268637),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(5),
+            ast.NumVal(5.9605290000),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(6),
+            ast.NumVal(-0.0077880716),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(7),
+            ast.NumVal(-0.9685365627),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(8),
+            ast.NumVal(0.1688777882),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(9),
+            ast.NumVal(-0.0092446419),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(10),
+            ast.NumVal(-0.3924930042),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(11),
+            ast.NumVal(0.01506511708295605),
+            ast.BinNumOpType.MUL),
+        ast.BinNumExpr(
+            ast.FeatureRef(12),
+            ast.NumVal(-0.4177000096),
+            ast.BinNumOpType.MUL),
+    ]
+
+    expected = assemblers.utils.apply_op_to_expressions(
+        ast.BinNumOpType.ADD,
+        ast.NumVal(0.0),
+        *feature_weight_mul)
+
+    assert utils.cmp_exprs(actual, expected)
 
 
 def test_lightning_regression():
@@ -537,83 +619,80 @@ def test_lightning_multi_class():
     actual = assembler.assemble()
 
     expected = ast.VectorVal([
-        ast.SubroutineExpr(
+        ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.BinNumExpr(
                     ast.BinNumExpr(
+                        ast.NumVal(0.0),
                         ast.BinNumExpr(
-                            ast.NumVal(0.0),
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.NumVal(0.0935146297),
-                                ast.BinNumOpType.MUL),
-                            ast.BinNumOpType.ADD),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(1),
-                            ast.NumVal(0.3213921354),
+                            ast.FeatureRef(0),
+                            ast.NumVal(0.0935146297),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(-0.4855914264),
+                        ast.FeatureRef(1),
+                        ast.NumVal(0.3213921354),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
-                    ast.FeatureRef(3),
-                    ast.NumVal(-0.2214295302),
+                    ast.FeatureRef(2),
+                    ast.NumVal(-0.4855914264),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(3),
+                ast.NumVal(-0.2214295302),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.BinNumExpr(
                     ast.BinNumExpr(
+                        ast.NumVal(0.0),
                         ast.BinNumExpr(
-                            ast.NumVal(0.0),
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.NumVal(-0.1103262586),
-                                ast.BinNumOpType.MUL),
-                            ast.BinNumOpType.ADD),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(1),
-                            ast.NumVal(-0.1662457692),
+                            ast.FeatureRef(0),
+                            ast.NumVal(-0.1103262586),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(0.0379823341),
+                        ast.FeatureRef(1),
+                        ast.NumVal(-0.1662457692),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
-                    ast.FeatureRef(3),
-                    ast.NumVal(-0.0128634938),
+                    ast.FeatureRef(2),
+                    ast.NumVal(0.0379823341),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD)),
-        ast.SubroutineExpr(
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(3),
+                ast.NumVal(-0.0128634938),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumExpr(
             ast.BinNumExpr(
                 ast.BinNumExpr(
                     ast.BinNumExpr(
+                        ast.NumVal(0.0),
                         ast.BinNumExpr(
-                            ast.NumVal(0.0),
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.NumVal(-0.1685751402),
-                                ast.BinNumOpType.MUL),
-                            ast.BinNumOpType.ADD),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(1),
-                            ast.NumVal(-0.2045901693),
+                            ast.FeatureRef(0),
+                            ast.NumVal(-0.1685751402),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
-                        ast.FeatureRef(2),
-                        ast.NumVal(0.2932121798),
+                        ast.FeatureRef(1),
+                        ast.NumVal(-0.2045901693),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
-                    ast.FeatureRef(3),
-                    ast.NumVal(0.2138148665),
+                    ast.FeatureRef(2),
+                    ast.NumVal(0.2932121798),
                     ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD))])
+                ast.BinNumOpType.ADD),
+            ast.BinNumExpr(
+                ast.FeatureRef(3),
+                ast.NumVal(0.2138148665),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD)])
 
     assert utils.cmp_exprs(actual, expected)

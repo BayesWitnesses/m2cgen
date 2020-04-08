@@ -162,9 +162,7 @@ public class Model {
 def test_ignores_subroutine_expr():
     expr = ast.BinNumExpr(
         ast.FeatureRef(0),
-        ast.SubroutineExpr(
-            ast.BinNumExpr(
-                ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD)),
+        ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.ADD),
         ast.BinNumOpType.MUL)
 
     expected_code = """
@@ -317,6 +315,22 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+
+    public static double score(double[] input) {
+        return Math.sqrt(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
@@ -358,7 +372,7 @@ def test_depth_threshold_with_bin_expr():
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """
@@ -385,7 +399,7 @@ def test_depth_threshold_without_bin_expr():
             expr)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 2
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """
@@ -431,7 +445,7 @@ def test_deep_mixed_exprs_not_reaching_threshold():
             expr)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """
@@ -477,7 +491,7 @@ def test_deep_mixed_exprs_exceeding_threshold():
             expr)
 
     interpreter = interpreters.JavaInterpreter()
-    interpreter.bin_depth_threshold = 2
+    interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
     expected_code = """

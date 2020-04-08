@@ -11,12 +11,15 @@ RUN apt-get update && \
     wget -qO- https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
+        git \
         gcc \
+        g++ \
         libc-dev \
         libgomp1 \
         python3.7 \
         python3-setuptools \
         python3-pip \
+        python3.7-dev \
         openjdk-8-jdk \
         golang-go \
         dotnet-sdk-3.0 \
@@ -30,7 +33,9 @@ RUN apt-get update && \
 WORKDIR /m2cgen
 
 COPY requirements-test.txt ./
-RUN pip3 install --no-cache-dir Cython && \
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1 && \
+    pip3 install --upgrade pip && \
+    pip3 install --no-cache-dir Cython numpy && \
     pip3 install --no-cache-dir -r requirements-test.txt
 
 CMD python3 setup.py develop && pytest -v -x --fast

@@ -30,7 +30,9 @@ class NumExpr(Expr):
 
 
 class NumVal(NumExpr):
-    def __init__(self, value):
+    def __init__(self, value, dtype=None):
+        if dtype:
+            value = dtype(value)
         self.value = value
 
     def __str__(self):
@@ -47,6 +49,18 @@ class ExpExpr(NumExpr):
     def __str__(self):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "ExpExpr(" + args + ")"
+
+
+class SqrtExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "SqrtExpr(" + args + ")"
 
 
 class TanhExpr(NumExpr):
@@ -216,28 +230,12 @@ class IfExpr(CtrlExpr):
         return "IfExpr(" + args + ")"
 
 
-class TransparentExpr(CtrlExpr):
-    def __init__(self, expr):
-        self.expr = expr
-        self.output_size = expr.output_size
-
-
-class SubroutineExpr(TransparentExpr):
-    def __init__(self, expr, to_reuse=False):
-        super().__init__(expr)
-        self.to_reuse = to_reuse
-
-    def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "SubroutineExpr(" + args + ")"
-
-
 NESTED_EXPRS_MAPPINGS = [
     ((BinExpr, CompExpr), lambda e: [e.left, e.right]),
     (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
     (VectorVal, lambda e: e.exprs),
     (IfExpr, lambda e: [e.test, e.body, e.orelse]),
-    ((ExpExpr, TanhExpr, TransparentExpr), lambda e: [e.expr]),
+    ((ExpExpr, SqrtExpr, TanhExpr), lambda e: [e.expr]),
 ]
 
 
@@ -246,8 +244,7 @@ def count_exprs(expr, exclude_list=None):
     excluded = tuple(exclude_list) if exclude_list else ()
 
     init = 1
-    if issubclass(expr_type, excluded) or \
-            issubclass(expr_type, TransparentExpr):
+    if issubclass(expr_type, excluded):
         init = 0
 
     if isinstance(expr, (NumVal, FeatureRef)):

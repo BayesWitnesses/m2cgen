@@ -29,13 +29,7 @@ class BaseInterpreter:
         if result is not None:
             return result
 
-        try:
-            handler = self._select_handler(expr)
-        except NotImplementedError:
-            if isinstance(expr, ast.TransparentExpr):
-                reuse = True if expr.to_reuse else None
-                return self._do_interpret(expr.expr, to_reuse=reuse, **kwargs)
-            raise
+        handler = self._select_handler(expr)
 
         # Note that the reuse flag passed in the arguments has a higher
         # precedence than one specified in the expression. One use case for
@@ -98,6 +92,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
 
     exponent_function_name = NotImplemented
     power_function_name = NotImplemented
+    sqrt_function_name = NotImplemented
     tanh_function_name = NotImplemented
 
     def __init__(self, cg, feature_array_name="input"):
@@ -137,6 +132,13 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.exponent_function_name, nested_result)
+
+    def interpret_sqrt_expr(self, expr, **kwargs):
+        assert self.sqrt_function_name, "Sqrt function is not provided"
+        self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.sqrt_function_name, nested_result)
 
     def interpret_tanh_expr(self, expr, **kwargs):
         assert self.tanh_function_name, "Tanh function is not provided"
