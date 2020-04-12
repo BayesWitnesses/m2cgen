@@ -61,7 +61,7 @@ def test_dependable_condition():
 
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
-    expected_code = """
+    expected_code_1 = """
 module Model where
 score :: [Double] -> Double
 score input =
@@ -80,9 +80,30 @@ score input =
                 else
                     (input) !! (0)
 """
+    expected_code_2 = """
+module Model where
+score :: [Double] -> Double
+score input =
+    func1
+    where
+        func1 =
+            if (((func0) + (2)) >= ((1) / (2)))
+                then
+                    1
+                else
+                    (input) !! (0)
+        func0 =
+            if ((1) == (1))
+                then
+                    1
+                else
+                    2
+"""
 
     interpreter = HaskellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    actual_code = interpreter.interpret(expr)
+    # dicts in Python 3.5 have nondeterministic order of keys
+    utils.assert_code_equal(actual_code, expected_code_1, expected_code_2)
 
 
 def test_nested_condition():
@@ -102,7 +123,7 @@ def test_nested_condition():
 
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
-    expected_code = """
+    expected_code_1 = """
 module Model where
 score :: [Double] -> Double
 score input =
@@ -125,9 +146,34 @@ score input =
                 else
                     2
 """
+    expected_code_2 = """
+module Model where
+score :: [Double] -> Double
+score input =
+    func1
+    where
+        func1 =
+            if ((1) == ((func0) + (2)))
+                then
+                    if ((1) == ((func0) + (2)))
+                        then
+                            (input) !! (2)
+                        else
+                            2
+                else
+                    2
+        func0 =
+            if ((1) == (1))
+                then
+                    1
+                else
+                    2
+"""
 
     interpreter = HaskellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    actual_code = interpreter.interpret(expr)
+    # dicts in Python 3.5 have nondeterministic order of keys
+    utils.assert_code_equal(actual_code, expected_code_1, expected_code_2)
 
 
 def test_raw_array():
