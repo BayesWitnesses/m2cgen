@@ -218,7 +218,7 @@ def predict_from_commandline(exec_args):
     result = subprocess.Popen(exec_args, stdout=subprocess.PIPE,
                               stderr=subprocess.PIPE)
     stdout, stderr = result.communicate()
-    if result.returncode is not 0:
+    if result.returncode != 0:
         raise Exception("bad exit code ({}) stderr: {}".format(
                         result.returncode, stderr.decode("utf-8")))
 
