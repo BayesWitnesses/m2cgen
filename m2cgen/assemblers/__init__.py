@@ -1,6 +1,8 @@
 from .linear import (SklearnLinearModelAssembler,
                      StatsmodelsLinearModelAssembler,
-                     ProcessMLEModelAssembler)
+                     ProcessMLEModelAssembler,
+                     StatsmodelsGLMModelAssembler,
+                     StatsmodelsModelAssemblerSelector)
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
 from .boosting import (XGBoostModelAssemblerSelector,
@@ -23,6 +25,8 @@ __all__ = [
     LightGBMModelAssembler,
     SklearnSVMModelAssembler,
     LightningSVMModelAssembler,
+    StatsmodelsGLMModelAssembler,
+    StatsmodelsModelAssemblerSelector,
 ]
 
 
@@ -74,9 +78,10 @@ SUPPORTED_MODELS = {
     "sklearn_TheilSenRegressor": SklearnLinearModelAssembler,
 
     # Statsmodels Linear Regressors
+    "statsmodels_GLMResultsWrapper": StatsmodelsGLMModelAssembler,
     "statsmodels_ProcessMLEResults": ProcessMLEModelAssembler,
     "statsmodels_RegressionResultsWrapper": StatsmodelsLinearModelAssembler,
-    "statsmodels_RegularizedResultsWrapper": StatsmodelsLinearModelAssembler,
+    "statsmodels_RegularizedResultsWrapper": StatsmodelsModelAssemblerSelector,
 
     # Lightning Linear Regressors
     "lightning_AdaGradRegressor": SklearnLinearModelAssembler,
@@ -130,6 +135,6 @@ def get_assembler_cls(model):
 
     if not assembler_cls:
         raise NotImplementedError(
-            "Model {} is not supported".format(model_name))
+            "Model '{}' is not supported".format(model_name))
 
     return assembler_cls
