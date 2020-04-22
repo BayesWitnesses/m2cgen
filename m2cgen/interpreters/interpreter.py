@@ -101,9 +101,6 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_vectors = False
         self.with_math_module = False
 
-    def interpret_if_expr(self, expr, **kwargs):
-        raise NotImplementedError
-
     def interpret_comp_expr(self, expr, **kwargs):
         op = self._cg._comp_op_overwrite(expr.op)
         return self._cg.infix_expression(
