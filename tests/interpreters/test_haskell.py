@@ -103,7 +103,8 @@ score input =
     interpreter = HaskellInterpreter()
     actual_code = interpreter.interpret(expr)
     # dicts in Python 3.5 have nondeterministic order of keys
-    utils.assert_code_equal(actual_code, expected_code_1, expected_code_2)
+    utils.assert_code_equal_any_of(
+        actual_code, expected_code_1, expected_code_2)
 
 
 def test_nested_condition():
@@ -173,7 +174,8 @@ score input =
     interpreter = HaskellInterpreter()
     actual_code = interpreter.interpret(expr)
     # dicts in Python 3.5 have nondeterministic order of keys
-    utils.assert_code_equal(actual_code, expected_code_1, expected_code_2)
+    utils.assert_code_equal_any_of(
+        actual_code, expected_code_1, expected_code_2)
 
 
 def test_raw_array():

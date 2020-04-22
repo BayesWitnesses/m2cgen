@@ -165,7 +165,11 @@ def cmp_exprs(left, right):
     return False
 
 
-def assert_code_equal(actual, *expected):
+def assert_code_equal(actual, expected):
+    actual.strip() == expected.strip()
+
+
+def assert_code_equal_any_of(actual, *expected):
     assert any(actual.strip() == expect.strip() for expect in expected)
 
 
