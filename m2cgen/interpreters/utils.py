@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 
-CacheResult = namedtuple('CacheResult', ['var_name', 'expr_result'])
+CachedResult = namedtuple('CachedResult', ['var_name', 'expr_result'])
 
 
 def get_file_content(path):

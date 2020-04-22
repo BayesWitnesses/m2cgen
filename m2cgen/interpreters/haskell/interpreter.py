@@ -85,7 +85,7 @@ class HaskellInterpreter(ToCodeInterpreter,
             return self._cached_expr_results[expr].var_name
         else:
             func_name = self._cg.get_func_name()
-            self._cached_expr_results[expr] = utils.CacheResult(
+            self._cached_expr_results[expr] = utils.CachedResult(
                 var_name=func_name, expr_result=expr_result)
             return func_name
 

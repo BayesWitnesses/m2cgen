@@ -1,7 +1,7 @@
 import re
 
 from m2cgen import ast
-from m2cgen.interpreters.utils import CacheResult
+from m2cgen.interpreters.utils import CachedResult
 
 
 class BaseInterpreter:
@@ -194,6 +194,6 @@ class ImperativeToCodeInterpreter(ToCodeInterpreter):
     def _cache_reused_expr(self, expr, expr_result):
         var_name = self._cg.add_var_declaration(expr.output_size)
         self._cg.add_var_assignment(var_name, expr_result, expr.output_size)
-        self._cached_expr_results[expr] = CacheResult(
+        self._cached_expr_results[expr] = CachedResult(
             var_name=var_name, expr_result=None)
         return var_name
