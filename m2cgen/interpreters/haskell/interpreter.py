@@ -80,6 +80,8 @@ class HaskellInterpreter(ToCodeInterpreter,
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="**")
 
+    # Cached expressions become functions with no arguments, i.e. values
+    # which are CAFs. Therefore, they are computed only once.
     def _cache_reused_expr(self, expr, expr_result):
         if expr in self._cached_expr_results:
             return self._cached_expr_results[expr].var_name
