@@ -48,6 +48,9 @@ pip install m2cgen
 | **Random Forest** | <ul><li>ExtraTreesClassifier</li><li>LGBMClassifier(rf booster only)</li><li>RandomForestClassifier</li><li>XGBRFClassifier(binary only, multiclass is not supported yet)</li></ul> | <ul><li>ExtraTreesRegressor</li><li>LGBMRegressor(rf booster only)</li><li>RandomForestRegressor</li><li>XGBRFRegressor</li></ul> |
 | **Boosting** | <ul><li>LGBMClassifier(gbdt/dart/goss booster only)</li><li>XGBClassifier(gbtree/gblinear booster only)</li><ul> | <ul><li>LGBMRegressor(gbdt/dart/goss booster only)</li><li>XGBRegressor(gbtree/gblinear booster only)</li></ul> |
 
+You can find versions of packages with which compatibility is guaranteed by CI tests [here](https://github.com/BayesWitnesses/m2cgen/blob/master/requirements-test.txt#L1).
+Other versions can also be supported but they are untested.
+
 ## Classification Output
 ### Linear / Linear SVM / Kernel SVM
 #### Binary
