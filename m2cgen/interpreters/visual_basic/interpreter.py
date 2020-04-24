@@ -2,12 +2,13 @@ import os
 
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.visual_basic.code_generator \
     import VisualBasicCodeGenerator
 
 
-class VisualBasicInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
+class VisualBasicInterpreter(ImperativeToCodeInterpreter,
+                             mixins.LinearAlgebraMixin):
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "AddVectors",
     }

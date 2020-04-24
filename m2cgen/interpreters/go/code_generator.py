@@ -1,9 +1,10 @@
 import contextlib
 
-from m2cgen.interpreters.code_generator import BaseCodeGenerator, CodeTemplate
+from m2cgen.interpreters.code_generator \
+    import ImperativeCodeGenerator, CodeTemplate
 
 
-class GoCodeGenerator(BaseCodeGenerator):
+class GoCodeGenerator(ImperativeCodeGenerator):
     tpl_num_value = CodeTemplate("${value}")
     tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
     tpl_array_index_access = CodeTemplate("${array_name}[${index}]")

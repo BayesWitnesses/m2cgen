@@ -9,6 +9,7 @@ from .powershell.interpreter import PowershellInterpreter
 from .r.interpreter import RInterpreter
 from .php.interpreter import PhpInterpreter
 from .dart.interpreter import DartInterpreter
+from .haskell.interpreter import HaskellInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -22,4 +23,5 @@ __all__ = [
     RInterpreter,
     PhpInterpreter,
     DartInterpreter,
+    HaskellInterpreter,
 ]
