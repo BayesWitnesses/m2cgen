@@ -25,13 +25,7 @@ class BaseCodeGenerator:
 
     tpl_num_value = NotImplemented
     tpl_infix_expression = NotImplemented
-    tpl_var_declaration = NotImplemented
-    tpl_return_statement = NotImplemented
-    tpl_if_statement = NotImplemented
-    tpl_else_statement = NotImplemented
     tpl_array_index_access = NotImplemented
-    tpl_block_termination = NotImplemented
-    tpl_var_assignment = NotImplemented
 
     def __init__(self, indent=4):
         self._indent = indent
@@ -39,13 +33,7 @@ class BaseCodeGenerator:
 
     def reset_state(self):
         self._current_indent = 0
-        self._var_idx = 0
         self.code = ""
-
-    def get_var_name(self):
-        var_name = "var" + str(self._var_idx)
-        self._var_idx += 1
-        return var_name
 
     def increase_indent(self):
         self._current_indent += self._indent
@@ -77,6 +65,53 @@ class BaseCodeGenerator:
             lines = lines.strip().split("\n")
         for l in lines[::-1]:
             self.prepend_code_line(l)
+
+    # Following methods simply compute expressions using templates without
+    # changing result.
+
+    def infix_expression(self, left, right, op):
+        return self.tpl_infix_expression(left=left, right=right, op=op)
+
+    def num_value(self, value):
+        return self.tpl_num_value(value=value)
+
+    def array_index_access(self, array_name, index):
+        return self.tpl_array_index_access(
+            array_name=array_name, index=index)
+
+    def function_invocation(self, function_name, *args):
+        return function_name + "(" + ", ".join(map(str, args)) + ")"
+
+    # Helpers
+
+    def _comp_op_overwrite(self, op):
+        return op.value
+
+
+class ImperativeCodeGenerator(BaseCodeGenerator):
+    """
+    This class provides basic functionality to generate code. It is
+    language-agnostic, but exposes set of attributes which subclasses should
+    use to define syntax specific for certain language(s).
+
+    !!IMPORTANT!!: Code generators must know nothing about AST.
+    """
+
+    tpl_var_declaration = NotImplemented
+    tpl_return_statement = NotImplemented
+    tpl_if_statement = NotImplemented
+    tpl_else_statement = NotImplemented
+    tpl_block_termination = NotImplemented
+    tpl_var_assignment = NotImplemented
+
+    def reset_state(self):
+        super().reset_state()
+        self._var_idx = 0
+
+    def get_var_name(self):
+        var_name = "var" + str(self._var_idx)
+        self._var_idx += 1
+        return var_name
 
     # Following statements compute expressions using templates AND add
     # it to the result.
@@ -110,32 +145,13 @@ class BaseCodeGenerator:
         self.add_code_line(
             self.tpl_var_assignment(var_name=var_name, value=value))
 
-    # Following methods simply compute expressions using templates without
-    # changing result.
-
-    def infix_expression(self, left, right, op):
-        return self.tpl_infix_expression(left=left, right=right, op=op)
-
-    def num_value(self, value):
-        return self.tpl_num_value(value=value)
-
-    def array_index_access(self, array_name, index):
-        return self.tpl_array_index_access(
-            array_name=array_name, index=index)
-
-    def function_invocation(self, function_name, *args):
-        return function_name + "(" + ", ".join(map(str, args)) + ")"
-
     # Helpers
 
     def _get_var_declare_type(self, expr):
         return NotImplemented
 
-    def _comp_op_overwrite(self, op):
-        return op.value
 
-
-class CLikeCodeGenerator(BaseCodeGenerator):
+class CLikeCodeGenerator(ImperativeCodeGenerator):
     """
     This code generator provides C-like syntax so that subclasses will only
     have to provide logic for wrapping expressions into functions/classes/etc.

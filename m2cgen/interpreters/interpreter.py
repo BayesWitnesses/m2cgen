@@ -1,6 +1,7 @@
 import re
 
 from m2cgen import ast
+from m2cgen.interpreters.utils import CachedResult
 
 
 class BaseInterpreter:
@@ -41,7 +42,7 @@ class BaseInterpreter:
             return handler(expr, **kwargs)
 
         if expr in self._cached_expr_results:
-            return self._cached_expr_results[expr]
+            return self._cached_expr_results[expr].var_name
 
         result = handler(expr, **kwargs)
         return self._cache_reused_expr(expr, result)
@@ -100,28 +101,6 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_vectors = False
         self.with_math_module = False
 
-    def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
-        if if_var_name is not None:
-            var_name = if_var_name
-        else:
-            var_name = self._cg.add_var_declaration(expr.output_size)
-
-        def handle_nested_expr(nested):
-            if isinstance(nested, ast.IfExpr):
-                self._do_interpret(nested, if_var_name=var_name, **kwargs)
-            else:
-                nested_result = self._do_interpret(nested, **kwargs)
-                self._cg.add_var_assignment(var_name, nested_result,
-                                            nested.output_size)
-
-        self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
-        handle_nested_expr(expr.body)
-        self._cg.add_else_statement()
-        handle_nested_expr(expr.orelse)
-        self._cg.add_block_termination()
-
-        return var_name
-
     def interpret_comp_expr(self, expr, **kwargs):
         op = self._cg._comp_op_overwrite(expr.op)
         return self._cg.infix_expression(
@@ -177,8 +156,44 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return self._cg.function_invocation(
             self.power_function_name, base_result, exp_result)
 
+
+class ImperativeToCodeInterpreter(ToCodeInterpreter):
+    """
+    This interpreter provides default implementation for the methods
+    interpreting AST expression into code.
+
+    It can be used for the most programming languages and requires only
+    language-specific instance of the CodeGenerator.
+
+    !!IMPORTANT!!: Code generators used by this interpreter must know nothing
+    about AST.
+    """
+
+    def interpret_if_expr(self, expr, if_var_name=None, **kwargs):
+        if if_var_name is not None:
+            var_name = if_var_name
+        else:
+            var_name = self._cg.add_var_declaration(expr.output_size)
+
+        def handle_nested_expr(nested):
+            if isinstance(nested, ast.IfExpr):
+                self._do_interpret(nested, if_var_name=var_name, **kwargs)
+            else:
+                nested_result = self._do_interpret(nested, **kwargs)
+                self._cg.add_var_assignment(var_name, nested_result,
+                                            nested.output_size)
+
+        self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
+        handle_nested_expr(expr.body)
+        self._cg.add_else_statement()
+        handle_nested_expr(expr.orelse)
+        self._cg.add_block_termination()
+
+        return var_name
+
     def _cache_reused_expr(self, expr, expr_result):
         var_name = self._cg.add_var_declaration(expr.output_size)
         self._cg.add_var_assignment(var_name, expr_result, expr.output_size)
-        self._cached_expr_results[expr] = var_name
+        self._cached_expr_results[expr] = CachedResult(
+            var_name=var_name, expr_result=None)
         return var_name

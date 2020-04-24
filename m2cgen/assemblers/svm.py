@@ -151,11 +151,11 @@ class SklearnSVMModelAssembler(BaseSVMModelAssembler):
         return ast.ExpExpr(kernel)
 
     def _sigmoid_kernel(self, support_vector):
-        kernel = self._linear_kernel_with_gama_and_coef(support_vector)
+        kernel = self._linear_kernel_with_gamma_and_coef(support_vector)
         return ast.TanhExpr(kernel)
 
     def _poly_kernel(self, support_vector):
-        kernel = self._linear_kernel_with_gama_and_coef(support_vector)
+        kernel = self._linear_kernel_with_gamma_and_coef(support_vector)
         return ast.PowExpr(kernel, ast.NumVal(self.model.degree))
 
     def _linear_kernel(self, support_vector):
@@ -165,7 +165,7 @@ class SklearnSVMModelAssembler(BaseSVMModelAssembler):
         ]
         return utils.apply_op_to_expressions(ast.BinNumOpType.ADD, *elem_wise)
 
-    def _linear_kernel_with_gama_and_coef(self, support_vector):
+    def _linear_kernel_with_gamma_and_coef(self, support_vector):
         kernel = self._linear_kernel(support_vector)
         kernel = utils.mul(self._gamma_expr, kernel)
         return utils.add(kernel, ast.NumVal(self.model.coef0))

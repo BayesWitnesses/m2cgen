@@ -175,7 +175,11 @@ def cmp_exprs(left, right):
 
 
 def assert_code_equal(actual, expected):
-    assert actual.strip() == expected.strip()
+    actual.strip() == expected.strip()
+
+
+def assert_code_equal_any_of(actual, *expected):
+    assert any(actual.strip() == expect.strip() for expect in expected)
 
 
 get_regression_model_trainer = functools.partial(
