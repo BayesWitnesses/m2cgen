@@ -3,11 +3,11 @@ import os
 from m2cgen import ast
 from m2cgen.interpreters import mixins
 from m2cgen.interpreters import utils
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.dart.code_generator import DartCodeGenerator
 
 
-class DartInterpreter(ToCodeInterpreter,
+class DartInterpreter(ImperativeToCodeInterpreter,
                       mixins.LinearAlgebraMixin,
                       mixins.BinExpressionDepthTrackingMixin):
 

@@ -9,6 +9,7 @@ from tests.e2e.executors.powershell import PowershellExecutor
 from tests.e2e.executors.r import RExecutor
 from tests.e2e.executors.php import PhpExecutor
 from tests.e2e.executors.dart import DartExecutor
+from tests.e2e.executors.haskell import HaskellExecutor
 
 __all__ = [
     JavaExecutor,
@@ -22,4 +23,5 @@ __all__ = [
     RExecutor,
     PhpExecutor,
     DartExecutor,
+    HaskellExecutor,
 ]

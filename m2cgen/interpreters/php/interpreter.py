@@ -3,10 +3,11 @@ import os
 from m2cgen import ast
 from m2cgen.interpreters import utils, mixins
 from m2cgen.interpreters.php.code_generator import PhpCodeGenerator
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 
 
-class PhpInterpreter(ToCodeInterpreter, mixins.LinearAlgebraMixin):
+class PhpInterpreter(ImperativeToCodeInterpreter,
+                     mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",

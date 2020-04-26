@@ -26,7 +26,8 @@ RUN apt-get update && \
         powershell \
         r-base \
         php \
-        dart && \
+        dart \
+        haskell-platform && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen

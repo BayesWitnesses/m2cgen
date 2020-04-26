@@ -4,10 +4,10 @@ from m2cgen import ast
 from m2cgen.interpreters import utils, mixins
 from m2cgen.interpreters.powershell.code_generator \
     import PowershellCodeGenerator
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 
 
-class PowershellInterpreter(ToCodeInterpreter,
+class PowershellInterpreter(ImperativeToCodeInterpreter,
                             mixins.LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
