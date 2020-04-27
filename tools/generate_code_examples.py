@@ -43,6 +43,7 @@ EXAMPLE_LANGUAGES = [
     ("r", m2c.export_to_r, "r"),
     ("php", m2c.export_to_php, "php"),
     ("dart", m2c.export_to_dart, "dart"),
+    ("haskell", m2c.export_to_haskell, "hs"),
 ]
 
 EXAMPLE_MODELS = [
