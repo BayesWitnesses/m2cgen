@@ -24,7 +24,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "exp"
     power_function_name = "pow"
     sqrt_function_name = "sqrt"
-    tanh_function_name = "tanh"
+#    tanh_function_name = "tanh"
 
     with_tanh_expr = False
 

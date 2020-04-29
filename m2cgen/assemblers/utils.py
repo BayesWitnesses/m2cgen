@@ -19,12 +19,28 @@ def sub(l, r, to_reuse=False):
     return ast.BinNumExpr(l, r, ast.BinNumOpType.SUB, to_reuse=to_reuse)
 
 
+def lt(l, r):
+    return ast.CompExpr(l, r, ast.CompOpType.LT)
+
+
 def lte(l, r):
     return ast.CompExpr(l, r, ast.CompOpType.LTE)
 
 
+def gt(l, r):
+    return ast.CompExpr(l, r, ast.CompOpType.GT)
+
+
+def gte(l, r):
+    return ast.CompExpr(l, r, ast.CompOpType.GTE)
+
+
 def eq(l, r):
     return ast.CompExpr(l, r, ast.CompOpType.EQ)
+
+
+def ne(l, r):
+    return ast.CompExpr(l, r, ast.CompOpType.NOT_EQ)
 
 
 BIN_EXPR_CLASSES = {
@@ -78,23 +94,3 @@ def to_2d_array(var):
     else:
         x, y = 1, np.size(var)
     return np.reshape(np.asarray(var), (x, y))
-
-
-def sigmoid_expr(expr, to_reuse=False):
-    neg_expr = ast.BinNumExpr(ast.NumVal(0), expr, ast.BinNumOpType.SUB)
-    exp_expr = ast.ExpExpr(neg_expr)
-    return ast.BinNumExpr(
-        ast.NumVal(1),
-        ast.BinNumExpr(ast.NumVal(1), exp_expr, ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV,
-        to_reuse=to_reuse)
-
-
-def softmax_exprs(exprs):
-    exp_exprs = [ast.ExpExpr(e, to_reuse=True) for e in exprs]
-    exp_sum_expr = apply_op_to_expressions(ast.BinNumOpType.ADD, *exp_exprs,
-                                           to_reuse=True)
-    return [
-        ast.BinNumExpr(e, exp_sum_expr, ast.BinNumOpType.DIV)
-        for e in exp_exprs
-    ]

@@ -20,7 +20,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "exp"
     power_function_name = "pow"
     sqrt_function_name = "sqrt"
-    tanh_function_name = "tanh"
+#    tanh_function_name = "tanh"
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
