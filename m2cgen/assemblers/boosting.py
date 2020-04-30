@@ -62,7 +62,7 @@ class BaseBoostingAssembler(ModelAssembler):
             for i, e in enumerate(splits)
         ]
 
-        proba_exprs = fallback_expressions.softmax_exprs(exprs)
+        proba_exprs = fallback_expressions.softmax(exprs)
         return ast.VectorVal(proba_exprs)
 
     def _assemble_bin_class_output(self, estimator_params):
@@ -75,7 +75,7 @@ class BaseBoostingAssembler(ModelAssembler):
         expr = self._assemble_single_output(
             estimator_params, base_score=base_score)
 
-        proba_expr = fallback_expressions.sigmoid_expr(expr, to_reuse=True)
+        proba_expr = fallback_expressions.sigmoid(expr, to_reuse=True)
 
         return ast.VectorVal([
             ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),

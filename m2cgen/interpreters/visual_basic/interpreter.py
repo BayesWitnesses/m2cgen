@@ -18,7 +18,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     }
 
     exponent_function_name = "Math.Exp"
-#    tanh_function_name = "Tanh"
+    tanh_function_name = "Tanh"
 
     with_tanh_expr = False
 

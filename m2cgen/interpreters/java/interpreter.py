@@ -27,7 +27,7 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "Math.exp"
     power_function_name = "Math.pow"
     sqrt_function_name = "Math.sqrt"
-#    tanh_function_name = "Math.tanh"
+    tanh_function_name = "Math.tanh"
 
     def __init__(self, package_name=None, class_name="Model", indent=4,
                  function_name="score", *args, **kwargs):

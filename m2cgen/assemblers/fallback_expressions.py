@@ -15,7 +15,7 @@ def tanh(expr):
                         expr)),
                 ast.NumVal(1.0))))
     return ast.IfExpr(
-        utils.gt(expr, ast.NumVal(44.0)),
+        utils.gt(expr, ast.NumVal(44.0)),  # exp(2*x) <= 2^127
         ast.NumVal(1.0),
         ast.IfExpr(
             utils.lt(expr, ast.NumVal(-44.0)),
@@ -23,7 +23,7 @@ def tanh(expr):
             tanh_expr))
 
 
-def sigmoid_expr(expr, to_reuse=False):
+def sigmoid(expr, to_reuse=False):
     neg_expr = ast.BinNumExpr(ast.NumVal(0), expr, ast.BinNumOpType.SUB)
     exp_expr = ast.ExpExpr(neg_expr)
     return ast.BinNumExpr(
@@ -33,7 +33,7 @@ def sigmoid_expr(expr, to_reuse=False):
         to_reuse=to_reuse)
 
 
-def softmax_exprs(exprs):
+def softmax(exprs):
     exp_exprs = [ast.ExpExpr(e, to_reuse=True) for e in exprs]
     exp_sum_expr = utils.apply_op_to_expressions(
         ast.BinNumOpType.ADD, *exp_exprs, to_reuse=True)

@@ -21,7 +21,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "[math]::Exp"
     power_function_name = "[math]::Pow"
     sqrt_function_name = "[math]::Sqrt"
-#    tanh_function_name = "[math]::Tanh"
+    tanh_function_name = "[math]::Tanh"
 
     def __init__(self, indent=4, function_name="Score", *args, **kwargs):
         self.function_name = function_name
@@ -58,10 +58,10 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
         return self._cg.math_function_invocation(
             self.sqrt_function_name, nested_result)
 
-#    def interpret_tanh_expr(self, expr, **kwargs):
-#        nested_result = self._do_interpret(expr.expr, **kwargs)
-#        return self._cg.math_function_invocation(
-#            self.tanh_function_name, nested_result)
+    def interpret_tanh_expr(self, expr, **kwargs):
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.math_function_invocation(
+            self.tanh_function_name, nested_result)
 
     def interpret_pow_expr(self, expr, **kwargs):
         base_result = self._do_interpret(expr.base_expr, **kwargs)

@@ -13,7 +13,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "math.exp"
     power_function_name = "math.pow"
     sqrt_function_name = "math.sqrt"
-#    tanh_function_name = "math.tanh"
+    tanh_function_name = "math.tanh"
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
