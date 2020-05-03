@@ -1,13 +1,13 @@
 import pytest
 import numpy as np
-from sklearn import svm
+from sklearn.svm import SVC
 from lightning.classification import KernelSVC
 from m2cgen import assemblers, ast
 from tests import utils
 
 
 def test_rbf_kernel():
-    estimator = svm.SVC(kernel="rbf", random_state=1, gamma=2.0)
+    estimator = SVC(kernel="rbf", random_state=1, gamma=2.0)
 
     estimator.fit([[1], [2]], [1, 2])
 
@@ -22,7 +22,7 @@ def test_rbf_kernel():
 
 
 def test_linear_kernel():
-    estimator = svm.SVC(kernel="linear", random_state=1)
+    estimator = SVC(kernel="linear", random_state=1)
 
     estimator.fit([[1], [2]], [1, 2])
 
@@ -43,7 +43,7 @@ def test_linear_kernel():
 
 
 def test_sigmoid_kernel():
-    estimator = svm.SVC(kernel="sigmoid", random_state=1, gamma=2.0)
+    estimator = SVC(kernel="sigmoid", random_state=1, gamma=2.0)
 
     estimator.fit([[1], [2]], [1, 2])
 
@@ -71,7 +71,7 @@ def test_sigmoid_kernel():
 
 
 def test_poly_kernel():
-    estimator = svm.SVC(kernel="poly", random_state=1, gamma=2.0, degree=2)
+    estimator = SVC(kernel="poly", random_state=1, gamma=2.0, degree=2)
 
     estimator.fit([[1], [2]], [1, 2])
 
@@ -137,7 +137,7 @@ def test_cosine_kernel():
 
 @pytest.mark.xfail(raises=ValueError, strict=True)
 def test_unknown_kernel():
-    estimator = svm.SVC(kernel=lambda x, y: np.transpose(x) * y)
+    estimator = SVC(kernel=lambda x, y: np.transpose(x) * y)
 
     estimator.fit([[1], [2]], [1, 2])
 
@@ -146,7 +146,7 @@ def test_unknown_kernel():
 
 
 def test_multi_class_rbf_kernel():
-    estimator = svm.SVC(kernel="rbf", random_state=1, gamma=2.0)
+    estimator = SVC(kernel="rbf", random_state=1, gamma=2.0)
 
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 

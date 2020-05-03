@@ -3,7 +3,7 @@ import pickle
 import sys
 
 from _pytest import capture
-from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
 from unittest import mock
 
 from m2cgen import cli
@@ -21,7 +21,7 @@ def _get_mock_args(indent=4, function_name=None, namespace=None,
 
 
 def _get_pickled_trained_model():
-    estimator = linear_model.LinearRegression()
+    estimator = LinearRegression()
     utils.get_regression_model_trainer()(estimator)
 
     infile = io.BytesIO()

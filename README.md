@@ -82,13 +82,13 @@ The output is consistent with the output of the `predict_proba` method of `Decis
 Here's a simple example of how a linear model trained in Python environment can be represented in Java code:
 ```python
 from sklearn.datasets import load_boston
-from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
 import m2cgen as m2c
 
 boston = load_boston()
 X, y = boston.data, boston.target
 
-estimator = linear_model.LinearRegression()
+estimator = LinearRegression()
 estimator.fit(X, y)
 
 code = m2c.export_to_java(estimator)

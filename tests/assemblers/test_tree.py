@@ -1,11 +1,11 @@
-from sklearn import tree
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 
 from m2cgen import assemblers, ast
 from tests import utils
 
 
 def test_single_condition():
-    estimator = tree.DecisionTreeRegressor()
+    estimator = DecisionTreeRegressor()
 
     estimator.fit([[1], [2]], [1, 2])
 
@@ -24,7 +24,7 @@ def test_single_condition():
 
 
 def test_two_conditions():
-    estimator = tree.DecisionTreeRegressor()
+    estimator = DecisionTreeRegressor()
 
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 
@@ -49,7 +49,7 @@ def test_two_conditions():
 
 
 def test_multi_class():
-    estimator = tree.DecisionTreeClassifier()
+    estimator = DecisionTreeClassifier()
 
     estimator.fit([[1], [2], [3]], [0, 1, 2])
 

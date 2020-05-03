@@ -14,7 +14,10 @@ import itertools
 
 import lightgbm
 import xgboost
-from sklearn import linear_model, tree, ensemble, svm
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.svm import NuSVR, NuSVC
 
 import m2cgen as m2c
 from tests import utils
@@ -49,32 +52,32 @@ EXAMPLE_LANGUAGES = [
 EXAMPLE_MODELS = [
     (
         "regression", "linear",
-        linear_model.LinearRegression(),
+        LinearRegression(),
         utils.get_regression_model_trainer(),
     ),
     (
         "classification", "linear",
-        linear_model.LogisticRegression(random_state=RANDOM_SEED),
+        LogisticRegression(random_state=RANDOM_SEED),
         utils.get_classification_model_trainer(),
     ),
     (
         "regression", "decision_tree",
-        tree.DecisionTreeRegressor(**TREE_PARAMS),
+        DecisionTreeRegressor(**TREE_PARAMS),
         utils.get_regression_model_trainer(),
     ),
     (
         "classification", "decision_tree",
-        tree.DecisionTreeClassifier(**TREE_PARAMS),
+        DecisionTreeClassifier(**TREE_PARAMS),
         utils.get_classification_model_trainer(),
     ),
     (
         "regression", "random_forest",
-        ensemble.RandomForestRegressor(**FOREST_PARAMS),
+        RandomForestRegressor(**FOREST_PARAMS),
         utils.get_regression_model_trainer(),
     ),
     (
         "classification", "random_forest",
-        ensemble.RandomForestClassifier(**FOREST_PARAMS),
+        RandomForestClassifier(**FOREST_PARAMS),
         utils.get_classification_model_trainer(),
     ),
     (
@@ -99,12 +102,12 @@ EXAMPLE_MODELS = [
     ),
     (
         "regression", "svm",
-        svm.NuSVR(nu=0.1),
+        NuSVR(nu=0.1),
         utils.get_regression_model_trainer(),
     ),
     (
         "classification", "svm",
-        svm.NuSVC(**SVC_PARAMS),
+        NuSVC(**SVC_PARAMS),
         utils.get_classification_model_trainer(),
     ),
 ]
