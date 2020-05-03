@@ -257,4 +257,4 @@ def count_exprs(expr, exclude_list=None):
                 nested_f(expr)))
 
     expr_type_name = expr_type.__name__
-    raise ValueError("Unexpected expression type {}".format(expr_type_name))
+    raise ValueError("Unexpected expression type '{}'".format(expr_type_name))
