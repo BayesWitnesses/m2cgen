@@ -53,9 +53,9 @@ class BaseCodeGenerator:
 
     def add_code_lines(self, lines):
         if isinstance(lines, str):
-            lines = lines.split("\n")
-        for l in lines:
-            self.add_code_line(l)
+            lines = lines.strip().split("\n")
+        indent = " " * self._current_indent
+        self.code += indent + "\n{}".format(indent).join(lines) + "\n"
 
     def prepend_code_line(self, line):
         self.code = line + "\n" + self.code
@@ -63,8 +63,7 @@ class BaseCodeGenerator:
     def prepend_code_lines(self, lines):
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
-        for l in lines[::-1]:
-            self.prepend_code_line(l)
+        self.code = "\n".join(lines) + "\n" + self.code
 
     # Following methods simply compute expressions using templates without
     # changing result.
