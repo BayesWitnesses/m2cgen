@@ -27,7 +27,8 @@ RUN apt-get update && \
         r-base \
         php \
         dart \
-        haskell-platform && \
+        haskell-platform \
+        ruby-full && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen

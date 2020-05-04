@@ -10,6 +10,7 @@ from tests.e2e.executors.r import RExecutor
 from tests.e2e.executors.php import PhpExecutor
 from tests.e2e.executors.dart import DartExecutor
 from tests.e2e.executors.haskell import HaskellExecutor
+from tests.e2e.executors.ruby import RubyExecutor
 
 __all__ = [
     JavaExecutor,
@@ -24,4 +25,5 @@ __all__ = [
     PhpExecutor,
     DartExecutor,
     HaskellExecutor,
+    RubyExecutor,
 ]
