@@ -126,8 +126,6 @@ class SklearnSVMModelAssembler(BaseSVMModelAssembler):
                 )
                 decisions.append(decision)
 
-        # TODO convert One-vs-one decisions to One-vs-rest
-
         return ast.VectorVal(decisions)
 
     def _get_single_coef(self, idx=0):
