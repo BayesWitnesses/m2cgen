@@ -18,10 +18,11 @@ class BaseLinearModelAssembler(ModelAssembler):
             return self._final_transform(
                 _linear_to_ast(coef[0], intercept[0]))
 
-        exprs = []
-        for idx in range(coef.shape[0]):
-            exprs.append(self._final_transform(
-                _linear_to_ast(coef[idx], intercept[idx])))
+        exprs = [
+            self._final_transform(
+                _linear_to_ast(coef[idx], intercept[idx]))
+            for idx in range(coef.shape[0])
+        ]
         return ast.VectorVal(exprs)
 
     def _final_transform(self, ast_to_transform):
@@ -181,12 +182,10 @@ class StatsmodelsModelAssemblerSelector(ModelAssembler):
 
 
 def _linear_to_ast(coef, intercept):
-    feature_weight_mul_ops = []
-
-    for index, value in enumerate(coef):
-        feature_weight_mul_ops.append(
-            utils.mul(ast.FeatureRef(index), ast.NumVal(value)))
-
+    feature_weight_mul_ops = [
+        utils.mul(ast.FeatureRef(index), ast.NumVal(value))
+        for index, value in enumerate(coef)
+    ]
     return utils.apply_op_to_expressions(
         ast.BinNumOpType.ADD,
         ast.NumVal(intercept),

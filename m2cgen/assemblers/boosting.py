@@ -245,8 +245,4 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 def _split_estimator_params_by_classes(values, n_classes):
     # Splits are computed based on a comment
     # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
-    estimator_params_by_classes = [[] for _ in range(n_classes)]
-    for i in range(len(values)):
-        class_idx = i % n_classes
-        estimator_params_by_classes[class_idx].append(values[i])
-    return estimator_params_by_classes
+    return [values[class_idx::n_classes] for class_idx in range(n_classes)]

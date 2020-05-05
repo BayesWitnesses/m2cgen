@@ -69,12 +69,13 @@ def apply_op_to_expressions(op, *exprs, to_reuse=False):
 
 
 def to_1d_array(var):
-    return np.reshape(np.asarray(var), (np.size(var)))
+    return np.ravel(np.asarray(var))
 
 
 def to_2d_array(var):
-    if len(np.shape(var)) == 2:
-        x, y = var.shape
+    shape = np.shape(var)
+    if len(shape) == 2:
+        x, y = shape
     else:
         x, y = 1, np.size(var)
     return np.reshape(np.asarray(var), (x, y))

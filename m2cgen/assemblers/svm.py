@@ -37,10 +37,10 @@ class BaseSVMModelAssembler(ModelAssembler):
 
         kernel_exprs = self._apply_kernel(support_vectors)
 
-        kernel_weight_mul_ops = []
-        for index, value in enumerate(coef):
-            kernel_weight_mul_ops.append(
-                utils.mul(kernel_exprs[index], ast.NumVal(value)))
+        kernel_weight_mul_ops = [
+            utils.mul(kernel_exprs[index], ast.NumVal(value))
+            for index, value in enumerate(coef)
+        ]
 
         return utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
@@ -189,9 +189,10 @@ class LightningSVMModelAssembler(SklearnSVMModelAssembler):
         return output_size
 
     def _assemble_multi_class_output(self):
-        exprs = []
-        for idx in range(self.model.classes_.shape[0]):
-            exprs.append(self._assemble_single_output(idx))
+        exprs = [
+            self._assemble_single_output(idx)
+            for idx in range(self.model.classes_.shape[0])
+        ]
         return ast.VectorVal(exprs)
 
     def _get_single_coef(self, idx=0):
