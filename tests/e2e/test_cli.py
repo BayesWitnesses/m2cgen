@@ -3,7 +3,7 @@ import pickle
 import platform
 import subprocess
 
-from sklearn.linear_model import LinearRegression
+from sklearn import linear_model
 
 from tests import utils
 
@@ -22,7 +22,7 @@ def execute_test(exec_args):
 def _prepare_pickled_model(tmp_path):
     p = tmp_path / "model.pickle"
 
-    estimator = LinearRegression()
+    estimator = linear_model.LinearRegression()
     utils.get_regression_model_trainer()(estimator)
 
     p.write_bytes(pickle.dumps(estimator))

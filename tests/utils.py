@@ -13,9 +13,9 @@ from lightgbm import LGBMClassifier
 from lightning.impl.base import BaseClassifier as LightBaseClassifier
 from sklearn import datasets
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from sklearn.ensemble._forest import ForestClassifier
+from sklearn.ensemble import forest
 from sklearn.utils import shuffle
-from sklearn.linear_model._base import LinearClassifierMixin
+from sklearn.linear_model.base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC, NuSVC
 from xgboost import XGBClassifier
@@ -120,7 +120,7 @@ class ModelTrainer:
             y_pred = estimator.predict_proba(self.X_test.astype(np.float32))
         elif isinstance(
                 estimator,
-                (ForestClassifier, XGBClassifier, LGBMClassifier)):
+                (forest.ForestClassifier, XGBClassifier, LGBMClassifier)):
             y_pred = estimator.predict_proba(self.X_test)
         else:
             y_pred = estimator.predict(self.X_test)

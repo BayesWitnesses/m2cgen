@@ -1,11 +1,11 @@
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn import ensemble
 
 from m2cgen import assemblers, ast
 from tests import utils
 
 
 def test_single_condition():
-    estimator = RandomForestRegressor(n_estimators=2, random_state=1)
+    estimator = ensemble.RandomForestRegressor(n_estimators=2, random_state=1)
 
     estimator.fit([[1], [2]], [1, 2])
 
@@ -30,7 +30,7 @@ def test_single_condition():
 
 
 def test_two_conditions():
-    estimator = RandomForestRegressor(n_estimators=2, random_state=13)
+    estimator = ensemble.RandomForestRegressor(n_estimators=2, random_state=13)
 
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 
@@ -61,7 +61,8 @@ def test_two_conditions():
 
 
 def test_multi_class():
-    estimator = RandomForestClassifier(n_estimators=2, random_state=13)
+    estimator = ensemble.RandomForestClassifier(
+        n_estimators=2, random_state=13)
 
     estimator.fit([[1], [2], [3]], [1, -1, 1])
 

@@ -4,8 +4,7 @@ import statsmodels.api as sm
 from statsmodels.regression.process_regression import ProcessMLE
 from lightning.regression import AdaGradRegressor
 from lightning.classification import AdaGradClassifier
-from sklearn.linear_model import \
-    LinearRegression, LogisticRegression, RANSACRegressor
+from sklearn import linear_model
 from sklearn.dummy import DummyRegressor
 from sklearn.tree import DecisionTreeRegressor
 
@@ -14,7 +13,7 @@ from tests import utils
 
 
 def test_single_feature():
-    estimator = LinearRegression()
+    estimator = linear_model.LinearRegression()
     estimator.coef_ = np.array([1])
     estimator.intercept_ = np.array([3])
 
@@ -33,7 +32,7 @@ def test_single_feature():
 
 
 def test_two_features():
-    estimator = LinearRegression()
+    estimator = linear_model.LinearRegression()
     estimator.coef_ = np.array([1, 2])
     estimator.intercept_ = np.array([3])
 
@@ -58,7 +57,7 @@ def test_two_features():
 
 
 def test_multi_class():
-    estimator = LogisticRegression()
+    estimator = linear_model.LogisticRegression()
     estimator.coef_ = np.array([[1, 2], [3, 4], [5, 6]])
     estimator.intercept_ = np.array([7, 8, 9])
 
@@ -110,7 +109,7 @@ def test_multi_class():
 
 
 def test_binary_class():
-    estimator = LogisticRegression()
+    estimator = linear_model.LogisticRegression()
     estimator.coef_ = np.array([[1, 2]])
     estimator.intercept_ = np.array([3])
 
@@ -136,7 +135,7 @@ def test_binary_class():
 
 def test_ransac_custom_base_estimator():
     base_estimator = DecisionTreeRegressor()
-    estimator = RANSACRegressor(
+    estimator = linear_model.RANSACRegressor(
         base_estimator=base_estimator,
         random_state=1)
     estimator.fit([[1], [2], [3]], [1, 2, 3])
@@ -158,7 +157,7 @@ def test_ransac_custom_base_estimator():
 @pytest.mark.xfail(raises=NotImplementedError, strict=True)
 def test_ransac_unknown_base_estimator():
     base_estimator = DummyRegressor()
-    estimator = RANSACRegressor(
+    estimator = linear_model.RANSACRegressor(
         base_estimator=base_estimator,
         random_state=1)
     estimator.fit([[1], [2], [3]], [1, 2, 3])
