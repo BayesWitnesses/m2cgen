@@ -59,7 +59,7 @@ class BaseInterpreter:
         if hasattr(self, handler_name):
             return getattr(self, handler_name)
         raise NotImplementedError(
-            "No handler found for {}".format(type(expr).__name__))
+            "No handler found for '{}'".format(type(expr).__name__))
 
     @staticmethod
     def _handler_name(expr_tpe):

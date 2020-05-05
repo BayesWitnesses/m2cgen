@@ -15,13 +15,18 @@ class BaseLinearModelAssembler(ModelAssembler):
         intercept = utils.to_1d_array(self._get_intercept())
 
         if coef.shape[0] == 1:
-            return _linear_to_ast(coef[0], intercept[0])
+            return self._final_transform(
+                _linear_to_ast(coef[0], intercept[0]))
 
         exprs = [
-            _linear_to_ast(coef[idx], intercept[idx])
+            self._final_transform(
+                _linear_to_ast(coef[idx], intercept[idx]))
             for idx in range(coef.shape[0])
         ]
         return ast.VectorVal(exprs)
+
+    def _final_transform(self, ast_to_transform):
+        return ast_to_transform
 
     def _get_intercept(self):
         raise NotImplementedError
@@ -69,6 +74,111 @@ class ProcessMLEModelAssembler(BaseLinearModelAssembler):
 
     def _get_coef(self):
         return self.model.params[:self.model.k_exog]
+
+
+class StatsmodelsGLMModelAssembler(StatsmodelsLinearModelAssembler):
+
+    def _final_transform(self, ast_to_transform):
+        link_function = type(self.model.model.family.link).__name__
+        link_function_lower = link_function.lower()
+        supported_inversed_functions = {
+            "logit": self._logit_inversed,
+            "power": self._power_inversed,
+            "inverse_power": self._inverse_power_inversed,
+            "sqrt": self._sqrt_inversed,
+            "inverse_squared": self._inverse_squared_inversed,
+            "identity": self._identity_inversed,
+            "log": self._log_inversed,
+            "cloglog": self._cloglog_inversed,
+            "negativebinomial": self._negativebinomial_inversed,
+            "nbinom": self._negativebinomial_inversed
+        }
+        if link_function_lower not in supported_inversed_functions:
+            raise ValueError(
+                "Unsupported link function '{}'".format(link_function))
+        fun = supported_inversed_functions[link_function_lower]
+        return fun(ast_to_transform)
+
+    def _logit_inversed(self, ast_to_transform):
+        return utils.div(
+            ast.NumVal(1.0),
+            utils.add(
+                ast.NumVal(1.0),
+                ast.ExpExpr(
+                    utils.sub(
+                        ast.NumVal(0.0),
+                        ast_to_transform))))
+
+    def _power_inversed(self, ast_to_transform):
+        power = self.model.model.family.link.power
+        if power == 1:
+            return self._identity_inversed(ast_to_transform)
+        elif power == -1:
+            return self._inverse_power_inversed(ast_to_transform)
+        elif power == 2:
+            return ast.SqrtExpr(ast_to_transform)
+        elif power == -2:
+            return self._inverse_squared_inversed(ast_to_transform)
+        elif power < 0:  # some languages may not support negative exponent
+            return utils.div(
+                ast.NumVal(1.0),
+                ast.PowExpr(ast_to_transform, ast.NumVal(1 / -power)))
+        else:
+            return ast.PowExpr(ast_to_transform, ast.NumVal(1 / power))
+
+    def _inverse_power_inversed(self, ast_to_transform):
+        return utils.div(ast.NumVal(1.0), ast_to_transform)
+
+    def _sqrt_inversed(self, ast_to_transform):
+        return ast.PowExpr(ast_to_transform, ast.NumVal(2))
+
+    def _inverse_squared_inversed(self, ast_to_transform):
+        return utils.div(ast.NumVal(1.0), ast.SqrtExpr(ast_to_transform))
+
+    def _identity_inversed(self, ast_to_transform):
+        return ast_to_transform
+
+    def _log_inversed(self, ast_to_transform):
+        return ast.ExpExpr(ast_to_transform)
+
+    def _cloglog_inversed(self, ast_to_transform):
+        return utils.sub(
+            ast.NumVal(1.0),
+            ast.ExpExpr(
+                utils.sub(
+                    ast.NumVal(0.0),
+                    ast.ExpExpr(ast_to_transform))))
+
+    def _negativebinomial_inversed(self, ast_to_transform):
+        return utils.div(
+            ast.NumVal(-1.0),
+            utils.mul(
+                ast.NumVal(self.model.model.family.link.alpha),
+                utils.sub(
+                    ast.NumVal(1.0),
+                    ast.ExpExpr(
+                        utils.sub(
+                            ast.NumVal(0.0),
+                            ast_to_transform)))))
+
+
+class StatsmodelsModelAssemblerSelector(ModelAssembler):
+
+    def __init__(self, model):
+        underlying_model = type(model.model).__name__
+        if underlying_model == "GLM":
+            self.assembler = StatsmodelsGLMModelAssembler(model)
+        elif underlying_model in {"GLS",
+                                  "GLSAR",
+                                  "OLS",
+                                  "WLS"}:
+            self.assembler = StatsmodelsLinearModelAssembler(model)
+        else:
+            raise NotImplementedError(
+                "Model '{}' is not supported".format(underlying_model))
+
+    def assemble(self):
+        return self.assembler.assemble()
 
 
 def _linear_to_ast(coef, intercept):

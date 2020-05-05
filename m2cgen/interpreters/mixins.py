@@ -61,7 +61,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
     def interpret_bin_vector_expr(self, expr, extra_func_args=(), **kwargs):
         if expr.op not in self.supported_bin_vector_ops:
             raise NotImplementedError(
-                "Op {} is unsupported".format(expr.op.name))
+                "Op '{}' is unsupported".format(expr.op.name))
 
         self.with_linear_algebra = True
 
@@ -77,7 +77,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
                                       **kwargs):
         if expr.op not in self.supported_bin_vector_num_ops:
             raise NotImplementedError(
-                "Op {} is unsupported".format(expr.op.name))
+                "Op '{}' is unsupported".format(expr.op.name))
 
         self.with_linear_algebra = True
 
