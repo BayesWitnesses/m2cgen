@@ -1,4 +1,6 @@
+from io import StringIO
 from string import Template
+from weakref import finalize
 
 
 class CodeTemplate:
@@ -29,11 +31,32 @@ class BaseCodeGenerator:
 
     def __init__(self, indent=4):
         self._indent = indent
+        self._code_buf = None
         self.reset_state()
 
     def reset_state(self):
         self._current_indent = 0
-        self.code = ""
+        self._finalize_buffer()
+        self._code_buf = StringIO()
+        self._code = None
+        self._finalizer = finalize(self, self._finalize_buffer)
+
+    def _finalize_buffer(self):
+        if self._code_buf is not None and not self._code_buf.closed:
+            self._code_buf.close()
+
+    def _check_buf_closed(self):
+        if self._code_buf.closed:
+            raise BufferError(
+                "Cannot modify code after getting generated code and "
+                "closing the underlying buffer!\n"
+                "Call reset_state() to allocate new buffer.")
+
+    def get_generated_code(self):
+        if not self._code_buf.closed:
+            self._code = self._code_buf.getvalue()
+            self._finalize_buffer()
+        return self._code if self._code is not None else ""
 
     def increase_indent(self):
         self._current_indent += self._indent
@@ -46,24 +69,34 @@ class BaseCodeGenerator:
     # All code modifications should be implemented via following methods.
 
     def add_code_line(self, line):
+        self._check_buf_closed()
         if not line:
             return
         indent = " " * self._current_indent
-        self.code += indent + line + "\n"
+        self._code_buf.write(indent + line + "\n")
 
     def add_code_lines(self, lines):
+        self._check_buf_closed()
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
         indent = " " * self._current_indent
-        self.code += indent + "\n{}".format(indent).join(lines) + "\n"
+        self._code_buf.write(indent + "\n{}".format(indent).join(lines) + "\n")
 
     def prepend_code_line(self, line):
-        self.code = line + "\n" + self.code
+        self._check_buf_closed()
+        self._code_buf.seek(0)
+        old_content = self._code_buf.read()
+        self._code_buf.seek(0)
+        self._code_buf.write(line + "\n" + old_content)
 
     def prepend_code_lines(self, lines):
+        self._check_buf_closed()
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
-        self.code = "\n".join(lines) + "\n" + self.code
+        self._code_buf.seek(0)
+        old_content = self._code_buf.read()
+        self._code_buf.seek(0)
+        self._code_buf.write("\n".join(lines) + "\n" + old_content)
 
     # Following methods simply compute expressions using templates without
     # changing result.

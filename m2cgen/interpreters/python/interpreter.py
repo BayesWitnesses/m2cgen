@@ -37,7 +37,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
         if self.with_linear_algebra:
             self._cg.add_dependency("numpy", alias="np")
 
-        return self._cg.code
+        return self._cg.get_generated_code()
 
     def interpret_bin_vector_expr(self, expr, **kwargs):
         self.with_linear_algebra = True

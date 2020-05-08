@@ -45,4 +45,4 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
 
         self._cg.prepend_code_line("<?php")
 
-        return self._cg.code
+        return self._cg.get_generated_code()

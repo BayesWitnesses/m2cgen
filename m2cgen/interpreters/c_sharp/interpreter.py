@@ -58,4 +58,4 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
         if self.with_math_module:
             self._cg.add_dependency("System.Math")
 
-        return self._cg.code
+        return self._cg.get_generated_code()

@@ -38,7 +38,7 @@ class RInterpreter(ImperativeToCodeInterpreter,
         self.enqueue_subroutine(self.function_name, expr)
         self.process_subroutine_queue(top_cg)
 
-        return top_cg.code
+        return top_cg.get_generated_code()
 
     def create_code_generator(self):
         return RCodeGenerator(indent=self.indent)

@@ -46,7 +46,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.ps1")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
-        return self._cg.code
+        return self._cg.get_generated_code()
 
     def interpret_exp_expr(self, expr, **kwargs):
         nested_result = self._do_interpret(expr.expr, **kwargs)

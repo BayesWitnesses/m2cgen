@@ -49,4 +49,4 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.js")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
-        return self._cg.code
+        return self._cg.get_generated_code()
