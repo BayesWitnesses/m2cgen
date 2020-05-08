@@ -15,7 +15,7 @@ from tests import utils
 from tests.e2e import executors
 
 
-RECURSION_LIMIT = 5000
+RECURSION_LIMIT = 5500
 
 
 # pytest marks
