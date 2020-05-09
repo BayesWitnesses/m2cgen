@@ -7,7 +7,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate
 
 class PhpCodeGenerator(CLikeCodeGenerator):
 
-    tpl_array_index_access = CodeTemplate("$$${array_name}[${index}]")
+    tpl_array_index_access = CodeTemplate("${array_name}[{index}]")
 
     def __init__(self, *args, **kwargs):
         super(PhpCodeGenerator, self).__init__(*args, **kwargs)

@@ -1,17 +1,18 @@
-from string import Template
-
-
 class CodeTemplate:
 
     def __init__(self, template):
-        self.template = Template(template)
         self.str_template = template
 
     def __str__(self):
         return self.str_template
 
     def __call__(self, *args, **kwargs):
-        return self.template.substitute(*args, **kwargs)
+        # Force calling str() representation
+        # because without it numpy gives the same output
+        # for different float types
+        return self.str_template.format(
+            *[str(i) for i in args],
+            **{k: str(v) for k, v in kwargs.items()})
 
 
 class BaseCodeGenerator:
@@ -156,12 +157,12 @@ class CLikeCodeGenerator(ImperativeCodeGenerator):
     have to provide logic for wrapping expressions into functions/classes/etc.
     """
 
-    tpl_num_value = CodeTemplate("${value}")
-    tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
-    tpl_var_declaration = CodeTemplate("${var_type} ${var_name};")
-    tpl_return_statement = CodeTemplate("return ${value};")
-    tpl_array_index_access = CodeTemplate("${array_name}[${index}]")
-    tpl_if_statement = CodeTemplate("if (${if_def}) {")
-    tpl_else_statement = CodeTemplate("} else {")
-    tpl_block_termination = CodeTemplate("}")
-    tpl_var_assignment = CodeTemplate("${var_name} = ${value};")
+    tpl_num_value = CodeTemplate("{value}")
+    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_var_declaration = CodeTemplate("{var_type} {var_name};")
+    tpl_return_statement = CodeTemplate("return {value};")
+    tpl_array_index_access = CodeTemplate("{array_name}[{index}]")
+    tpl_if_statement = CodeTemplate("if ({if_def}) {{")
+    tpl_else_statement = CodeTemplate("}} else {{")
+    tpl_block_termination = CodeTemplate("}}")
+    tpl_var_assignment = CodeTemplate("{var_name} = {value};")

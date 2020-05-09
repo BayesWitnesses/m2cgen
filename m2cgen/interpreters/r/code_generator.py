@@ -6,8 +6,8 @@ from m2cgen.interpreters.code_generator import CodeTemplate
 
 class RCodeGenerator(CLikeCodeGenerator):
 
-    tpl_return_statement = CodeTemplate("return(${value})")
-    tpl_var_assignment = CodeTemplate("${var_name} <- ${value}")
+    tpl_return_statement = CodeTemplate("return({value})")
+    tpl_var_assignment = CodeTemplate("{var_name} <- {value}")
 
     def __init__(self, *args, **kwargs):
         super(RCodeGenerator, self).__init__(*args, **kwargs)
