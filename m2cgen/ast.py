@@ -1,4 +1,6 @@
 from enum import Enum
+from inspect import getmembers, isclass
+from sys import modules
 
 
 class Expr:
@@ -228,6 +230,9 @@ class IfExpr(CtrlExpr):
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), str(self.orelse)])
         return "IfExpr(" + args + ")"
+
+
+TOTAL_NUMBER_OF_EXPRESSIONS = len(getmembers(modules[__name__], isclass))
 
 
 NESTED_EXPRS_MAPPINGS = [
