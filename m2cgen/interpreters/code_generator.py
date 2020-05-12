@@ -52,7 +52,7 @@ class BaseCodeGenerator:
                 "closing the underlying buffer!\n"
                 "Call reset_state() to allocate new buffer.")
 
-    def get_generated_code(self):
+    def finalize_and_get_generated_code(self):
         if not self._code_buf.closed:
             self._code = self._code_buf.getvalue()
             self._finalize_buffer()

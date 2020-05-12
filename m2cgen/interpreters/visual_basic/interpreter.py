@@ -60,7 +60,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
         self._cg.add_code_line(self._cg.tpl_block_termination(
             block_name="Module"))
 
-        return self._cg.get_generated_code()
+        return self._cg.finalize_and_get_generated_code()
 
     def interpret_pow_expr(self, expr, **kwargs):
         base_result = self._do_interpret(expr.base_expr, **kwargs)

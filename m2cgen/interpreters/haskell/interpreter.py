@@ -52,7 +52,7 @@ class HaskellInterpreter(ToCodeInterpreter,
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))
 
-        return self._cg.get_generated_code()
+        return self._cg.finalize_and_get_generated_code()
 
     def interpret_if_expr(self, expr, if_code_gen=None, **kwargs):
         if if_code_gen is None:
@@ -73,7 +73,7 @@ class HaskellInterpreter(ToCodeInterpreter,
 
         if not nested:
             return self._cache_reused_expr(
-                expr, code_gen.get_generated_code())
+                expr, code_gen.finalize_and_get_generated_code())
 
     def interpret_pow_expr(self, expr, **kwargs):
         base_result = self._do_interpret(expr.base_expr, **kwargs)

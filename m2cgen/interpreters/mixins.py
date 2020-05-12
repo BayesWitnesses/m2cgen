@@ -187,7 +187,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
             last_result = self._do_interpret(subroutine.expr)
             self._cg.add_return_statement(last_result)
 
-        return self._cg.get_generated_code()
+        return self._cg.finalize_and_get_generated_code()
 
     def _get_subroutine_name(self):
         subroutine_name = "subroutine" + str(self._subroutine_idx)

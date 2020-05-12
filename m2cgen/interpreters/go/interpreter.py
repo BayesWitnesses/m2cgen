@@ -50,4 +50,4 @@ class GoInterpreter(ImperativeToCodeInterpreter,
         if self.with_math_module:
             self._cg.add_dependency("math")
 
-        return self._cg.get_generated_code()
+        return self._cg.finalize_and_get_generated_code()
