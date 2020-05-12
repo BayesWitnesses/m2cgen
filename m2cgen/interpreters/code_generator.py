@@ -45,12 +45,18 @@ class BaseCodeGenerator:
         if self._code_buf is not None and not self._code_buf.closed:
             self._code_buf.close()
 
-    def _check_buf_closed(self):
+    def _write_to_code_buffer(self, text, prepend=False):
         if self._code_buf.closed:
             raise BufferError(
                 "Cannot modify code after getting generated code and "
                 "closing the underlying buffer!\n"
                 "Call reset_state() to allocate new buffer.")
+        if prepend:
+            self._code_buf.seek(0)
+            old_content = self._code_buf.read()
+            self._code_buf.seek(0)
+            text += old_content
+        self._code_buf.write(text)
 
     def finalize_and_get_generated_code(self):
         if not self._code_buf.closed:
@@ -69,34 +75,26 @@ class BaseCodeGenerator:
     # All code modifications should be implemented via following methods.
 
     def add_code_line(self, line):
-        self._check_buf_closed()
         if not line:
             return
-        indent = " " * self._current_indent
-        self._code_buf.write(indent + line + "\n")
+        self.add_code_lines([line.strip()])
 
     def add_code_lines(self, lines):
-        self._check_buf_closed()
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
         indent = " " * self._current_indent
-        self._code_buf.write(indent + "\n{}".format(indent).join(lines) + "\n")
+        self._write_to_code_buffer(
+            indent + "\n{}".format(indent).join(lines) + "\n")
 
     def prepend_code_line(self, line):
-        self._check_buf_closed()
-        self._code_buf.seek(0)
-        old_content = self._code_buf.read()
-        self._code_buf.seek(0)
-        self._code_buf.write(line + "\n" + old_content)
+        if not line:
+            return
+        self.prepend_code_lines([line.strip()])
 
     def prepend_code_lines(self, lines):
-        self._check_buf_closed()
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
-        self._code_buf.seek(0)
-        old_content = self._code_buf.read()
-        self._code_buf.seek(0)
-        self._code_buf.write("\n".join(lines) + "\n" + old_content)
+        self._write_to_code_buffer("\n".join(lines) + "\n", prepend=True)
 
     # Following methods simply compute expressions using templates without
     # changing result.
