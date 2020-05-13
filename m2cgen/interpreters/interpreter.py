@@ -90,6 +90,9 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_vectors = False
         self.with_math_module = False
 
+    def interpret_id_expr(self, expr, **kwargs):
+        return self._do_interpret(expr.expr, **kwargs)
+
     def interpret_comp_expr(self, expr, **kwargs):
         op = self._cg._comp_op_overwrite(expr.op)
         return self._cg.infix_expression(
