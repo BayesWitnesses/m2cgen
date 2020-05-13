@@ -43,3 +43,9 @@ if [[ $LANG == *"haskell"* ]]; then
   sudo apt-get update
   sudo apt-get install --no-install-recommends -y haskell-platform
 fi
+
+# Install Ruby.
+if [[ $LANG == *"ruby"* ]]; then
+  sudo apt-get update
+  sudo apt-get install --no-install-recommends -y ruby-full
+fi

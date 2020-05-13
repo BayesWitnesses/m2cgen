@@ -10,6 +10,7 @@ from .r.interpreter import RInterpreter
 from .php.interpreter import PhpInterpreter
 from .dart.interpreter import DartInterpreter
 from .haskell.interpreter import HaskellInterpreter
+from .ruby.interpreter import RubyInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -24,4 +25,5 @@ __all__ = [
     PhpInterpreter,
     DartInterpreter,
     HaskellInterpreter,
+    RubyInterpreter,
 ]
