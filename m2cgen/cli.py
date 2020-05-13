@@ -34,6 +34,7 @@ LANGUAGE_TO_EXPORTER = {
     "dart": (m2cgen.export_to_dart, ["indent", "function_name"]),
     "haskell": (m2cgen.export_to_haskell,
                 ["module_name", "indent", "function_name"]),
+    "ruby": (m2cgen.export_to_ruby, ["indent", "function_name"]),
 }
 
 

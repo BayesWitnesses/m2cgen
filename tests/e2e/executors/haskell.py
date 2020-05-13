@@ -18,10 +18,9 @@ main = do
     ${print_code}
 """
 
-EXECUTE_AND_PRINT_SCALAR = "print res"
+PRINT_SCALAR = "print res"
 
-EXECUTE_AND_PRINT_VECTOR = \
-    r"""mapM_ (putStr . \x -> show x ++ " ") res"""
+PRINT_VECTOR = r"""mapM_ (putStr . \x -> show x ++ " ") res"""
 
 
 class HaskellExecutor(base.BaseExecutor):
@@ -46,9 +45,9 @@ class HaskellExecutor(base.BaseExecutor):
 
     def prepare(self):
         if self.model_ast.output_size > 1:
-            print_code = EXECUTE_AND_PRINT_VECTOR
+            print_code = PRINT_VECTOR
         else:
-            print_code = EXECUTE_AND_PRINT_SCALAR
+            print_code = PRINT_SCALAR
         executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
             executor_name=self.executor_name,
             model_name=self.model_name,
