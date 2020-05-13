@@ -687,6 +687,55 @@ def test_statsmodels_glm_unknown_link_func():
     assembler.assemble()
 
 
+def test_sklearn_glm_identity_link_func():
+    estimator = linear_model.TweedieRegressor(
+        power=0, link="identity", max_iter=10)
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.SklearnGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(0.12),
+        ast.BinNumExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(0.02),
+            ast.BinNumOpType.MUL),
+        ast.BinNumOpType.ADD)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_sklearn_glm_log_link_func():
+    estimator = linear_model.TweedieRegressor(
+        power=1, link="log", fit_intercept=False, max_iter=10)
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.SklearnGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.ExpExpr(
+        ast.BinNumExpr(
+            ast.NumVal(0.0),
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.NumVal(-0.4619711397),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD))
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+@pytest.mark.xfail(raises=ValueError, strict=True)
+def test_sklearn_glm_unknown_link_func():
+    estimator = linear_model.TweedieRegressor(
+        power=1, link="this_link_func_does_not_exist", max_iter=10)
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.SklearnGLMModelAssembler(estimator)
+    assembler.assemble()
+
+
 def test_lightning_regression():
     estimator = AdaGradRegressor(random_state=1)
     utils.get_regression_model_trainer()(estimator)
