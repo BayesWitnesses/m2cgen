@@ -3,7 +3,7 @@ from m2cgen.assemblers import utils
 
 
 def tanh(expr):
-    expr.to_reuse = True
+    expr = ast.IdExpr(expr, to_reuse=True)
     tanh_expr = utils.sub(
         ast.NumVal(1.0),
         utils.div(
