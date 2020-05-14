@@ -31,16 +31,8 @@ def gt(l, r):
     return ast.CompExpr(l, r, ast.CompOpType.GT)
 
 
-def gte(l, r):
-    return ast.CompExpr(l, r, ast.CompOpType.GTE)
-
-
 def eq(l, r):
     return ast.CompExpr(l, r, ast.CompOpType.EQ)
-
-
-def ne(l, r):
-    return ast.CompExpr(l, r, ast.CompOpType.NOT_EQ)
 
 
 BIN_EXPR_CLASSES = {
