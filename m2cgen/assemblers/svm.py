@@ -13,7 +13,8 @@ class BaseSVMModelAssembler(ModelAssembler):
         kernel_type = model.kernel
         supported_kernels = self._get_supported_kernels()
         if kernel_type not in supported_kernels:
-            raise ValueError("Unsupported kernel type {}".format(kernel_type))
+            raise ValueError(
+                "Unsupported kernel type '{}'".format(kernel_type))
         self._kernel_fun = supported_kernels[kernel_type]
 
         gamma = self._get_gamma()
@@ -125,8 +126,6 @@ class SklearnSVMModelAssembler(BaseSVMModelAssembler):
                     *kernel_weight_mul_ops
                 )
                 decisions.append(decision)
-
-        # TODO convert One-vs-one decisions to One-vs-rest
 
         return ast.VectorVal(decisions)
 

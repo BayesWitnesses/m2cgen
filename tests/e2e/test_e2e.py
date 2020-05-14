@@ -15,7 +15,7 @@ from tests import utils
 from tests.e2e import executors
 
 
-RECURSION_LIMIT = 5000
+RECURSION_LIMIT = 5500
 
 
 # pytest marks
@@ -31,6 +31,7 @@ R = pytest.mark.r_lang
 PHP = pytest.mark.php
 DART = pytest.mark.dart
 HASKELL = pytest.mark.haskell
+RUBY = pytest.mark.ruby
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -85,6 +86,14 @@ def classification_binary_random(model, test_fraction=0.02):
     )
 
 
+def regression_bounded(model, test_fraction=0.02):
+    return (
+        model,
+        utils.get_bounded_regression_model_trainer(test_fraction),
+        REGRESSION,
+    )
+
+
 # Absolute tolerance. Used in np.isclose to compare 2 values.
 # We compare 6 decimal digits.
 ATOL = 1.e-6
@@ -135,6 +144,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         (executors.PhpExecutor, PHP),
         (executors.DartExecutor, DART),
         (executors.HaskellExecutor, HASKELL),
+        (executors.RubyExecutor, RUBY),
     ],
 
     # These models will be tested against each language specified in the
@@ -274,6 +284,69 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
 
         # Statsmodels Linear Regression
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(fit_constrained=dict(constraints=(np.eye(
+                     utils.get_binary_classification_model_trainer()
+                     .X_train.shape[-1])[0], [1]))))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                family=sm.families.Binomial(
+                    sm.families.links.cloglog())),
+                 fit=dict(maxiter=2)))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                family=sm.families.Binomial(
+                    sm.families.links.logit())),
+                 fit=dict(maxiter=2)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.Gaussian(
+                    sm.families.links.identity()))))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 fit_intercept=True, family=sm.families.Gaussian(
+                     sm.families.links.inverse_power()))))),
+        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 family=sm.families.InverseGaussian(
+                     sm.families.links.inverse_squared()))))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.NegativeBinomial(
+                    sm.families.links.nbinom())),
+                 fit=dict(maxiter=2)))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.Poisson(
+                    sm.families.links.log())),
+                 fit=dict(maxiter=2)))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.Poisson(
+                    sm.families.links.sqrt())),
+                 fit=dict(maxiter=2)))),
+        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 family=sm.families.Tweedie(
+                     sm.families.links.Power(-3)))))),
+        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 fit_intercept=True, family=sm.families.Tweedie(
+                     sm.families.links.Power(2)))))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.GLS,
             dict(init=dict(sigma=np.eye(

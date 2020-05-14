@@ -22,12 +22,13 @@ RUN apt-get update && \
         python3.7-dev \
         openjdk-8-jdk \
         golang-go \
-        dotnet-sdk-3.0 \
+        dotnet-sdk-3.1 \
         powershell \
         r-base \
         php \
         dart \
-        haskell-platform && \
+        haskell-platform \
+        ruby-full && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen

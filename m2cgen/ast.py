@@ -1,4 +1,6 @@
 from enum import Enum
+from inspect import getmembers, isclass
+from sys import modules
 
 
 class Expr:
@@ -9,6 +11,17 @@ class Expr:
     # The actual caching mechanism (if any) is left up to a specific
     # interpreter implementation to provide.
     to_reuse = False
+
+
+class IdExpr(Expr):
+    def __init__(self, expr, to_reuse=False):
+        self.expr = expr
+        self.to_reuse = to_reuse
+        self.output_size = expr.output_size
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "IdExpr(" + args + ")"
 
 
 class FeatureRef(Expr):
@@ -129,7 +142,7 @@ class VectorExpr(Expr):
 class VectorVal(VectorExpr):
 
     def __init__(self, exprs):
-        assert all(map(lambda e: e.output_size == 1, exprs)), (
+        assert all(e.output_size == 1 for e in exprs), (
             "All expressions for VectorVal must be scalar")
 
         self.exprs = exprs
@@ -230,12 +243,15 @@ class IfExpr(CtrlExpr):
         return "IfExpr(" + args + ")"
 
 
+TOTAL_NUMBER_OF_EXPRESSIONS = len(getmembers(modules[__name__], isclass))
+
+
 NESTED_EXPRS_MAPPINGS = [
     ((BinExpr, CompExpr), lambda e: [e.left, e.right]),
     (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
     (VectorVal, lambda e: e.exprs),
     (IfExpr, lambda e: [e.test, e.body, e.orelse]),
-    ((ExpExpr, SqrtExpr, TanhExpr), lambda e: [e.expr]),
+    ((IdExpr, ExpExpr, SqrtExpr, TanhExpr), lambda e: [e.expr]),
 ]
 
 
@@ -257,4 +273,4 @@ def count_exprs(expr, exclude_list=None):
                 nested_f(expr)))
 
     expr_type_name = expr_type.__name__
-    raise ValueError("Unexpected expression type {}".format(expr_type_name))
+    raise ValueError("Unexpected expression type '{}'".format(expr_type_name))

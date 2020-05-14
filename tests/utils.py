@@ -13,9 +13,9 @@ from lightgbm import LGBMClassifier
 from lightning.impl.base import BaseClassifier as LightBaseClassifier
 from sklearn import datasets
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from sklearn.ensemble import forest
+from sklearn.ensemble._forest import ForestClassifier
 from sklearn.utils import shuffle
-from sklearn.linear_model.base import LinearClassifierMixin
+from sklearn.linear_model._base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC, NuSVC
 from xgboost import XGBClassifier
@@ -44,6 +44,9 @@ class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
         elif "iterative_fit" in self.params:
             self.fitted_model_ = est.iterative_fit(
                 **self.params["iterative_fit"])
+        elif "fit_constrained" in self.params:
+            self.fitted_model_ = est.fit_constrained(
+                **self.params["fit_constrained"])
         else:
             self.fitted_model_ = est.fit(**self.params.get("fit", {}))
         # mock class module and name to show appropriate model name in tests
@@ -70,6 +73,12 @@ class ModelTrainer:
             dataset = datasets.load_boston()
             self.X, self.y = shuffle(
                 dataset.data, dataset.target, random_state=13)
+        elif dataset_name == "boston_y_bounded":
+            self.name = "train_model_regression_bounded"
+            dataset = datasets.load_boston()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
+            self.y = np.arctan(self.y) / np.pi + 0.5  # (0; 1)
         elif dataset_name == "iris":
             self.name = "train_model_classification"
             dataset = datasets.load_iris()
@@ -120,7 +129,7 @@ class ModelTrainer:
             y_pred = estimator.predict_proba(self.X_test.astype(np.float32))
         elif isinstance(
                 estimator,
-                (forest.ForestClassifier, XGBClassifier, LGBMClassifier)):
+                (ForestClassifier, XGBClassifier, LGBMClassifier)):
             y_pred = estimator.predict_proba(self.X_test)
         else:
             y_pred = estimator.predict(self.X_test)
@@ -195,6 +204,9 @@ get_classification_random_data_model_trainer = functools.partial(
 
 get_classification_binary_random_data_model_trainer = functools.partial(
     ModelTrainer.get_instance, "classification_binary_rnd")
+
+get_bounded_regression_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "boston_y_bounded")
 
 
 @contextlib.contextmanager

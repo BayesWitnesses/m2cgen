@@ -5,8 +5,6 @@ from statsmodels.regression.process_regression import ProcessMLE
 from lightning.regression import AdaGradRegressor
 from lightning.classification import AdaGradClassifier
 from sklearn import linear_model
-from sklearn.dummy import DummyRegressor
-from sklearn.tree import DecisionTreeRegressor
 
 from m2cgen import assemblers, ast
 from tests import utils
@@ -131,39 +129,6 @@ def test_binary_class():
         ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
-
-
-def test_ransac_custom_base_estimator():
-    base_estimator = DecisionTreeRegressor()
-    estimator = linear_model.RANSACRegressor(
-        base_estimator=base_estimator,
-        random_state=1)
-    estimator.fit([[1], [2], [3]], [1, 2, 3])
-
-    assembler = assemblers.RANSACModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.IfExpr(
-        ast.CompExpr(
-            ast.FeatureRef(0),
-            ast.NumVal(2.5),
-            ast.CompOpType.LTE),
-        ast.NumVal(2.0),
-        ast.NumVal(3.0))
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-@pytest.mark.xfail(raises=NotImplementedError, strict=True)
-def test_ransac_unknown_base_estimator():
-    base_estimator = DummyRegressor()
-    estimator = linear_model.RANSACRegressor(
-        base_estimator=base_estimator,
-        random_state=1)
-    estimator.fit([[1], [2], [3]], [1, 2, 3])
-
-    assembler = assemblers.RANSACModelAssembler(estimator)
-    assembler.assemble()
 
 
 def test_statsmodels_wo_const():
@@ -401,6 +366,325 @@ def test_statsmodels_processmle():
         *feature_weight_mul)
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_logit_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Binomial(
+                sm.families.links.logit())),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(1.0),
+        ast.BinNumExpr(
+            ast.NumVal(1.0),
+            ast.ExpExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0.0),
+                    ast.BinNumExpr(
+                        ast.NumVal(0.0),
+                        ast.BinNumExpr(
+                            ast.FeatureRef(0),
+                            ast.NumVal(-0.8567815987),
+                            ast.BinNumOpType.MUL),
+                        ast.BinNumOpType.ADD),
+                    ast.BinNumOpType.SUB)),
+            ast.BinNumOpType.ADD),
+        ast.BinNumOpType.DIV)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_power_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Tweedie(
+                sm.families.links.Power(3))),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.PowExpr(
+        ast.BinNumExpr(
+            ast.NumVal(0.0),
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.NumVal(0.0020808009),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.NumVal(0.3333333333))
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_negative_power_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Tweedie(
+                sm.families.links.Power(-3))),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(1.0),
+        ast.PowExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.0),
+                ast.BinNumExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(71.0542398846),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD),
+            ast.NumVal(0.3333333333)),
+        ast.BinNumOpType.DIV)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_inverse_power_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Tweedie(
+                sm.families.links.Power(-1))),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(1.0),
+        ast.BinNumExpr(
+            ast.NumVal(0.0),
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.NumVal(3.0460921844),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.BinNumOpType.DIV)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_inverse_squared_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Tweedie(
+                sm.families.links.Power(-2))),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(1.0),
+        ast.SqrtExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.0),
+                ast.BinNumExpr(
+                    ast.FeatureRef(0),
+                    ast.NumVal(15.1237331741),
+                    ast.BinNumOpType.MUL),
+                ast.BinNumOpType.ADD)),
+        ast.BinNumOpType.DIV)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_sqr_power_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Tweedie(
+                sm.families.links.Power(2))),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.SqrtExpr(
+        ast.BinNumExpr(
+            ast.NumVal(0.0),
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.NumVal(0.0154915480),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD))
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_identity_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Tweedie(
+                sm.families.links.Power(1))),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2], [3]], [0.1, 0.2, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(0.0),
+        ast.BinNumExpr(
+            ast.FeatureRef(0),
+            ast.NumVal(0.0791304348),
+            ast.BinNumOpType.MUL),
+        ast.BinNumOpType.ADD)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_sqrt_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Poisson(
+                sm.families.links.sqrt())),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.PowExpr(
+        ast.BinNumExpr(
+            ast.NumVal(0.0),
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.NumVal(0.2429239017),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD),
+        ast.NumVal(2))
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_log_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Poisson(
+                sm.families.links.log())),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.ExpExpr(
+        ast.BinNumExpr(
+            ast.NumVal(0.0),
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.NumVal(-1.0242053933),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD))
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_cloglog_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Binomial(
+                sm.families.links.cloglog())),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(1.0),
+        ast.ExpExpr(
+            ast.BinNumExpr(
+                ast.NumVal(0.0),
+                ast.ExpExpr(
+                    ast.BinNumExpr(
+                        ast.NumVal(0.0),
+                        ast.BinNumExpr(
+                            ast.FeatureRef(0),
+                            ast.NumVal(-0.8914468745),
+                            ast.BinNumOpType.MUL),
+                        ast.BinNumOpType.ADD)),
+                ast.BinNumOpType.SUB)),
+        ast.BinNumOpType.SUB)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+def test_statsmodels_glm_negativebinomial_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.NegativeBinomial(
+                sm.families.links.nbinom())),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(-1.0),
+        ast.BinNumExpr(
+            ast.NumVal(1.0),
+            ast.BinNumExpr(
+                ast.NumVal(1.0),
+                ast.ExpExpr(
+                    ast.BinNumExpr(
+                        ast.NumVal(0.0),
+                        ast.BinNumExpr(
+                            ast.NumVal(0.0),
+                            ast.BinNumExpr(
+                                ast.FeatureRef(0),
+                                ast.NumVal(-1.1079583217),
+                                ast.BinNumOpType.MUL),
+                            ast.BinNumOpType.ADD),
+                        ast.BinNumOpType.SUB)),
+                ast.BinNumOpType.SUB),
+            ast.BinNumOpType.MUL),
+        ast.BinNumOpType.DIV)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
+@pytest.mark.xfail(raises=ValueError, strict=True)
+def test_statsmodels_glm_unknown_link_func():
+
+    class ValidPowerLink(sm.families.links.Power):
+        pass
+
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Tweedie(ValidPowerLink(2))),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler.assemble()
 
 
 def test_lightning_regression():

@@ -34,6 +34,7 @@ LANGUAGE_TO_EXPORTER = {
     "dart": (m2cgen.export_to_dart, ["indent", "function_name"]),
     "haskell": (m2cgen.export_to_haskell,
                 ["module_name", "indent", "function_name"]),
+    "ruby": (m2cgen.export_to_ruby, ["indent", "function_name"]),
 }
 
 
@@ -111,7 +112,7 @@ def generate_code(args):
         # the same as the default value of the keyword argument of the exporter
         # (this is due to languages like C# which prefer their method names to
         # follow PascalCase unlike all the other supported languages -- see
-        # https://github.com/BayesWitnesses/m2cgen/pull/166/files#r379867601
+        # https://github.com/BayesWitnesses/m2cgen/pull/166#discussion_r379867601
         # for more).
         if arg_name == 'function_name' and arg_value is None:
             param = inspect.signature(exporter).parameters['function_name']

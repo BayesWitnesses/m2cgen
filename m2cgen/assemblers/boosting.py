@@ -66,7 +66,8 @@ class BaseBoostingAssembler(ModelAssembler):
         return ast.VectorVal(proba_exprs)
 
     def _assemble_bin_class_output(self, estimator_params):
-        # Base score is calculated based on https://github.com/dmlc/xgboost/blob/master/src/objective/regression_loss.h#L64  # noqa
+        # Base score is calculated based on
+        # https://github.com/dmlc/xgboost/blob/8de7f1928e4815843fbf8773a5ac7ecbc37b2e15/src/objective/regression_loss.h#L91
         # return -logf(1.0f / base_score - 1.0f);
         base_score = 0
         if self._base_score != 0:
@@ -160,7 +161,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         for child in tree["children"]:
             if child["nodeid"] == child_id:
                 return self._assemble_tree(child)
-        assert False, "Unexpected child ID {}".format(child_id)
+        assert False, "Unexpected child ID: {}".format(child_id)
 
 
 class XGBoostLinearModelAssembler(BaseBoostingAssembler):

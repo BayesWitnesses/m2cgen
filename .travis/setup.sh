@@ -7,7 +7,7 @@ if [[ $LANG == *"c_sharp"* ]] || [[ $LANG == *"visual_basic"* ]]; then
   wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
-  sudo apt-get install --no-install-recommends -y dotnet-sdk-3.0
+  sudo apt-get install --no-install-recommends -y dotnet-sdk-3.1
 fi
 
 # Install PowerShell Core.
@@ -42,4 +42,10 @@ fi
 if [[ $LANG == *"haskell"* ]]; then
   sudo apt-get update
   sudo apt-get install --no-install-recommends -y haskell-platform
+fi
+
+# Install Ruby.
+if [[ $LANG == *"ruby"* ]]; then
+  sudo apt-get update
+  sudo apt-get install --no-install-recommends -y ruby-full
 fi
