@@ -15,7 +15,7 @@ from tests import utils
 from tests.e2e import executors
 
 
-RECURSION_LIMIT = 5000
+RECURSION_LIMIT = 5500
 
 
 # pytest marks
@@ -31,6 +31,7 @@ R = pytest.mark.r_lang
 PHP = pytest.mark.php
 DART = pytest.mark.dart
 HASKELL = pytest.mark.haskell
+RUBY = pytest.mark.ruby
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -143,6 +144,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         (executors.PhpExecutor, PHP),
         (executors.DartExecutor, DART),
         (executors.HaskellExecutor, HASKELL),
+        (executors.RubyExecutor, RUBY),
     ],
 
     # These models will be tested against each language specified in the

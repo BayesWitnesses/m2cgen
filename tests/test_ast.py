@@ -54,13 +54,14 @@ def test_count_all_exprs_types():
                     ast.FeatureRef(0),
                     ast.BinNumOpType.ADD)
             ]),
-            ast.VectorVal([
-                ast.NumVal(1),
-                ast.NumVal(2),
-                ast.NumVal(3),
-                ast.NumVal(4),
-                ast.FeatureRef(1)
-            ]),
+            ast.IdExpr(
+                ast.VectorVal([
+                    ast.NumVal(1),
+                    ast.NumVal(2),
+                    ast.NumVal(3),
+                    ast.NumVal(4),
+                    ast.FeatureRef(1)
+                ])),
             ast.BinNumOpType.SUB),
         ast.IfExpr(
             ast.CompExpr(ast.NumVal(2), ast.NumVal(0), ast.CompOpType.GT),
@@ -69,7 +70,7 @@ def test_count_all_exprs_types():
         ),
         ast.BinNumOpType.MUL)
 
-    assert ast.count_exprs(expr) == 27
+    assert ast.count_exprs(expr) == 28
 
 
 def test_num_val():
