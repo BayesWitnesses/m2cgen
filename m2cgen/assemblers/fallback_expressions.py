@@ -1,5 +1,5 @@
 """This module provides an implementation for a variety of functions
-expressed in library's AST. 
+expressed in library's AST.
 
 These AST-based implementations are used as fallbacks in case
 when the target language lacks native support for respective functions
