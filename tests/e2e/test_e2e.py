@@ -200,6 +200,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
 
         # XGBoost (RF)
         regression(xgboost.XGBRFRegressor(**XGBOOST_PARAMS_RF)),
+        classification(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_RF)),
         classification_binary(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_RF)),
 
         # XGBoost (Large Trees)

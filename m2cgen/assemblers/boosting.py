@@ -10,6 +10,7 @@ from m2cgen.assemblers.linear import _linear_to_ast
 class BaseBoostingAssembler(ModelAssembler):
 
     classifier_names = {}
+    strided_layout_for_multiclass = True
 
     def __init__(self, model, estimator_params, base_score=0):
         super().__init__(model)
@@ -54,7 +55,8 @@ class BaseBoostingAssembler(ModelAssembler):
         # Multi-class output is calculated based on discussion in
         # https://github.com/dmlc/xgboost/issues/1746#issuecomment-295962863
         splits = _split_estimator_params_by_classes(
-            estimator_params, self._output_size)
+            estimator_params, self._output_size,
+            self.strided_layout_for_multiclass)
 
         base_score = self._base_score
         exprs = [
@@ -112,9 +114,8 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
     classifier_names = {"XGBClassifier", "XGBRFClassifier"}
 
     def __init__(self, model):
-        if type(model).__name__ == "XGBRFClassifier" and model.n_classes_ > 2:
-            raise RuntimeError(
-                "Multiclass XGBRFClassifier is not supported yet")
+        if type(model).__name__ == "XGBRFClassifier":
+            self.strided_layout_for_multiclass = False
         feature_names = model.get_booster().feature_names
         self._feature_name_to_idx = {
             name: idx for idx, name in enumerate(feature_names or [])
@@ -243,7 +244,13 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
             self._assemble_tree(false_child))
 
 
-def _split_estimator_params_by_classes(values, n_classes):
-    # Splits are computed based on a comment
-    # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
-    return [values[class_idx::n_classes] for class_idx in range(n_classes)]
+def _split_estimator_params_by_classes(values, n_classes, strided):
+    if strided:
+        # Splits are computed based on a comment
+        # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
+        return [values[class_idx::n_classes] for class_idx in range(n_classes)]
+    else:
+        values_len = len(values)
+        block_len = values_len // n_classes
+        return [values[start_block_idx:start_block_idx + block_len]
+                for start_block_idx in range(0, values_len, block_len)]
