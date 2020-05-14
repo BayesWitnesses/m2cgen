@@ -1,3 +1,10 @@
+"""This module provides an implementation for a variety of functions
+expressed in library's AST. 
+
+These AST-based implementations are used as fallbacks in case
+when the target language lacks native support for respective functions
+provided in this module.
+"""
 from m2cgen import ast
 from m2cgen.assemblers import utils
 
