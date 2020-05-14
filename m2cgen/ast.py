@@ -13,6 +13,17 @@ class Expr:
     to_reuse = False
 
 
+class IdExpr(Expr):
+    def __init__(self, expr, to_reuse=False):
+        self.expr = expr
+        self.to_reuse = to_reuse
+        self.output_size = expr.output_size
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "IdExpr(" + args + ")"
+
+
 class FeatureRef(Expr):
     def __init__(self, index):
         self.index = index
@@ -131,7 +142,7 @@ class VectorExpr(Expr):
 class VectorVal(VectorExpr):
 
     def __init__(self, exprs):
-        assert all(map(lambda e: e.output_size == 1, exprs)), (
+        assert all(e.output_size == 1 for e in exprs), (
             "All expressions for VectorVal must be scalar")
 
         self.exprs = exprs
@@ -240,7 +251,7 @@ NESTED_EXPRS_MAPPINGS = [
     (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
     (VectorVal, lambda e: e.exprs),
     (IfExpr, lambda e: [e.test, e.body, e.orelse]),
-    ((ExpExpr, SqrtExpr, TanhExpr), lambda e: [e.expr]),
+    ((IdExpr, ExpExpr, SqrtExpr, TanhExpr), lambda e: [e.expr]),
 ]
 
 
