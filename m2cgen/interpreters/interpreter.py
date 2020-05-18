@@ -1,4 +1,5 @@
 from m2cgen import ast
+from m2cgen.assemblers import fallback_expressions
 from m2cgen.interpreters.utils import CachedResult, _get_handler_name
 
 
@@ -120,28 +121,33 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return self._cg.vector_init(nested)
 
     def interpret_exp_expr(self, expr, **kwargs):
-        assert self.exponent_function_name, "Exponent function is not provided"
+        if self.exponent_function_name is NotImplemented:
+            raise NotImplementedError("Exponent function is not provided")
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.exponent_function_name, nested_result)
 
     def interpret_sqrt_expr(self, expr, **kwargs):
-        assert self.sqrt_function_name, "Sqrt function is not provided"
+        if self.sqrt_function_name is NotImplemented:
+            raise NotImplementedError("Sqrt function is not provided")
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.sqrt_function_name, nested_result)
 
     def interpret_tanh_expr(self, expr, **kwargs):
-        assert self.tanh_function_name, "Tanh function is not provided"
         self.with_math_module = True
+        if self.tanh_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.tanh(expr.expr), **kwargs)
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.tanh_function_name, nested_result)
 
     def interpret_pow_expr(self, expr, **kwargs):
-        assert self.power_function_name, "Power function is not provided"
+        if self.power_function_name is NotImplemented:
+            raise NotImplementedError("Power function is not provided")
         self.with_math_module = True
         base_result = self._do_interpret(expr.base_expr, **kwargs)
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
