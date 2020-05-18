@@ -37,7 +37,7 @@ CLASSIFICATION = pytest.mark.clf
 
 
 # Set of helper functions to make parametrization less verbose.
-def regression(model, test_fraction=0.2):
+def regression(model, test_fraction=0.02):
     return (
         model,
         utils.get_regression_model_trainer(test_fraction),
@@ -258,241 +258,241 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             kernel="cosine", random_state=RANDOM_SEED)),
 
         # Sklearn Linear Regression
-#        regression(linear_model.ARDRegression()),
-#        regression(linear_model.BayesianRidge()),
-#        regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
-#        regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
-#        regression(linear_model.HuberRegressor()),
-#        regression(linear_model.Lars()),
-#        regression(linear_model.LarsCV()),
-#        regression(linear_model.Lasso(random_state=RANDOM_SEED)),
-#        regression(linear_model.LassoCV(random_state=RANDOM_SEED)),
-#        regression(linear_model.LassoLars()),
-#        regression(linear_model.LassoLarsCV()),
-#        regression(linear_model.LassoLarsIC()),
-#        regression(linear_model.LinearRegression()),
-#        regression(linear_model.OrthogonalMatchingPursuit()),
-#        regression(linear_model.OrthogonalMatchingPursuitCV()),
-#        regression(linear_model.PassiveAggressiveRegressor(
-#            random_state=RANDOM_SEED)),
-#        regression(linear_model.RANSACRegressor(
-#            base_estimator=tree.ExtraTreeRegressor(**TREE_PARAMS),
-#            random_state=RANDOM_SEED)),
-#        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
-#        regression(linear_model.RidgeCV()),
-#        regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
-#        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.ARDRegression()),
+        regression(linear_model.BayesianRidge()),
+        regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
+        regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
+        regression(linear_model.HuberRegressor()),
+        regression(linear_model.Lars()),
+        regression(linear_model.LarsCV()),
+        regression(linear_model.Lasso(random_state=RANDOM_SEED)),
+        regression(linear_model.LassoCV(random_state=RANDOM_SEED)),
+        regression(linear_model.LassoLars()),
+        regression(linear_model.LassoLarsCV()),
+        regression(linear_model.LassoLarsIC()),
+        regression(linear_model.LinearRegression()),
+        regression(linear_model.OrthogonalMatchingPursuit()),
+        regression(linear_model.OrthogonalMatchingPursuitCV()),
+        regression(linear_model.PassiveAggressiveRegressor(
+            random_state=RANDOM_SEED)),
+        regression(linear_model.RANSACRegressor(
+            base_estimator=tree.ExtraTreeRegressor(**TREE_PARAMS),
+            random_state=RANDOM_SEED)),
+        regression(linear_model.Ridge(random_state=RANDOM_SEED)),
+        regression(linear_model.RidgeCV()),
+        regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
 
         # Statsmodels Linear Regression
-#        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(fit_constrained=dict(constraints=(np.eye(
-#                     utils.get_binary_classification_model_trainer()
-#                     .X_train.shape[-1])[0], [1]))))),
-#        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
-#        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                family=sm.families.Binomial(
-#                    sm.families.links.cloglog())),
-#                 fit=dict(maxiter=2)))),
-#        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                family=sm.families.Binomial(
-#                    sm.families.links.logit())),
-#                 fit=dict(maxiter=2)))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                fit_intercept=True, family=sm.families.Gaussian(
-#                    sm.families.links.identity()))))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                 fit_intercept=True, family=sm.families.Gaussian(
-#                     sm.families.links.inverse_power()))))),
-#        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                 family=sm.families.InverseGaussian(
-#                     sm.families.links.inverse_squared()))))),
-#        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                fit_intercept=True, family=sm.families.NegativeBinomial(
-#                    sm.families.links.nbinom())),
-#                 fit=dict(maxiter=2)))),
-#        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                fit_intercept=True, family=sm.families.Poisson(
-#                    sm.families.links.log())),
-#                 fit=dict(maxiter=2)))),
-#        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                fit_intercept=True, family=sm.families.Poisson(
-#                    sm.families.links.sqrt())),
-#                 fit=dict(maxiter=2)))),
-#        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                 family=sm.families.Tweedie(
-#                     sm.families.links.Power(-3)))))),
-#        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLM,
-#            dict(init=dict(
-#                 fit_intercept=True, family=sm.families.Tweedie(
-#                     sm.families.links.Power(2)))))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLS,
-#            dict(init=dict(sigma=np.eye(
-#                len(utils.get_regression_model_trainer().y_train)) + 1)))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLS,
-#            dict(init=dict(sigma=np.eye(
-#                len(utils.get_regression_model_trainer().y_train)) + 1),
-#                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLSAR,
-#            dict(init=dict(fit_intercept=True, rho=3)))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLSAR,
-#            dict(iterative_fit=dict(maxiter=2)))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.GLSAR,
-#            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.OLS,
-#            dict(init=dict(fit_intercept=True)))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.OLS,
-#            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            ProcessMLE,
-#            dict(init=dict(exog_scale=np.ones(
-#                (len(utils.get_regression_model_trainer().y_train), 2)),
-#                           exog_smooth=np.ones(
-#                (len(utils.get_regression_model_trainer().y_train), 2)),
-#                           exog_noise=np.ones(
-#                (len(utils.get_regression_model_trainer().y_train), 2)),
-#                           time=np.kron(
-#                np.ones(
-#                    len(utils.get_regression_model_trainer().y_train) // 3),
-#                np.arange(3)),
-#                           groups=np.kron(
-#                np.arange(
-#                    len(utils.get_regression_model_trainer().y_train) // 3),
-#                np.ones(3))),
-#                 fit=dict(maxiter=2)))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.QuantReg,
-#            dict(init=dict(fit_intercept=True)))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.WLS,
-#            dict(init=dict(fit_intercept=True, weights=np.arange(
-#                len(utils.get_regression_model_trainer().y_train)))))),
-#        regression(utils.StatsmodelsSklearnLikeWrapper(
-#            sm.WLS,
-#            dict(init=dict(fit_intercept=True, weights=np.arange(
-#                len(utils.get_regression_model_trainer().y_train))),
-#                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(fit_constrained=dict(constraints=(np.eye(
+                     utils.get_binary_classification_model_trainer()
+                     .X_train.shape[-1])[0], [1]))))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                family=sm.families.Binomial(
+                    sm.families.links.cloglog())),
+                 fit=dict(maxiter=2)))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                family=sm.families.Binomial(
+                    sm.families.links.logit())),
+                 fit=dict(maxiter=2)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.Gaussian(
+                    sm.families.links.identity()))))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 fit_intercept=True, family=sm.families.Gaussian(
+                     sm.families.links.inverse_power()))))),
+        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 family=sm.families.InverseGaussian(
+                     sm.families.links.inverse_squared()))))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.NegativeBinomial(
+                    sm.families.links.nbinom())),
+                 fit=dict(maxiter=2)))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.Poisson(
+                    sm.families.links.log())),
+                 fit=dict(maxiter=2)))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                fit_intercept=True, family=sm.families.Poisson(
+                    sm.families.links.sqrt())),
+                 fit=dict(maxiter=2)))),
+        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 family=sm.families.Tweedie(
+                     sm.families.links.Power(-3)))))),
+        regression_bounded(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                 fit_intercept=True, family=sm.families.Tweedie(
+                     sm.families.links.Power(2)))))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLS,
+            dict(init=dict(sigma=np.eye(
+                len(utils.get_regression_model_trainer().y_train)) + 1),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLSAR,
+            dict(init=dict(fit_intercept=True, rho=3)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLSAR,
+            dict(iterative_fit=dict(maxiter=2)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLSAR,
+            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.OLS,
+            dict(init=dict(fit_intercept=True)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.OLS,
+            dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            ProcessMLE,
+            dict(init=dict(exog_scale=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           exog_smooth=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           exog_noise=np.ones(
+                (len(utils.get_regression_model_trainer().y_train), 2)),
+                           time=np.kron(
+                np.ones(
+                    len(utils.get_regression_model_trainer().y_train) // 3),
+                np.arange(3)),
+                           groups=np.kron(
+                np.arange(
+                    len(utils.get_regression_model_trainer().y_train) // 3),
+                np.ones(3))),
+                 fit=dict(maxiter=2)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.QuantReg,
+            dict(init=dict(fit_intercept=True)))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train)))))),
+        regression(utils.StatsmodelsSklearnLikeWrapper(
+            sm.WLS,
+            dict(init=dict(fit_intercept=True, weights=np.arange(
+                len(utils.get_regression_model_trainer().y_train))),
+                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
         # Lightning Linear Regression
-#        regression(light_reg.AdaGradRegressor(random_state=RANDOM_SEED)),
-#        regression(light_reg.CDRegressor(random_state=RANDOM_SEED)),
-#        regression(light_reg.FistaRegressor()),
-#        regression(light_reg.SAGARegressor(random_state=RANDOM_SEED)),
-#        regression(light_reg.SAGRegressor(random_state=RANDOM_SEED)),
-#        regression(light_reg.SDCARegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.AdaGradRegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.CDRegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.FistaRegressor()),
+        regression(light_reg.SAGARegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.SAGRegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.SDCARegressor(random_state=RANDOM_SEED)),
 
         # Sklearn Linear Classifiers
-#        classification(linear_model.LogisticRegression(
-#            random_state=RANDOM_SEED)),
-#        classification(linear_model.LogisticRegressionCV(
-#            random_state=RANDOM_SEED)),
-#        classification(linear_model.PassiveAggressiveClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(linear_model.Perceptron(
-#            random_state=RANDOM_SEED)),
-#        classification(linear_model.RidgeClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(linear_model.RidgeClassifierCV()),
-#        classification(linear_model.SGDClassifier(
-#            random_state=RANDOM_SEED)),
+        classification(linear_model.LogisticRegression(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.Perceptron(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.RidgeClassifier(
+            random_state=RANDOM_SEED)),
+        classification(linear_model.RidgeClassifierCV()),
+        classification(linear_model.SGDClassifier(
+            random_state=RANDOM_SEED)),
 
-#        classification_binary(linear_model.LogisticRegression(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(linear_model.LogisticRegressionCV(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(linear_model.PassiveAggressiveClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(linear_model.Perceptron(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(linear_model.RidgeClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(linear_model.RidgeClassifierCV()),
-#        classification_binary(linear_model.SGDClassifier(
-#            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.LogisticRegression(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.LogisticRegressionCV(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.PassiveAggressiveClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.Perceptron(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.RidgeClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(linear_model.RidgeClassifierCV()),
+        classification_binary(linear_model.SGDClassifier(
+            random_state=RANDOM_SEED)),
 
         # Lightning Linear Classifiers
-#        classification(light_clf.AdaGradClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(light_clf.CDClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(light_clf.CDClassifier(
-#            penalty="l1/l2", multiclass=True, random_state=RANDOM_SEED)),
-#        classification(light_clf.FistaClassifier()),
-#        classification(light_clf.FistaClassifier(multiclass=True)),
-#        classification(light_clf.SAGAClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(light_clf.SAGClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(light_clf.SDCAClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(light_clf.SGDClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification(light_clf.SGDClassifier(
-#            multiclass=True, random_state=RANDOM_SEED)),
+        classification(light_clf.AdaGradClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.CDClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.CDClassifier(
+            penalty="l1/l2", multiclass=True, random_state=RANDOM_SEED)),
+        classification(light_clf.FistaClassifier()),
+        classification(light_clf.FistaClassifier(multiclass=True)),
+        classification(light_clf.SAGAClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SAGClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SDCAClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SGDClassifier(
+            random_state=RANDOM_SEED)),
+        classification(light_clf.SGDClassifier(
+            multiclass=True, random_state=RANDOM_SEED)),
 
-#        classification_binary(light_clf.AdaGradClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(light_clf.CDClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(light_clf.FistaClassifier()),
-#        classification_binary(light_clf.SAGAClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(light_clf.SAGClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(light_clf.SDCAClassifier(
-#            random_state=RANDOM_SEED)),
-#        classification_binary(light_clf.SGDClassifier(
-#            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.AdaGradClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.CDClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.FistaClassifier()),
+        classification_binary(light_clf.SAGAClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.SAGClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.SDCAClassifier(
+            random_state=RANDOM_SEED)),
+        classification_binary(light_clf.SGDClassifier(
+            random_state=RANDOM_SEED)),
 
         # Decision trees
-#        regression(tree.DecisionTreeRegressor(**TREE_PARAMS)),
-#        regression(tree.ExtraTreeRegressor(**TREE_PARAMS)),
+        regression(tree.DecisionTreeRegressor(**TREE_PARAMS)),
+        regression(tree.ExtraTreeRegressor(**TREE_PARAMS)),
 
-#        classification(tree.DecisionTreeClassifier(**TREE_PARAMS)),
-#        classification(tree.ExtraTreeClassifier(**TREE_PARAMS)),
+        classification(tree.DecisionTreeClassifier(**TREE_PARAMS)),
+        classification(tree.ExtraTreeClassifier(**TREE_PARAMS)),
 
-#        classification_binary(tree.DecisionTreeClassifier(**TREE_PARAMS)),
-#        classification_binary(tree.ExtraTreeClassifier(**TREE_PARAMS)),
+        classification_binary(tree.DecisionTreeClassifier(**TREE_PARAMS)),
+        classification_binary(tree.ExtraTreeClassifier(**TREE_PARAMS)),
 
 
         # Random forest
-#        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
-#        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
+        regression(ensemble.ExtraTreesRegressor(**FOREST_PARAMS)),
+        regression(ensemble.RandomForestRegressor(**FOREST_PARAMS)),
 
-#        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
-#        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+        classification(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+        classification(ensemble.RandomForestClassifier(**FOREST_PARAMS)),
 
-#        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
-#        classification_binary(
-#            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
+        classification_binary(ensemble.ExtraTreesClassifier(**FOREST_PARAMS)),
+        classification_binary(
+            ensemble.RandomForestClassifier(**FOREST_PARAMS)),
     ],
 
     # Following is the list of extra tests for languages/models which are

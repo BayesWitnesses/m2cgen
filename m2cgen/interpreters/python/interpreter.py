@@ -10,9 +10,9 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
     # 60 raises MemoryError for some SVM models with RBF kernel.
     bin_depth_threshold = 55
 
-#    exponent_function_name = "math.exp"
+    exponent_function_name = "math.exp"
     power_function_name = "math.pow"
-#    sqrt_function_name = "math.sqrt"
+    sqrt_function_name = "math.sqrt"
     tanh_function_name = "math.tanh"
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
