@@ -17,8 +17,8 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
-    exponent_function_name = "Math.exp"
-    sqrt_function_name = "Math.sqrt"
+#    exponent_function_name = "Math.exp"
+#    sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):

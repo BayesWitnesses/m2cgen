@@ -18,9 +18,9 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "Mul-Vector-Number",
     }
 
-    exponent_function_name = "[math]::Exp"
+#    exponent_function_name = "[math]::Exp"
     power_function_name = "[math]::Pow"
-    sqrt_function_name = "[math]::Sqrt"
+#    sqrt_function_name = "[math]::Sqrt"
     tanh_function_name = "[math]::Tanh"
 
     def __init__(self, indent=4, function_name="Score", *args, **kwargs):
@@ -47,16 +47,6 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         return self._cg.code
-
-    def interpret_exp_expr(self, expr, **kwargs):
-        nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.math_function_invocation(
-            self.exponent_function_name, nested_result)
-
-    def interpret_sqrt_expr(self, expr, **kwargs):
-        nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.math_function_invocation(
-            self.sqrt_function_name, nested_result)
 
     def interpret_tanh_expr(self, expr, **kwargs):
         nested_result = self._do_interpret(expr.expr, **kwargs)

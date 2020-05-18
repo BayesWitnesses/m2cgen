@@ -16,9 +16,9 @@ class GoInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
-    exponent_function_name = "math.Exp"
+#    exponent_function_name = "math.Exp"
     power_function_name = "math.Pow"
-    sqrt_function_name = "math.Sqrt"
+#    sqrt_function_name = "math.Sqrt"
     tanh_function_name = "math.Tanh"
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):

@@ -18,9 +18,9 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "MulVectorNumber",
     }
 
-    exponent_function_name = "Exp"
+#    exponent_function_name = "Exp"
     power_function_name = "Pow"
-    sqrt_function_name = "Sqrt"
+#    sqrt_function_name = "Sqrt"
     tanh_function_name = "Tanh"
 
     def __init__(self, namespace="ML", class_name="Model", indent=4,

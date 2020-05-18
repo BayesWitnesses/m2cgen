@@ -19,9 +19,9 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
-    exponent_function_name = "Math.exp"
+#    exponent_function_name = "Math.exp"
     power_function_name = "Math.pow"
-    sqrt_function_name = "Math.sqrt"
+#    sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
 
     def __init__(self, indent=4, function_name="score",

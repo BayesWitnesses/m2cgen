@@ -17,7 +17,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "MulVectorNumber",
     }
 
-    exponent_function_name = "Math.Exp"
+#    exponent_function_name = "Math.Exp"
     tanh_function_name = "Tanh"
 
     with_tanh_expr = False
