@@ -62,7 +62,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
         if self.with_math_module:
             self._cg.add_dependency("dart:math")
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()
 
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True

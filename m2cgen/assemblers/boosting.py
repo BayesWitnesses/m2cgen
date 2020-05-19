@@ -2,7 +2,7 @@ import json
 import numpy as np
 
 from m2cgen import ast
-from m2cgen.assemblers import utils
+from m2cgen.assemblers import fallback_expressions, utils
 from m2cgen.assemblers.base import ModelAssembler
 from m2cgen.assemblers.linear import _linear_to_ast
 
@@ -62,7 +62,7 @@ class BaseBoostingAssembler(ModelAssembler):
             for i, e in enumerate(splits)
         ]
 
-        proba_exprs = utils.softmax_exprs(exprs)
+        proba_exprs = fallback_expressions.softmax(exprs)
         return ast.VectorVal(proba_exprs)
 
     def _assemble_bin_class_output(self, estimator_params):
@@ -76,7 +76,7 @@ class BaseBoostingAssembler(ModelAssembler):
         expr = self._assemble_single_output(
             estimator_params, base_score=base_score)
 
-        proba_expr = utils.sigmoid_expr(expr, to_reuse=True)
+        proba_expr = fallback_expressions.sigmoid(expr, to_reuse=True)
 
         return ast.VectorVal([
             ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),
