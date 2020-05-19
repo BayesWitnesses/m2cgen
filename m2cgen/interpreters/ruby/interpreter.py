@@ -42,7 +42,7 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.rb")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()
 
     def interpret_bin_num_expr(self, expr, **kwargs):
         if expr.op == ast.BinNumOpType.DIV:
