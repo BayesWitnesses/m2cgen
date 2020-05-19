@@ -34,8 +34,9 @@ class BaseBoostingAssembler(ModelAssembler):
                 return self._assemble_multi_class_output(
                     self._all_estimator_params)
         else:
-            return self._assemble_single_output(
+            result_ast = self._assemble_single_output(
                 self._all_estimator_params, base_score=self._base_score)
+            return self._single_convert_output(result_ast)
 
     def _assemble_single_output(self, estimator_params,
                                 base_score=0, split_idx=0):
@@ -62,7 +63,7 @@ class BaseBoostingAssembler(ModelAssembler):
             for i, e in enumerate(splits)
         ]
 
-        proba_exprs = fallback_expressions.softmax(exprs)
+        proba_exprs = self._multi_class_convert_output(exprs)
         return ast.VectorVal(proba_exprs)
 
     def _assemble_bin_class_output(self, estimator_params):
@@ -76,7 +77,7 @@ class BaseBoostingAssembler(ModelAssembler):
         expr = self._assemble_single_output(
             estimator_params, base_score=base_score)
 
-        proba_expr = fallback_expressions.sigmoid(expr, to_reuse=True)
+        proba_expr = self._bin_class_convert_output(expr)
 
         return ast.VectorVal([
             ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),
@@ -85,6 +86,15 @@ class BaseBoostingAssembler(ModelAssembler):
 
     def _final_transform(self, ast_to_transform):
         return ast_to_transform
+
+    def _multi_class_convert_output(self, exprs):
+        return fallback_expressions.softmax(exprs)
+
+    def _bin_class_convert_output(self, expr, to_reuse=True):
+        return fallback_expressions.sigmoid(expr, to_reuse=to_reuse)
+
+    def _single_convert_output(self, expr):
+        return expr
 
     def _assemble_estimators(self, estimator_params, split_idx):
         raise NotImplementedError
@@ -204,6 +214,8 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
         self.average_output = model_dump.get("average_output", False)
+        self.objective_config = model_dump.get("objective", "custom")
+        self.objective_name = self.objective_config.split(" ")[0]
 
         super().__init__(model, trees)
 
@@ -216,6 +228,73 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
                 ast.BinNumOpType.MUL)
         else:
             return super()._final_transform(ast_to_transform)
+
+    def _multi_class_convert_output(self, exprs):
+        supported_objectives = {
+            "multiclass": super()._multi_class_convert_output,
+            "multiclassova": self._multi_class_sigmoid_transform
+        }
+        if self.objective_name not in supported_objectives:
+            raise ValueError(
+                "Unsupported objective function '{}'".format(
+                    self.objective_name))
+        return supported_objectives[self.objective_name](exprs)
+
+    def _multi_class_sigmoid_transform(self, exprs):
+        return [self._bin_class_sigmoid_transform(expr, to_reuse=False)
+                for expr in exprs]
+
+    def _bin_class_convert_output(self, expr, to_reuse=True):
+        supported_objectives = {
+            "binary": self._bin_class_sigmoid_transform,
+        }
+        if self.objective_name not in supported_objectives:
+            raise ValueError(
+                "Unsupported objective function '{}'".format(
+                    self.objective_name))
+        return supported_objectives[self.objective_name](expr)
+
+    def _bin_class_sigmoid_transform(self, expr, to_reuse=True):
+        coef = 1.0
+        for config_part in self.objective_config.split(" "):
+            config_entry = config_part.split(":")
+            if config_entry[0] == "sigmoid":
+                coef = float(config_entry[1])
+        return super()._bin_class_convert_output(
+            utils.mul(ast.NumVal(coef), expr), to_reuse=to_reuse)
+
+    def _single_convert_output(self, expr):
+        supported_objectives = {
+            "cross_entropy": fallback_expressions.sigmoid,
+            "cross_entropy_lambda": self._log1p_exp_transform,
+            "regression": self._maybe_sqr_transform,
+            "regression_l1": self._maybe_sqr_transform,
+            "huber": super()._single_convert_output,
+            "fair": self._maybe_sqr_transform,
+            "poisson": self._exp_transform,
+            "quantile": self._maybe_sqr_transform,
+            "mape": self._maybe_sqr_transform,
+            "gamma": self._exp_transform,
+            "tweedie": self._exp_transform
+        }
+        if self.objective_name not in supported_objectives:
+            raise ValueError(
+                "Unsupported objective function '{}'".format(
+                    self.objective_name))
+        return supported_objectives[self.objective_name](expr)
+
+    def _log1p_exp_transform(self, expr):
+        return expr  # std::log(1.0f + std::exp(input[0]));
+
+    def _maybe_sqr_transform(self, expr):
+        need_sqr = "sqrt" in self.objective_config.split(" ")
+        if need_sqr:
+            return expr  # Common::Sign(input[0]) * input[0] * input[0];
+        else:
+            return expr
+
+    def _exp_transform(self, expr):
+        return ast.ExpExpr(expr)
 
     def _assemble_tree(self, tree):
         if "leaf_value" in tree:
