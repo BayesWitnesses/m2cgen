@@ -60,7 +60,7 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
                     os.path.dirname(__file__), "linear_algebra.java")
                 top_cg.add_code_lines(utils.get_file_content(filename))
 
-        return top_cg.code
+        return top_cg.finalize_and_get_generated_code()
 
     # Required by SubroutinesMixin to create new code generator for
     # each subroutine.

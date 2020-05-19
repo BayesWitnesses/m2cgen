@@ -50,4 +50,4 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
         if self.with_math_module:
             self._cg.add_dependency("math")
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()
