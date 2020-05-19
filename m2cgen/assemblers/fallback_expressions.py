@@ -30,14 +30,18 @@ def tanh(expr):
             tanh_expr))
 
 
-def sqrt(expr):
-    return ast.PowExpr(base_expr=expr, exp_expr=ast.NumVal(0.5))
+def sqrt(expr, to_reuse=False):
+    return ast.PowExpr(
+        base_expr=expr,
+        exp_expr=ast.NumVal(0.5),
+        to_reuse=to_reuse)
 
 
-def exp(expr):
+def exp(expr, to_reuse=False):
     return ast.PowExpr(
         base_expr=ast.NumVal(2.71828182845904523536028747135),
-        exp_expr=expr)
+        exp_expr=expr,
+        to_reuse=to_reuse)
 
 
 def sigmoid(expr, to_reuse=False):

@@ -124,7 +124,8 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_math_module = True
         if self.exponent_function_name is NotImplemented:
             return self._do_interpret(
-                fallback_expressions.exp(expr.expr), **kwargs)
+                fallback_expressions.exp(expr.expr, to_reuse=expr.to_reuse),
+                **kwargs)
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.exponent_function_name, nested_result)
@@ -133,7 +134,8 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_math_module = True
         if self.sqrt_function_name is NotImplemented:
             return self._do_interpret(
-                fallback_expressions.sqrt(expr.expr), **kwargs)
+                fallback_expressions.sqrt(expr.expr, to_reuse=expr.to_reuse),
+                **kwargs)
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.sqrt_function_name, nested_result)
