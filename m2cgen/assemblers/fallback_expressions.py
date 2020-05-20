@@ -9,6 +9,14 @@ from m2cgen import ast
 from m2cgen.assemblers import utils
 
 
+def abs(expr):
+    expr = ast.IdExpr(expr, to_reuse=True)
+    return ast.IfExpr(
+        utils.lt(expr, ast.NumVal(0)),
+        utils.sub(ast.NumVal(0.0), expr),
+        expr)
+
+
 def tanh(expr):
     expr = ast.IdExpr(expr, to_reuse=True)
     tanh_expr = utils.sub(

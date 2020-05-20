@@ -81,6 +81,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     about AST.
     """
 
+    abs_function_name = NotImplemented
     exponent_function_name = NotImplemented
     power_function_name = NotImplemented
     sqrt_function_name = NotImplemented
@@ -119,6 +120,15 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_vectors = True
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
+
+    def interpret_abs_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        if self.abs_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.abs(expr.expr), **kwargs)
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.abs_function_name, nested_result)
 
     def interpret_exp_expr(self, expr, **kwargs):
         if self.exponent_function_name is NotImplemented:

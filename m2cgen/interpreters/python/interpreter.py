@@ -10,6 +10,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
     # 60 raises MemoryError for some SVM models with RBF kernel.
     bin_depth_threshold = 55
 
+    abs_function_name = "abs"
     exponent_function_name = "math.exp"
     power_function_name = "math.pow"
     sqrt_function_name = "math.sqrt"
@@ -38,6 +39,11 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
             self._cg.add_dependency("numpy", alias="np")
 
         return self._cg.finalize_and_get_generated_code()
+
+    def interpret_abs_expr(self, expr, **kwargs):
+        result = super().interpret_abs_expr(expr, **kwargs)
+        self.with_math_module = False
+        return result
 
     def interpret_bin_vector_expr(self, expr, **kwargs):
         self.with_linear_algebra = True

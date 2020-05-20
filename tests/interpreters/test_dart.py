@@ -379,6 +379,19 @@ double score(List<double> input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    expected_code = """
+double score(List<double> input) {
+    return (-1.0).abs();
+}
+"""
+
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 

@@ -4,6 +4,25 @@ from m2cgen.interpreters import PythonInterpreter
 from tests.utils import assert_code_equal
 
 
+def test_abs_fallback_expr():
+    expr = ast.AbsExpr(ast.NumVal(-2.0))
+
+    interpreter = PythonInterpreter()
+    interpreter.abs_function_name = NotImplemented
+
+    expected_code = """
+def score(input):
+    var1 = -2.0
+    if (var1) < (0):
+        var0 = (0.0) - (var1)
+    else:
+        var0 = var1
+    return var0
+"""
+
+    assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_tanh_fallback_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
