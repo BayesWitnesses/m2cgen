@@ -5,15 +5,15 @@ from m2cgen.interpreters.code_generator \
 
 
 class GoCodeGenerator(ImperativeCodeGenerator):
-    tpl_num_value = CodeTemplate("${value}")
-    tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
-    tpl_array_index_access = CodeTemplate("${array_name}[${index}]")
-    tpl_else_statement = CodeTemplate("} else {")
-    tpl_block_termination = CodeTemplate("}")
-    tpl_var_declaration = CodeTemplate("var ${var_name} ${var_type}")
-    tpl_return_statement = CodeTemplate("return ${value}")
-    tpl_if_statement = CodeTemplate("if ${if_def} {")
-    tpl_var_assignment = CodeTemplate("${var_name} = ${value}")
+    tpl_num_value = CodeTemplate("{value}")
+    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_array_index_access = CodeTemplate("{array_name}[{index}]")
+    tpl_else_statement = CodeTemplate("}} else {{")
+    tpl_block_termination = CodeTemplate("}}")
+    tpl_var_declaration = CodeTemplate("var {var_name} {var_type}")
+    tpl_return_statement = CodeTemplate("return {value}")
+    tpl_if_statement = CodeTemplate("if {if_def} {{")
+    tpl_var_assignment = CodeTemplate("{var_name} = {value}")
 
     scalar_type = "float64"
     vector_type = "[]float64"

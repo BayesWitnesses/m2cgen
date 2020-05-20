@@ -5,9 +5,9 @@ from m2cgen.interpreters.code_generator import BaseCodeGenerator, CodeTemplate
 
 
 class HaskellCodeGenerator(BaseCodeGenerator):
-    tpl_num_value = CodeTemplate("${value}")
-    tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
-    tpl_module_definition = CodeTemplate("module ${module_name} where")
+    tpl_num_value = CodeTemplate("{value}")
+    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_module_definition = CodeTemplate("module {module_name} where")
 
     def __init__(self, *args, **kwargs):
         self._func_idx = 0

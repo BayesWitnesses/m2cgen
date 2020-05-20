@@ -7,10 +7,10 @@ from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
 class PowershellCodeGenerator(CLikeCodeGenerator):
 
-    tpl_var_declare = CT("${var_type}${var_name} = ${init_val}")
-    tpl_var_assignment = CT("${var_name} = ${value}")
-    tpl_array_index_access = CT("$$${array_name}[${index}]")
-    tpl_return_statement = CT("return ${value}")
+    tpl_var_declare = CT("{var_type}{var_name} = {init_val}")
+    tpl_var_assignment = CT("{var_name} = {value}")
+    tpl_array_index_access = CT("${array_name}[{index}]")
+    tpl_return_statement = CT("return {value}")
 
     scalar_type = "[double]"
     vector_type = "[double[]]"
