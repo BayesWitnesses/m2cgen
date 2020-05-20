@@ -6,18 +6,18 @@ from m2cgen.interpreters.code_generator \
 
 
 class VisualBasicCodeGenerator(ImperativeCodeGenerator):
-    tpl_num_value = CodeTemplate("${value}")
-    tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
+    tpl_num_value = CodeTemplate("{value}")
+    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
     tpl_var_declaration = \
-        CodeTemplate("Dim ${var_name}${type_modifier} As ${var_type}")
-    tpl_return_statement = CodeTemplate("${func_name} = ${value}")
-    tpl_if_statement = CodeTemplate("If ${if_def} Then")
+        CodeTemplate("Dim {var_name}{type_modifier} As {var_type}")
+    tpl_return_statement = CodeTemplate("{func_name} = {value}")
+    tpl_if_statement = CodeTemplate("If {if_def} Then")
     tpl_else_statement = CodeTemplate("Else")
-    tpl_block_termination = CodeTemplate("End ${block_name}")
-    tpl_array_index_access = CodeTemplate("${array_name}(${index})")
-    tpl_array_set_by_index = CodeTemplate("${array_name}(${index}) = ${value}")
-    tpl_var_assignment = CodeTemplate("${var_name} = ${value}")
-    tpl_module_definition = CodeTemplate("Module ${module_name}")
+    tpl_block_termination = CodeTemplate("End {block_name}")
+    tpl_array_index_access = CodeTemplate("{array_name}({index})")
+    tpl_array_set_by_index = CodeTemplate("{array_name}({index}) = {value}")
+    tpl_var_assignment = CodeTemplate("{var_name} = {value}")
+    tpl_module_definition = CodeTemplate("Module {module_name}")
 
     scalar_type = "Double"
 
