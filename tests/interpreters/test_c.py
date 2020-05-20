@@ -213,7 +213,7 @@ void score(double * input, double * output) {
 
 
 def test_abs_expr():
-    expr = ast.Absxpr(ast.NumVal(-1.0))
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
 
     interpreter = interpreters.CInterpreter()
 
