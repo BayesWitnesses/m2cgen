@@ -1,17 +1,22 @@
-from string import Template
+from io import StringIO
+from weakref import finalize
 
 
 class CodeTemplate:
 
     def __init__(self, template):
-        self.template = Template(template)
         self.str_template = template
 
     def __str__(self):
         return self.str_template
 
     def __call__(self, *args, **kwargs):
-        return self.template.substitute(*args, **kwargs)
+        # Force calling str() representation
+        # because without it numpy gives the same output
+        # for different float types
+        return self.str_template.format(
+            *[str(i) for i in args],
+            **{k: str(v) for k, v in kwargs.items()})
 
 
 class BaseCodeGenerator:
@@ -29,11 +34,38 @@ class BaseCodeGenerator:
 
     def __init__(self, indent=4):
         self._indent = indent
+        self._code_buf = None
         self.reset_state()
 
     def reset_state(self):
         self._current_indent = 0
-        self.code = ""
+        self._finalize_buffer()
+        self._code_buf = StringIO()
+        self._code = None
+        self._finalizer = finalize(self, self._finalize_buffer)
+
+    def _finalize_buffer(self):
+        if self._code_buf is not None and not self._code_buf.closed:
+            self._code_buf.close()
+
+    def _write_to_code_buffer(self, text, prepend=False):
+        if self._code_buf.closed:
+            raise BufferError(
+                "Cannot modify code after getting generated code and "
+                "closing the underlying buffer!\n"
+                "Call reset_state() to allocate new buffer.")
+        if prepend:
+            self._code_buf.seek(0)
+            old_content = self._code_buf.read()
+            self._code_buf.seek(0)
+            text += old_content
+        self._code_buf.write(text)
+
+    def finalize_and_get_generated_code(self):
+        if not self._code_buf.closed:
+            self._code = self._code_buf.getvalue()
+            self._finalize_buffer()
+        return self._code if self._code is not None else ""
 
     def increase_indent(self):
         self._current_indent += self._indent
@@ -48,22 +80,24 @@ class BaseCodeGenerator:
     def add_code_line(self, line):
         if not line:
             return
-        indent = " " * self._current_indent
-        self.code += indent + line + "\n"
+        self.add_code_lines([line.strip()])
 
     def add_code_lines(self, lines):
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
         indent = " " * self._current_indent
-        self.code += indent + "\n{}".format(indent).join(lines) + "\n"
+        self._write_to_code_buffer(
+            indent + "\n{}".format(indent).join(lines) + "\n")
 
     def prepend_code_line(self, line):
-        self.code = line + "\n" + self.code
+        if not line:
+            return
+        self.prepend_code_lines([line.strip()])
 
     def prepend_code_lines(self, lines):
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
-        self.code = "\n".join(lines) + "\n" + self.code
+        self._write_to_code_buffer("\n".join(lines) + "\n", prepend=True)
 
     # Following methods simply compute expressions using templates without
     # changing result.
@@ -156,12 +190,12 @@ class CLikeCodeGenerator(ImperativeCodeGenerator):
     have to provide logic for wrapping expressions into functions/classes/etc.
     """
 
-    tpl_num_value = CodeTemplate("${value}")
-    tpl_infix_expression = CodeTemplate("(${left}) ${op} (${right})")
-    tpl_var_declaration = CodeTemplate("${var_type} ${var_name};")
-    tpl_return_statement = CodeTemplate("return ${value};")
-    tpl_array_index_access = CodeTemplate("${array_name}[${index}]")
-    tpl_if_statement = CodeTemplate("if (${if_def}) {")
-    tpl_else_statement = CodeTemplate("} else {")
-    tpl_block_termination = CodeTemplate("}")
-    tpl_var_assignment = CodeTemplate("${var_name} = ${value};")
+    tpl_num_value = CodeTemplate("{value}")
+    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_var_declaration = CodeTemplate("{var_type} {var_name};")
+    tpl_return_statement = CodeTemplate("return {value};")
+    tpl_array_index_access = CodeTemplate("{array_name}[{index}]")
+    tpl_if_statement = CodeTemplate("if ({if_def}) {{")
+    tpl_else_statement = CodeTemplate("}} else {{")
+    tpl_block_termination = CodeTemplate("}}")
+    tpl_var_assignment = CodeTemplate("{var_name} = {value};")
