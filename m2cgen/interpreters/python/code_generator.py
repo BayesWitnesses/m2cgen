@@ -6,14 +6,14 @@ from m2cgen.interpreters.code_generator import CodeTemplate as CT
 
 class PythonCodeGenerator(ImperativeCodeGenerator):
 
-    tpl_num_value = CT("${value}")
-    tpl_infix_expression = CT("(${left}) ${op} (${right})")
-    tpl_return_statement = CT("return ${value}")
-    tpl_array_index_access = CT("${array_name}[${index}]")
-    tpl_array_convert_to_numpy = CT("np.asarray(${value})")
-    tpl_if_statement = CT("if ${if_def}:")
+    tpl_num_value = CT("{value}")
+    tpl_infix_expression = CT("({left}) {op} ({right})")
+    tpl_return_statement = CT("return {value}")
+    tpl_array_index_access = CT("{array_name}[{index}]")
+    tpl_array_convert_to_numpy = CT("np.asarray({value})")
+    tpl_if_statement = CT("if {if_def}:")
     tpl_else_statement = CT("else:")
-    tpl_var_assignment = CT("${var_name} = ${value}")
+    tpl_var_assignment = CT("{var_name} = {value}")
 
     tpl_var_declaration = CT("")
     tpl_block_termination = CT("")
