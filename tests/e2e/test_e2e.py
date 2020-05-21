@@ -208,10 +208,10 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_RF)),
 
         # XGBoost (Boosted Random Forests)
-        regression(xgboost.XGBRFRegressor(**XGBOOST_PARAMS_BOOSTED_RF)),
-        classification(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_BOOSTED_RF)),
+        regression(xgboost.XGBRegressor(**XGBOOST_PARAMS_BOOSTED_RF)),
+        classification(xgboost.XGBClassifier(**XGBOOST_PARAMS_BOOSTED_RF)),
         classification_binary(
-            xgboost.XGBRFClassifier(**XGBOOST_PARAMS_BOOSTED_RF)),
+            xgboost.XGBClassifier(**XGBOOST_PARAMS_BOOSTED_RF)),
 
         # XGBoost (Large Trees)
         regression_random(
