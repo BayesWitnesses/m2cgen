@@ -257,4 +257,5 @@ def _split_estimator_params_by_classes(values, n_classes, params_seq_len):
           for i in range(j, values_len, block_len)]
          for j in range(0, block_len, params_seq_len)]
         ).reshape(n_classes, -1)
-    return [[values[idx] for idx in class_idxs] for class_idxs in indices_by_class]
+    return [[values[idx] for idx in class_idxs]
+            for class_idxs in indices_by_class]
