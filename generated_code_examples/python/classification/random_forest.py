@@ -1,4 +1,7 @@
-import numpy as np
+def add_vectors(v1, v2):
+    return [sum(i) for i in zip(v1, v2)]
+def mul_vector_number(v1, num):
+    return [i * num for i in v1]
 def score(input):
     if (input[3]) <= (0.8):
         var0 = [1.0, 0.0, 0.0]
@@ -26,4 +29,4 @@ def score(input):
                 var1 = [0.0, 0.8, 0.2]
             else:
                 var1 = [0.0, 0.0, 1.0]
-    return (np.asarray((np.asarray(var0)) * (0.5))) + (np.asarray((np.asarray(var1)) * (0.5)))
+    return mul_vector_number(add_vectors(var0, var1), 0.5)
