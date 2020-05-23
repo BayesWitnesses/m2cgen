@@ -18,8 +18,12 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
     }
 
     exponent_function_name = "Math.exp"
+    logarithm_function_name = "Math.log"
+    log1p_function_name = "log1p"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
+
+    with_log1p_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
@@ -42,6 +46,11 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.rb")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_log1p_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "log1p.rb")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
         return self._cg.finalize_and_get_generated_code()
 
     def interpret_bin_num_expr(self, expr, **kwargs):
@@ -59,3 +68,7 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="**")
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)

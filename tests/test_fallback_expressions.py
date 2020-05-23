@@ -55,3 +55,25 @@ def score(input):
 """
 
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_fallback_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = PythonInterpreter()
+    interpreter.log1p_function_name = NotImplemented
+
+    expected_code = """
+import math
+def score(input):
+    var1 = 2.0
+    var2 = (1.0) + (var1)
+    var3 = (var2) - (1.0)
+    if (var3) == (0.0):
+        var0 = var1
+    else:
+        var0 = ((var1) * (math.log(var2))) / (var3)
+    return var0
+"""
+
+    assert_code_equal(interpreter.interpret(expr), expected_code)

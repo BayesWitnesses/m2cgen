@@ -17,6 +17,8 @@ class GoInterpreter(ImperativeToCodeInterpreter,
     }
 
     exponent_function_name = "math.Exp"
+    logarithm_function_name = "math.Log"
+    log1p_function_name = "math.Log1p"
     power_function_name = "math.Pow"
     sqrt_function_name = "math.Sqrt"
     tanh_function_name = "math.Tanh"

@@ -22,6 +22,8 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
     }
 
     exponent_function_name = "math.exp"
+    logarithm_function_name = "math.log"
+    log1p_function_name = "math.log1p"
     power_function_name = "math.pow"
     sqrt_function_name = "math.sqrt"
     tanh_function_name = "math.tanh"
