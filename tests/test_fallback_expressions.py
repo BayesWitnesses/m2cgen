@@ -44,3 +44,33 @@ def score(input):
 """
 
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sqrt_fallback_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    interpreter = PythonInterpreter()
+    interpreter.sqrt_function_name = NotImplemented
+
+    expected_code = """
+import math
+def score(input):
+    return math.pow(2.0, 0.5)
+"""
+
+    assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_exp_fallback_expr():
+    expr = ast.ExpExpr(ast.NumVal(2.0))
+
+    interpreter = PythonInterpreter()
+    interpreter.exponent_function_name = NotImplemented
+
+    expected_code = """
+import math
+def score(input):
+    return math.pow(2.718281828459045, 2.0)
+"""
+
+    assert_code_equal(interpreter.interpret(expr), expected_code)
