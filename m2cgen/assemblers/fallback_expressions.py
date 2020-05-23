@@ -5,6 +5,8 @@ These AST-based implementations are used as fallbacks in case
 when the target language lacks native support for respective functions
 provided in this module.
 """
+import math
+
 from m2cgen import ast
 from m2cgen.assemblers import utils
 
@@ -39,7 +41,7 @@ def sqrt(expr, to_reuse=False):
 
 def exp(expr, to_reuse=False):
     return ast.PowExpr(
-        base_expr=ast.NumVal(2.71828182845904523536028747135),
+        base_expr=ast.NumVal(math.e),
         exp_expr=expr,
         to_reuse=to_reuse)
 
