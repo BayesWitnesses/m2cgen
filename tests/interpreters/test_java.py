@@ -290,7 +290,6 @@ def test_abs_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return Math.abs(-1.0);
     }
