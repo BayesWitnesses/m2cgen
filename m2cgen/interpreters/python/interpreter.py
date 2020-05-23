@@ -41,9 +41,9 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
         return self._cg.finalize_and_get_generated_code()
 
     def interpret_abs_expr(self, expr, **kwargs):
-        result = super().interpret_abs_expr(expr, **kwargs)
-        self.with_math_module = False
-        return result
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.abs_function_name, nested_result)
 
     def interpret_bin_vector_expr(self, expr, **kwargs):
         self.with_linear_algebra = True
