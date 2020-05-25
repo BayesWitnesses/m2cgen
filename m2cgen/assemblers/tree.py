@@ -54,6 +54,6 @@ class TreeModelAssembler(ModelAssembler):
         # sklearn's trees internally work with float32 numbers, so in order
         # to have consistent results across all supported languages, we convert
         # all thresholds into float32.
-        threshold = threshold.astype(np.float32)
+        threshold_num_val = ast.NumVal(threshold, dtype=np.float32)
 
-        return utils.lte(ast.FeatureRef(feature_idx), ast.NumVal(threshold))
+        return utils.lte(ast.FeatureRef(feature_idx), threshold_num_val)
