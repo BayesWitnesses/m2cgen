@@ -22,6 +22,7 @@ class RInterpreter(ImperativeToCodeInterpreter,
     ast_size_check_frequency = 2
     ast_size_per_subroutine_threshold = 200
 
+    abs_function_name = "abs"
     exponent_function_name = "exp"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
