@@ -153,14 +153,17 @@ def test_bin_vector_expr():
     expr = ast.BinVectorExpr(
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
-        ast.BinNumOpType.MUL)
+        ast.BinNumOpType.ADD)
 
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+def add_vectors(v1, v2):
+    return [sum(i) for i in zip(v1, v2)]
+def mul_vector_number(v1, num):
+    return [i * num for i in v1]
 def score(input):
-    return (np.asarray([1, 2])) * (np.asarray([3, 4]))
+    return add_vectors([1, 2], [3, 4])
     """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -175,9 +178,12 @@ def test_bin_vector_num_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+def add_vectors(v1, v2):
+    return [sum(i) for i in zip(v1, v2)]
+def mul_vector_number(v1, num):
+    return [i * num for i in v1]
 def score(input):
-    return (np.asarray([1, 2])) * (1)
+    return mul_vector_number([1, 2], 1)
     """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -327,6 +333,19 @@ result = score(None)
     exec(result_code, scope)
 
     assert scope["result"] == 121
+
+
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+def score(input):
+    return abs(-1.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():

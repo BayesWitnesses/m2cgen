@@ -16,6 +16,7 @@ class HaskellInterpreter(ToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "abs"
     exponent_function_name = "exp"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"

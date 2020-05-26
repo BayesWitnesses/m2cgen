@@ -24,6 +24,7 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "Math.abs"
     exponent_function_name = "Math.exp"
     power_function_name = "Math.pow"
     sqrt_function_name = "Math.sqrt"

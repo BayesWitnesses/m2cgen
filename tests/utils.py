@@ -175,7 +175,7 @@ def cmp_exprs(left, right):
 
 
 def assert_code_equal(actual, expected):
-    actual.strip() == expected.strip()
+    assert actual.strip() == expected.strip()
 
 
 def assert_code_equal_any_of(actual, *expected):

@@ -17,6 +17,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "MulVectorNumber",
     }
 
+    abs_function_name = "Math.Abs"
     exponent_function_name = "Math.Exp"
     tanh_function_name = "Tanh"
 
@@ -67,13 +68,6 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="^")
-
-    def interpret_sqrt_expr(self, expr, **kwargs):
-        return self.interpret_pow_expr(
-            ast.PowExpr(base_expr=expr.expr,
-                        exp_expr=ast.NumVal(0.5),
-                        to_reuse=expr.to_reuse),
-            **kwargs)
 
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True

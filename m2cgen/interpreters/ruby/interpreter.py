@@ -17,6 +17,7 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
+    abs_function_name = "abs"
     exponent_function_name = "Math.exp"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
@@ -53,6 +54,12 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
                 args=[self._do_interpret(expr.right, **kwargs)])
         else:
             return super().interpret_bin_num_expr(expr, **kwargs)
+
+    def interpret_abs_expr(self, expr, **kwargs):
+        return self._cg.method_invocation(
+            method_name=self.abs_function_name,
+            obj=self._do_interpret(expr.expr, **kwargs),
+            args=[])
 
     def interpret_pow_expr(self, expr, **kwargs):
         base_result = self._do_interpret(expr.base_expr, **kwargs)
