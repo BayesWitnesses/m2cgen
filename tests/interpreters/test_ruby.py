@@ -300,7 +300,7 @@ def log1p(x)
         return Float::NAN
     end
     x_abs = x.abs
-    if x_abs < 0.5 *  Float::EPSILON
+    if x_abs < 0.5 * Float::EPSILON
         return x
     end
     if (x > 0.0 && x < 1e-8) || (x > -1e-9 && x < 0.0)

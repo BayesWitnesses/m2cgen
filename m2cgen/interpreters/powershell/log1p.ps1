@@ -38,7 +38,7 @@ function Log1p([double] $x) {
 }
 function Chebyshev-Broucke([double] $x, [double[]] $coeffs) {
     [double] $b2 = [double] $b1 = [double] $b0 = 0.0
-    $x2 = $x * 2
+    [double] $x2 = $x * 2
     for ([int] $i = $coeffs.Length - 1; $i -ge 0; --$i) {
         $b2 = $b1
         $b1 = $b0
