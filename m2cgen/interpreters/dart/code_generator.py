@@ -27,6 +27,10 @@ class DartCodeGenerator(CLikeCodeGenerator):
         yield
         self.add_block_termination()
 
+    def method_invocation(self, method_name, obj, args):
+        return ("(" + str(obj) + ")." + method_name +
+                "(" + ", ".join(map(str, args)) + ")")
+
     def vector_init(self, values):
         return "[" + ", ".join(values) + "]"
 

@@ -17,6 +17,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "MulVectorNumber",
     }
 
+    abs_function_name = "Math.Abs"
     exponent_function_name = "Math.Exp"
     logarithm_function_name = "Math.Log"
     log1p_function_name = "Log1p"

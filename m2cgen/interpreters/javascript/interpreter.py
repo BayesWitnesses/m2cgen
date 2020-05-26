@@ -19,6 +19,7 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "Math.abs"
     exponent_function_name = "Math.exp"
     logarithm_function_name = "Math.log"
     log1p_function_name = "Math.log1p"

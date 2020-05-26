@@ -17,6 +17,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
+    abs_function_name = "fabs"
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"

@@ -379,6 +379,19 @@ double score(List<double> input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    expected_code = """
+double score(List<double> input) {
+    return (-1.0).abs();
+}
+"""
+
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
@@ -430,11 +443,33 @@ double score(List<double> input) {
     return tanh(2.0);
 }
 double tanh(double x) {
-    if (x > 22.0)
+    // Implementation is taken from
+    // https://github.com/golang/go/blob/master/src/math/tanh.go
+    double z;
+    z = x.abs();
+    if (z > 0.440148459655565271479942397125e+2) {
+        if (x < 0) {
+            return -1.0;
+        }
         return 1.0;
-    if (x < -22.0)
-        return -1.0;
-    return ((exp(2*x) - 1)/(exp(2*x) + 1));
+    }
+    if (z >= 0.625) {
+        z = 1 - 2 / (exp(2 * z) + 1);
+        if (x < 0) {
+            z = -z;
+        }
+        return z;
+    }
+    if (x == 0) {
+        return 0.0;
+    }
+    double s;
+    s = x * x;
+    z = x + x * s
+        * ((-0.964399179425052238628e+0 * s + -0.992877231001918586564e+2)
+        * s + -0.161468768441708447952e+4) / (((s + 0.112811678491632931402e+3)
+        * s + 0.223548839060100448583e+4) * s + 0.484406305325125486048e+4);
+    return z;
 }
 """
     interpreter = DartInterpreter()

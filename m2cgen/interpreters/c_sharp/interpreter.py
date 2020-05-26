@@ -18,6 +18,7 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "MulVectorNumber",
     }
 
+    abs_function_name = "Abs"
     exponent_function_name = "Exp"
     logarithm_function_name = "Log"
     log1p_function_name = "Log1p"

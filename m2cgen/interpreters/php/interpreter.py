@@ -17,6 +17,7 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "abs"
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"

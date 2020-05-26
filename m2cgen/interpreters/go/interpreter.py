@@ -16,6 +16,7 @@ class GoInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "math.Abs"
     exponent_function_name = "math.Exp"
     logarithm_function_name = "math.Log"
     log1p_function_name = "math.Log1p"

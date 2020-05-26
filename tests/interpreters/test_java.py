@@ -13,7 +13,6 @@ def test_if_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         double var0;
         if ((1) == (input[0])) {
@@ -40,7 +39,6 @@ def test_bin_num_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return ((input[0]) / (-2)) * (2);
     }
@@ -67,7 +65,6 @@ def test_dependable_condition():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         double var0;
         double var1;
@@ -109,7 +106,6 @@ def test_nested_condition():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         double var0;
         double var1;
@@ -148,9 +144,7 @@ def test_package_name():
 
     expected_code = """
 package foo.bar;
-
 public class Model {
-
     public static double score(double[] input) {
         return 1;
     }
@@ -167,7 +161,6 @@ def test_ignores_subroutine_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return (input[0]) * ((1) + (2));
     }
@@ -182,7 +175,6 @@ def test_raw_array():
 
     expected_code = """
 public class Model {
-
     public static double[] score(double[] input) {
         return new double[] {3, 4};
     }
@@ -203,7 +195,6 @@ def test_multi_output():
 
     expected_code = """
 public class Model {
-
     public static double[] score(double[] input) {
         double[] var0;
         if ((1) == (1)) {
@@ -229,7 +220,6 @@ def test_bin_vector_expr():
 
     expected_code = """
 public class Model {
-
     public static double[] score(double[] input) {
         return addVectors(new double[] {1, 2}, new double[] {3, 4});
     }
@@ -261,7 +251,6 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 public class Model {
-
     public static double[] score(double[] input) {
         return mulVectorNumber(new double[] {1, 2}, 1);
     }
@@ -283,6 +272,21 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.abs(-1.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
@@ -290,7 +294,6 @@ def test_exp_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return Math.exp(1.0);
     }
@@ -306,7 +309,6 @@ def test_pow_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return Math.pow(2.0, 3.0);
     }
@@ -322,7 +324,6 @@ def test_sqrt_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return Math.sqrt(2.0);
     }
@@ -338,7 +339,6 @@ def test_tanh_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return Math.tanh(2.0);
     }
@@ -385,7 +385,6 @@ def test_reused_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         double var0;
         var0 = Math.exp(1.0);
@@ -407,7 +406,6 @@ def test_depth_threshold_with_bin_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         return (1) + ((1) + (subroutine0(input)));
     }
@@ -434,7 +432,6 @@ def test_depth_threshold_without_bin_expr():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         double var0;
         if ((1) == (1)) {
@@ -480,7 +477,6 @@ def test_deep_mixed_exprs_not_reaching_threshold():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         double var0;
         if (((1) + ((1) + (1))) == (1)) {
@@ -526,7 +522,6 @@ def test_deep_mixed_exprs_exceeding_threshold():
 
     expected_code = """
 public class Model {
-
     public static double score(double[] input) {
         double var0;
         if (((1) + ((1) + (subroutine0(input)))) == (1)) {

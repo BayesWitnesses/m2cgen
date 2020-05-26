@@ -21,6 +21,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
+    abs_function_name = "abs"
     exponent_function_name = "math.exp"
     logarithm_function_name = "math.log"
     log1p_function_name = "math.log1p"
@@ -53,3 +54,8 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
             self._cg.add_dependency("math")
 
         return self._cg.finalize_and_get_generated_code()
+
+    def interpret_abs_expr(self, expr, **kwargs):
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.abs_function_name, nested_result)

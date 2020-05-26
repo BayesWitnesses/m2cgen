@@ -18,6 +18,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "Mul-Vector-Number",
     }
 
+    abs_function_name = "[math]::Abs"
     exponent_function_name = "[math]::Exp"
     logarithm_function_name = "[math]::Log"
     log1p_function_name = "Log1p"
@@ -56,6 +57,11 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()
+
+    def interpret_abs_expr(self, expr, **kwargs):
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.math_function_invocation(
+            self.abs_function_name, nested_result)
 
     def interpret_exp_expr(self, expr, **kwargs):
         nested_result = self._do_interpret(expr.expr, **kwargs)
