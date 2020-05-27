@@ -1,4 +1,5 @@
 import json
+import math
 import numpy as np
 
 from m2cgen import ast
@@ -73,7 +74,7 @@ class BaseBoostingAssembler(ModelAssembler):
         # return -logf(1.0f / base_score - 1.0f);
         base_score = 0
         if self._base_score != 0:
-            base_score = -np.log(1.0 / self._base_score - 1.0)
+            base_score = -math.log(1.0 / self._base_score - 1.0)
 
         expr = self._assemble_single_output(
             estimator_params, base_score=base_score)
