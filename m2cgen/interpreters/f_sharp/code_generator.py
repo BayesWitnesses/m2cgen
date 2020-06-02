@@ -4,23 +4,17 @@ from m2cgen.ast import CompOpType
 from m2cgen.interpreters.code_generator import BaseCodeGenerator, CodeTemplate
 
 
-class HaskellCodeGenerator(BaseCodeGenerator):
+class FSharpCodeGenerator(BaseCodeGenerator):
     tpl_num_value = CodeTemplate("{value}")
     tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
-    tpl_module_definition = CodeTemplate("module {module_name} where")
+    tpl_array_index_access = CodeTemplate("{array_name}.[{index}]")
 
     def reset_state(self):
         super().reset_state()
         self._func_idx = 0
 
-    def array_index_access(self, array_name, index):
-        return self.tpl_infix_expression(
-            left=array_name, op="!!", right=index)
-
     def add_if_statement(self, if_def):
-        self.add_code_line("if ({})".format(if_def))
-        self.increase_indent()
-        self.add_code_line("then")
+        self.add_code_line("if ({}) then".format(if_def))
         self.increase_indent()
 
     def add_else_statement(self):
@@ -30,7 +24,6 @@ class HaskellCodeGenerator(BaseCodeGenerator):
 
     def add_if_termination(self):
         self.decrease_indent()
-        self.decrease_indent()
 
     def get_func_name(self):
         func_name = "func" + str(self._func_idx)
@@ -38,7 +31,7 @@ class HaskellCodeGenerator(BaseCodeGenerator):
         return func_name
 
     def add_function(self, function_name, function_body):
-        self.add_code_line("{} =".format(function_name))
+        self.add_code_line("let {} =".format(function_name))
         self.increase_indent()
         self.add_code_lines(function_body)
         self.decrease_indent()
@@ -47,31 +40,28 @@ class HaskellCodeGenerator(BaseCodeGenerator):
         return (function_name + " " +
                 " ".join(map(lambda x: "({})".format(x), args)))
 
-    def add_function_def(self, name, args, is_scalar_output):
-        signature = name + " :: "
-        signature += " -> ".join(
-            ["[Double]" if is_vector else "Double"
-             for is_vector, _ in [*args, (not is_scalar_output, None)]])
-        self.add_code_line(signature)
-
-        function_def = name + " "
-        function_def += " ".join([n for _, n in args])
+    def add_function_def(self, name, args):
+        function_def = "let {} ".format(name)
+        function_def += " ".join(
+            ["({0} : double{1})".format(n, " list" if is_vector else "")
+             for is_vector, n in args])
         function_def += " ="
         self.add_code_line(function_def)
-
         self.increase_indent()
 
     @contextlib.contextmanager
-    def function_definition(self, name, args, is_scalar_output):
-        self.add_function_def(name, args, is_scalar_output)
+    def function_definition(self, name, args):
+        self.add_function_def(name, args)
         yield
         self.decrease_indent()
 
     def vector_init(self, values):
-        return "[" + ", ".join(values) + "]"
+        return "[" + "; ".join(values) + "]"
 
     def _comp_op_overwrite(self, op):
-        if op == CompOpType.NOT_EQ:
-            return "/="
+        if op == CompOpType.EQ:
+            return "="
+        elif op == CompOpType.NOT_EQ:
+            return "<>"
         else:
             return op.value

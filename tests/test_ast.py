@@ -76,6 +76,8 @@ def test_count_all_exprs_types():
 
 
 def test_num_val():
-    assert type(ast.NumVal(1).value) == int
+    assert type(ast.NumVal(1).value) == np.float64
     assert type(ast.NumVal(1, dtype=np.float32).value) == np.float32
     assert type(ast.NumVal(1, dtype=np.float64).value) == np.float64
+    assert type(ast.NumVal(1, dtype=np.int8).value) == np.int8
+    assert type(ast.NumVal(1, dtype=int).value) == int

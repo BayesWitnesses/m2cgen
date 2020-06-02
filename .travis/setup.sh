@@ -3,7 +3,7 @@
 set -e
 
 # Install .NET Core SDK.
-if [[ $LANG == *"c_sharp"* ]] || [[ $LANG == *"visual_basic"* ]]; then
+if [[ $LANG == *"c_sharp"* ]] || [[ $LANG == *"f_sharp"* ]] || [[ $LANG == *"visual_basic"* ]]; then
   wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update

@@ -11,10 +11,10 @@ def test_if_expr():
 
     expected_code = """
 def score(input)
-    if (1) == (input[0])
-        var0 = 2
+    if (1.0) == (input[0])
+        var0 = 2.0
     else
-        var0 = 3
+        var0 = 3.0
     end
     var0
 end
@@ -33,7 +33,7 @@ def test_bin_num_expr():
 
     expected_code = """
 def score(input)
-    ((input[0]).fdiv(-2)) * (2)
+    ((input[0]).fdiv(-2.0)) * (2.0)
 end
 """
 
@@ -59,13 +59,13 @@ def test_dependable_condition():
 
     expected_code = """
 def score(input)
-    if (1) == (1)
-        var1 = 1
+    if (1.0) == (1.0)
+        var1 = 1.0
     else
-        var1 = 2
+        var1 = 2.0
     end
-    if ((var1) + (2)) >= ((1).fdiv(2))
-        var0 = 1
+    if ((var1) + (2.0)) >= ((1.0).fdiv(2.0))
+        var0 = 1.0
     else
         var0 = input[0]
     end
@@ -96,24 +96,24 @@ def test_nested_condition():
 
     expected_code = """
 def score(input)
-    if (1) == (1)
-        var1 = 1
+    if (1.0) == (1.0)
+        var1 = 1.0
     else
-        var1 = 2
+        var1 = 2.0
     end
-    if (1) == ((var1) + (2))
-        if (1) == (1)
-            var2 = 1
+    if (1.0) == ((var1) + (2.0))
+        if (1.0) == (1.0)
+            var2 = 1.0
         else
-            var2 = 2
+            var2 = 2.0
         end
-        if (1) == ((var2) + (2))
+        if (1.0) == ((var2) + (2.0))
             var0 = input[2]
         else
-            var0 = 2
+            var0 = 2.0
         end
     else
-        var0 = 2
+        var0 = 2.0
     end
     var0
 end
@@ -128,7 +128,7 @@ def test_raw_array():
 
     expected_code = """
 def score(input)
-    [3, 4]
+    [3.0, 4.0]
 end
 """
 
@@ -147,10 +147,10 @@ def test_multi_output():
 
     expected_code = """
 def score(input)
-    if (1) == (1)
-        var0 = [1, 2]
+    if (1.0) == (1.0)
+        var0 = [1.0, 2.0]
     else
-        var0 = [3, 4]
+        var0 = [3.0, 4.0]
     end
     var0
 end
@@ -174,7 +174,7 @@ def mul_vector_number(v1, num)
     v1.map { |i| i * num }
 end
 def score(input)
-    add_vectors([1, 2], [3, 4])
+    add_vectors([1.0, 2.0], [3.0, 4.0])
 end
 """
 
@@ -196,7 +196,7 @@ def mul_vector_number(v1, num)
     v1.map { |i| i * num }
 end
 def score(input)
-    mul_vector_number([1, 2], 1)
+    mul_vector_number([1.0, 2.0], 1.0)
 end
 """
 

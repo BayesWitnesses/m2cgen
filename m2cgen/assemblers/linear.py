@@ -130,7 +130,7 @@ class StatsmodelsGLMModelAssembler(StatsmodelsLinearModelAssembler):
         return utils.div(ast.NumVal(1.0), ast_to_transform)
 
     def _sqrt_inversed(self, ast_to_transform):
-        return ast.PowExpr(ast_to_transform, ast.NumVal(2))
+        return ast.PowExpr(ast_to_transform, ast.NumVal(2.0))
 
     def _inverse_squared_inversed(self, ast_to_transform):
         return utils.div(ast.NumVal(1.0), ast.SqrtExpr(ast_to_transform))

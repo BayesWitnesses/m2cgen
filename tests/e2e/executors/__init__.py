@@ -11,6 +11,7 @@ from tests.e2e.executors.php import PhpExecutor
 from tests.e2e.executors.dart import DartExecutor
 from tests.e2e.executors.haskell import HaskellExecutor
 from tests.e2e.executors.ruby import RubyExecutor
+from tests.e2e.executors.f_sharp import FSharpExecutor
 
 __all__ = [
     JavaExecutor,
@@ -26,4 +27,5 @@ __all__ = [
     DartExecutor,
     HaskellExecutor,
     RubyExecutor,
+    FSharpExecutor,
 ]

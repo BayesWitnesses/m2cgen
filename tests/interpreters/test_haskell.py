@@ -16,11 +16,11 @@ score input =
     func0
     where
         func0 =
-            if ((1) == ((input) !! (0)))
+            if ((1.0) == ((input) !! (0)))
                 then
-                    2
+                    2.0
                 else
-                    3
+                    3.0
 """
 
     interpreter = HaskellInterpreter()
@@ -38,7 +38,7 @@ def test_bin_num_expr():
 module Model where
 score :: [Double] -> Double
 score input =
-    (((input) !! (0)) / (-2)) * (2)
+    (((input) !! (0)) / (-2.0)) * (2.0)
 """
 
     interpreter = HaskellInterpreter()
@@ -68,15 +68,15 @@ score input =
     func1
     where
         func0 =
-            if ((1) == (1))
+            if ((1.0) == (1.0))
                 then
-                    1
+                    1.0
                 else
-                    2
+                    2.0
         func1 =
-            if (((func0) + (2)) >= ((1) / (2)))
+            if (((func0) + (2.0)) >= ((1.0) / (2.0)))
                 then
-                    1
+                    1.0
                 else
                     (input) !! (0)
 """
@@ -87,17 +87,17 @@ score input =
     func1
     where
         func1 =
-            if (((func0) + (2)) >= ((1) / (2)))
+            if (((func0) + (2.0)) >= ((1.0) / (2.0)))
                 then
-                    1
+                    1.0
                 else
                     (input) !! (0)
         func0 =
-            if ((1) == (1))
+            if ((1.0) == (1.0))
                 then
-                    1
+                    1.0
                 else
-                    2
+                    2.0
 """
 
     interpreter = HaskellInterpreter()
@@ -131,21 +131,21 @@ score input =
     func1
     where
         func0 =
-            if ((1) == (1))
+            if ((1.0) == (1.0))
                 then
-                    1
+                    1.0
                 else
-                    2
+                    2.0
         func1 =
-            if ((1) == ((func0) + (2)))
+            if ((1.0) == ((func0) + (2.0)))
                 then
-                    if ((1) == ((func0) + (2)))
+                    if ((1.0) == ((func0) + (2.0)))
                         then
                             (input) !! (2)
                         else
-                            2
+                            2.0
                 else
-                    2
+                    2.0
 """
     expected_code_2 = """
 module Model where
@@ -154,21 +154,21 @@ score input =
     func1
     where
         func1 =
-            if ((1) == ((func0) + (2)))
+            if ((1.0) == ((func0) + (2.0)))
                 then
-                    if ((1) == ((func0) + (2)))
+                    if ((1.0) == ((func0) + (2.0)))
                         then
                             (input) !! (2)
                         else
-                            2
+                            2.0
                 else
-                    2
+                    2.0
         func0 =
-            if ((1) == (1))
+            if ((1.0) == (1.0))
                 then
-                    1
+                    1.0
                 else
-                    2
+                    2.0
 """
 
     interpreter = HaskellInterpreter()
@@ -185,7 +185,7 @@ def test_raw_array():
 module Model where
 score :: [Double] -> [Double]
 score input =
-    [3, 4]
+    [3.0, 4.0]
 """
 
     interpreter = HaskellInterpreter()
@@ -208,11 +208,11 @@ score input =
     func0
     where
         func0 =
-            if ((1) == (1))
+            if ((1.0) == (1.0))
                 then
-                    [1, 2]
+                    [1.0, 2.0]
                 else
-                    [3, 4]
+                    [3.0, 4.0]
 """
 
     interpreter = HaskellInterpreter()
@@ -233,7 +233,7 @@ mulVectorNumber :: [Double] -> Double -> [Double]
 mulVectorNumber v1 num = [i * num | i <- v1]
 score :: [Double] -> [Double]
 score input =
-    addVectors ([1, 2]) ([3, 4])
+    addVectors ([1.0, 2.0]) ([3.0, 4.0])
 """
 
     interpreter = HaskellInterpreter()
@@ -254,7 +254,7 @@ mulVectorNumber :: [Double] -> Double -> [Double]
 mulVectorNumber v1 num = [i * num | i <- v1]
 score :: [Double] -> [Double]
 score input =
-    mulVectorNumber ([1, 2]) (1)
+    mulVectorNumber ([1.0, 2.0]) (1.0)
 """
 
     interpreter = HaskellInterpreter()

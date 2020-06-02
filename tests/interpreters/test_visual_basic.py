@@ -13,10 +13,10 @@ def test_if_expr():
 Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
-    If (1) = (inputVector(0)) Then
-        var0 = 2
+    If (1.0) = (inputVector(0)) Then
+        var0 = 2.0
     Else
-        var0 = 3
+        var0 = 3.0
     End If
     Score = var0
 End Function
@@ -37,7 +37,7 @@ def test_bin_num_expr():
     expected_code = """
 Module Model
 Function Score(ByRef inputVector() As Double) As Double
-    Score = ((inputVector(0)) / (-2)) * (2)
+    Score = ((inputVector(0)) / (-2.0)) * (2.0)
 End Function
 End Module
 """
@@ -67,13 +67,13 @@ Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
-    If (1) = (1) Then
-        var1 = 1
+    If (1.0) = (1.0) Then
+        var1 = 1.0
     Else
-        var1 = 2
+        var1 = 2.0
     End If
-    If ((var1) + (2)) >= ((1) / (2)) Then
-        var0 = 1
+    If ((var1) + (2.0)) >= ((1.0) / (2.0)) Then
+        var0 = 1.0
     Else
         var0 = inputVector(0)
     End If
@@ -108,25 +108,25 @@ Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
-    If (1) = (1) Then
-        var1 = 1
+    If (1.0) = (1.0) Then
+        var1 = 1.0
     Else
-        var1 = 2
+        var1 = 2.0
     End If
-    If (1) = ((var1) + (2)) Then
+    If (1.0) = ((var1) + (2.0)) Then
         Dim var2 As Double
-        If (1) = (1) Then
-            var2 = 1
+        If (1.0) = (1.0) Then
+            var2 = 1.0
         Else
-            var2 = 2
+            var2 = 2.0
         End If
-        If (1) = ((var2) + (2)) Then
+        If (1.0) = ((var2) + (2.0)) Then
             var0 = inputVector(2)
         Else
-            var0 = 2
+            var0 = 2.0
         End If
     Else
-        var0 = 2
+        var0 = 2.0
     End If
     Score = var0
 End Function
@@ -143,7 +143,7 @@ def test_module_name():
     expected_code = """
 Module Test
 Function Score(ByRef inputVector() As Double) As Double
-    Score = 1
+    Score = 1.0
 End Function
 End Module
 """
@@ -159,8 +159,8 @@ def test_raw_array():
 Module Model
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0(1) As Double
-    var0(0) = 3
-    var0(1) = 4
+    var0(0) = 3.0
+    var0(1) = 4.0
     Score = var0
 End Function
 End Module
@@ -183,15 +183,15 @@ def test_multi_output():
 Module Model
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0() As Double
-    If (1) = (1) Then
+    If (1.0) = (1.0) Then
         Dim var1(1) As Double
-        var1(0) = 1
-        var1(1) = 2
+        var1(0) = 1.0
+        var1(1) = 2.0
         var0 = var1
     Else
         Dim var2(1) As Double
-        var2(0) = 3
-        var2(1) = 4
+        var2(0) = 3.0
+        var2(1) = 4.0
         var0 = var2
     End If
     Score = var0
@@ -239,11 +239,11 @@ Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
 End Function
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0(1) As Double
-    var0(0) = 1
-    var0(1) = 2
+    var0(0) = 1.0
+    var0(1) = 2.0
     Dim var1(1) As Double
-    var1(0) = 3
-    var1(1) = 4
+    var1(0) = 3.0
+    var1(1) = 4.0
     Score = AddVectors(var0, var1)
 End Function
 End Module
@@ -289,9 +289,9 @@ Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
 End Function
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0(1) As Double
-    var0(0) = 1
-    var0(1) = 2
-    Score = MulVectorNumber(var0, 1)
+    var0(0) = 1.0
+    var0(1) = 2.0
+    Score = MulVectorNumber(var0, 1.0)
 End Function
 End Module
 """

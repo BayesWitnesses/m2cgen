@@ -2,6 +2,8 @@ from enum import Enum
 from inspect import getmembers, isclass
 from sys import modules
 
+import numpy as np
+
 
 class Expr:
     output_size = 1
@@ -43,10 +45,8 @@ class NumExpr(Expr):
 
 
 class NumVal(NumExpr):
-    def __init__(self, value, dtype=None):
-        if dtype:
-            value = dtype(value)
-        self.value = value
+    def __init__(self, value, dtype=np.float64):
+        self.value = dtype(value)
 
     def __str__(self):
         return "NumVal(" + str(self.value) + ")"
