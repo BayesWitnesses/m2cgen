@@ -13,6 +13,6 @@ coveralls==2.0.0
 pytest-cov==2.8.1
 
 # Other stuff
-numpy==1.18.2
+numpy==1.18.5
 scipy==1.4.1
 py-mini-racer==0.2.0
