@@ -21,4 +21,5 @@ install:
   - pip install -r requirements-test.txt
 
 script:
+  - export BUILD_DIRECTORY=$TRAVIS_BUILD_DIR
   - bash .travis/test.sh

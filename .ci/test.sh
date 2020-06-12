@@ -2,7 +2,7 @@
 
 set -e
 
-cd $TRAVIS_BUILD_DIR
+cd $BUILD_DIRECTORY
 
 if [[ $TEST == "API" ]]; then
   flake8 .
