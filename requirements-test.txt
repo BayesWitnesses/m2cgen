@@ -10,7 +10,7 @@ flake8==3.7.9
 pytest==5.4.3
 pytest-mock==3.0.0
 coveralls==2.0.0
-pytest-cov==2.8.1
+pytest-cov==2.10.0
 
 # Other stuff
 numpy==1.18.5
