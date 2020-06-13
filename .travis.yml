@@ -14,7 +14,7 @@ env:
   - TEST=E2E LANG="r_lang or dart"
 
 before_install:
-  - bash .travis/setup.sh
+  - bash .ci/setup.sh
 
 install:
   - pip install Cython
@@ -22,4 +22,4 @@ install:
 
 script:
   - export BUILD_DIRECTORY=$TRAVIS_BUILD_DIR
-  - bash .travis/test.sh
+  - bash .ci/test.sh
