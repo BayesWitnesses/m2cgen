@@ -39,7 +39,9 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
         if expr in self._cached_expr_results:
             return self._cached_expr_results[expr].var_name
         result = self._do_interpret(expr, **kwargs)
-        return self._cache_reused_expr(expr, result)
+        var_name = self._cg.add_var_declaration(expr.output_size)
+        self._cg.add_var_assignment(var_name, result, expr.output_size)
+        return var_name
 
 
 class LinearAlgebraMixin(BaseToCodeInterpreter):
