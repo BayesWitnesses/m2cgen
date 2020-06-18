@@ -113,7 +113,7 @@ class ModelTrainer:
 
     @classmethod
     def get_instance(cls, dataset_name, test_fraction=0.02):
-        key = dataset_name + " {}".format(test_fraction)
+        key = f"{dataset_name} {test_fraction}"
         if key not in cls._class_instances:
             cls._class_instances[key] = ModelTrainer(
                 dataset_name, test_fraction)
@@ -153,13 +153,12 @@ def cmp_exprs(left, right):
             comp_res = np.isclose(left, right)
         else:
             comp_res = left == right
-        assert comp_res, str(left) + " != " + str(right)
+        assert comp_res, f"{str(left)} != {str(right)}"
         return True
 
     if isinstance(left, ast.Expr) and isinstance(right, ast.Expr):
         assert isinstance(left, type(right)), (
-            "Expected instance of {}, received {}".format(
-                type(right), type(left)))
+            f"Expected instance of {type(right)}, received {type(left)}")
 
         # Only compare attributes which don't start with __
         attrs_to_compare = filter(
@@ -216,9 +215,10 @@ def tmp_dir():
 
 
 def verify_python_model_is_expected(model_code, input, expected_output):
-    input_str = "[" + ", ".join(map(str, input)) + "]"
-    code = model_code + """
-result = score({})""".format(input_str)
+    input_str = f"[{', '.join(map(str, input))}]"
+    code = f"""
+{model_code}
+result = score({input_str})"""
 
     context = {}
     exec(code, context)
@@ -231,8 +231,9 @@ def predict_from_commandline(exec_args):
                               stderr=subprocess.PIPE)
     stdout, stderr = result.communicate()
     if result.returncode != 0:
-        raise Exception("bad exit code ({}) stderr: {}".format(
-                        result.returncode, stderr.decode("utf-8")))
+        raise Exception(
+            f"Bad exit code ({result.returncode}), "
+            f"stderr:\n{stderr.decode('utf-8')}")
 
     items = stdout.decode("utf-8").strip().split(" ")
 
@@ -261,8 +262,8 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
 
         # We use custom id since pytest for some reason can't show name of
         # the model in the automatic id. Which sucks.
-        ids.append("{} - {} - {}".format(
-            _get_full_model_name(model), executor_mark.name, trainer.name))
+        ids.append(f"{_get_full_model_name(model)} - "
+                   f"{executor_mark.name} - {trainer.name}")
 
         result_params.append(pytest.param(
             model, executor, trainer, marks=[executor_mark, trainer_mark],

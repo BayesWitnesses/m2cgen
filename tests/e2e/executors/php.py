@@ -1,5 +1,4 @@
 import os
-import string
 
 from m2cgen import assemblers, interpreters
 from tests import utils
@@ -7,16 +6,16 @@ from tests.e2e.executors import base
 
 EXECUTOR_CODE_TPL = """
 <?php
-$$inputArray = array();
-for ($$i = 1; $$i < $$argc; ++$$i) {
-    $$inputArray[] = floatval($$argv[$$i]);
-}
+$inputArray = array();
+for ($i = 1; $i < $argc; ++$i) {{
+    $inputArray[] = floatval($argv[$i]);
+}}
 
-require '${model_file}.php';
+require '{model_file}.php';
 
-$$res = score($$inputArray);
+$res = score($inputArray);
 
-${print_code}
+{print_code}
 """
 
 PRINT_SCALAR = """
@@ -44,7 +43,7 @@ class PhpExecutor(base.BaseExecutor):
 
     def predict(self, X):
         file_name = os.path.join(self._resource_tmp_dir,
-                                 "{}.php".format(self.executor_name))
+                                 f"{self.executor_name}.php")
         exec_args = [self._php,
                      "-f",
                      file_name,
@@ -56,15 +55,15 @@ class PhpExecutor(base.BaseExecutor):
             print_code = PRINT_VECTOR
         else:
             print_code = PRINT_SCALAR
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             model_file=self.model_name,
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
         executor_file_name = os.path.join(
-            self._resource_tmp_dir, "{}.php".format(self.executor_name))
+            self._resource_tmp_dir, f"{self.executor_name}.php")
         model_file_name = os.path.join(
-            self._resource_tmp_dir, "{}.php".format(self.model_name))
+            self._resource_tmp_dir, f"{self.model_name}.php")
         with open(executor_file_name, "w") as f:
             f.write(executor_code)
         with open(model_file_name, "w") as f:

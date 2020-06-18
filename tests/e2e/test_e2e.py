@@ -524,7 +524,6 @@ def test_e2e(estimator, executor_cls, model_trainer,
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
             y_pred_executed = executor.predict(X_test[idx])
-            print("expected={}, actual={}".format(y_pred_true[idx],
-                                                  y_pred_executed))
+            print(f"expected={y_pred_true[idx]}, actual={y_pred_executed}")
             res = np.isclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
             assert res if isinstance(res, bool) else res.all()
