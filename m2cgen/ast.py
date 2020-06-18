@@ -310,10 +310,7 @@ class CompExpr(BoolExpr):
         return "CompExpr(" + args + ")"
 
     def __eq__(self, other):
-        return (type(other) is CompExpr and
-                self.left == other.left and
-                self.right == other.right and
-                self.op == other.op)
+        return _eq_bin_exprs(self, other, type(self))
 
     def __hash__(self):
         return hash((self.left, self.right, self.op))
