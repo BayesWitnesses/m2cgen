@@ -195,10 +195,7 @@ class BinNumExpr(NumExpr, BinExpr):
         return "BinNumExpr(" + args + ")"
 
     def __eq__(self, other):
-        return (type(other) is BinNumExpr and
-                self.left == other.left and
-                self.right == other.right and
-                self.op == other.op)
+        return _eq_bin_exprs(self, other, type(self))
 
     def __hash__(self):
         return hash((self.left, self.right, self.op))
@@ -249,10 +246,7 @@ class BinVectorExpr(VectorExpr, BinExpr):
         return "BinVectorExpr(" + args + ")"
 
     def __eq__(self, other):
-        return (type(other) is BinVectorExpr and
-                self.left == other.left and
-                self.right == other.right and
-                self.op == other.op)
+        return _eq_bin_exprs(self, other, type(self))
 
     def __hash__(self):
         return hash((self.left, self.right, self.op))
@@ -274,10 +268,7 @@ class BinVectorNumExpr(VectorExpr, BinExpr):
         return "BinVectorNumExpr(" + args + ")"
 
     def __eq__(self, other):
-        return (type(other) is BinVectorNumExpr and
-                self.left == other.left and
-                self.right == other.right and
-                self.op == other.op)
+        return _eq_bin_exprs(self, other, type(self))
 
     def __hash__(self):
         return hash((self.left, self.right, self.op))
@@ -389,3 +380,11 @@ def count_exprs(expr, exclude_list=None):
 
     expr_type_name = expr_type.__name__
     raise ValueError("Unexpected expression type '{}'".format(expr_type_name))
+
+
+def _eq_bin_exprs(expr_one, expr_two, expected_type):
+    return (type(expr_one) is expected_type and
+            type(expr_two) is expected_type and
+            expr_one.left == expr_two.left and
+            expr_one.right == expr_two.right and
+            expr_one.op == expr_two.op)
