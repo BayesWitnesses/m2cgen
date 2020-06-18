@@ -229,7 +229,7 @@ class VectorVal(VectorExpr):
                 all(i == j for i, j in zip(self.exprs, other.exprs)))
 
     def __hash__(self):
-        return hash(tuple(e for e in self.exprs))
+        return hash(tuple(self.exprs))
 
 
 class BinVectorExpr(VectorExpr, BinExpr):
