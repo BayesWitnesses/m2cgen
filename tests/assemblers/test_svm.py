@@ -294,15 +294,9 @@ def _create_expected_single_output_ast(coef, intercept, kernels_ast):
 
 
 def _rbf_kernel_ast(estimator, sup_vec_value, to_reuse=False):
-    negative_gamma_ast = ast.BinNumExpr(
-        ast.NumVal(0),
-        ast.NumVal(estimator.gamma),
-        ast.BinNumOpType.SUB,
-        to_reuse=True)
-
     return ast.ExpExpr(
         ast.BinNumExpr(
-            negative_gamma_ast,
+            ast.NumVal(-estimator.gamma),
             ast.PowExpr(
                 ast.BinNumExpr(
                     ast.NumVal(sup_vec_value),

@@ -19,8 +19,7 @@ class BaseSVMModelAssembler(ModelAssembler):
 
         gamma = self._get_gamma()
         self._gamma_expr = ast.NumVal(gamma)
-        self._neg_gamma_expr = utils.sub(ast.NumVal(0), ast.NumVal(gamma),
-                                         to_reuse=True)
+        self._neg_gamma_expr = ast.NumVal(-gamma)
 
         self._output_size = self._get_output_size()
 
