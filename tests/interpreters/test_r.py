@@ -295,12 +295,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -312,19 +312,19 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expected_code = """
 score <- function(input) {
     var1 <- subroutine0(input)
-    if (((1) + (var1)) == (1)) {
+    if (((3) + (var1)) == (3)) {
         var0 <- 1
     } else {
         var2 <- subroutine1(input)
-        if (((1) + (var2)) == (1)) {
+        if (((2) + (var2)) == (3)) {
             var0 <- 1
         } else {
             var3 <- subroutine2(input)
-            if (((1) + (var3)) == (1)) {
+            if (((1) + (var3)) == (3)) {
                 var0 <- 1
             } else {
                 var4 <- subroutine3(input)
-                if (((1) + (var4)) == (1)) {
+                if (((0) + (var4)) == (3)) {
                     var0 <- 1
                 } else {
                     var0 <- 1
@@ -335,24 +335,24 @@ score <- function(input) {
     return(var0)
 }
 subroutine0 <- function(input) {
-    var1 <- (1) + (1)
-    var0 <- (1) + (var1)
-    return((1) + (var0))
+    var0 <- (3) + (1)
+    var1 <- (3) + (var0)
+    return((3) + (var1))
 }
 subroutine1 <- function(input) {
-    var1 <- (1) + (1)
-    var0 <- (1) + (var1)
-    return((1) + (var0))
+    var0 <- (2) + (1)
+    var1 <- (2) + (var0)
+    return((2) + (var1))
 }
 subroutine2 <- function(input) {
-    var1 <- (1) + (1)
-    var0 <- (1) + (var1)
-    return((1) + (var0))
+    var0 <- (1) + (1)
+    var1 <- (1) + (var0)
+    return((1) + (var1))
 }
 subroutine3 <- function(input) {
-    var1 <- (1) + (1)
-    var0 <- (1) + (var1)
-    return((1) + (var0))
+    var0 <- (0) + (1)
+    var1 <- (0) + (var0)
+    return((0) + (var1))
 }
 """
 
