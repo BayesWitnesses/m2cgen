@@ -29,6 +29,9 @@ class BaseInterpreter:
         if result is not None:
             return result
 
+        if expr in self._cached_expr_results:
+            return self._cached_expr_results[expr].var_name
+
         handler = self._select_handler(expr)
 
         # Note that the reuse flag passed in the arguments has a higher
@@ -39,9 +42,6 @@ class BaseInterpreter:
         expr_to_reuse = to_reuse if to_reuse is not None else expr.to_reuse
         if not expr_to_reuse:
             return handler(expr, **kwargs)
-
-        if expr in self._cached_expr_results:
-            return self._cached_expr_results[expr].var_name
 
         result = handler(expr, **kwargs)
         return self._cache_reused_expr(expr, result)
