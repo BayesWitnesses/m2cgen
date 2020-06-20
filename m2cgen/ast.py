@@ -23,6 +23,12 @@ class IdExpr(Expr):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "IdExpr(" + args + ")"
 
+    def __eq__(self, other):
+        return type(other) is IdExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
 
 class FeatureRef(Expr):
     def __init__(self, index):
@@ -30,6 +36,12 @@ class FeatureRef(Expr):
 
     def __str__(self):
         return "FeatureRef(" + str(self.index) + ")"
+
+    def __eq__(self, other):
+        return type(other) is FeatureRef and self.index == other.index
+
+    def __hash__(self):
+        return hash(self.index)
 
 
 class BinExpr(Expr):
@@ -51,6 +63,12 @@ class NumVal(NumExpr):
     def __str__(self):
         return "NumVal(" + str(self.value) + ")"
 
+    def __eq__(self, other):
+        return type(other) is NumVal and self.value == other.value
+
+    def __hash__(self):
+        return hash(self.value)
+
 
 class AbsExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
@@ -63,6 +81,12 @@ class AbsExpr(NumExpr):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "AbsExpr(" + args + ")"
 
+    def __eq__(self, other):
+        return type(other) is AbsExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
 
 class ExpExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
@@ -74,6 +98,12 @@ class ExpExpr(NumExpr):
     def __str__(self):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "ExpExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return type(other) is ExpExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
 
 
 class LogExpr(NumExpr):
@@ -111,6 +141,12 @@ class SqrtExpr(NumExpr):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "SqrtExpr(" + args + ")"
 
+    def __eq__(self, other):
+        return type(other) is SqrtExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
 
 class TanhExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
@@ -122,6 +158,12 @@ class TanhExpr(NumExpr):
     def __str__(self):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "TanhExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return type(other) is TanhExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
 
 
 class PowExpr(NumExpr):
@@ -140,6 +182,14 @@ class PowExpr(NumExpr):
             "to_reuse=" + str(self.to_reuse)
         ])
         return "PowExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return (type(other) is PowExpr and
+                self.base_expr == other.base_expr and
+                self.exp_expr == other.exp_expr)
+
+    def __hash__(self):
+        return hash((self.base_expr, self.exp_expr))
 
 
 class BinNumOpType(Enum):
@@ -168,6 +218,12 @@ class BinNumExpr(NumExpr, BinExpr):
         ])
         return "BinNumExpr(" + args + ")"
 
+    def __eq__(self, other):
+        return _eq_bin_exprs(self, other, type(self))
+
+    def __hash__(self):
+        return hash((self.left, self.right, self.op))
+
 
 # Vector Expressions.
 
@@ -188,6 +244,14 @@ class VectorVal(VectorExpr):
         args = ",".join([str(e) for e in self.exprs])
         return "VectorVal([" + args + "])"
 
+    def __eq__(self, other):
+        return (type(other) is VectorVal and
+                self.output_size == other.output_size and
+                all(i == j for i, j in zip(self.exprs, other.exprs)))
+
+    def __hash__(self):
+        return hash(tuple(self.exprs))
+
 
 class BinVectorExpr(VectorExpr, BinExpr):
 
@@ -205,6 +269,12 @@ class BinVectorExpr(VectorExpr, BinExpr):
         args = ",".join([str(self.left), str(self.right), self.op.name])
         return "BinVectorExpr(" + args + ")"
 
+    def __eq__(self, other):
+        return _eq_bin_exprs(self, other, type(self))
+
+    def __hash__(self):
+        return hash((self.left, self.right, self.op))
+
 
 class BinVectorNumExpr(VectorExpr, BinExpr):
 
@@ -220,6 +290,12 @@ class BinVectorNumExpr(VectorExpr, BinExpr):
     def __str__(self):
         args = ",".join([str(self.left), str(self.right), self.op.name])
         return "BinVectorNumExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return _eq_bin_exprs(self, other, type(self))
+
+    def __hash__(self):
+        return hash((self.left, self.right, self.op))
 
 
 # Boolean Expressions.
@@ -257,6 +333,12 @@ class CompExpr(BoolExpr):
         args = ",".join([str(self.left), str(self.right), self.op.name])
         return "CompExpr(" + args + ")"
 
+    def __eq__(self, other):
+        return _eq_bin_exprs(self, other, type(self))
+
+    def __hash__(self):
+        return hash((self.left, self.right, self.op))
+
 
 # Control Expressions.
 
@@ -277,6 +359,15 @@ class IfExpr(CtrlExpr):
     def __str__(self):
         args = ",".join([str(self.test), str(self.body), str(self.orelse)])
         return "IfExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return (type(other) is IfExpr and
+                self.test == other.test and
+                self.body == other.body and
+                self.orelse == other.orelse)
+
+    def __hash__(self):
+        return hash((self.test, self.body, self.orelse))
 
 
 TOTAL_NUMBER_OF_EXPRESSIONS = len(getmembers(modules[__name__], isclass))
@@ -311,3 +402,11 @@ def count_exprs(expr, exclude_list=None):
 
     expr_type_name = expr_type.__name__
     raise ValueError("Unexpected expression type '{}'".format(expr_type_name))
+
+
+def _eq_bin_exprs(expr_one, expr_two, expected_type):
+    return (type(expr_one) is expected_type and
+            type(expr_two) is expected_type and
+            expr_one.left == expr_two.left and
+            expr_one.right == expr_two.right and
+            expr_one.op == expr_two.op)

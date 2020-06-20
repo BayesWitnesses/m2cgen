@@ -281,12 +281,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -294,20 +294,20 @@ def test_deep_mixed_exprs_exceeding_threshold():
 
     expected_code = """
 def score(input):
-    var1 = (1) + ((1) + (1))
-    if ((1) + ((1) + (var1))) == (1):
+    var1 = (3) + ((3) + (1))
+    if ((3) + ((3) + (var1))) == (3):
         var0 = 1
     else:
-        var2 = (1) + ((1) + (1))
-        if ((1) + ((1) + (var2))) == (1):
+        var2 = (2) + ((2) + (1))
+        if ((2) + ((2) + (var2))) == (3):
             var0 = 1
         else:
             var3 = (1) + ((1) + (1))
-            if ((1) + ((1) + (var3))) == (1):
+            if ((1) + ((1) + (var3))) == (3):
                 var0 = 1
             else:
-                var4 = (1) + ((1) + (1))
-                if ((1) + ((1) + (var4))) == (1):
+                var4 = (0) + ((0) + (1))
+                if ((0) + ((0) + (var4))) == (3):
                     var0 = 1
                 else:
                     var0 = 1
