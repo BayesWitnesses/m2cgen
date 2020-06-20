@@ -117,6 +117,12 @@ class LogExpr(NumExpr):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "LogExpr(" + args + ")"
 
+    def __eq__(self, other):
+        return type(other) is LogExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
 
 class Log1pExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
@@ -128,6 +134,12 @@ class Log1pExpr(NumExpr):
     def __str__(self):
         args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
         return "Log1pExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return type(other) is Log1pExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
 
 
 class SqrtExpr(NumExpr):
