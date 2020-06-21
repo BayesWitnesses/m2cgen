@@ -77,7 +77,7 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
 def test_count_all_exprs_types():
     assert ast.count_exprs(EXPR_WITH_ALL_EXPRS) == 31
 
-    
+
 def test_exprs_equality():
     expr_copy = deepcopy(EXPR_WITH_ALL_EXPRS)
     assert EXPR_WITH_ALL_EXPRS == expr_copy
