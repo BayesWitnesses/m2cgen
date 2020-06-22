@@ -19,6 +19,8 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "abs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     power_function_name = "pow"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"

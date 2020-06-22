@@ -26,6 +26,8 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "Math.abs"
     exponent_function_name = "Math.exp"
+    logarithm_function_name = "Math.log"
+    log1p_function_name = "Math.log1p"
     power_function_name = "Math.pow"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
