@@ -16,7 +16,10 @@ class GoInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "math.Abs"
     exponent_function_name = "math.Exp"
+    logarithm_function_name = "math.Log"
+    log1p_function_name = "math.Log1p"
     power_function_name = "math.Pow"
     sqrt_function_name = "math.Sqrt"
     tanh_function_name = "math.Tanh"
@@ -50,4 +53,4 @@ class GoInterpreter(ImperativeToCodeInterpreter,
         if self.with_math_module:
             self._cg.add_dependency("math")
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()

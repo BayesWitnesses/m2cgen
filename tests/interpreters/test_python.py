@@ -153,14 +153,17 @@ def test_bin_vector_expr():
     expr = ast.BinVectorExpr(
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
-        ast.BinNumOpType.MUL)
+        ast.BinNumOpType.ADD)
 
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+def add_vectors(v1, v2):
+    return [sum(i) for i in zip(v1, v2)]
+def mul_vector_number(v1, num):
+    return [i * num for i in v1]
 def score(input):
-    return (np.asarray([1, 2])) * (np.asarray([3, 4]))
+    return add_vectors([1, 2], [3, 4])
     """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -175,9 +178,12 @@ def test_bin_vector_num_expr():
     interpreter = interpreters.PythonInterpreter()
 
     expected_code = """
-import numpy as np
+def add_vectors(v1, v2):
+    return [sum(i) for i in zip(v1, v2)]
+def mul_vector_number(v1, num):
+    return [i * num for i in v1]
 def score(input):
-    return (np.asarray([1, 2])) * (1)
+    return mul_vector_number([1, 2], 1)
     """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -275,12 +281,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -288,20 +294,20 @@ def test_deep_mixed_exprs_exceeding_threshold():
 
     expected_code = """
 def score(input):
-    var1 = (1) + ((1) + (1))
-    if ((1) + ((1) + (var1))) == (1):
+    var1 = (3) + ((3) + (1))
+    if ((3) + ((3) + (var1))) == (3):
         var0 = 1
     else:
-        var2 = (1) + ((1) + (1))
-        if ((1) + ((1) + (var2))) == (1):
+        var2 = (2) + ((2) + (1))
+        if ((2) + ((2) + (var2))) == (3):
             var0 = 1
         else:
             var3 = (1) + ((1) + (1))
-            if ((1) + ((1) + (var3))) == (1):
+            if ((1) + ((1) + (var3))) == (3):
                 var0 = 1
             else:
-                var4 = (1) + ((1) + (1))
-                if ((1) + ((1) + (var4))) == (1):
+                var4 = (0) + ((0) + (1))
+                if ((0) + ((0) + (var4))) == (3):
                     var0 = 1
                 else:
                     var0 = 1
@@ -327,6 +333,19 @@ result = score(None)
     exec(result_code, scope)
 
     assert scope["result"] == 121
+
+
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+def score(input):
+    return abs(-1.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
@@ -380,6 +399,34 @@ def test_tanh_expr():
 import math
 def score(input):
     return math.tanh(2.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import math
+def score(input):
+    return math.log(2.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import math
+def score(input):
+    return math.log1p(2.0)
     """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

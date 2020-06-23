@@ -17,7 +17,10 @@ class CInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
+    abs_function_name = "fabs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     power_function_name = "pow"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
@@ -63,7 +66,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
         if self.with_math_module:
             self._cg.add_dependency("<math.h>")
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()
 
     # Both methods supporting linear algebra do several things:
     #

@@ -1,4 +1,5 @@
 import json
+import math
 import numpy as np
 
 from m2cgen import ast
@@ -10,6 +11,7 @@ from m2cgen.assemblers.linear import _linear_to_ast
 class BaseBoostingAssembler(ModelAssembler):
 
     classifier_names = {}
+    multiclass_params_seq_len = 1
 
     def __init__(self, model, estimator_params, base_score=0):
         super().__init__(model)
@@ -54,8 +56,10 @@ class BaseBoostingAssembler(ModelAssembler):
     def _assemble_multi_class_output(self, estimator_params):
         # Multi-class output is calculated based on discussion in
         # https://github.com/dmlc/xgboost/issues/1746#issuecomment-295962863
+        # and the enhancement to support boosted forests in XGBoost.
         splits = _split_estimator_params_by_classes(
-            estimator_params, self._output_size)
+            estimator_params, self._output_size,
+            self.multiclass_params_seq_len)
 
         base_score = self._base_score
         exprs = [
@@ -72,7 +76,7 @@ class BaseBoostingAssembler(ModelAssembler):
         # return -logf(1.0f / base_score - 1.0f);
         base_score = 0
         if self._base_score != 0:
-            base_score = -np.log(1.0 / self._base_score - 1.0)
+            base_score = -math.log(1.0 / self._base_score - 1.0)
 
         expr = self._assemble_single_output(
             estimator_params, base_score=base_score)
@@ -122,9 +126,8 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
     classifier_names = {"XGBClassifier", "XGBRFClassifier"}
 
     def __init__(self, model):
-        if type(model).__name__ == "XGBRFClassifier" and model.n_classes_ > 2:
-            raise RuntimeError(
-                "Multiclass XGBRFClassifier is not supported yet")
+        self.multiclass_params_seq_len = model.get_params().get(
+            "num_parallel_tree", 1)
         feature_names = model.get_booster().feature_names
         self._feature_name_to_idx = {
             name: idx for idx, name in enumerate(feature_names or [])
@@ -322,7 +325,17 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
             self._assemble_tree(false_child))
 
 
-def _split_estimator_params_by_classes(values, n_classes):
+def _split_estimator_params_by_classes(values, n_classes, params_seq_len):
     # Splits are computed based on a comment
-    # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592.
-    return [values[class_idx::n_classes] for class_idx in range(n_classes)]
+    # https://github.com/dmlc/xgboost/issues/1746#issuecomment-267400592
+    # and the enhancement to support boosted forests in XGBoost.
+    values_len = len(values)
+    block_len = n_classes * params_seq_len
+    indices = list(range(values_len))
+    indices_by_class = np.array(
+        [[indices[i:i + params_seq_len]
+          for i in range(j, values_len, block_len)]
+         for j in range(0, block_len, params_seq_len)]
+        ).reshape(n_classes, -1)
+    return [[values[idx] for idx in class_idxs]
+            for class_idxs in indices_by_class]

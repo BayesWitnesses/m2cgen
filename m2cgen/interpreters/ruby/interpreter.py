@@ -17,9 +17,14 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mul_vector_number",
     }
 
+    abs_function_name = "abs"
     exponent_function_name = "Math.exp"
+    logarithm_function_name = "Math.log"
+    log1p_function_name = "log1p"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
+
+    with_log1p_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
@@ -42,7 +47,12 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.rb")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
-        return self._cg.code
+        if self.with_log1p_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "log1p.rb")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        return self._cg.finalize_and_get_generated_code()
 
     def interpret_bin_num_expr(self, expr, **kwargs):
         if expr.op == ast.BinNumOpType.DIV:
@@ -54,8 +64,18 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
         else:
             return super().interpret_bin_num_expr(expr, **kwargs)
 
+    def interpret_abs_expr(self, expr, **kwargs):
+        return self._cg.method_invocation(
+            method_name=self.abs_function_name,
+            obj=self._do_interpret(expr.expr, **kwargs),
+            args=[])
+
     def interpret_pow_expr(self, expr, **kwargs):
         base_result = self._do_interpret(expr.base_expr, **kwargs)
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="**")
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)

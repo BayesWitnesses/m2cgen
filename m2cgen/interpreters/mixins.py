@@ -36,8 +36,10 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
 
     # Default implementation. Simply adds new variable.
     def bin_depth_threshold_hook(self, expr, **kwargs):
-        var_name = self._cg.add_var_declaration(expr.output_size)
+        if expr in self._cached_expr_results:
+            return self._cached_expr_results[expr].var_name
         result = self._do_interpret(expr, **kwargs)
+        var_name = self._cg.add_var_declaration(expr.output_size)
         self._cg.add_var_assignment(var_name, result, expr.output_size)
         return var_name
 
@@ -187,7 +189,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
             last_result = self._do_interpret(subroutine.expr)
             self._cg.add_return_statement(last_result)
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()
 
     def _get_subroutine_name(self):
         subroutine_name = "subroutine" + str(self._subroutine_idx)

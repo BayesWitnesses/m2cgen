@@ -215,6 +215,20 @@ func score(input []float64) []float64 {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    interpreter = interpreters.GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return math.Abs(-1.0)
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
@@ -266,6 +280,34 @@ def test_tanh_expr():
 import "math"
 func score(input []float64) float64 {
     return math.Tanh(2.0)
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return math.Log(2.0)
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return math.Log1p(2.0)
 }"""
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

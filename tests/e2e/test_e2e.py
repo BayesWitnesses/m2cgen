@@ -110,6 +110,10 @@ XGBOOST_PARAMS_LINEAR = dict(base_score=0.6, n_estimators=10,
                              random_state=RANDOM_SEED)
 XGBOOST_PARAMS_RF = dict(base_score=0.6, n_estimators=10,
                          random_state=RANDOM_SEED)
+XGBOOST_PARAMS_BOOSTED_RF = dict(base_score=0.6, n_estimators=5,
+                                 num_parallel_tree=3, subsample=0.8,
+                                 colsample_bynode=0.8, learning_rate=1.0,
+                                 random_state=RANDOM_SEED)
 XGBOOST_PARAMS_LARGE = dict(base_score=0.6, n_estimators=100, max_depth=12,
                             random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS = dict(n_estimators=10, random_state=RANDOM_SEED)
@@ -200,7 +204,14 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
 
         # XGBoost (RF)
         regression(xgboost.XGBRFRegressor(**XGBOOST_PARAMS_RF)),
+        classification(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_RF)),
         classification_binary(xgboost.XGBRFClassifier(**XGBOOST_PARAMS_RF)),
+
+        # XGBoost (Boosted Random Forests)
+        regression(xgboost.XGBRegressor(**XGBOOST_PARAMS_BOOSTED_RF)),
+        classification(xgboost.XGBClassifier(**XGBOOST_PARAMS_BOOSTED_RF)),
+        classification_binary(
+            xgboost.XGBClassifier(**XGBOOST_PARAMS_BOOSTED_RF)),
 
         # XGBoost (Large Trees)
         regression_random(

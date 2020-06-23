@@ -29,6 +29,9 @@ class BaseInterpreter:
         if result is not None:
             return result
 
+        if expr in self._cached_expr_results:
+            return self._cached_expr_results[expr].var_name
+
         handler = self._select_handler(expr)
 
         # Note that the reuse flag passed in the arguments has a higher
@@ -39,9 +42,6 @@ class BaseInterpreter:
         expr_to_reuse = to_reuse if to_reuse is not None else expr.to_reuse
         if not expr_to_reuse:
             return handler(expr, **kwargs)
-
-        if expr in self._cached_expr_results:
-            return self._cached_expr_results[expr].var_name
 
         result = handler(expr, **kwargs)
         return self._cache_reused_expr(expr, result)
@@ -81,7 +81,10 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     about AST.
     """
 
+    abs_function_name = NotImplemented
     exponent_function_name = NotImplemented
+    logarithm_function_name = NotImplemented
+    log1p_function_name = NotImplemented
     power_function_name = NotImplemented
     sqrt_function_name = NotImplemented
     tanh_function_name = NotImplemented
@@ -120,18 +123,48 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
         return self._cg.vector_init(nested)
 
-    def interpret_exp_expr(self, expr, **kwargs):
-        if self.exponent_function_name is NotImplemented:
-            raise NotImplementedError("Exponent function is not provided")
+    def interpret_abs_expr(self, expr, **kwargs):
         self.with_math_module = True
+        if self.abs_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.abs(expr.expr), **kwargs)
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.abs_function_name, nested_result)
+
+    def interpret_exp_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        if self.exponent_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.exp(expr.expr, to_reuse=expr.to_reuse),
+                **kwargs)
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.exponent_function_name, nested_result)
 
-    def interpret_sqrt_expr(self, expr, **kwargs):
-        if self.sqrt_function_name is NotImplemented:
-            raise NotImplementedError("Sqrt function is not provided")
+    def interpret_log_expr(self, expr, **kwargs):
+        if self.logarithm_function_name is NotImplemented:
+            raise NotImplementedError("Logarithm function is not provided")
         self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.logarithm_function_name, nested_result)
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        if self.log1p_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.log1p(expr.expr), **kwargs)
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.log1p_function_name, nested_result)
+
+    def interpret_sqrt_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        if self.sqrt_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.sqrt(expr.expr, to_reuse=expr.to_reuse),
+                **kwargs)
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.sqrt_function_name, nested_result)

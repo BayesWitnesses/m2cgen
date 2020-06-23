@@ -144,8 +144,8 @@ def cmp_exprs(left, right):
         left_exprs = left.exprs
         right_exprs = right.exprs
         assert len(left_exprs) == len(right_exprs)
-        for l, r in zip(left_exprs, right_exprs):
-            assert cmp_exprs(l, r)
+        for left_expr, right_expr in zip(left_exprs, right_exprs):
+            assert cmp_exprs(left_expr, right_expr)
         return True
 
     if not isinstance(left, ast.Expr) and not isinstance(right, ast.Expr):
@@ -175,11 +175,7 @@ def cmp_exprs(left, right):
 
 
 def assert_code_equal(actual, expected):
-    actual.strip() == expected.strip()
-
-
-def assert_code_equal_any_of(actual, *expected):
-    assert any(actual.strip() == expect.strip() for expect in expected)
+    assert actual.strip() == expected.strip()
 
 
 get_regression_model_trainer = functools.partial(

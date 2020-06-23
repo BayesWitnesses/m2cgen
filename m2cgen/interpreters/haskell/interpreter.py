@@ -16,9 +16,14 @@ class HaskellInterpreter(ToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "abs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
+
+    with_log1p_expr = False
 
     def __init__(self,  module_name="Model", indent=4, function_name="score",
                  *args, **kwargs):
@@ -49,10 +54,15 @@ class HaskellInterpreter(ToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.hs")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_log1p_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "log1p.hs")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()
 
     def interpret_if_expr(self, expr, if_code_gen=None, **kwargs):
         if if_code_gen is None:
@@ -72,13 +82,18 @@ class HaskellInterpreter(ToCodeInterpreter,
         code_gen.add_if_termination()
 
         if not nested:
-            return self._cache_reused_expr(expr, code_gen.code)
+            return self._cache_reused_expr(
+                expr, code_gen.finalize_and_get_generated_code())
 
     def interpret_pow_expr(self, expr, **kwargs):
         base_result = self._do_interpret(expr.base_expr, **kwargs)
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="**")
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)
 
     # Cached expressions become functions with no arguments, i.e. values
     # which are CAFs. Therefore, they are computed only once.

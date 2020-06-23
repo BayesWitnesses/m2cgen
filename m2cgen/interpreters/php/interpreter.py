@@ -17,7 +17,10 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "abs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     power_function_name = "pow"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
@@ -45,4 +48,4 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
 
         self._cg.prepend_code_line("<?php")
 
-        return self._cg.code
+        return self._cg.finalize_and_get_generated_code()

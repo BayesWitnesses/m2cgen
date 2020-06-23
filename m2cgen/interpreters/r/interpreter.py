@@ -22,7 +22,10 @@ class RInterpreter(ImperativeToCodeInterpreter,
     ast_size_check_frequency = 2
     ast_size_per_subroutine_threshold = 200
 
+    abs_function_name = "abs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
@@ -38,7 +41,7 @@ class RInterpreter(ImperativeToCodeInterpreter,
         self.enqueue_subroutine(self.function_name, expr)
         self.process_subroutine_queue(top_cg)
 
-        return top_cg.code
+        return top_cg.finalize_and_get_generated_code()
 
     def create_code_generator(self):
         return RCodeGenerator(indent=self.indent)

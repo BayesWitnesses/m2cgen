@@ -24,7 +24,10 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "mulVectorNumber",
     }
 
+    abs_function_name = "Math.abs"
     exponent_function_name = "Math.exp"
+    logarithm_function_name = "Math.log"
+    log1p_function_name = "Math.log1p"
     power_function_name = "Math.pow"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
@@ -60,7 +63,7 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
                     os.path.dirname(__file__), "linear_algebra.java")
                 top_cg.add_code_lines(utils.get_file_content(filename))
 
-        return top_cg.code
+        return top_cg.finalize_and_get_generated_code()
 
     # Required by SubroutinesMixin to create new code generator for
     # each subroutine.

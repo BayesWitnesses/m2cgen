@@ -18,10 +18,15 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
         ast.BinNumOpType.MUL: "Mul-Vector-Number",
     }
 
+    abs_function_name = "[math]::Abs"
     exponent_function_name = "[math]::Exp"
+    logarithm_function_name = "[math]::Log"
+    log1p_function_name = "Log1p"
     power_function_name = "[math]::Pow"
     sqrt_function_name = "[math]::Sqrt"
     tanh_function_name = "[math]::Tanh"
+
+    with_log1p_expr = False
 
     def __init__(self, indent=4, function_name="Score", *args, **kwargs):
         self.function_name = function_name
@@ -46,12 +51,31 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.ps1")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
-        return self._cg.code
+        if self.with_log1p_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "log1p.ps1")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
+        return self._cg.finalize_and_get_generated_code()
+
+    def interpret_abs_expr(self, expr, **kwargs):
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.math_function_invocation(
+            self.abs_function_name, nested_result)
 
     def interpret_exp_expr(self, expr, **kwargs):
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.math_function_invocation(
             self.exponent_function_name, nested_result)
+
+    def interpret_log_expr(self, expr, **kwargs):
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.math_function_invocation(
+            self.logarithm_function_name, nested_result)
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)
 
     def interpret_sqrt_expr(self, expr, **kwargs):
         nested_result = self._do_interpret(expr.expr, **kwargs)

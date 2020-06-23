@@ -212,6 +212,20 @@ void score(double * input, double * output) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    return fabs(-1.0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
@@ -263,6 +277,34 @@ def test_tanh_expr():
 #include <math.h>
 double score(double * input) {
     return tanh(2.0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    return log(2.0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    return log1p(2.0);
 }"""
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

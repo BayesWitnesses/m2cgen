@@ -5,8 +5,18 @@ These AST-based implementations are used as fallbacks in case
 when the target language lacks native support for respective functions
 provided in this module.
 """
+import math
+
 from m2cgen import ast
 from m2cgen.assemblers import utils
+
+
+def abs(expr):
+    expr = ast.IdExpr(expr, to_reuse=True)
+    return ast.IfExpr(
+        utils.lt(expr, ast.NumVal(0)),
+        utils.sub(ast.NumVal(0.0), expr),
+        expr)
 
 
 def tanh(expr):
@@ -28,6 +38,32 @@ def tanh(expr):
             utils.lt(expr, ast.NumVal(-44.0)),
             ast.NumVal(-1.0),
             tanh_expr))
+
+
+def sqrt(expr, to_reuse=False):
+    return ast.PowExpr(
+        base_expr=expr,
+        exp_expr=ast.NumVal(0.5),
+        to_reuse=to_reuse)
+
+
+def exp(expr, to_reuse=False):
+    return ast.PowExpr(
+        base_expr=ast.NumVal(math.e),
+        exp_expr=expr,
+        to_reuse=to_reuse)
+
+
+def log1p(expr):
+    # Use trick to compute log1p for small values more accurate
+    # https://www.johndcook.com/blog/2012/07/25/trick-for-computing-log1x/
+    expr = ast.IdExpr(expr, to_reuse=True)
+    expr1p = utils.add(ast.NumVal(1.0), expr, to_reuse=True)
+    expr1pm1 = utils.sub(expr1p, ast.NumVal(1.0), to_reuse=True)
+    return ast.IfExpr(
+        utils.eq(expr1pm1, ast.NumVal(0.0)),
+        expr,
+        utils.div(utils.mul(expr, ast.LogExpr(expr1p)), expr1pm1))
 
 
 def sigmoid(expr, to_reuse=False):

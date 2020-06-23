@@ -3,7 +3,7 @@ Function Tanh(ByVal number As Double) As Double
     ' https://github.com/golang/go/blob/master/src/math/tanh.go
     Dim z As Double
     z = Math.Abs(number)
-    If z > 44.0148459655565271479942397125 Then
+    If z > 0.440148459655565271479942397125e+2 Then
         If number < 0 Then
             Tanh = -1.0
             Exit Function
@@ -26,7 +26,10 @@ Function Tanh(ByVal number As Double) As Double
     Dim s As Double
     s = number * number
     z = number + number * s _
-        * ((-0.964399179425052238628 * s + -99.2877231001918586564) * s + -1614.68768441708447952) _
-        / (((s + 112.811678491632931402) * s + 2235.48839060100448583) * s + 4844.06305325125486048)
+        * ((-0.964399179425052238628e+0 * s + -0.992877231001918586564e+2) _
+           * s + -0.161468768441708447952e+4) _
+        / (((s + 0.112811678491632931402e+3) _
+            * s + 0.223548839060100448583e+4) _
+           * s + 0.484406305325125486048e+4)
     Tanh = z
 End Function
