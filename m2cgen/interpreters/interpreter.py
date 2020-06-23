@@ -83,6 +83,8 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
 
     abs_function_name = NotImplemented
     exponent_function_name = NotImplemented
+    logarithm_function_name = NotImplemented
+    log1p_function_name = NotImplemented
     power_function_name = NotImplemented
     sqrt_function_name = NotImplemented
     tanh_function_name = NotImplemented
@@ -139,6 +141,23 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.exponent_function_name, nested_result)
+
+    def interpret_log_expr(self, expr, **kwargs):
+        if self.logarithm_function_name is NotImplemented:
+            raise NotImplementedError("Logarithm function is not provided")
+        self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.logarithm_function_name, nested_result)
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_math_module = True
+        if self.log1p_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.log1p(expr.expr), **kwargs)
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.log1p_function_name, nested_result)
 
     def interpret_sqrt_expr(self, expr, **kwargs):
         self.with_math_module = True
