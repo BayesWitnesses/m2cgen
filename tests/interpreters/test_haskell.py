@@ -285,6 +285,74 @@ score input =
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    expected_code = """
+module Model where
+score :: [Double] -> Double
+score input =
+    log (2.0)
+"""
+
+    interpreter = HaskellInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    expected_code = """
+module Model where
+log1p :: Double -> Double
+log1p x
+    | x == 0               = 0
+    | x == -1              = -1 / 0
+    | x < -1               = 0 / 0
+    | x' < m_epsilon * 0.5 = x
+    | (x > 0 && x < 1e-8) || (x > -1e-9 && x < 0)
+                           = x * (1 - x * 0.5)
+    | x' < 0.375           = x * (1 - x * chebyshevBroucke (x / 0.375) coeffs)
+    | otherwise            = log (1 + x)
+  where
+    m_epsilon = encodeFloat (signif + 1) expo - 1.0
+        where (signif, expo) = decodeFloat (1.0::Double)
+    x' = abs x
+    coeffs = [0.10378693562743769800686267719098e+1,
+              -0.13364301504908918098766041553133e+0,
+               0.19408249135520563357926199374750e-1,
+              -0.30107551127535777690376537776592e-2,
+               0.48694614797154850090456366509137e-3,
+              -0.81054881893175356066809943008622e-4,
+               0.13778847799559524782938251496059e-4,
+              -0.23802210894358970251369992914935e-5,
+               0.41640416213865183476391859901989e-6,
+              -0.73595828378075994984266837031998e-7,
+               0.13117611876241674949152294345011e-7,
+              -0.23546709317742425136696092330175e-8,
+               0.42522773276034997775638052962567e-9,
+              -0.77190894134840796826108107493300e-10,
+               0.14075746481359069909215356472191e-10,
+              -0.25769072058024680627537078627584e-11,
+               0.47342406666294421849154395005938e-12,
+              -0.87249012674742641745301263292675e-13,
+               0.16124614902740551465739833119115e-13,
+              -0.29875652015665773006710792416815e-14,
+               0.55480701209082887983041321697279e-15,
+              -0.10324619158271569595141333961932e-15]
+    chebyshevBroucke i = fini . foldr step [0, 0, 0]
+        where
+            step k [b0, b1, _] = [(k + i * 2 * b0 - b1), b0, b1]
+            fini   [b0, _, b2] = (b0 - b2) * 0.5
+score :: [Double] -> Double
+score input =
+    log1p (2.0)
+"""
+
+    interpreter = HaskellInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

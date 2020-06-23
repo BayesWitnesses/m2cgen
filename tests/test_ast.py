@@ -48,6 +48,8 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
         ast.VectorVal([
             ast.AbsExpr(ast.NumVal(-2)),
             ast.ExpExpr(ast.NumVal(2)),
+            ast.LogExpr(ast.NumVal(2)),
+            ast.Log1pExpr(ast.NumVal(2)),
             ast.SqrtExpr(ast.NumVal(2)),
             ast.PowExpr(ast.NumVal(2), ast.NumVal(3)),
             ast.TanhExpr(ast.NumVal(1)),
@@ -63,6 +65,8 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
                 ast.NumVal(3),
                 ast.NumVal(4),
                 ast.NumVal(5),
+                ast.NumVal(6),
+                ast.NumVal(7),
                 ast.FeatureRef(1)
             ])),
         ast.BinNumOpType.SUB),
@@ -75,7 +79,7 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
 
 
 def test_count_all_exprs_types():
-    assert ast.count_exprs(EXPR_WITH_ALL_EXPRS) == 31
+    assert ast.count_exprs(EXPR_WITH_ALL_EXPRS) == 37
 
 
 def test_exprs_equality():

@@ -282,6 +282,34 @@ double score(double * input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    return log(2.0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    return log1p(2.0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

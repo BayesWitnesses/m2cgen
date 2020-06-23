@@ -19,8 +19,11 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "Math.Abs"
     exponent_function_name = "Math.Exp"
+    logarithm_function_name = "Math.Log"
+    log1p_function_name = "Log1p"
     tanh_function_name = "Tanh"
 
+    with_log1p_expr = False
     with_tanh_expr = False
 
     def __init__(self, module_name="Model", indent=4, function_name="Score",
@@ -56,6 +59,11 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "tanh.bas")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_log1p_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "log1p.bas")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))
         self._cg.add_code_line(self._cg.tpl_block_termination(
@@ -69,7 +77,10 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="^")
 
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)
+
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True
-        return super(
-            VisualBasicInterpreter, self).interpret_tanh_expr(expr, **kwargs)
+        return super().interpret_tanh_expr(expr, **kwargs)

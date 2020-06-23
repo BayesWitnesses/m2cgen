@@ -23,10 +23,13 @@ class DartInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "abs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     power_function_name = "pow"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
+    with_log1p_expr = False
     with_tanh_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
@@ -54,7 +57,11 @@ class DartInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.dart")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
-        # Use own tanh function in order to be compatible with Dart
+        if self.with_log1p_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "log1p.dart")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
         if self.with_tanh_expr:
             filename = os.path.join(
                 os.path.dirname(__file__), "tanh.dart")
@@ -71,7 +78,10 @@ class DartInterpreter(ImperativeToCodeInterpreter,
             obj=self._do_interpret(expr.expr, **kwargs),
             args=[])
 
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)
+
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True
-        return super(
-            DartInterpreter, self).interpret_tanh_expr(expr, **kwargs)
+        return super().interpret_tanh_expr(expr, **kwargs)

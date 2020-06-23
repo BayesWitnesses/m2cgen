@@ -106,6 +106,42 @@ class ExpExpr(NumExpr):
         return hash(self.expr)
 
 
+class LogExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "LogExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return type(other) is LogExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
+
+class Log1pExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
+        return "Log1pExpr(" + args + ")"
+
+    def __eq__(self, other):
+        return type(other) is Log1pExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
+
 class SqrtExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
         assert expr.output_size == 1, "Only scalars are supported"
@@ -354,7 +390,8 @@ NESTED_EXPRS_MAPPINGS = [
     (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
     (VectorVal, lambda e: e.exprs),
     (IfExpr, lambda e: [e.test, e.body, e.orelse]),
-    ((AbsExpr, IdExpr, ExpExpr, SqrtExpr, TanhExpr), lambda e: [e.expr]),
+    ((AbsExpr, ExpExpr, IdExpr, LogExpr, Log1pExpr, SqrtExpr, TanhExpr),
+     lambda e: [e.expr]),
 ]
 
 
