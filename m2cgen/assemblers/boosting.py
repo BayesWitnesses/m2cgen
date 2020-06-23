@@ -235,12 +235,12 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
     def _multi_class_convert_output(self, exprs):
         supported_objectives = {
             "multiclass": super()._multi_class_convert_output,
-            "multiclassova": self._multi_class_sigmoid_transform
+            "multiclassova": self._multi_class_sigmoid_transform,
+            "custom": super()._single_convert_output,
         }
         if self.objective_name not in supported_objectives:
             raise ValueError(
-                "Unsupported objective function '{}'".format(
-                    self.objective_name))
+                f"Unsupported objective function '{self.objective_name}'")
         return supported_objectives[self.objective_name](exprs)
 
     def _multi_class_sigmoid_transform(self, exprs):
@@ -250,11 +250,11 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
     def _bin_class_convert_output(self, expr, to_reuse=True):
         supported_objectives = {
             "binary": self._bin_class_sigmoid_transform,
+            "custom": super()._single_convert_output,
         }
         if self.objective_name not in supported_objectives:
             raise ValueError(
-                "Unsupported objective function '{}'".format(
-                    self.objective_name))
+                f"Unsupported objective function '{self.objective_name}'")
         return supported_objectives[self.objective_name](expr)
 
     def _bin_class_sigmoid_transform(self, expr, to_reuse=True):
@@ -262,7 +262,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
         for config_part in self.objective_config.split(" "):
             config_entry = config_part.split(":")
             if config_entry[0] == "sigmoid":
-                coef = float(config_entry[1])
+                coef = np.float64(config_entry[1])
         return super()._bin_class_convert_output(
             utils.mul(ast.NumVal(coef), expr), to_reuse=to_reuse)
 
@@ -278,21 +278,22 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
             "quantile": self._maybe_sqr_transform,
             "mape": self._maybe_sqr_transform,
             "gamma": self._exp_transform,
-            "tweedie": self._exp_transform
+            "tweedie": self._exp_transform,
+            "custom": super()._single_convert_output,
         }
         if self.objective_name not in supported_objectives:
             raise ValueError(
-                "Unsupported objective function '{}'".format(
-                    self.objective_name))
+                f"Unsupported objective function '{self.objective_name}'")
         return supported_objectives[self.objective_name](expr)
 
     def _log1p_exp_transform(self, expr):
-        return expr  # std::log(1.0f + std::exp(input[0]));
+        return ast.Log1pExpr(ast.ExpExpr(expr))
 
     def _maybe_sqr_transform(self, expr):
         need_sqr = "sqrt" in self.objective_config.split(" ")
         if need_sqr:
-            return expr  # Common::Sign(input[0]) * input[0] * input[0];
+            expr = ast.IdExpr(expr, to_reuse=True)
+            return utils.mul(ast.AbsExpr(expr), expr)
         else:
             return expr
 
