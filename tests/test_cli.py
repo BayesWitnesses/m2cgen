@@ -74,6 +74,7 @@ def test_language_is_required(mocked_exit):
     mocked_exit.assert_called_with(2)
 
 
+@mock.patch.object(sys, "exit")
 def test_version():
     mocked_stdout = io.StringIO()
 
