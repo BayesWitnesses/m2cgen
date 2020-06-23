@@ -39,7 +39,7 @@ pip install m2cgen
 - Python
 - R
 - Ruby
-- Visual Basic
+- Visual Basic (VBA-compatible)
 
 ## Supported Models
 
