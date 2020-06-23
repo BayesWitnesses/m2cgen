@@ -12,23 +12,22 @@ class CSharpCodeGenerator(CLikeCodeGenerator):
         super(CSharpCodeGenerator, self).__init__(*args, **kwargs)
 
     def add_class_def(self, class_name, modifier="public"):
-        class_def = modifier + " static class " + class_name + " {"
+        class_def = f"{modifier} static class {class_name} {{"
         self.add_code_line(class_def)
         self.increase_indent()
 
     def add_method_def(self, name, args, is_vector_output,
                        modifier="private"):
         return_type = self._get_var_declare_type(is_vector_output)
-        method_def = modifier + " static " + return_type + " " + name + "("
-        method_def += ",".join([
-            self._get_var_declare_type(is_vector) + " " + n
+        func_args = ",".join([
+            f"{self._get_var_declare_type(is_vector)} {n}"
             for is_vector, n in args])
-        method_def += ") {"
+        method_def = f"{modifier} static {return_type} {name}({func_args}) {{"
         self.add_code_line(method_def)
         self.increase_indent()
 
     def add_namespace_def(self, namespace):
-        namespace_def = "namespace " + namespace + " {"
+        namespace_def = f"namespace {namespace} {{"
         self.add_code_line(namespace_def)
         self.increase_indent()
 
@@ -52,8 +51,7 @@ class CSharpCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     def vector_init(self, values):
-        return ("new double[{}] {{".format(len(values)) +
-                ", ".join(values) + "}")
+        return (f"new double[{len(values)}] {{{', '.join(values)}}}")
 
     def _get_var_declare_type(self, is_vector):
         return (
@@ -61,5 +59,4 @@ class CSharpCodeGenerator(CLikeCodeGenerator):
             else self.scalar_type)
 
     def add_dependency(self, dep, modifier="static"):
-        dep_str = "using {0} {1};".format(modifier, dep)
-        self.prepend_code_line(dep_str)
+        self.prepend_code_line(f"using {modifier} {dep};")

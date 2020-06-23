@@ -17,8 +17,7 @@ def get_file_content(path):
 
 @lru_cache(maxsize=1 << ceil(log(TOTAL_NUMBER_OF_EXPRESSIONS, 2)))
 def _get_handler_name(expr_tpe):
-    expr_name = _normalize_expr_name(expr_tpe.__name__)
-    return "interpret_" + expr_name
+    return f"interpret_{_normalize_expr_name(expr_tpe.__name__)}"
 
 
 def _normalize_expr_name(name):

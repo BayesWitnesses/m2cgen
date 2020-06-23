@@ -24,11 +24,10 @@ class GoCodeGenerator(ImperativeCodeGenerator):
     def add_function_def(self, name, args, is_scalar_output):
         return_type = self._get_var_declare_type(not is_scalar_output)
 
-        function_def = "func " + name + "("
-        function_def += ", ".join([
-            n + " " + self._get_var_declare_type(is_vector)
+        func_args = ", ".join([
+            f"{n} {self._get_var_declare_type(is_vector)}"
             for is_vector, n in args])
-        function_def += ") " + return_type + " {"
+        function_def = f"func {name}({func_args}) {return_type} {{"
         self.add_code_line(function_def)
         self.increase_indent()
 
@@ -42,9 +41,7 @@ class GoCodeGenerator(ImperativeCodeGenerator):
         return self.vector_type if is_vector else self.scalar_type
 
     def add_dependency(self, dep):
-        dep_str = 'import "' + dep + '"'
-        super().prepend_code_line(dep_str)
+        super().prepend_code_line(f'import "{dep}"')
 
-    @staticmethod
-    def vector_init(values):
-        return "[]float64{" + ", ".join(values) + "}"
+    def vector_init(self, values):
+        return f"[]float64{{{', '.join(values)}}}"

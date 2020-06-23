@@ -94,8 +94,7 @@ class StatsmodelsGLMModelAssembler(StatsmodelsLinearModelAssembler):
             "nbinom": self._negativebinomial_inversed
         }
         if link_function_lower not in supported_inversed_functions:
-            raise ValueError(
-                "Unsupported link function '{}'".format(link_function))
+            raise ValueError(f"Unsupported link function '{link_function}'")
         fun = supported_inversed_functions[link_function_lower]
         return fun(ast_to_transform)
 
@@ -175,7 +174,7 @@ class StatsmodelsModelAssemblerSelector(ModelAssembler):
             self.assembler = StatsmodelsLinearModelAssembler(model)
         else:
             raise NotImplementedError(
-                "Model '{}' is not supported".format(underlying_model))
+                f"Model '{underlying_model}' is not supported")
 
     def assemble(self):
         return self.assembler.assemble()

@@ -73,7 +73,7 @@ class BaseCodeGenerator:
     def decrease_indent(self):
         self._current_indent -= self._indent
         assert self._current_indent >= 0, (
-            "Invalid indentation: {}".format(self._current_indent))
+            f"Invalid indentation: {self._current_indent}")
 
     # All code modifications should be implemented via following methods.
 
@@ -87,7 +87,7 @@ class BaseCodeGenerator:
             lines = lines.strip().split("\n")
         indent = " " * self._current_indent
         self._write_to_code_buffer(
-            indent + "\n{}".format(indent).join(lines) + "\n")
+            indent + f"\n{indent}".join(lines) + "\n")
 
     def prepend_code_line(self, line):
         if not line:
@@ -97,7 +97,8 @@ class BaseCodeGenerator:
     def prepend_code_lines(self, lines):
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
-        self._write_to_code_buffer("\n".join(lines) + "\n", prepend=True)
+        new_line = "\n"
+        self._write_to_code_buffer(f"{new_line.join(lines)}\n", prepend=True)
 
     # Following methods simply compute expressions using templates without
     # changing result.
@@ -113,7 +114,7 @@ class BaseCodeGenerator:
             array_name=array_name, index=index)
 
     def function_invocation(self, function_name, *args):
-        return function_name + "(" + ", ".join(map(str, args)) + ")"
+        return f"{function_name}({', '.join(map(str, args))})"
 
     # Helpers
 
@@ -142,7 +143,7 @@ class ImperativeCodeGenerator(BaseCodeGenerator):
         self._var_idx = 0
 
     def get_var_name(self):
-        var_name = "var" + str(self._var_idx)
+        var_name = f"var{self._var_idx}"
         self._var_idx += 1
         return var_name
 

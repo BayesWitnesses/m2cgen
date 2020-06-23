@@ -62,8 +62,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
 
     def interpret_bin_vector_expr(self, expr, extra_func_args=(), **kwargs):
         if expr.op not in self.supported_bin_vector_ops:
-            raise NotImplementedError(
-                "Op '{}' is unsupported".format(expr.op.name))
+            raise NotImplementedError(f"Op '{expr.op.name}' is unsupported")
 
         self.with_linear_algebra = True
 
@@ -78,8 +77,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
     def interpret_bin_vector_num_expr(self, expr, extra_func_args=(),
                                       **kwargs):
         if expr.op not in self.supported_bin_vector_num_ops:
-            raise NotImplementedError(
-                "Op '{}' is unsupported".format(expr.op.name))
+            raise NotImplementedError(f"Op '{expr.op.name}' is unsupported")
 
         self.with_linear_algebra = True
 
@@ -192,7 +190,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
         return self._cg.finalize_and_get_generated_code()
 
     def _get_subroutine_name(self):
-        subroutine_name = "subroutine" + str(self._subroutine_idx)
+        subroutine_name = f"subroutine{self._subroutine_idx}"
         self._subroutine_idx += 1
         return subroutine_name
 
