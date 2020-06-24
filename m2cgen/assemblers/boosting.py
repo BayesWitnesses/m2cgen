@@ -13,7 +13,7 @@ class BaseBoostingAssembler(ModelAssembler):
     classifier_names = {}
     multiclass_params_seq_len = 1
 
-    def __init__(self, model, estimator_params, base_score=0):
+    def __init__(self, model, estimator_params, base_score=0.0):
         super().__init__(model)
         self._all_estimator_params = estimator_params
         self._base_score = base_score
@@ -41,7 +41,7 @@ class BaseBoostingAssembler(ModelAssembler):
             return self._single_convert_output(result_ast)
 
     def _assemble_single_output(self, estimator_params,
-                                base_score=0, split_idx=0):
+                                base_score=0.0, split_idx=0):
         estimators_ast = self._assemble_estimators(estimator_params, split_idx)
 
         tmp_ast = utils.apply_op_to_expressions(
@@ -74,8 +74,8 @@ class BaseBoostingAssembler(ModelAssembler):
         # Base score is calculated based on
         # https://github.com/dmlc/xgboost/blob/8de7f1928e4815843fbf8773a5ac7ecbc37b2e15/src/objective/regression_loss.h#L91
         # return -logf(1.0f / base_score - 1.0f);
-        base_score = 0
-        if self._base_score != 0:
+        base_score = 0.0
+        if self._base_score != 0.0:
             base_score = -math.log(1.0 / self._base_score - 1.0)
 
         expr = self._assemble_single_output(
@@ -106,7 +106,7 @@ class BaseBoostingAssembler(ModelAssembler):
 
 class BaseTreeBoostingAssembler(BaseBoostingAssembler):
 
-    def __init__(self, model, trees, base_score=0, tree_limit=None):
+    def __init__(self, model, trees, base_score=0.0, tree_limit=None):
         super().__init__(model, trees, base_score=base_score)
         assert tree_limit is None or tree_limit > 0, "Unexpected tree limit"
         self._tree_limit = tree_limit
