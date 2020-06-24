@@ -263,6 +263,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
             config_entry = config_part.split(":")
             if config_entry[0] == "sigmoid":
                 coef = np.float64(config_entry[1])
+                break
         return super()._bin_class_convert_output(
             utils.mul(ast.NumVal(coef), expr), to_reuse=to_reuse)
 
