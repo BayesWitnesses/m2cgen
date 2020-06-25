@@ -1,5 +1,4 @@
 import os
-import string
 
 from m2cgen import assemblers, interpreters
 from tests import utils
@@ -9,7 +8,7 @@ EXECUTOR_CODE_TPL = """
 args = commandArgs(trailingOnly = TRUE)
 input_array <- as.double(args)
 
-${model_code}
+{model_code}
 
 res <- score(input_array)
 cat(res, sep = " ")
@@ -31,7 +30,7 @@ class RExecutor(base.BaseExecutor):
 
     def predict(self, X):
         file_name = os.path.join(self._resource_tmp_dir,
-                                 "{}.r".format(self.model_name))
+                                 f"{self.model_name}.r")
         exec_args = [self._r,
                      "--vanilla",
                      file_name,
@@ -39,10 +38,10 @@ class RExecutor(base.BaseExecutor):
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast))
 
         file_name = os.path.join(
-            self._resource_tmp_dir, "{}.r".format(self.model_name))
+            self._resource_tmp_dir, f"{self.model_name}.r")
         with open(file_name, "w") as f:
             f.write(executor_code)

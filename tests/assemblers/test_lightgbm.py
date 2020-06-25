@@ -1,7 +1,8 @@
 import lightgbm
 import numpy as np
-from tests import utils
+
 from m2cgen import assemblers, ast
+from tests import utils
 
 
 def test_binary_classification():

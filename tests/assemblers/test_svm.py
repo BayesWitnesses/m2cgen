@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 from sklearn import svm
 from lightning.classification import KernelSVC
+
 from m2cgen import assemblers, ast
 from tests import utils
 
