@@ -153,7 +153,7 @@ def cmp_exprs(left, right):
             comp_res = np.isclose(left, right)
         else:
             comp_res = left == right
-        assert comp_res, f"{str(left)} != {str(right)}"
+        assert comp_res, f"{left} != {right}"
         return True
 
     if isinstance(left, ast.Expr) and isinstance(right, ast.Expr):
