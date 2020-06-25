@@ -1,9 +1,9 @@
 # Supported models
-scikit-learn==0.22.2.post1
+scikit-learn==0.23.1
 xgboost==1.1.1
 lightgbm==2.3.1
 statsmodels==0.11.1
-git+git://github.com/scikit-learn-contrib/lightning.git@b96f9c674968496e854078163c8814049a7b9f43
+git+git://github.com/scikit-learn-contrib/lightning.git@782c18c12961e509099ae84c68dd361010642f7e
 
 # Testing tools
 flake8==3.8.3
