@@ -24,4 +24,4 @@ class BaseExecutor:
     @classmethod
     def prepare_global(cls, **kwargs):
         for key, value in kwargs.items():
-            setattr(cls, "_{}".format(key), value)
+            setattr(cls, f"_{key}", value)

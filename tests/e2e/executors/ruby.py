@@ -1,5 +1,4 @@
 import os
-import string
 
 from m2cgen import assemblers, interpreters
 from tests import utils
@@ -8,11 +7,11 @@ from tests.e2e.executors import base
 EXECUTOR_CODE_TPL = """
 input_array = ARGV.map(&:to_f)
 
-${model_code}
+{model_code}
 
 res = score(input_array)
 
-${print_code}
+{print_code}
 """
 
 PRINT_SCALAR = """
@@ -38,7 +37,7 @@ class RubyExecutor(base.BaseExecutor):
 
     def predict(self, X):
         file_name = os.path.join(self._resource_tmp_dir,
-                                 "{}.rb".format(self.model_name))
+                                 f"{self.model_name}.rb")
         exec_args = [self._ruby, file_name, *map(str, X)]
         return utils.predict_from_commandline(exec_args)
 
@@ -47,11 +46,11 @@ class RubyExecutor(base.BaseExecutor):
             print_code = PRINT_VECTOR
         else:
             print_code = PRINT_SCALAR
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
         file_name = os.path.join(
-            self._resource_tmp_dir, "{}.rb".format(self.model_name))
+            self._resource_tmp_dir, f"{self.model_name}.rb")
         with open(file_name, "w") as f:
             f.write(executor_code)
