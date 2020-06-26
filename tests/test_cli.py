@@ -6,7 +6,7 @@ from _pytest import capture
 from sklearn import linear_model
 from unittest import mock
 
-from m2cgen import cli
+from m2cgen import cli, __version__
 from tests import utils
 
 
@@ -72,6 +72,16 @@ def test_language_is_required(mocked_exit):
         mocked_stderr.getvalue())
 
     mocked_exit.assert_called_with(2)
+
+
+@mock.patch.object(sys, "exit")
+def test_version(mocked_exit):
+    mocked_stdout = io.StringIO()
+
+    with mock.patch.object(sys, "stdout", new=mocked_stdout):
+        cli.parse_args(["-v"])
+
+    assert mocked_stdout.getvalue().strip() == f"m2cgen {__version__}"
 
 
 def test_generate_code():
