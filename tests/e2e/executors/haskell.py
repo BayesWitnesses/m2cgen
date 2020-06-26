@@ -1,5 +1,4 @@
 import os
-import string
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -7,15 +6,15 @@ from tests import utils
 from tests.e2e.executors import base
 
 EXECUTOR_CODE_TPL = """
-module ${executor_name} where
+module {executor_name} where
 import System.Environment (getArgs)
-import ${model_name}
+import {model_name}
 
 main = do
     args <- getArgs
     let inputArray = [read i::Double | i <- args]
     let res = score inputArray
-    ${print_code}
+    {print_code}
 """
 
 PRINT_SCALAR = "print res"
@@ -48,23 +47,23 @@ class HaskellExecutor(base.BaseExecutor):
             print_code = PRINT_VECTOR
         else:
             print_code = PRINT_SCALAR
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             executor_name=self.executor_name,
             model_name=self.model_name,
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
         executor_file_name = os.path.join(
-            self._resource_tmp_dir, "{}.hs".format(self.executor_name))
+            self._resource_tmp_dir, f"{self.executor_name}.hs")
         model_file_name = os.path.join(
-            self._resource_tmp_dir, "{}.hs".format(self.model_name))
+            self._resource_tmp_dir, f"{self.model_name}.hs")
         with open(executor_file_name, "w") as f:
             f.write(executor_code)
         with open(model_file_name, "w") as f:
             f.write(model_code)
 
         exec_args = [self._ghc, executor_file_name,
-                     "-i{}".format(self._resource_tmp_dir),
+                     f"-i{self._resource_tmp_dir}",
                      "-o", os.path.join(self._resource_tmp_dir,
                                         self.executor_name)]
         subprocess.call(exec_args)

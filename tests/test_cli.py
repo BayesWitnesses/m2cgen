@@ -143,7 +143,7 @@ def test_namespace():
 
     generated_code = cli.generate_code(mock_args).strip()
 
-    assert generated_code.find("namespace Tests.ML {") != -1
+    assert "namespace Tests.ML {" in generated_code
 
 
 def test_unsupported_args_are_ignored():
