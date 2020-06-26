@@ -46,8 +46,13 @@ class BaseBoostingAssembler(ModelAssembler):
 
         tmp_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
-            ast.NumVal(base_score),
             *estimators_ast)
+
+        if base_score != 0.0:
+            tmp_ast = utils.apply_bin_op(
+                ast.NumVal(base_score),
+                tmp_ast,
+                ast.BinNumOpType.ADD)
 
         result_ast = self._final_transform(tmp_ast)
 
@@ -265,7 +270,8 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
                 coef = np.float64(config_entry[1])
                 break
         return super()._bin_class_convert_output(
-            utils.mul(ast.NumVal(coef), expr), to_reuse=to_reuse)
+            utils.mul(ast.NumVal(coef), expr) if coef != 1.0 else expr,
+            to_reuse=to_reuse)
 
     def _single_convert_output(self, expr):
         supported_objectives = {
