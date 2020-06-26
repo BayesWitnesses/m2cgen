@@ -21,16 +21,13 @@ def test_binary_classification():
                 ast.BinNumExpr(
                     ast.NumVal(0),
                     ast.BinNumExpr(
-                        ast.BinNumExpr(
-                            ast.NumVal(0),
-                            ast.IfExpr(
-                                ast.CompExpr(
-                                    ast.FeatureRef(23),
-                                    ast.NumVal(868.2000000000002),
-                                    ast.CompOpType.GT),
-                                ast.NumVal(0.25986931215073095),
-                                ast.NumVal(0.6237178414050242)),
-                            ast.BinNumOpType.ADD),
+                        ast.IfExpr(
+                            ast.CompExpr(
+                                ast.FeatureRef(23),
+                                ast.NumVal(868.2000000000002),
+                                ast.CompOpType.GT),
+                            ast.NumVal(0.25986931215073095),
+                            ast.NumVal(0.6237178414050242)),
                         ast.IfExpr(
                             ast.CompExpr(
                                 ast.FeatureRef(7),
@@ -60,10 +57,7 @@ def test_multi_class():
     actual = assembler.assemble()
 
     exponent = ast.ExpExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0.0),
-            ast.NumVal(-1.0986122886681098),
-            ast.BinNumOpType.ADD),
+        ast.NumVal(-1.0986122886681098),
         to_reuse=True)
 
     exponent_sum = ast.BinNumExpr(
@@ -88,16 +82,13 @@ def test_regression():
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(5),
-                    ast.NumVal(6.918),
-                    ast.CompOpType.GT),
-                ast.NumVal(24.011454621684155),
-                ast.NumVal(22.289277544391084)),
-            ast.BinNumOpType.ADD),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(5),
+                ast.NumVal(6.918),
+                ast.CompOpType.GT),
+            ast.NumVal(24.011454621684155),
+            ast.NumVal(22.289277544391084)),
         ast.IfExpr(
             ast.CompExpr(
                 ast.FeatureRef(12),
@@ -121,16 +112,13 @@ def test_regression_random_forest():
 
     expected = ast.BinNumExpr(
         ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(0),
-                ast.IfExpr(
-                    ast.CompExpr(
-                        ast.FeatureRef(5),
-                        ast.NumVal(6.954000000000001),
-                        ast.CompOpType.GT),
-                    ast.NumVal(37.24347877367631),
-                    ast.NumVal(19.936999995530854)),
-                ast.BinNumOpType.ADD),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.954000000000001),
+                    ast.CompOpType.GT),
+                ast.NumVal(37.24347877367631),
+                ast.NumVal(19.936999995530854)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
