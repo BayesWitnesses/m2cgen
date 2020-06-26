@@ -1,5 +1,4 @@
 import os
-import string
 import subprocess
 
 from m2cgen import interpreters, assemblers
@@ -10,19 +9,19 @@ from tests.e2e.executors import base
 EXECUTOR_CODE_TPL = """
 #include <stdio.h>
 
-${model_code}
+{model_code}
 
 int main(int argc, char *argv[])
-{
+{{
     double input [argc-1];
-    for (int i = 1; i < argc; ++i) {
+    for (int i = 1; i < argc; ++i) {{
         sscanf(argv[i], "%lf", &input[i-1]);
-    }
+    }}
 
-    ${print_code}
+    {print_code}
 
     return 0;
-}
+}}
 """
 
 EXECUTE_AND_PRINT_SCALAR = """
@@ -30,12 +29,12 @@ EXECUTE_AND_PRINT_SCALAR = """
 """
 
 EXECUTE_AND_PRINT_VECTOR_TPL = """
-    double result[${size}];
+    double result[{size}];
     score(input, result);
 
-    for (int i = 0; i < ${size}; ++i) {
+    for (int i = 0; i < {size}; ++i) {{
         printf("%f ", *(result+i));
-    }
+    }}
 """
 
 
@@ -61,18 +60,17 @@ class CExecutor(base.BaseExecutor):
     def prepare(self):
 
         if self.model_ast.output_size > 1:
-            print_code = (
-                string.Template(EXECUTE_AND_PRINT_VECTOR_TPL).substitute(
-                    size=self.model_ast.output_size))
+            print_code = EXECUTE_AND_PRINT_VECTOR_TPL.format(
+                size=self.model_ast.output_size)
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
 
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
         file_name = os.path.join(
-            self._resource_tmp_dir, "{}.c".format(self.model_name))
+            self._resource_tmp_dir, f"{self.model_name}.c")
 
         with open(file_name, "w") as f:
             f.write(executor_code)

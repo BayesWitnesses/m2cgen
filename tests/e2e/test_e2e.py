@@ -273,6 +273,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(linear_model.BayesianRidge()),
         regression(linear_model.ElasticNet(random_state=RANDOM_SEED)),
         regression(linear_model.ElasticNetCV(random_state=RANDOM_SEED)),
+        regression(linear_model.GammaRegressor()),
         regression(linear_model.HuberRegressor()),
         regression(linear_model.Lars()),
         regression(linear_model.LarsCV()),
@@ -286,6 +287,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(linear_model.OrthogonalMatchingPursuitCV()),
         regression(linear_model.PassiveAggressiveRegressor(
             random_state=RANDOM_SEED)),
+        regression(linear_model.PoissonRegressor()),
         regression(linear_model.RANSACRegressor(
             base_estimator=tree.ExtraTreeRegressor(**TREE_PARAMS),
             random_state=RANDOM_SEED)),
@@ -293,6 +295,11 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(linear_model.RidgeCV()),
         regression(linear_model.SGDRegressor(random_state=RANDOM_SEED)),
         regression(linear_model.TheilSenRegressor(random_state=RANDOM_SEED)),
+        regression(linear_model.TweedieRegressor(power=0.0)),
+        regression(linear_model.TweedieRegressor(power=1.0)),
+        regression(linear_model.TweedieRegressor(power=1.5)),
+        regression(linear_model.TweedieRegressor(power=2.0)),
+        regression(linear_model.TweedieRegressor(power=3.0)),
 
         # Statsmodels Linear Regression
         classification_binary(utils.StatsmodelsSklearnLikeWrapper(
@@ -524,7 +531,6 @@ def test_e2e(estimator, executor_cls, model_trainer,
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
             y_pred_executed = executor.predict(X_test[idx])
-            print("expected={}, actual={}".format(y_pred_true[idx],
-                                                  y_pred_executed))
+            print(f"expected={y_pred_true[idx]}, actual={y_pred_executed}")
             res = np.isclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
             assert res if isinstance(res, bool) else res.all()
