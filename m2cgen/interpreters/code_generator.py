@@ -95,10 +95,11 @@ class BaseCodeGenerator:
         self.prepend_code_lines([line.strip()])
 
     def prepend_code_lines(self, lines):
-        if isinstance(lines, str):
-            lines = lines.strip().split("\n")
         new_line = "\n"
-        self._write_to_code_buffer(f"{new_line.join(lines)}\n", prepend=True)
+        if isinstance(lines, str):
+            lines = lines.strip().split(new_line)
+        self._write_to_code_buffer(
+            f"{new_line.join(lines)}{new_line}", prepend=True)
 
     # Following methods simply compute expressions using templates without
     # changing result.

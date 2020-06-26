@@ -1,5 +1,4 @@
 import os
-import string
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -9,17 +8,17 @@ from tests.e2e.executors import base
 EXECUTOR_CODE_TPL = """
 using System;
 
-namespace TestConsoleApp {
-    class Program {
-        static void Main(string[] args) {
+namespace TestConsoleApp {{
+    class Program {{
+        static void Main(string[] args) {{
             double[] input_ = new double[args.Length];
-            for(int i = 0; i < input_.Length; ++i) {
+            for(int i = 0; i < input_.Length; ++i) {{
                 input_[i] = double.Parse(args[i]);
-            }
-            ${print_code}
-        }
-    }
-}
+            }}
+            {print_code}
+        }}
+    }}
+}}
 """
 
 EXECUTE_AND_PRINT_SCALAR = """
@@ -74,7 +73,7 @@ class CSharpExecutor(base.BaseExecutor):
             print_code = EXECUTE_AND_PRINT_VECTOR
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
@@ -88,6 +87,6 @@ class CSharpExecutor(base.BaseExecutor):
         subprocess.call([self._dotnet,
                          "build",
                          os.path.join(self._global_tmp_dir,
-                                      "{}.csproj".format(self.project_name)),
+                                      f"{self.project_name}.csproj"),
                          "--output",
                          self.target_exec_dir])

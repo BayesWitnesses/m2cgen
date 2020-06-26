@@ -1,5 +1,4 @@
 import os
-import string
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -15,24 +14,24 @@ import (
     "strconv"
 )
 
-${model_code}
+{model_code}
 
-func main() {
+func main() {{
     input := make([]float64, 0, len(os.Args)-1)
-    for _, s := range os.Args[1:] {
+    for _, s := range os.Args[1:] {{
         f, _ := strconv.ParseFloat(s, 64)
         input = append(input, f)
-    }
+    }}
 
-    ${print_code}
-}
+    {print_code}
+}}
 """
 
 EXECUTE_AND_PRINT_SCALAR = """
     fmt.Printf("%f\\n", score(input))
 """
 
-EXECUTE_AND_PRINT_VECTOR_TPL = """
+EXECUTE_AND_PRINT_VECTOR = """
     result := score(input)
 
     for _, v := range result {
@@ -62,18 +61,16 @@ class GoExecutor(base.BaseExecutor):
     def prepare(self):
 
         if self.model_ast.output_size > 1:
-            print_code = (
-                string.Template(EXECUTE_AND_PRINT_VECTOR_TPL).substitute(
-                    size=self.model_ast.output_size))
+            print_code = EXECUTE_AND_PRINT_VECTOR
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
 
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
         file_name = os.path.join(
-            self._resource_tmp_dir, "{}.go".format(self.model_name))
+            self._resource_tmp_dir, f"{self.model_name}.go")
 
         with open(file_name, "w") as f:
             f.write(executor_code)

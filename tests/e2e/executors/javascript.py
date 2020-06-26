@@ -1,5 +1,6 @@
 import os
 from py_mini_racer import py_mini_racer
+
 import m2cgen as m2c
 from tests.e2e.executors import base
 
@@ -15,7 +16,7 @@ class JavascriptExecutor(base.BaseExecutor):
         with open(file_name, 'r') as myfile:
             code = myfile.read()
 
-        caller = "score([" + ",".join(map(str, X)) + "]);\n"
+        caller = f"score([{','.join(map(str, X))}]);\n"
 
         ctx = py_mini_racer.MiniRacer()
         result = ctx.eval(caller + code)

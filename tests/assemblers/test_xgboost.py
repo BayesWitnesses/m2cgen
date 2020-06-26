@@ -1,8 +1,9 @@
 import xgboost
 import numpy as np
 import os
-from tests import utils
+
 from m2cgen import assemblers, ast
+from tests import utils
 
 
 def test_binary_classification():
