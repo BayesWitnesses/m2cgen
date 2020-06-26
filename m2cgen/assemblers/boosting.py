@@ -45,8 +45,13 @@ class BaseBoostingAssembler(ModelAssembler):
 
         tmp_ast = utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
-            ast.NumVal(base_score),
             *estimators_ast)
+
+        if base_score != 0.0:
+            tmp_ast = utils.apply_bin_op(
+                ast.NumVal(base_score),
+                tmp_ast,
+                ast.BinNumOpType.ADD)
 
         result_ast = self._final_transform(tmp_ast)
 
