@@ -8,9 +8,6 @@ class DartCodeGenerator(CLikeCodeGenerator):
     scalar_type = "double"
     vector_type = "List<double>"
 
-    def __init__(self, *args, **kwargs):
-        super(DartCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_function_def(self, name, args, is_vector_output):
         return_type = self._get_var_declare_type(is_vector_output)
         function_def = return_type + " " + name + "("

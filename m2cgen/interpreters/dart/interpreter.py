@@ -37,7 +37,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = DartCodeGenerator(indent=indent)
-        super(DartInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

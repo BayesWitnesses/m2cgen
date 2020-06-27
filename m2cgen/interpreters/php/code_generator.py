@@ -9,9 +9,6 @@ class PhpCodeGenerator(CLikeCodeGenerator):
 
     tpl_array_index_access = CodeTemplate("${array_name}[{index}]")
 
-    def __init__(self, *args, **kwargs):
-        super(PhpCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_function_def(self, name, args):
         function_def = "function " + name + "("
         function_def += ", ".join([
