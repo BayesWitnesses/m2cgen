@@ -28,7 +28,7 @@ class GoInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = GoCodeGenerator(indent=indent)
-        super(GoInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

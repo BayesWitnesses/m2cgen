@@ -18,9 +18,6 @@ class GoCodeGenerator(ImperativeCodeGenerator):
     scalar_type = "float64"
     vector_type = "[]float64"
 
-    def __init__(self, *args, **kwargs):
-        super(GoCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_function_def(self, name, args, is_scalar_output):
         return_type = self._get_var_declare_type(not is_scalar_output)
 

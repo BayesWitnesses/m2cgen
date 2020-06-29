@@ -8,9 +8,6 @@ class CSharpCodeGenerator(CLikeCodeGenerator):
     scalar_type = "double"
     vector_type = "double[]"
 
-    def __init__(self, *args, **kwargs):
-        super(CSharpCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_class_def(self, class_name, modifier="public"):
         class_def = modifier + " static class " + class_name + " {"
         self.add_code_line(class_def)
