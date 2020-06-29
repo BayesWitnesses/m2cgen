@@ -9,9 +9,6 @@ class RCodeGenerator(CLikeCodeGenerator):
     tpl_return_statement = CodeTemplate("return({value})")
     tpl_var_assignment = CodeTemplate("{var_name} <- {value}")
 
-    def __init__(self, *args, **kwargs):
-        super(RCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_var_declaration(self, size):
         return self.get_var_name()
 

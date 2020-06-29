@@ -21,9 +21,6 @@ class VisualBasicCodeGenerator(ImperativeCodeGenerator):
 
     scalar_type = "Double"
 
-    def __init__(self, *args, **kwargs):
-        super(VisualBasicCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_return_statement(self, value, func_name):
         self.add_code_line(self.tpl_return_statement(
             func_name=func_name, value=value))

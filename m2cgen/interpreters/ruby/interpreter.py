@@ -30,7 +30,7 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = RubyCodeGenerator(indent=indent)
-        super(RubyInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

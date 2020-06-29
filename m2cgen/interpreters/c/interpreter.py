@@ -29,7 +29,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = CCodeGenerator(indent=indent)
-        super(CInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

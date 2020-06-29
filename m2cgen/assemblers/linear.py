@@ -48,7 +48,7 @@ class SklearnLinearModelAssembler(BaseLinearModelAssembler):
 class StatsmodelsLinearModelAssembler(BaseLinearModelAssembler):
 
     def __init__(self, model):
-        super(StatsmodelsLinearModelAssembler, self).__init__(model)
+        super().__init__(model)
         const_idx = self.model.model.data.const_idx
         if const_idx is None and self.model.k_constant:
             raise ValueError("Unknown constant position")

@@ -12,9 +12,6 @@ class CCodeGenerator(CLikeCodeGenerator):
     scalar_type = "double"
     vector_type = "double *"
 
-    def __init__(self, *args, **kwargs):
-        super(CCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_function_def(self, name, args, is_scalar_output):
         return_type = self.scalar_type if is_scalar_output else "void"
 

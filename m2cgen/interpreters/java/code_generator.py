@@ -8,9 +8,6 @@ class JavaCodeGenerator(CLikeCodeGenerator):
     scalar_output_type = "double"
     vector_output_type = "double[]"
 
-    def __init__(self, *args, **kwargs):
-        super(JavaCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_class_def(self, class_name, modifier="public"):
         class_def = f"{modifier} class {class_name} {{"
         self.add_code_line(class_def)
