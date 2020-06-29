@@ -56,7 +56,7 @@ class VisualBasicExecutor(base.BaseExecutor):
 
     @classmethod
     def prepare_global(cls, **kwargs):
-        super(VisualBasicExecutor, cls).prepare_global(**kwargs)
+        super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
             cls.target_exec_dir = os.path.join(cls._global_tmp_dir, "bin")
 

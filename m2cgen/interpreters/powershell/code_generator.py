@@ -19,9 +19,6 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
                     CompOpType.GTE: "-ge", CompOpType.LTE: "-le",
                     CompOpType.GT: "-gt", CompOpType.LT: "-lt"}
 
-    def __init__(self, *args, **kwargs):
-        super(PowershellCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_function_def(self, name, args, is_scalar_output):
         function_def = "function " + name + "("
         function_def += ", ".join([
