@@ -17,9 +17,7 @@ class RubyCodeGenerator(ImperativeCodeGenerator):
     tpl_var_assignment = CT("{var_name} = {value}")
 
     def add_function_def(self, name, args):
-        func_def = "def " + name + "("
-        func_def += ", ".join(args)
-        func_def += ")"
+        func_def = f"def {name}({', '.join(args)})"
         self.add_code_line(func_def)
         self.increase_indent()
 
@@ -30,8 +28,7 @@ class RubyCodeGenerator(ImperativeCodeGenerator):
         self.add_block_termination()
 
     def method_invocation(self, method_name, obj, args):
-        return ("(" + str(obj) + ")." + method_name +
-                "(" + ", ".join(map(str, args)) + ")")
+        return f"({obj}).{method_name}({', '.join(map(str, args))})"
 
     def vector_init(self, values):
-        return "[" + ", ".join(values) + "]"
+        return f"[{', '.join(values)}]"
