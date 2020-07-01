@@ -12,17 +12,13 @@ class CCodeGenerator(CLikeCodeGenerator):
     scalar_type = "double"
     vector_type = "double *"
 
-    def __init__(self, *args, **kwargs):
-        super(CCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_function_def(self, name, args, is_scalar_output):
         return_type = self.scalar_type if is_scalar_output else "void"
 
-        function_def = return_type + " " + name + "("
-        function_def += ", ".join([
-            self._get_var_type(is_vector) + " " + n
+        func_args = ", ".join([
+            f"{self._get_var_type(is_vector)} {n}"
             for is_vector, n in args])
-        function_def += ") {"
+        function_def = f"{return_type} {name}({func_args}) {{"
         self.add_code_line(function_def)
         self.increase_indent()
 
@@ -52,15 +48,14 @@ class CCodeGenerator(CLikeCodeGenerator):
         self.add_assign_array_statement(value, var_name, value_size)
 
     def add_assign_array_statement(self, source_var, target_var, size):
-        self.add_code_line("memcpy({}, {}, {} * sizeof(double));".format(
-            target_var, source_var, size))
+        self.add_code_line(f"memcpy({target_var}, {source_var}, "
+                           f"{size} * sizeof(double));")
 
     def add_dependency(self, dep):
-        dep_str = "#include " + dep
-        super().prepend_code_line(dep_str)
+        super().prepend_code_line(f"#include {dep}")
 
     def vector_init(self, values):
-        return "(double[]){" + ", ".join(values) + "}"
+        return f"(double[]){{{', '.join(values)}}}"
 
     def _get_var_type(self, is_vector):
         return (

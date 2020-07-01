@@ -18,10 +18,8 @@ class PythonCodeGenerator(ImperativeCodeGenerator):
     tpl_block_termination = CT("")
 
     def add_function_def(self, name, args):
-        method_def = "def " + name + "("
-        method_def += ", ".join(args)
-        method_def += "):"
-        self.add_code_line(method_def)
+        function_def = f"def {name}({', '.join(args)}):"
+        self.add_code_line(function_def)
         self.increase_indent()
 
     @contextlib.contextmanager
@@ -30,10 +28,10 @@ class PythonCodeGenerator(ImperativeCodeGenerator):
         yield
 
     def vector_init(self, values):
-        return "[" + ", ".join(values) + "]"
+        return f"[{', '.join(values)}]"
 
     def add_dependency(self, dep, alias=None):
-        dep_str = "import " + dep
+        dep_str = f"import {dep}"
         if alias:
-            dep_str += " as " + alias
+            dep_str += f" as {alias}"
         self.prepend_code_line(dep_str)

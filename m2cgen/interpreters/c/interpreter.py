@@ -19,6 +19,8 @@ class CInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "fabs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     power_function_name = "pow"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
@@ -27,7 +29,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = CCodeGenerator(indent=indent)
-        super(CInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -82,7 +84,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
         func_inv = super().interpret_bin_vector_expr(
             expr, extra_func_args=[expr.output_size, var_name], **kwargs)
 
-        self._cg.add_code_line(func_inv + ";")
+        self._cg.add_code_line(f"{func_inv};")
 
         return var_name
 
@@ -93,6 +95,6 @@ class CInterpreter(ImperativeToCodeInterpreter,
         func_inv = super().interpret_bin_vector_num_expr(
             expr, extra_func_args=[expr.output_size, var_name], **kwargs)
 
-        self._cg.add_code_line(func_inv + ";")
+        self._cg.add_code_line(f"{func_inv};")
 
         return var_name

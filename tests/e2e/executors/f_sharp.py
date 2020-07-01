@@ -1,5 +1,4 @@
 import os
-import string
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -7,12 +6,12 @@ from tests import utils
 from tests.e2e.executors import base
 
 EXECUTOR_CODE_TPL = """
-${model_code}
+{model_code}
 
 [<EntryPoint>]
 let main args =
     let res = score (List.ofSeq (Seq.map double args))
-    ${print_code}
+    {print_code}
     0
 """
 
@@ -41,7 +40,7 @@ class FSharpExecutor(base.BaseExecutor):
 
     @classmethod
     def prepare_global(cls, **kwargs):
-        super(FSharpExecutor, cls).prepare_global(**kwargs)
+        super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
             cls.target_exec_dir = os.path.join(cls._global_tmp_dir, "bin")
 
@@ -60,7 +59,7 @@ class FSharpExecutor(base.BaseExecutor):
             print_code = PRINT_VECTOR
         else:
             print_code = PRINT_SCALAR
-        code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        code = EXECUTOR_CODE_TPL.format(
             print_code=print_code,
             model_code=self.interpreter.interpret(self.model_ast))
 
@@ -71,6 +70,6 @@ class FSharpExecutor(base.BaseExecutor):
         subprocess.call([self._dotnet,
                          "build",
                          os.path.join(self._global_tmp_dir,
-                                      "{}.fsproj".format(self.project_name)),
+                                      f"{self.project_name}.fsproj"),
                          "--output",
                          self.target_exec_dir])

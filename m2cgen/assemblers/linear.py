@@ -48,7 +48,7 @@ class SklearnLinearModelAssembler(BaseLinearModelAssembler):
 class StatsmodelsLinearModelAssembler(BaseLinearModelAssembler):
 
     def __init__(self, model):
-        super(StatsmodelsLinearModelAssembler, self).__init__(model)
+        super().__init__(model)
         const_idx = self.model.model.data.const_idx
         if const_idx is None and self.model.k_constant:
             raise ValueError("Unknown constant position")
@@ -76,28 +76,23 @@ class ProcessMLEModelAssembler(BaseLinearModelAssembler):
         return self.model.params[:self.model.k_exog]
 
 
-class StatsmodelsGLMModelAssembler(StatsmodelsLinearModelAssembler):
+class GLMMixin:
 
     def _final_transform(self, ast_to_transform):
-        link_function = type(self.model.model.family.link).__name__
+        link_function = self._get_link_function_name()
         link_function_lower = link_function.lower()
-        supported_inversed_functions = {
-            "logit": self._logit_inversed,
-            "power": self._power_inversed,
-            "inverse_power": self._inverse_power_inversed,
-            "sqrt": self._sqrt_inversed,
-            "inverse_squared": self._inverse_squared_inversed,
-            "identity": self._identity_inversed,
-            "log": self._log_inversed,
-            "cloglog": self._cloglog_inversed,
-            "negativebinomial": self._negativebinomial_inversed,
-            "nbinom": self._negativebinomial_inversed
-        }
-        if link_function_lower not in supported_inversed_functions:
+        supported_inversed_funs = self._get_supported_inversed_funs()
+        if link_function_lower not in supported_inversed_funs:
             raise ValueError(
-                "Unsupported link function '{}'".format(link_function))
-        fun = supported_inversed_functions[link_function_lower]
+                f"Unsupported link function '{link_function}'")
+        fun = supported_inversed_funs[link_function_lower]
         return fun(ast_to_transform)
+
+    def _get_link_function_name(self):
+        raise NotImplementedError
+
+    def _get_supported_inversed_funs(self):
+        raise NotImplementedError
 
     def _logit_inversed(self, ast_to_transform):
         return utils.div(
@@ -110,7 +105,7 @@ class StatsmodelsGLMModelAssembler(StatsmodelsLinearModelAssembler):
                         ast_to_transform))))
 
     def _power_inversed(self, ast_to_transform):
-        power = self.model.model.family.link.power
+        power = self._get_power()
         if power == 1:
             return self._identity_inversed(ast_to_transform)
         elif power == -1:
@@ -150,16 +145,49 @@ class StatsmodelsGLMModelAssembler(StatsmodelsLinearModelAssembler):
                     ast.ExpExpr(ast_to_transform))))
 
     def _negativebinomial_inversed(self, ast_to_transform):
+        alpha = self._get_alpha()
         return utils.div(
             ast.NumVal(-1.0),
             utils.mul(
-                ast.NumVal(self.model.model.family.link.alpha),
+                ast.NumVal(alpha),
                 utils.sub(
                     ast.NumVal(1.0),
                     ast.ExpExpr(
                         utils.sub(
                             ast.NumVal(0.0),
                             ast_to_transform)))))
+
+    def _get_power(self):
+        raise NotImplementedError
+
+    def _get_alpha(self):
+        raise NotImplementedError
+
+
+class StatsmodelsGLMModelAssembler(GLMMixin, StatsmodelsLinearModelAssembler):
+
+    def _get_link_function_name(self):
+        return type(self.model.model.family.link).__name__
+
+    def _get_supported_inversed_funs(self):
+        return {
+            "logit": self._logit_inversed,
+            "power": self._power_inversed,
+            "inverse_power": self._inverse_power_inversed,
+            "sqrt": self._sqrt_inversed,
+            "inverse_squared": self._inverse_squared_inversed,
+            "identity": self._identity_inversed,
+            "log": self._log_inversed,
+            "cloglog": self._cloglog_inversed,
+            "negativebinomial": self._negativebinomial_inversed,
+            "nbinom": self._negativebinomial_inversed
+        }
+
+    def _get_power(self):
+        return self.model.model.family.link.power
+
+    def _get_alpha(self):
+        return self.model.model.family.link.alpha
 
 
 class StatsmodelsModelAssemblerSelector(ModelAssembler):
@@ -175,10 +203,23 @@ class StatsmodelsModelAssemblerSelector(ModelAssembler):
             self.assembler = StatsmodelsLinearModelAssembler(model)
         else:
             raise NotImplementedError(
-                "Model '{}' is not supported".format(underlying_model))
+                f"Model '{underlying_model}' is not supported")
 
     def assemble(self):
         return self.assembler.assemble()
+
+
+class SklearnGLMModelAssembler(GLMMixin, SklearnLinearModelAssembler):
+
+    def _get_link_function_name(self):
+        return type(self.model._link_instance).__name__
+
+    def _get_supported_inversed_funs(self):
+        return {
+            "identitylink": self._identity_inversed,
+            "loglink": self._log_inversed,
+            "logitlink": self._logit_inversed
+        }
 
 
 def _linear_to_ast(coef, intercept):

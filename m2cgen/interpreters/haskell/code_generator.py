@@ -18,7 +18,7 @@ class HaskellCodeGenerator(BaseCodeGenerator):
             left=array_name, op="!!", right=index)
 
     def add_if_statement(self, if_def):
-        self.add_code_line("if ({})".format(if_def))
+        self.add_code_line(f"if ({if_def})")
         self.increase_indent()
         self.add_code_line("then")
         self.increase_indent()
@@ -33,30 +33,29 @@ class HaskellCodeGenerator(BaseCodeGenerator):
         self.decrease_indent()
 
     def get_func_name(self):
-        func_name = "func" + str(self._func_idx)
+        func_name = f"func{self._func_idx}"
         self._func_idx += 1
         return func_name
 
     def add_function(self, function_name, function_body):
-        self.add_code_line("{} =".format(function_name))
+        self.add_code_line(f"{function_name} =")
         self.increase_indent()
         self.add_code_lines(function_body)
         self.decrease_indent()
 
     def function_invocation(self, function_name, *args):
-        return (function_name + " " +
-                " ".join(map(lambda x: "({})".format(x), args)))
+        function_args = " ".join(map(lambda x: f"({x})", args))
+        return f"{function_name} {function_args}"
 
     def add_function_def(self, name, args, is_scalar_output):
-        signature = name + " :: "
-        signature += " -> ".join(
+        types = " -> ".join(
             ["[Double]" if is_vector else "Double"
              for is_vector, _ in [*args, (not is_scalar_output, None)]])
+        signature = f"{name} :: {types}"
         self.add_code_line(signature)
 
-        function_def = name + " "
-        function_def += " ".join([n for _, n in args])
-        function_def += " ="
+        func_args = " ".join([n for _, n in args])
+        function_def = f"{name} {func_args} ="
         self.add_code_line(function_def)
 
         self.increase_indent()
@@ -68,7 +67,7 @@ class HaskellCodeGenerator(BaseCodeGenerator):
         self.decrease_indent()
 
     def vector_init(self, values):
-        return "[" + ", ".join(values) + "]"
+        return f"[{', '.join(values)}]"
 
     def _comp_op_overwrite(self, op):
         if op == CompOpType.NOT_EQ:

@@ -198,7 +198,7 @@ class CustomRInterpreter(RInterpreter):
 
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = CustomRInterpreter()
@@ -215,7 +215,7 @@ score <- function(input) {
 
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
@@ -252,9 +252,9 @@ score <- function(input) {
 
 def test_deep_mixed_exprs_not_reaching_threshold():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         inner = ast.NumVal(1)
-        for i in range(2):
+        for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
@@ -295,12 +295,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -312,19 +312,19 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expected_code = """
 score <- function(input) {
     var1 <- subroutine0(input)
-    if (((1.0) + (var1)) == (1.0)) {
+    if (((3.0) + (var1)) == (3.0)) {
         var0 <- 1.0
     } else {
         var2 <- subroutine1(input)
-        if (((1.0) + (var2)) == (1.0)) {
+        if (((2.0) + (var2)) == (3.0)) {
             var0 <- 1.0
         } else {
             var3 <- subroutine2(input)
-            if (((1.0) + (var3)) == (1.0)) {
+            if (((1.0) + (var3)) == (3.0)) {
                 var0 <- 1.0
             } else {
                 var4 <- subroutine3(input)
-                if (((1.0) + (var4)) == (1.0)) {
+                if (((0.0) + (var4)) == (3.0)) {
                     var0 <- 1.0
                 } else {
                     var0 <- 1.0
@@ -335,24 +335,24 @@ score <- function(input) {
     return(var0)
 }
 subroutine0 <- function(input) {
-    var1 <- (1.0) + (1.0)
-    var0 <- (1.0) + (var1)
-    return((1.0) + (var0))
+    var0 <- (3.0) + (1.0)
+    var1 <- (3.0) + (var0)
+    return((3.0) + (var1))
 }
 subroutine1 <- function(input) {
-    var1 <- (1.0) + (1.0)
-    var0 <- (1.0) + (var1)
-    return((1.0) + (var0))
+    var0 <- (2.0) + (1.0)
+    var1 <- (2.0) + (var0)
+    return((2.0) + (var1))
 }
 subroutine2 <- function(input) {
-    var1 <- (1.0) + (1.0)
-    var0 <- (1.0) + (var1)
-    return((1.0) + (var0))
+    var0 <- (1.0) + (1.0)
+    var1 <- (1.0) + (var0)
+    return((1.0) + (var1))
 }
 subroutine3 <- function(input) {
-    var1 <- (1.0) + (1.0)
-    var0 <- (1.0) + (var1)
-    return((1.0) + (var0))
+    var0 <- (0.0) + (1.0)
+    var1 <- (0.0) + (var0)
+    return((0.0) + (var1))
 }
 """
 
@@ -417,6 +417,32 @@ def test_tanh_expr():
     expected_code = """
 score <- function(input) {
     return(tanh(2.0))
+}
+"""
+
+    interpreter = RInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    expected_code = """
+score <- function(input) {
+    return(log(2.0))
+}
+"""
+
+    interpreter = RInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    expected_code = """
+score <- function(input) {
+    return(log1p(2.0))
 }
 """
 

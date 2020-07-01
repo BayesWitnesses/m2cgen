@@ -2,7 +2,8 @@ from .linear import (SklearnLinearModelAssembler,
                      StatsmodelsLinearModelAssembler,
                      ProcessMLEModelAssembler,
                      StatsmodelsGLMModelAssembler,
-                     StatsmodelsModelAssemblerSelector)
+                     StatsmodelsModelAssemblerSelector,
+                     SklearnGLMModelAssembler)
 from .tree import TreeModelAssembler
 from .ensemble import RandomForestModelAssembler
 from .boosting import (XGBoostModelAssemblerSelector,
@@ -27,6 +28,7 @@ __all__ = [
     LightningSVMModelAssembler,
     StatsmodelsGLMModelAssembler,
     StatsmodelsModelAssemblerSelector,
+    SklearnGLMModelAssembler,
 ]
 
 
@@ -59,6 +61,7 @@ SUPPORTED_MODELS = {
     "sklearn_BayesianRidge": SklearnLinearModelAssembler,
     "sklearn_ElasticNet": SklearnLinearModelAssembler,
     "sklearn_ElasticNetCV": SklearnLinearModelAssembler,
+    "sklearn_GammaRegressor": SklearnGLMModelAssembler,
     "sklearn_HuberRegressor": SklearnLinearModelAssembler,
     "sklearn_Lars": SklearnLinearModelAssembler,
     "sklearn_LarsCV": SklearnLinearModelAssembler,
@@ -71,11 +74,13 @@ SUPPORTED_MODELS = {
     "sklearn_OrthogonalMatchingPursuit": SklearnLinearModelAssembler,
     "sklearn_OrthogonalMatchingPursuitCV": SklearnLinearModelAssembler,
     "sklearn_PassiveAggressiveRegressor": SklearnLinearModelAssembler,
+    "sklearn_PoissonRegressor": SklearnGLMModelAssembler,
     "sklearn_RANSACRegressor": RANSACModelAssembler,
     "sklearn_Ridge": SklearnLinearModelAssembler,
     "sklearn_RidgeCV": SklearnLinearModelAssembler,
     "sklearn_SGDRegressor": SklearnLinearModelAssembler,
     "sklearn_TheilSenRegressor": SklearnLinearModelAssembler,
+    "sklearn_TweedieRegressor": SklearnGLMModelAssembler,
 
     # Statsmodels Linear Regressors
     "statsmodels_GLMResultsWrapper": StatsmodelsGLMModelAssembler,
@@ -125,8 +130,7 @@ SUPPORTED_MODELS = {
 
 def _get_full_model_name(model):
     type_name = type(model)
-    return "{}_{}".format(type_name.__module__.split(".")[0],
-                          type_name.__name__)
+    return f"{type_name.__module__.split('.')[0]}_{type_name.__name__}"
 
 
 def get_assembler_cls(model):
@@ -134,7 +138,6 @@ def get_assembler_cls(model):
     assembler_cls = SUPPORTED_MODELS.get(model_name)
 
     if not assembler_cls:
-        raise NotImplementedError(
-            "Model '{}' is not supported".format(model_name))
+        raise NotImplementedError(f"Model '{model_name}' is not supported")
 
     return assembler_cls

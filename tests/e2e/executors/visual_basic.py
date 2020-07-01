@@ -1,5 +1,4 @@
 import os
-import string
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -16,7 +15,7 @@ Module Program
         For i = LBound(cmdArgs) To UBound(cmdArgs)
             inputVector(i) = CDbl(cmdArgs(i))
         Next i
-        ${print_code}
+        {print_code}
     End Sub
 
 End Module
@@ -57,7 +56,7 @@ class VisualBasicExecutor(base.BaseExecutor):
 
     @classmethod
     def prepare_global(cls, **kwargs):
-        super(VisualBasicExecutor, cls).prepare_global(**kwargs)
+        super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
             cls.target_exec_dir = os.path.join(cls._global_tmp_dir, "bin")
 
@@ -76,7 +75,7 @@ class VisualBasicExecutor(base.BaseExecutor):
             print_code = EXECUTE_AND_PRINT_VECTOR
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
-        executor_code = string.Template(EXECUTOR_CODE_TPL).substitute(
+        executor_code = EXECUTOR_CODE_TPL.format(
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
@@ -90,6 +89,6 @@ class VisualBasicExecutor(base.BaseExecutor):
         subprocess.call([self._dotnet,
                          "build",
                          os.path.join(self._global_tmp_dir,
-                                      "{}.vbproj".format(self.project_name)),
+                                      f"{self.project_name}.vbproj"),
                          "--output",
                          self.target_exec_dir])

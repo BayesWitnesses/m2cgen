@@ -18,8 +18,12 @@ class HaskellInterpreter(ToCodeInterpreter,
 
     abs_function_name = "abs"
     exponent_function_name = "exp"
+    logarithm_function_name = "log"
+    log1p_function_name = "log1p"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
+
+    with_log1p_expr = False
 
     def __init__(self,  module_name="Model", indent=4, function_name="score",
                  *args, **kwargs):
@@ -28,7 +32,7 @@ class HaskellInterpreter(ToCodeInterpreter,
         self.function_name = function_name
 
         cg = HaskellCodeGenerator(indent=indent)
-        super(HaskellInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -48,6 +52,11 @@ class HaskellInterpreter(ToCodeInterpreter,
         if self.with_linear_algebra:
             filename = os.path.join(
                 os.path.dirname(__file__), "linear_algebra.hs")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
+        if self.with_log1p_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "log1p.hs")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
@@ -81,6 +90,10 @@ class HaskellInterpreter(ToCodeInterpreter,
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="**")
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)
 
     # Cached expressions become functions with no arguments, i.e. values
     # which are CAFs. Therefore, they are computed only once.

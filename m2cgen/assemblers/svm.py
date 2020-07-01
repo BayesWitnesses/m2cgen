@@ -13,14 +13,12 @@ class BaseSVMModelAssembler(ModelAssembler):
         kernel_type = model.kernel
         supported_kernels = self._get_supported_kernels()
         if kernel_type not in supported_kernels:
-            raise ValueError(
-                "Unsupported kernel type '{}'".format(kernel_type))
+            raise ValueError(f"Unsupported kernel type '{kernel_type}'")
         self._kernel_fun = supported_kernels[kernel_type]
 
         gamma = self._get_gamma()
         self._gamma_expr = ast.NumVal(gamma)
-        self._neg_gamma_expr = utils.sub(ast.NumVal(0.0), ast.NumVal(gamma),
-                                         to_reuse=True)
+        self._neg_gamma_expr = ast.NumVal(-gamma)
 
         self._output_size = self._get_output_size()
 

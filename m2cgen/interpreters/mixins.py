@@ -27,7 +27,7 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
             return super()._pre_interpret_hook(expr, **kwargs)
 
         # We track depth of the binary expressions and call a hook if it
-        # reaches specified threshold .
+        # reaches specified threshold.
         if bin_depth >= self.bin_depth_threshold:
             return self.bin_depth_threshold_hook(expr, **kwargs), kwargs
 
@@ -36,8 +36,10 @@ class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
 
     # Default implementation. Simply adds new variable.
     def bin_depth_threshold_hook(self, expr, **kwargs):
-        var_name = self._cg.add_var_declaration(expr.output_size)
+        if expr in self._cached_expr_results:
+            return self._cached_expr_results[expr].var_name
         result = self._do_interpret(expr, **kwargs)
+        var_name = self._cg.add_var_declaration(expr.output_size)
         self._cg.add_var_assignment(var_name, result, expr.output_size)
         return var_name
 
@@ -60,8 +62,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
 
     def interpret_bin_vector_expr(self, expr, extra_func_args=(), **kwargs):
         if expr.op not in self.supported_bin_vector_ops:
-            raise NotImplementedError(
-                "Op '{}' is unsupported".format(expr.op.name))
+            raise NotImplementedError(f"Op '{expr.op.name}' is unsupported")
 
         self.with_linear_algebra = True
 
@@ -76,8 +77,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
     def interpret_bin_vector_num_expr(self, expr, extra_func_args=(),
                                       **kwargs):
         if expr.op not in self.supported_bin_vector_num_ops:
-            raise NotImplementedError(
-                "Op '{}' is unsupported".format(expr.op.name))
+            raise NotImplementedError(f"Op '{expr.op.name}' is unsupported")
 
         self.with_linear_algebra = True
 
@@ -190,7 +190,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
         return self._cg.finalize_and_get_generated_code()
 
     def _get_subroutine_name(self):
-        subroutine_name = "subroutine" + str(self._subroutine_idx)
+        subroutine_name = f"subroutine{self._subroutine_idx}"
         self._subroutine_idx += 1
         return subroutine_name
 

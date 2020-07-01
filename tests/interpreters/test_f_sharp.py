@@ -188,7 +188,7 @@ class CustomFSharpInterpreter(FSharpInterpreter):
 
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = CustomFSharpInterpreter()
@@ -205,7 +205,7 @@ let score (input : double list) =
 
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
@@ -238,9 +238,9 @@ let score (input : double list) =
 
 def test_deep_mixed_exprs_not_reaching_threshold():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         inner = ast.NumVal(1)
-        for i in range(2):
+        for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
@@ -277,12 +277,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -291,24 +291,24 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        (1.0) + ((1.0) + (1.0))
+        (3.0) + ((3.0) + (1.0))
     let func1 =
-        (1.0) + ((1.0) + (1.0))
+        (2.0) + ((2.0) + (1.0))
     let func2 =
         (1.0) + ((1.0) + (1.0))
     let func3 =
-        (1.0) + ((1.0) + (1.0))
+        (0.0) + ((0.0) + (1.0))
     let func4 =
-        if (((1.0) + ((1.0) + (func0))) = (1.0)) then
+        if (((3.0) + ((3.0) + (func0))) = (3.0)) then
             1.0
         else
-            if (((1.0) + ((1.0) + (func1))) = (1.0)) then
+            if (((2.0) + ((2.0) + (func1))) = (3.0)) then
                 1.0
             else
-                if (((1.0) + ((1.0) + (func2))) = (1.0)) then
+                if (((1.0) + ((1.0) + (func2))) = (3.0)) then
                     1.0
                 else
-                    if (((1.0) + ((1.0) + (func3))) = (1.0)) then
+                    if (((0.0) + ((0.0) + (func3))) = (3.0)) then
                         1.0
                     else
                         1.0
@@ -373,6 +373,70 @@ def test_tanh_expr():
     expected_code = """
 let score (input : double list) =
     tanh (2.0)
+"""
+
+    interpreter = FSharpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    expected_code = """
+let score (input : double list) =
+    log (2.0)
+"""
+
+    interpreter = FSharpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    expected_code = """
+let private chebyshevBroucke i coeffs =
+    let step k (b0, b1, _) = ((k + i * 2.0 * b0 - b1), b0, b1)
+    let fini (b0, _, b2) = (b0 - b2) * 0.5
+    fini (List.foldBack step coeffs (0.0, 0.0, 0.0))
+let private log1p x =
+    let x' = abs x
+    let chebCoeffs = [
+         0.10378693562743769800686267719098e+1;
+        -0.13364301504908918098766041553133e+0;
+         0.19408249135520563357926199374750e-1;
+        -0.30107551127535777690376537776592e-2;
+         0.48694614797154850090456366509137e-3;
+        -0.81054881893175356066809943008622e-4;
+         0.13778847799559524782938251496059e-4;
+        -0.23802210894358970251369992914935e-5;
+         0.41640416213865183476391859901989e-6;
+        -0.73595828378075994984266837031998e-7;
+         0.13117611876241674949152294345011e-7;
+        -0.23546709317742425136696092330175e-8;
+         0.42522773276034997775638052962567e-9;
+        -0.77190894134840796826108107493300e-10;
+         0.14075746481359069909215356472191e-10;
+        -0.25769072058024680627537078627584e-11;
+         0.47342406666294421849154395005938e-12;
+        -0.87249012674742641745301263292675e-13;
+         0.16124614902740551465739833119115e-13;
+        -0.29875652015665773006710792416815e-14;
+         0.55480701209082887983041321697279e-15;
+        -0.10324619158271569595141333961932e-15]
+    match x with
+        | 0.0               -> 0.0
+        | -1.0              -> -infinity
+        | i when i < -1.0   -> nan
+        | i when x' < System.Double.Epsilon * 0.5
+                            -> x
+        | i when (x > 0.0 && x < 1e-8) || (x > -1e-9 && x < 0.0)
+                            -> x * (1.0 - x * 0.5)
+        | i when x' < 0.375 ->
+            x * (1.0 - x * chebyshevBroucke (x / 0.375) chebCoeffs)
+        | _                 -> log (1.0 + x)
+let score (input : double list) =
+    log1p (2.0)
 """
 
     interpreter = FSharpInterpreter()

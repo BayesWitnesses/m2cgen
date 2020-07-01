@@ -8,28 +8,23 @@ class JavaCodeGenerator(CLikeCodeGenerator):
     scalar_output_type = "double"
     vector_output_type = "double[]"
 
-    def __init__(self, *args, **kwargs):
-        super(JavaCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_class_def(self, class_name, modifier="public"):
-        class_def = modifier + " class " + class_name + " {\n"
+        class_def = f"{modifier} class {class_name} {{"
         self.add_code_line(class_def)
         self.increase_indent()
 
     def add_method_def(self, name, args, is_vector_output, modifier="public"):
         return_type = self._get_var_declare_type(is_vector_output)
 
-        method_def = modifier + " static " + return_type + " " + name + "("
-        method_def += ",".join([
-            self._get_var_declare_type(is_vector) + " " + n
+        func_args = ",".join([
+            f"{self._get_var_declare_type(is_vector)} {n}"
             for is_vector, n in args])
-        method_def += ") {"
+        method_def = f"{modifier} static {return_type} {name}({func_args}) {{"
         self.add_code_line(method_def)
         self.increase_indent()
 
     def add_package_name(self, package_name):
-        package_def = "package " + package_name + ";\n"
-        self.add_code_line(package_def)
+        self.add_code_line(f"package {package_name};")
 
     @contextlib.contextmanager
     def class_definition(self, class_name):
@@ -45,8 +40,7 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     def vector_init(self, values):
-        return "new " + self.vector_output_type + (
-            " {" + ", ".join(values) + "}")
+        return f"new {self.vector_output_type} {{{', '.join(values)}}}"
 
     def _get_var_declare_type(self, is_vector):
         return (

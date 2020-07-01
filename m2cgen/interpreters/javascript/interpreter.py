@@ -21,6 +21,8 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "Math.abs"
     exponent_function_name = "Math.exp"
+    logarithm_function_name = "Math.log"
+    log1p_function_name = "Math.log1p"
     power_function_name = "Math.pow"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
@@ -31,7 +33,7 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = JavascriptCodeGenerator(indent=indent)
-        super(JavascriptInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

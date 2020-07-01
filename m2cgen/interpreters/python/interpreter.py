@@ -23,6 +23,8 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "abs"
     exponent_function_name = "math.exp"
+    logarithm_function_name = "math.log"
+    log1p_function_name = "math.log1p"
     power_function_name = "math.pow"
     sqrt_function_name = "math.sqrt"
     tanh_function_name = "math.tanh"
@@ -31,7 +33,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = PythonCodeGenerator(indent=indent)
-        super(PythonInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

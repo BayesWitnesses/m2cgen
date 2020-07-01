@@ -347,6 +347,36 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.log(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.log1p(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
@@ -367,7 +397,7 @@ public class Model {
 
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = interpreters.JavaInterpreter()
@@ -389,7 +419,7 @@ public class Model {
 
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
@@ -430,9 +460,9 @@ public class Model {
 
 def test_deep_mixed_exprs_not_reaching_threshold():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         inner = ast.NumVal(1)
-        for _ in range(2):
+        for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
@@ -477,12 +507,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -494,16 +524,16 @@ def test_deep_mixed_exprs_exceeding_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (((1.0) + ((1.0) + (subroutine0(input)))) == (1.0)) {
+        if (((3.0) + ((3.0) + (subroutine0(input)))) == (3.0)) {
             var0 = 1.0;
         } else {
-            if (((1.0) + ((1.0) + (subroutine1(input)))) == (1.0)) {
+            if (((2.0) + ((2.0) + (subroutine1(input)))) == (3.0)) {
                 var0 = 1.0;
             } else {
-                if (((1.0) + ((1.0) + (subroutine2(input)))) == (1.0)) {
+                if (((1.0) + ((1.0) + (subroutine2(input)))) == (3.0)) {
                     var0 = 1.0;
                 } else {
-                    if (((1.0) + ((1.0) + (subroutine3(input)))) == (1.0)) {
+                    if (((0.0) + ((0.0) + (subroutine3(input)))) == (3.0)) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
@@ -514,16 +544,16 @@ public class Model {
         return var0;
     }
     public static double subroutine0(double[] input) {
-        return (1.0) + ((1.0) + (1.0));
+        return (3.0) + ((3.0) + (1.0));
     }
     public static double subroutine1(double[] input) {
-        return (1.0) + ((1.0) + (1.0));
+        return (2.0) + ((2.0) + (1.0));
     }
     public static double subroutine2(double[] input) {
         return (1.0) + ((1.0) + (1.0));
     }
     public static double subroutine3(double[] input) {
-        return (1.0) + ((1.0) + (1.0));
+        return (0.0) + ((0.0) + (1.0));
     }
 }"""
 

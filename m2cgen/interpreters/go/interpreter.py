@@ -18,6 +18,8 @@ class GoInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "math.Abs"
     exponent_function_name = "math.Exp"
+    logarithm_function_name = "math.Log"
+    log1p_function_name = "math.Log1p"
     power_function_name = "math.Pow"
     sqrt_function_name = "math.Sqrt"
     tanh_function_name = "math.Tanh"
@@ -26,7 +28,7 @@ class GoInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = GoCodeGenerator(indent=indent)
-        super(GoInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

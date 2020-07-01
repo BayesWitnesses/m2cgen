@@ -128,7 +128,7 @@ if __name__ == "__main__":
         folder = os.path.join(export_folder, language, mtype)
         os.makedirs(folder, exist_ok=True)
 
-        model_filename = "{}.{}".format(mname, file_ext)
+        model_filename = f"{mname}.{file_ext}"
         model_path = os.path.join(folder, model_filename)
 
         with open(model_path, "w") as f:

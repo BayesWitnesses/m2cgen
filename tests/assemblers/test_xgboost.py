@@ -1,8 +1,9 @@
 import xgboost
 import numpy as np
 import os
-from tests import utils
+
 from m2cgen import assemblers, ast
+from tests import utils
 
 
 def test_binary_classification():
@@ -21,16 +22,13 @@ def test_binary_classification():
                 ast.BinNumExpr(
                     ast.NumVal(0),
                     ast.BinNumExpr(
-                        ast.BinNumExpr(
-                            ast.NumVal(-0.0),
-                            ast.IfExpr(
-                                ast.CompExpr(
-                                    ast.FeatureRef(20),
-                                    ast.NumVal(16.7950001),
-                                    ast.CompOpType.GTE),
-                                ast.NumVal(-0.519171),
-                                ast.NumVal(0.49032259)),
-                            ast.BinNumOpType.ADD),
+                        ast.IfExpr(
+                            ast.CompExpr(
+                                ast.FeatureRef(20),
+                                ast.NumVal(16.7950001),
+                                ast.CompOpType.GTE),
+                            ast.NumVal(-0.519171),
+                            ast.NumVal(0.49032259)),
                         ast.IfExpr(
                             ast.CompExpr(
                                 ast.FeatureRef(27),
@@ -89,23 +87,23 @@ def test_regression():
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
+        ast.NumVal(base_score),
         ast.BinNumExpr(
-            ast.NumVal(base_score),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
-                    ast.NumVal(9.72500038),
+                    ast.NumVal(9.725),
                     ast.CompOpType.GTE),
                 ast.NumVal(4.98425627),
                 ast.NumVal(8.75091362)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.941),
+                    ast.CompOpType.GTE),
+                ast.NumVal(8.34557438),
+                ast.NumVal(3.9141891)),
             ast.BinNumOpType.ADD),
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.FeatureRef(5),
-                ast.NumVal(6.94099998),
-                ast.CompOpType.GTE),
-            ast.NumVal(8.34557438),
-            ast.NumVal(3.9141891)),
         ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
@@ -124,8 +122,8 @@ def test_regression_best_ntree_limit():
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
+        ast.NumVal(base_score),
         ast.BinNumExpr(
-            ast.NumVal(base_score),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
@@ -133,14 +131,14 @@ def test_regression_best_ntree_limit():
                     ast.CompOpType.GTE),
                 ast.NumVal(4.98425627),
                 ast.NumVal(8.75091362)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.94099998),
+                    ast.CompOpType.GTE),
+                ast.NumVal(8.34557438),
+                ast.NumVal(3.9141891)),
             ast.BinNumOpType.ADD),
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.FeatureRef(5),
-                ast.NumVal(6.94099998),
-                ast.CompOpType.GTE),
-            ast.NumVal(8.34557438),
-            ast.NumVal(3.9141891)),
         ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
@@ -240,8 +238,8 @@ def test_regression_saved_without_feature_names():
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
+        ast.NumVal(base_score),
         ast.BinNumExpr(
-            ast.NumVal(base_score),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
@@ -249,14 +247,14 @@ def test_regression_saved_without_feature_names():
                     ast.CompOpType.GTE),
                 ast.NumVal(4.98425627),
                 ast.NumVal(8.75091362)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.94099998),
+                    ast.CompOpType.GTE),
+                ast.NumVal(8.34557438),
+                ast.NumVal(3.9141891)),
             ast.BinNumOpType.ADD),
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.FeatureRef(5),
-                ast.NumVal(6.94099998),
-                ast.CompOpType.GTE),
-            ast.NumVal(8.34557438),
-            ast.NumVal(3.9141891)),
         ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
@@ -349,8 +347,8 @@ def test_regression_random_forest():
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
+        ast.NumVal(base_score),
         ast.BinNumExpr(
-            ast.NumVal(0.6),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
@@ -358,14 +356,14 @@ def test_regression_random_forest():
                     ast.CompOpType.GTE),
                 ast.NumVal(18.1008453),
                 ast.NumVal(9.60167599)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.79699993),
+                    ast.CompOpType.GTE),
+                ast.NumVal(17.780262),
+                ast.NumVal(9.51712894)),
             ast.BinNumOpType.ADD),
-        ast.IfExpr(
-            ast.CompExpr(
-                ast.FeatureRef(5),
-                ast.NumVal(6.79699993),
-                ast.CompOpType.GTE),
-            ast.NumVal(17.780262),
-            ast.NumVal(9.51712894)),
         ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)

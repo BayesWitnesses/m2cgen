@@ -195,7 +195,7 @@ class CustomPythonInterpreter(interpreters.PythonInterpreter):
 
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = CustomPythonInterpreter()
@@ -211,7 +211,7 @@ def score(input):
 
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
@@ -243,9 +243,9 @@ def score(input):
 
 def test_deep_mixed_exprs_not_reaching_threshold():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         inner = ast.NumVal(1)
-        for i in range(2):
+        for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
@@ -281,12 +281,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -294,20 +294,20 @@ def test_deep_mixed_exprs_exceeding_threshold():
 
     expected_code = """
 def score(input):
-    var1 = (1.0) + ((1.0) + (1.0))
-    if ((1.0) + ((1.0) + (var1))) == (1.0):
+    var1 = (3.0) + ((3.0) + (1.0))
+    if ((3.0) + ((3.0) + (var1))) == (3.0):
         var0 = 1.0
     else:
-        var2 = (1.0) + ((1.0) + (1.0))
-        if ((1.0) + ((1.0) + (var2))) == (1.0):
+        var2 = (2.0) + ((2.0) + (1.0))
+        if ((2.0) + ((2.0) + (var2))) == (3.0):
             var0 = 1.0
         else:
             var3 = (1.0) + ((1.0) + (1.0))
-            if ((1.0) + ((1.0) + (var3))) == (1.0):
+            if ((1.0) + ((1.0) + (var3))) == (3.0):
                 var0 = 1.0
             else:
-                var4 = (1.0) + ((1.0) + (1.0))
-                if ((1.0) + ((1.0) + (var4))) == (1.0):
+                var4 = (0.0) + ((0.0) + (1.0))
+                if ((0.0) + ((0.0) + (var4))) == (3.0):
                     var0 = 1.0
                 else:
                     var0 = 1.0
@@ -319,7 +319,7 @@ def score(input):
 
 def test_deep_expression():
     expr = ast.NumVal(1)
-    for i in range(120):
+    for _ in range(120):
         expr = ast.BinNumExpr(expr, ast.NumVal(1), ast.BinNumOpType.ADD)
 
     interpreter = interpreters.PythonInterpreter()
@@ -399,6 +399,34 @@ def test_tanh_expr():
 import math
 def score(input):
     return math.tanh(2.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import math
+def score(input):
+    return math.log(2.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import math
+def score(input):
+    return math.log1p(2.0)
     """
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

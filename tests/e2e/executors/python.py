@@ -20,7 +20,7 @@ class PythonExecutor(base.BaseExecutor):
         sys.path.append(parent_dir)
 
         try:
-            score = importlib.import_module("{}.model".format(package)).score
+            score = importlib.import_module(f"{package}.model").score
         finally:
             sys.path.pop()
 

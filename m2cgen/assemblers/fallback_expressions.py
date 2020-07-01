@@ -54,6 +54,18 @@ def exp(expr, to_reuse=False):
         to_reuse=to_reuse)
 
 
+def log1p(expr):
+    # Use trick to compute log1p for small values more accurate
+    # https://www.johndcook.com/blog/2012/07/25/trick-for-computing-log1x/
+    expr = ast.IdExpr(expr, to_reuse=True)
+    expr1p = utils.add(ast.NumVal(1.0), expr, to_reuse=True)
+    expr1pm1 = utils.sub(expr1p, ast.NumVal(1.0), to_reuse=True)
+    return ast.IfExpr(
+        utils.eq(expr1pm1, ast.NumVal(0.0)),
+        expr,
+        utils.div(utils.mul(expr, ast.LogExpr(expr1p)), expr1pm1))
+
+
 def sigmoid(expr, to_reuse=False):
     neg_expr = ast.BinNumExpr(ast.NumVal(0.0), expr, ast.BinNumOpType.SUB)
     exp_expr = ast.ExpExpr(neg_expr)

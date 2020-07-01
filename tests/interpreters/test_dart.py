@@ -233,7 +233,7 @@ class CustomDartInterpreter(DartInterpreter):
 
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = CustomDartInterpreter()
@@ -251,7 +251,7 @@ double score(List<double> input) {
 
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
@@ -289,9 +289,9 @@ double score(List<double> input) {
 
 def test_deep_mixed_exprs_not_reaching_threshold():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         inner = ast.NumVal(1)
-        for i in range(2):
+        for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
@@ -333,12 +333,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -348,23 +348,23 @@ def test_deep_mixed_exprs_exceeding_threshold():
 double score(List<double> input) {
     double var0;
     double var1;
-    var1 = (1.0) + ((1.0) + (1.0));
-    if (((1.0) + ((1.0) + (var1))) == (1.0)) {
+    var1 = (3.0) + ((3.0) + (1.0));
+    if (((3.0) + ((3.0) + (var1))) == (3.0)) {
         var0 = 1.0;
     } else {
         double var2;
-        var2 = (1.0) + ((1.0) + (1.0));
-        if (((1.0) + ((1.0) + (var2))) == (1.0)) {
+        var2 = (2.0) + ((2.0) + (1.0));
+        if (((2.0) + ((2.0) + (var2))) == (3.0)) {
             var0 = 1.0;
         } else {
             double var3;
             var3 = (1.0) + ((1.0) + (1.0));
-            if (((1.0) + ((1.0) + (var3))) == (1.0)) {
+            if (((1.0) + ((1.0) + (var3))) == (3.0)) {
                 var0 = 1.0;
             } else {
                 double var4;
-                var4 = (1.0) + ((1.0) + (1.0));
-                if (((1.0) + ((1.0) + (var4))) == (1.0)) {
+                var4 = (0.0) + ((0.0) + (1.0));
+                if (((0.0) + ((0.0) + (var4))) == (3.0)) {
                     var0 = 1.0;
                 } else {
                     var0 = 1.0;
@@ -470,6 +470,83 @@ double tanh(double x) {
         * s + -0.161468768441708447952e+4) / (((s + 0.112811678491632931402e+3)
         * s + 0.223548839060100448583e+4) * s + 0.484406305325125486048e+4);
     return z;
+}
+"""
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    expected_code = """
+import 'dart:math';
+double score(List<double> input) {
+    return log(2.0);
+}
+"""
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    expected_code = """
+import 'dart:math';
+double score(List<double> input) {
+    return log1p(2.0);
+}
+double log1p(double x) {
+    if (x == 0.0)
+        return 0.0;
+    if (x == -1.0)
+        return double.negativeInfinity;
+    if (x < -1.0)
+        return double.nan;
+    double xAbs = x.abs();
+    if (xAbs < 0.5 * 4.94065645841247e-324)
+        return x;
+    if ((x > 0.0 && x < 1e-8) || (x > -1e-9 && x < 0.0))
+        return x * (1.0 - x * 0.5);
+    if (xAbs < 0.375) {
+        List<double> coeffs = [
+             0.10378693562743769800686267719098e+1,
+            -0.13364301504908918098766041553133e+0,
+             0.19408249135520563357926199374750e-1,
+            -0.30107551127535777690376537776592e-2,
+             0.48694614797154850090456366509137e-3,
+            -0.81054881893175356066809943008622e-4,
+             0.13778847799559524782938251496059e-4,
+            -0.23802210894358970251369992914935e-5,
+             0.41640416213865183476391859901989e-6,
+            -0.73595828378075994984266837031998e-7,
+             0.13117611876241674949152294345011e-7,
+            -0.23546709317742425136696092330175e-8,
+             0.42522773276034997775638052962567e-9,
+            -0.77190894134840796826108107493300e-10,
+             0.14075746481359069909215356472191e-10,
+            -0.25769072058024680627537078627584e-11,
+             0.47342406666294421849154395005938e-12,
+            -0.87249012674742641745301263292675e-13,
+             0.16124614902740551465739833119115e-13,
+            -0.29875652015665773006710792416815e-14,
+             0.55480701209082887983041321697279e-15,
+            -0.10324619158271569595141333961932e-15];
+        return x * (1.0 - x * chebyshevBroucke(x / 0.375, coeffs));
+    }
+    return log(1.0 + x);
+}
+double chebyshevBroucke(double x, List<double> coeffs) {
+    double b0, b1, b2, x2;
+    b2 = b1 = b0 = 0.0;
+    x2 = x * 2;
+    for (int i = coeffs.length - 1; i >= 0; --i) {
+        b2 = b1;
+        b1 = b0;
+        b0 = x2 * b1 - b2 + coeffs[i];
+    }
+    return (b0 - b2) * 0.5;
 }
 """
     interpreter = DartInterpreter()

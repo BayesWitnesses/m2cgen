@@ -20,9 +20,13 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
 
     abs_function_name = "Abs"
     exponent_function_name = "Exp"
+    logarithm_function_name = "Log"
+    log1p_function_name = "Log1p"
     power_function_name = "Pow"
     sqrt_function_name = "Sqrt"
     tanh_function_name = "Tanh"
+
+    with_log1p_expr = False
 
     def __init__(self, namespace="ML", class_name="Model", indent=4,
                  function_name="Score", *args, **kwargs):
@@ -32,7 +36,7 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = CSharpCodeGenerator(indent=indent)
-        super(CSharpInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -56,7 +60,16 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
                         os.path.dirname(__file__), "linear_algebra.cs")
                     self._cg.add_code_lines(utils.get_file_content(filename))
 
+                if self.with_log1p_expr:
+                    filename = os.path.join(
+                        os.path.dirname(__file__), "log1p.cs")
+                    self._cg.add_code_lines(utils.get_file_content(filename))
+
         if self.with_math_module:
             self._cg.add_dependency("System.Math")
 
         return self._cg.finalize_and_get_generated_code()
+
+    def interpret_log1p_expr(self, expr, **kwargs):
+        self.with_log1p_expr = True
+        return super().interpret_log1p_expr(expr, **kwargs)
