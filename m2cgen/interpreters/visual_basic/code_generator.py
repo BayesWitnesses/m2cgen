@@ -21,16 +21,13 @@ class VisualBasicCodeGenerator(ImperativeCodeGenerator):
 
     scalar_type = "Double"
 
-    def __init__(self, *args, **kwargs):
-        super(VisualBasicCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_return_statement(self, value, func_name):
         self.add_code_line(self.tpl_return_statement(
             func_name=func_name, value=value))
 
     def add_var_declaration(self, size, exac_size=False):
         var_name = self.get_var_name()
-        type_modifier = ("({})".format((size - 1) if exac_size else "")
+        type_modifier = (f"({(size - 1) if exac_size else ''})"
                          if size > 1 else "")
         self.add_code_line(
             self.tpl_var_declaration(
@@ -44,15 +41,13 @@ class VisualBasicCodeGenerator(ImperativeCodeGenerator):
         self.add_code_line(self.tpl_block_termination(block_name=block_name))
 
     def add_function_def(self, name, args, is_scalar_output):
-        return_type = self.scalar_type
-        return_type += "" if is_scalar_output else "()"
+        return_type = f"{self.scalar_type}{'' if is_scalar_output else '()'}"
 
-        function_def = "Function " + name + "("
-        function_def += ", ".join([
-            ("ByRef " if is_vector else "ByVal ") + n +
-            ("()" if is_vector else "") + " As " + self.scalar_type
+        func_args = ", ".join([
+            f"{'ByRef' if is_vector else 'ByVal'} {n}"
+            f"{'()' if is_vector else ''} As {self.scalar_type}"
             for is_vector, n in args])
-        function_def += ") As " + return_type
+        function_def = f"Function {name}({func_args}) As {return_type}"
         self.add_code_line(function_def)
         self.increase_indent()
 

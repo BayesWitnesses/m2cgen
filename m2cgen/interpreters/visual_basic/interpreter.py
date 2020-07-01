@@ -32,7 +32,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
         cg = VisualBasicCodeGenerator(indent=indent)
         kwargs["feature_array_name"] = "inputVector"
-        super(VisualBasicInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

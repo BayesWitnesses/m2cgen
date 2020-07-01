@@ -19,15 +19,11 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
                     CompOpType.GTE: "-ge", CompOpType.LTE: "-le",
                     CompOpType.GT: "-gt", CompOpType.LT: "-lt"}
 
-    def __init__(self, *args, **kwargs):
-        super(PowershellCodeGenerator, self).__init__(*args, **kwargs)
-
     def add_function_def(self, name, args, is_scalar_output):
-        function_def = "function " + name + "("
-        function_def += ", ".join([
-            self._get_var_type(is_vector) + " $" + n
+        func_args = ", ".join([
+            f"{self._get_var_type(is_vector)} ${n}"
             for is_vector, n in args])
-        function_def += ") {"
+        function_def = f"function {name}({func_args}) {{"
         self.add_code_line(function_def)
         self.increase_indent()
 
@@ -38,14 +34,14 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     def function_invocation(self, function_name, *args):
-        return (function_name + " " +
-                " ".join(map(lambda x: "$({})".format(x), args)))
+        functions_args = " ".join(map(lambda x: f"$({x})", args))
+        return f"{function_name} {functions_args}"
 
     def math_function_invocation(self, function_name, *args):
-        return function_name + "(" + ", ".join(map(str, args)) + ")"
+        return f"{function_name}({', '.join(map(str, args))})"
 
     def get_var_name(self):
-        return "$" + super().get_var_name()
+        return f"${super().get_var_name()}"
 
     def add_var_declaration(self, size):
         var_name = self.get_var_name()
@@ -56,8 +52,8 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
         return var_name
 
     def vector_init(self, values):
-        return ("@(" +
-                ", ".join(map(lambda x: "$({})".format(x), values)) + ")")
+        vals = ", ".join(map(lambda x: f"$({x})", values))
+        return f"@({vals})"
 
     def _get_var_type(self, is_vector):
         return self.vector_type if is_vector else self.scalar_type

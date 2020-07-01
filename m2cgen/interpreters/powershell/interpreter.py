@@ -33,7 +33,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
 
         cg = PowershellCodeGenerator(indent=indent)
         kwargs["feature_array_name"] = "InputVector"
-        super(PowershellInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

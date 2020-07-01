@@ -33,7 +33,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = PythonCodeGenerator(indent=indent)
-        super(PythonInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()

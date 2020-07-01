@@ -29,7 +29,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
         self.function_name = function_name
 
         cg = CCodeGenerator(indent=indent)
-        super(CInterpreter, self).__init__(cg, *args, **kwargs)
+        super().__init__(cg, *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -84,7 +84,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
         func_inv = super().interpret_bin_vector_expr(
             expr, extra_func_args=[expr.output_size, var_name], **kwargs)
 
-        self._cg.add_code_line(func_inv + ";")
+        self._cg.add_code_line(f"{func_inv};")
 
         return var_name
 
@@ -95,6 +95,6 @@ class CInterpreter(ImperativeToCodeInterpreter,
         func_inv = super().interpret_bin_vector_num_expr(
             expr, extra_func_args=[expr.output_size, var_name], **kwargs)
 
-        self._cg.add_code_line(func_inv + ";")
+        self._cg.add_code_line(f"{func_inv};")
 
         return var_name

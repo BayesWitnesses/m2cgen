@@ -20,8 +20,7 @@ class IdExpr(Expr):
         self.output_size = expr.output_size
 
     def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "IdExpr(" + args + ")"
+        return f"IdExpr({self.expr},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return type(other) is IdExpr and self.expr == other.expr
@@ -35,7 +34,7 @@ class FeatureRef(Expr):
         self.index = index
 
     def __str__(self):
-        return "FeatureRef(" + str(self.index) + ")"
+        return f"FeatureRef({self.index})"
 
     def __eq__(self, other):
         return type(other) is FeatureRef and self.index == other.index
@@ -61,7 +60,7 @@ class NumVal(NumExpr):
         self.value = value
 
     def __str__(self):
-        return "NumVal(" + str(self.value) + ")"
+        return f"NumVal({self.value})"
 
     def __eq__(self, other):
         return type(other) is NumVal and self.value == other.value
@@ -78,8 +77,7 @@ class AbsExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "AbsExpr(" + args + ")"
+        return f"AbsExpr({self.expr},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return type(other) is AbsExpr and self.expr == other.expr
@@ -96,8 +94,7 @@ class ExpExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "ExpExpr(" + args + ")"
+        return f"ExpExpr({self.expr},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return type(other) is ExpExpr and self.expr == other.expr
@@ -114,8 +111,7 @@ class LogExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "LogExpr(" + args + ")"
+        return f"LogExpr({self.expr},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return type(other) is LogExpr and self.expr == other.expr
@@ -132,8 +128,7 @@ class Log1pExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "Log1pExpr(" + args + ")"
+        return f"Log1pExpr({self.expr},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return type(other) is Log1pExpr and self.expr == other.expr
@@ -150,8 +145,7 @@ class SqrtExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "SqrtExpr(" + args + ")"
+        return f"SqrtExpr({self.expr},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return type(other) is SqrtExpr and self.expr == other.expr
@@ -168,8 +162,7 @@ class TanhExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([str(self.expr), "to_reuse=" + str(self.to_reuse)])
-        return "TanhExpr(" + args + ")"
+        return f"TanhExpr({self.expr},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return type(other) is TanhExpr and self.expr == other.expr
@@ -188,12 +181,8 @@ class PowExpr(NumExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([
-            str(self.base_expr),
-            str(self.exp_expr),
-            "to_reuse=" + str(self.to_reuse)
-        ])
-        return "PowExpr(" + args + ")"
+        return (f"PowExpr({self.base_expr},{self.exp_expr},"
+                f"to_reuse={self.to_reuse})")
 
     def __eq__(self, other):
         return (type(other) is PowExpr and
@@ -222,13 +211,7 @@ class BinNumExpr(NumExpr, BinExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        args = ",".join([
-            str(self.left),
-            str(self.right),
-            self.op.name,
-            "to_reuse=" + str(self.to_reuse)
-        ])
-        return "BinNumExpr(" + args + ")"
+        return f"BinNumExpr({self.left},{self.right},to_reuse={self.to_reuse})"
 
     def __eq__(self, other):
         return _eq_bin_exprs(self, other, type(self))
@@ -254,7 +237,7 @@ class VectorVal(VectorExpr):
 
     def __str__(self):
         args = ",".join([str(e) for e in self.exprs])
-        return "VectorVal([" + args + "])"
+        return f"VectorVal([{args}])"
 
     def __eq__(self, other):
         return (type(other) is VectorVal and
@@ -278,8 +261,7 @@ class BinVectorExpr(VectorExpr, BinExpr):
         self.output_size = left.output_size
 
     def __str__(self):
-        args = ",".join([str(self.left), str(self.right), self.op.name])
-        return "BinVectorExpr(" + args + ")"
+        return f"BinVectorExpr({self.left},{self.right},{self.op.name})"
 
     def __eq__(self, other):
         return _eq_bin_exprs(self, other, type(self))
@@ -300,8 +282,7 @@ class BinVectorNumExpr(VectorExpr, BinExpr):
         self.output_size = left.output_size
 
     def __str__(self):
-        args = ",".join([str(self.left), str(self.right), self.op.name])
-        return "BinVectorNumExpr(" + args + ")"
+        return f"BinVectorNumExpr({self.left},{self.right},{self.op.name})"
 
     def __eq__(self, other):
         return _eq_bin_exprs(self, other, type(self))
@@ -342,8 +323,7 @@ class CompExpr(BoolExpr):
         self.op = op
 
     def __str__(self):
-        args = ",".join([str(self.left), str(self.right), self.op.name])
-        return "CompExpr(" + args + ")"
+        return f"CompExpr({self.left},{self.right},{self.op.name})"
 
     def __eq__(self, other):
         return _eq_bin_exprs(self, other, type(self))
@@ -369,8 +349,7 @@ class IfExpr(CtrlExpr):
         self.output_size = body.output_size
 
     def __str__(self):
-        args = ",".join([str(self.test), str(self.body), str(self.orelse)])
-        return "IfExpr(" + args + ")"
+        return f"IfExpr({self.test},{self.body},{self.orelse})"
 
     def __eq__(self, other):
         return (type(other) is IfExpr and
@@ -413,7 +392,7 @@ def count_exprs(expr, exclude_list=None):
                 nested_f(expr)))
 
     expr_type_name = expr_type.__name__
-    raise ValueError("Unexpected expression type '{}'".format(expr_type_name))
+    raise ValueError(f"Unexpected expression type '{expr_type_name}'")
 
 
 def _eq_bin_exprs(expr_one, expr_two, expected_type):
