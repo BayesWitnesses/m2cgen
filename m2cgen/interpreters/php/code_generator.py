@@ -10,11 +10,10 @@ class PhpCodeGenerator(CLikeCodeGenerator):
     tpl_array_index_access = CodeTemplate("${array_name}[{index}]")
 
     def add_function_def(self, name, args):
-        function_def = "function " + name + "("
-        function_def += ", ".join([
-            ("array " if is_vector else "") + "$" + n
+        func_args = ", ".join([
+            f"{'array ' if is_vector else ''}${n}"
             for is_vector, n in args])
-        function_def += ") {"
+        function_def = f"function {name}({func_args}) {{"
         self.add_code_line(function_def)
         self.increase_indent()
 
@@ -25,7 +24,7 @@ class PhpCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     def get_var_name(self):
-        return "$" + super().get_var_name()
+        return f"${super().get_var_name()}"
 
     def add_var_declaration(self, size):
         var_name = self.get_var_name()
@@ -36,7 +35,7 @@ class PhpCodeGenerator(CLikeCodeGenerator):
         return var_name
 
     def vector_init(self, values):
-        return "array(" + ", ".join(values) + ")"
+        return f"array({', '.join(values)})"
 
     def _comp_op_overwrite(self, op):
         if op == CompOpType.EQ:

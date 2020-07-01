@@ -13,9 +13,8 @@ class RCodeGenerator(CLikeCodeGenerator):
         return self.get_var_name()
 
     def add_function_def(self, name, args):
-        function_def = name + " <- function("
-        function_def += ",".join([arg for _, arg in args])
-        function_def += ") {"
+        func_args = ', '.join([arg for _, arg in args])
+        function_def = f"{name} <- function({func_args}) {{"
         self.add_code_line(function_def)
         self.increase_indent()
 
@@ -29,4 +28,4 @@ class RCodeGenerator(CLikeCodeGenerator):
         return super().array_index_access(array_name, index + 1)
 
     def vector_init(self, values):
-        return "c(" + ", ".join(values) + ")"
+        return f"c({', '.join(values)})"
