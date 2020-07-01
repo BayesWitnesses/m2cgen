@@ -87,7 +87,7 @@ parser.add_argument(
     default=MAX_RECURSION_DEPTH)
 parser.add_argument(
     "--version", "-v", action="version",
-    version='%(prog)s {}'.format(m2cgen.__version__))
+    version=f"%(prog)s {m2cgen.__version__}")
 
 
 def parse_args(args):

@@ -84,7 +84,7 @@ class GLMMixin:
         supported_inversed_funs = self._get_supported_inversed_funs()
         if link_function_lower not in supported_inversed_funs:
             raise ValueError(
-                "Unsupported link function '{}'".format(link_function))
+                f"Unsupported link function '{link_function}'")
         fun = supported_inversed_funs[link_function_lower]
         return fun(ast_to_transform)
 
@@ -203,7 +203,7 @@ class StatsmodelsModelAssemblerSelector(ModelAssembler):
             self.assembler = StatsmodelsLinearModelAssembler(model)
         else:
             raise NotImplementedError(
-                "Model '{}' is not supported".format(underlying_model))
+                f"Model '{underlying_model}' is not supported")
 
     def assemble(self):
         return self.assembler.assemble()

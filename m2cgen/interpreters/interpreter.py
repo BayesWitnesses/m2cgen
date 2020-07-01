@@ -58,7 +58,7 @@ class BaseInterpreter:
         if hasattr(self, handler_name):
             return getattr(self, handler_name)
         raise NotImplementedError(
-            "No handler found for '{}'".format(type(expr).__name__))
+            f"No handler found for '{type(expr).__name__}'")
 
 
 class BaseToCodeInterpreter(BaseInterpreter):

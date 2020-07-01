@@ -179,7 +179,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         for child in tree["children"]:
             if child["nodeid"] == child_id:
                 return self._assemble_tree(child)
-        assert False, "Unexpected child ID: {}".format(child_id)
+        assert False, f"Unexpected child ID: {child_id}"
 
 
 class XGBoostLinearModelAssembler(BaseBoostingAssembler):
