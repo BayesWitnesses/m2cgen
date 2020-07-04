@@ -222,8 +222,9 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
         self.average_output = model_dump.get("average_output", False)
-        self.objective_config = model_dump.get("objective", "custom")
-        self.objective_name = self.objective_config.split(" ")[0]
+        self.objective_config_parts = model_dump.get(
+            "objective", "custom").split(" ")
+        self.objective_name = self.objective_config_parts[0]
 
         super().__init__(model, trees)
 
@@ -264,7 +265,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
     def _bin_class_sigmoid_transform(self, expr, to_reuse=True):
         coef = 1.0
-        for config_part in self.objective_config.split(" "):
+        for config_part in self.objective_config_parts:
             config_entry = config_part.split(":")
             if config_entry[0] == "sigmoid":
                 coef = np.float64(config_entry[1])
@@ -297,8 +298,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
         return ast.Log1pExpr(ast.ExpExpr(expr))
 
     def _maybe_sqr_transform(self, expr):
-        need_sqr = "sqrt" in self.objective_config.split(" ")
-        if need_sqr:
+        if "sqrt" in self.objective_config_parts:
             expr = ast.IdExpr(expr, to_reuse=True)
             return utils.mul(ast.AbsExpr(expr), expr)
         else:
