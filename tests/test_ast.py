@@ -93,8 +93,8 @@ def test_exprs_hash():
 
 
 def test_exprs_str():
-    assert str(EXPR_WITH_ALL_EXPRS) == """BinVectorNumExpr(BinVectorExpr(
-VectorVal([
+    assert str(EXPR_WITH_ALL_EXPRS) == """
+BinVectorNumExpr(BinVectorExpr(VectorVal([
 AbsExpr(NumVal(-2),to_reuse=False),
 ExpExpr(NumVal(2),to_reuse=False),
 LogExpr(NumVal(2),to_reuse=False),
