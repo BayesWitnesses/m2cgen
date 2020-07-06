@@ -184,6 +184,41 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary_random(
             lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
 
+        # LightGBM (Different Objectives)
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="mse", reg_sqrt=True)),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="mae")),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="huber", alpha=0.5)),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="fair", fair_c=0.5)),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="poisson",
+            poisson_max_delta_step=0.2)),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="quantile", alpha=0.2)),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="mape")),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="gamma")),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="tweedie",
+            tweedie_variance_power=1.7)),
+        regression(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS,
+            objective=lambda _, __: (
+                np.ones(len(utils.get_regression_model_trainer().y_train)),
+                np.ones(len(utils.get_regression_model_trainer().y_train))))),
+        regression_bounded(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="xentropy")),
+        regression_bounded(lightgbm.LGBMRegressor(
+            **LIGHTGBM_PARAMS, objective="xentlambda")),
+        classification(lightgbm.LGBMClassifier(
+            **LIGHTGBM_PARAMS, objective="ovr", sigmoid=0.5)),
+        classification_binary(lightgbm.LGBMClassifier(
+            **LIGHTGBM_PARAMS, sigmoid=1.5)),
+
         # XGBoost
         regression(xgboost.XGBRegressor(**XGBOOST_PARAMS)),
         classification(xgboost.XGBClassifier(**XGBOOST_PARAMS)),
