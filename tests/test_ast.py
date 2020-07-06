@@ -102,8 +102,7 @@ Log1pExpr(NumVal(2),to_reuse=False),
 SqrtExpr(NumVal(2),to_reuse=False),
 PowExpr(NumVal(2),NumVal(3),to_reuse=False),
 TanhExpr(NumVal(1),to_reuse=False),
-BinNumExpr(NumVal(0),FeatureRef(0),to_reuse=False)
-]),
+BinNumExpr(NumVal(0),FeatureRef(0),to_reuse=False)]),
 IdExpr(VectorVal([
 NumVal(1),NumVal(2),NumVal(3),NumVal(4),NumVal(5),NumVal(6),NumVal(7),
 FeatureRef(1)]),to_reuse=False),SUB),
