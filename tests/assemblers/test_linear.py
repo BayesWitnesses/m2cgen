@@ -135,7 +135,7 @@ def test_statsmodels_wo_const():
     estimator = utils.StatsmodelsSklearnLikeWrapper(sm.GLS, {})
     _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.StatsmodelsLinearModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     feature_weight_mul = [
@@ -207,7 +207,7 @@ def test_statsmodels_w_const():
         dict(init=dict(fit_intercept=True)))
     _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.StatsmodelsLinearModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     feature_weight_mul = [
@@ -280,7 +280,7 @@ def test_statsmodels_unknown_constant_position():
         dict(init=dict(hasconst=True)))
     _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.StatsmodelsLinearModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     assembler.assemble()
 
 
@@ -377,7 +377,7 @@ def test_statsmodels_glm_logit_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -410,7 +410,7 @@ def test_statsmodels_glm_power_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.PowExpr(
@@ -435,7 +435,7 @@ def test_statsmodels_glm_negative_power_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -463,7 +463,7 @@ def test_statsmodels_glm_inverse_power_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -489,7 +489,7 @@ def test_statsmodels_glm_inverse_squared_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -516,7 +516,7 @@ def test_statsmodels_glm_sqr_power_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.SqrtExpr(
@@ -540,7 +540,7 @@ def test_statsmodels_glm_identity_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2], [3]], [0.1, 0.2, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -563,7 +563,7 @@ def test_statsmodels_glm_sqrt_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.PowExpr(
@@ -588,7 +588,7 @@ def test_statsmodels_glm_log_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.ExpExpr(
@@ -612,7 +612,7 @@ def test_statsmodels_glm_cloglog_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -643,7 +643,7 @@ def test_statsmodels_glm_negativebinomial_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -683,7 +683,7 @@ def test_statsmodels_glm_unknown_link_func():
              fit=dict(maxiter=1)))
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
-    assembler = assemblers.StatsmodelsGLMModelAssembler(estimator)
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     assembler.assemble()
 
 
