@@ -110,6 +110,7 @@ FeatureRef(1)]),to_reuse=False),SUB),
 IfExpr(CompExpr(NumVal(2),NumVal(0),GT),NumVal(3),NumVal(4)),MUL)
 """.strip().replace("\n", "")
 
+
 def test_num_val():
     assert type(ast.NumVal(1).value) == int
     assert type(ast.NumVal(1, dtype=np.float32).value) == np.float32
