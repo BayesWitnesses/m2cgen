@@ -319,7 +319,7 @@ function Log1p([double] $x) {
     if ($x -lt -1.0) { return [double]::NaN }
     [double] $xAbs = [math]::Abs($x)
     if ($xAbs -lt 0.5 * [double]::Epsilon) { return $x }
-    if ((($x -gt 0.0) -and ($x -lt 1e-8))
+    if ((($x -gt 0.0) -and ($x -lt 1e-8)) `
         -or (($x -gt -1e-9) -and ($x -lt 0.0))) {
         return $x * (1.0 - $x * 0.5)
     }
