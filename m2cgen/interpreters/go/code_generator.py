@@ -38,7 +38,7 @@ class GoCodeGenerator(ImperativeCodeGenerator):
         return self.vector_type if is_vector else self.scalar_type
 
     def add_dependency(self, dep):
-        super().prepend_code_line(f'import "{dep}"')
+        self.prepend_code_line(f'import "{dep}"')
 
     def vector_init(self, values):
         return f"[]float64{{{', '.join(values)}}}"
