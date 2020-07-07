@@ -52,7 +52,7 @@ class CCodeGenerator(CLikeCodeGenerator):
                            f"{size} * sizeof(double));")
 
     def add_dependency(self, dep):
-        super().prepend_code_line(f"#include {dep}")
+        self.prepend_code_line(f"#include {dep}")
 
     def vector_init(self, values):
         return f"(double[]){{{', '.join(values)}}}"

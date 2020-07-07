@@ -124,20 +124,20 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return self._cg.vector_init(nested)
 
     def interpret_abs_expr(self, expr, **kwargs):
-        self.with_math_module = True
         if self.abs_function_name is NotImplemented:
             return self._do_interpret(
                 fallback_expressions.abs(expr.expr), **kwargs)
+        self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.abs_function_name, nested_result)
 
     def interpret_exp_expr(self, expr, **kwargs):
-        self.with_math_module = True
         if self.exponent_function_name is NotImplemented:
             return self._do_interpret(
                 fallback_expressions.exp(expr.expr, to_reuse=expr.to_reuse),
                 **kwargs)
+        self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.exponent_function_name, nested_result)
@@ -151,29 +151,29 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
             self.logarithm_function_name, nested_result)
 
     def interpret_log1p_expr(self, expr, **kwargs):
-        self.with_math_module = True
         if self.log1p_function_name is NotImplemented:
             return self._do_interpret(
                 fallback_expressions.log1p(expr.expr), **kwargs)
+        self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.log1p_function_name, nested_result)
 
     def interpret_sqrt_expr(self, expr, **kwargs):
-        self.with_math_module = True
         if self.sqrt_function_name is NotImplemented:
             return self._do_interpret(
                 fallback_expressions.sqrt(expr.expr, to_reuse=expr.to_reuse),
                 **kwargs)
+        self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.sqrt_function_name, nested_result)
 
     def interpret_tanh_expr(self, expr, **kwargs):
-        self.with_math_module = True
         if self.tanh_function_name is NotImplemented:
             return self._do_interpret(
                 fallback_expressions.tanh(expr.expr), **kwargs)
+        self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.tanh_function_name, nested_result)

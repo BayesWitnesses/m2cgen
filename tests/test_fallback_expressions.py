@@ -11,7 +11,6 @@ def test_abs_fallback_expr():
     interpreter.abs_function_name = NotImplemented
 
     expected_code = """
-#include <math.h>
 double score(double * input) {
     double var0;
     double var1;
