@@ -82,6 +82,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     """
 
     abs_function_name = NotImplemented
+    atan_function_name = NotImplemented
     exponent_function_name = NotImplemented
     logarithm_function_name = NotImplemented
     log1p_function_name = NotImplemented
@@ -132,10 +133,19 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return self._cg.function_invocation(
             self.abs_function_name, nested_result)
 
+    def interpret_atan_expr(self, expr, **kwargs):
+        if self.atan_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.atan(expr.expr), **kwargs)
+        self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.atan_function_name, nested_result)
+
     def interpret_exp_expr(self, expr, **kwargs):
         if self.exponent_function_name is NotImplemented:
             return self._do_interpret(
-                fallback_expressions.exp(expr.expr, to_reuse=expr.to_reuse),
+                fallback_expressions.exp(expr.expr),
                 **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
@@ -162,7 +172,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     def interpret_sqrt_expr(self, expr, **kwargs):
         if self.sqrt_function_name is NotImplemented:
             return self._do_interpret(
-                fallback_expressions.sqrt(expr.expr, to_reuse=expr.to_reuse),
+                fallback_expressions.sqrt(expr.expr),
                 **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)

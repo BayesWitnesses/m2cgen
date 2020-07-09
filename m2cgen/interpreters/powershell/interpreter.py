@@ -19,6 +19,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "[math]::Abs"
+    atan_function_name = "[math]::Atan"
     exponent_function_name = "[math]::Exp"
     logarithm_function_name = "[math]::Log"
     log1p_function_name = "Log1p"

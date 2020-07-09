@@ -86,6 +86,23 @@ class AbsExpr(NumExpr):
         return hash(self.expr)
 
 
+class AtanExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        return f"AtanExpr({self.expr},to_reuse={self.to_reuse})"
+
+    def __eq__(self, other):
+        return type(other) is AtanExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
+
 class ExpExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
         assert expr.output_size == 1, "Only scalars are supported"
@@ -369,7 +386,8 @@ NESTED_EXPRS_MAPPINGS = [
     (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
     (VectorVal, lambda e: e.exprs),
     (IfExpr, lambda e: [e.test, e.body, e.orelse]),
-    ((AbsExpr, ExpExpr, IdExpr, LogExpr, Log1pExpr, SqrtExpr, TanhExpr),
+    ((AbsExpr, AtanExpr, ExpExpr, IdExpr, LogExpr, Log1pExpr,
+      SqrtExpr, TanhExpr),
      lambda e: [e.expr]),
 ]
 

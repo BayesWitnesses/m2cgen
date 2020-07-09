@@ -333,6 +333,20 @@ function score(array $input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    expected_code = """
+<?php
+function score(array $input) {
+    return atan(2.0);
+}
+"""
+
+    interpreter = PhpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
