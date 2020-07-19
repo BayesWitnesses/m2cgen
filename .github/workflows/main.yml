@@ -37,7 +37,6 @@ jobs:
         run: |
           if [[ "${{ matrix.lang }}" == "API" ]]; then
               export TEST="API";
-              export COVERALLS_REPO_TOKEN="COVERALLS TOKEN FOR M2CGEN";
           else
               export TEST="E2E";
               export LC_ALL="en_US.UTF-8";
