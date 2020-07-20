@@ -22,8 +22,9 @@ jobs:
         lang:
           - "API"
           - "c_lang or python or java or go_lang or javascript or php or haskell or ruby"
-          - "c_sharp or visual_basic or powershell"
+          - "c_sharp or visual_basic or f_sharp"
           - "r_lang or dart"
+          - "powershell"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
