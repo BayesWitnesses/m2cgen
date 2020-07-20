@@ -2,12 +2,14 @@
 
 set -e
 
-cd $TRAVIS_BUILD_DIR
+cd $BUILD_DIRECTORY
 
 if [[ $TEST == "API" ]]; then
   flake8 .
   pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
-  coveralls
+  if [[ $TRAVIS == "true" ]]; then
+    coveralls
+  fi
 fi
 
 if [[ $TEST == "E2E" ]]; then
