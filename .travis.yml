@@ -15,12 +15,9 @@ env:
   - TEST=E2E LANG="r_lang or dart"
   - TEST=E2E LANG="powershell"
 
-before_install:
-  - bash .ci/setup.sh
-
 install:
-  - pip install Cython
-  - pip install -r requirements-test.txt
+  - export BUILD_DIRECTORY=$TRAVIS_BUILD_DIR
+  - bash .ci/setup.sh
 
 script:
   - export BUILD_DIRECTORY=$TRAVIS_BUILD_DIR
