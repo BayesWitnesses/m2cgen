@@ -10,7 +10,38 @@ on:
 
 jobs:
   test:
-    name: "Python ${{ matrix.python }}, Test: ${{ matrix.lang }}"
+    name: "Python ${{ matrix.python }} API tests"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python:
+          - 3.6
+          - 3.7
+          - 3.8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 5
+      - name: Setup Python ${{ matrix.python }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Setup dependencies and run API tests
+        run: |
+          export TEST="API"
+          export PYTHON="${{ matrix.python }}"
+          export BUILD_DIRECTORY=$GITHUB_WORKSPACE
+          bash $GITHUB_WORKSPACE/.ci/setup.sh
+          bash $GITHUB_WORKSPACE/.ci/test.sh
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  e2e-test:
+    name: "Python ${{ matrix.python }}, Test: '${{ matrix.lang }}'"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -20,7 +51,6 @@ jobs:
           - 3.7
           - 3.8
         lang:
-          - "API"
           - "c_lang or python or java or go_lang or javascript or php or haskell or ruby"
           - "c_sharp or visual_basic or f_sharp"
           - "r_lang or dart"
@@ -34,20 +64,15 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - name: Setup dependencies and run tests
+      - name: Setup dependencies and run E2E tests
         run: |
-          if [[ "${{ matrix.lang }}" == "API" ]]; then
-              export TEST="API";
-          else
-              export TEST="E2E";
-              export LC_ALL="en_US.UTF-8";
-              sudo locale-gen $LC_ALL;
-              sudo update-locale;
-          fi
+          export TEST="E2E"
+          export LC_ALL="en_US.UTF-8"
+          sudo locale-gen $LC_ALL
+          sudo update-locale
+
           export PYTHON="${{ matrix.python }}"
           export LANG="${{ matrix.lang }}"
           export BUILD_DIRECTORY=$GITHUB_WORKSPACE
           bash $GITHUB_WORKSPACE/.ci/setup.sh
-          pip install Cython numpy
-          pip install -r $GITHUB_WORKSPACE/requirements-test.txt
           bash $GITHUB_WORKSPACE/.ci/test.sh

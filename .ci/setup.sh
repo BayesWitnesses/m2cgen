@@ -2,6 +2,9 @@
 
 set -e
 
+pip install Cython numpy
+pip install -r $GITHUB_WORKSPACE/requirements-test.txt
+
 # Install .NET Core SDK.
 if [[ $LANG == *"c_sharp"* ]] || [[ $LANG == *"f_sharp"* ]] || [[ $LANG == *"visual_basic"* ]]; then
   wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
