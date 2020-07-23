@@ -33,13 +33,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TEST: API
           PYTHON: ${{ matrix.python }}
+          BUILD_DIRECTORY: ${{ github.workspace }}
         run: |
-          export BUILD_DIRECTORY=$GITHUB_WORKSPACE
           bash $GITHUB_WORKSPACE/.ci/setup.sh
           bash $GITHUB_WORKSPACE/.ci/test.sh
 
   e2e-test:
-    name: "Python ${{ matrix.python }}, Test: '${{ matrix.lang }}'"
+    name: "Python ${{ matrix.python }}, Test: ${{ matrix.lang }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -67,11 +67,11 @@ jobs:
           TEST: E2E
           LANG: ${{ matrix.lang }}
           PYTHON: ${{ matrix.python }}
+          BUILD_DIRECTORY: ${{ github.workspace }}
+          LC_ALL: en_US.UTF-8
         run: |
-          export LC_ALL="en_US.UTF-8"
           sudo locale-gen $LC_ALL
           sudo update-locale
 
-          export BUILD_DIRECTORY=$GITHUB_WORKSPACE
           bash $GITHUB_WORKSPACE/.ci/setup.sh
           bash $GITHUB_WORKSPACE/.ci/test.sh
