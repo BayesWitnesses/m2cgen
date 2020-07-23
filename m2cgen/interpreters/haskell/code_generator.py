@@ -1,46 +1,29 @@
 import contextlib
 
 from m2cgen.ast import CompOpType
-from m2cgen.interpreters.code_generator import BaseCodeGenerator, CodeTemplate
+from m2cgen.interpreters.code_generator \
+    import FunctionalCodeGenerator, CodeTemplate
 
 
-class HaskellCodeGenerator(BaseCodeGenerator):
+class HaskellCodeGenerator(FunctionalCodeGenerator):
+    tpl_function_signature = CodeTemplate("{function_name} =")
+    tpl_if_statement = CodeTemplate("if ({if_def})")
+    tpl_else_statement = CodeTemplate("else")
     tpl_num_value = CodeTemplate("{value}")
     tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
     tpl_module_definition = CodeTemplate("module {module_name} where")
-
-    def reset_state(self):
-        super().reset_state()
-        self._func_idx = 0
 
     def array_index_access(self, array_name, index):
         return self.tpl_infix_expression(
             left=array_name, op="!!", right=index)
 
     def add_if_statement(self, if_def):
-        self.add_code_line(f"if ({if_def})")
-        self.increase_indent()
+        super().add_if_statement(if_def=if_def)
         self.add_code_line("then")
-        self.increase_indent()
-
-    def add_else_statement(self):
-        self.decrease_indent()
-        self.add_code_line("else")
         self.increase_indent()
 
     def add_if_termination(self):
         self.decrease_indent()
-        self.decrease_indent()
-
-    def get_func_name(self):
-        func_name = f"func{self._func_idx}"
-        self._func_idx += 1
-        return func_name
-
-    def add_function(self, function_name, function_body):
-        self.add_code_line(f"{function_name} =")
-        self.increase_indent()
-        self.add_code_lines(function_body)
         self.decrease_indent()
 
     def function_invocation(self, function_name, *args):

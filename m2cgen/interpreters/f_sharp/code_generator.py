@@ -1,39 +1,19 @@
 import contextlib
 
 from m2cgen.ast import CompOpType
-from m2cgen.interpreters.code_generator import BaseCodeGenerator, CodeTemplate
+from m2cgen.interpreters.code_generator \
+    import FunctionalCodeGenerator, CodeTemplate
 
 
-class FSharpCodeGenerator(BaseCodeGenerator):
+class FSharpCodeGenerator(FunctionalCodeGenerator):
+    tpl_function_signature = CodeTemplate("let {function_name} =")
+    tpl_if_statement = CodeTemplate("if ({if_def}) then")
+    tpl_else_statement = CodeTemplate("else")
     tpl_num_value = CodeTemplate("{value}")
     tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
     tpl_array_index_access = CodeTemplate("{array_name}.[{index}]")
 
-    def reset_state(self):
-        super().reset_state()
-        self._func_idx = 0
-
-    def add_if_statement(self, if_def):
-        self.add_code_line(f"if ({if_def}) then")
-        self.increase_indent()
-
-    def add_else_statement(self):
-        self.decrease_indent()
-        self.add_code_line("else")
-        self.increase_indent()
-
     def add_if_termination(self):
-        self.decrease_indent()
-
-    def get_func_name(self):
-        func_name = f"func{self._func_idx}"
-        self._func_idx += 1
-        return func_name
-
-    def add_function(self, function_name, function_body):
-        self.add_code_line(f"let {function_name} =")
-        self.increase_indent()
-        self.add_code_lines(function_body)
         self.decrease_indent()
 
     def function_invocation(self, function_name, *args):
