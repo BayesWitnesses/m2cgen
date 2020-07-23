@@ -89,7 +89,7 @@ class BaseBoostingAssembler(ModelAssembler):
         proba_expr = self._bin_class_convert_output(expr)
 
         return ast.VectorVal([
-            ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),
+            ast.BinNumExpr(ast.NumVal(1.0), proba_expr, ast.BinNumOpType.SUB),
             proba_expr
         ])
 

@@ -14,7 +14,7 @@ from m2cgen.assemblers import utils
 def abs(expr):
     expr = ast.IdExpr(expr, to_reuse=True)
     return ast.IfExpr(
-        utils.lt(expr, ast.NumVal(0)),
+        utils.lt(expr, ast.NumVal(0.0)),
         utils.sub(ast.NumVal(0.0), expr),
         expr)
 
@@ -67,11 +67,11 @@ def log1p(expr):
 
 
 def sigmoid(expr, to_reuse=False):
-    neg_expr = ast.BinNumExpr(ast.NumVal(0), expr, ast.BinNumOpType.SUB)
+    neg_expr = ast.BinNumExpr(ast.NumVal(0.0), expr, ast.BinNumOpType.SUB)
     exp_expr = ast.ExpExpr(neg_expr)
     return ast.BinNumExpr(
-        ast.NumVal(1),
-        ast.BinNumExpr(ast.NumVal(1), exp_expr, ast.BinNumOpType.ADD),
+        ast.NumVal(1.0),
+        ast.BinNumExpr(ast.NumVal(1.0), exp_expr, ast.BinNumOpType.ADD),
         ast.BinNumOpType.DIV,
         to_reuse=to_reuse)
 

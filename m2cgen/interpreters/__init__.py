@@ -11,6 +11,7 @@ from .php.interpreter import PhpInterpreter
 from .dart.interpreter import DartInterpreter
 from .haskell.interpreter import HaskellInterpreter
 from .ruby.interpreter import RubyInterpreter
+from .f_sharp.interpreter import FSharpInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -26,4 +27,5 @@ __all__ = [
     DartInterpreter,
     HaskellInterpreter,
     RubyInterpreter,
+    FSharpInterpreter,
 ]

@@ -15,10 +15,10 @@ def test_if_expr():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if ((1) == (input[0])) {
-            var0 = 2;
+        if ((1.0) == (input[0])) {
+            var0 = 2.0;
         } else {
-            var0 = 3;
+            var0 = 3.0;
         }
         return var0;
     }
@@ -40,7 +40,7 @@ def test_bin_num_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return ((input[0]) / (-2)) * (2);
+        return ((input[0]) / (-2.0)) * (2.0);
     }
 }"""
 
@@ -68,13 +68,13 @@ public class Model {
     public static double score(double[] input) {
         double var0;
         double var1;
-        if ((1) == (1)) {
-            var1 = 1;
+        if ((1.0) == (1.0)) {
+            var1 = 1.0;
         } else {
-            var1 = 2;
+            var1 = 2.0;
         }
-        if (((var1) + (2)) >= ((1) / (2))) {
-            var0 = 1;
+        if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+            var0 = 1.0;
         } else {
             var0 = input[0];
         }
@@ -109,25 +109,25 @@ public class Model {
     public static double score(double[] input) {
         double var0;
         double var1;
-        if ((1) == (1)) {
-            var1 = 1;
+        if ((1.0) == (1.0)) {
+            var1 = 1.0;
         } else {
-            var1 = 2;
+            var1 = 2.0;
         }
-        if ((1) == ((var1) + (2))) {
+        if ((1.0) == ((var1) + (2.0))) {
             double var2;
-            if ((1) == (1)) {
-                var2 = 1;
+            if ((1.0) == (1.0)) {
+                var2 = 1.0;
             } else {
-                var2 = 2;
+                var2 = 2.0;
             }
-            if ((1) == ((var2) + (2))) {
+            if ((1.0) == ((var2) + (2.0))) {
                 var0 = input[2];
             } else {
-                var0 = 2;
+                var0 = 2.0;
             }
         } else {
-            var0 = 2;
+            var0 = 2.0;
         }
         return var0;
     }
@@ -146,7 +146,7 @@ def test_package_name():
 package foo.bar;
 public class Model {
     public static double score(double[] input) {
-        return 1;
+        return 1.0;
     }
 }"""
 
@@ -162,7 +162,7 @@ def test_ignores_subroutine_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return (input[0]) * ((1) + (2));
+        return (input[0]) * ((1.0) + (2.0));
     }
 }"""
 
@@ -176,7 +176,7 @@ def test_raw_array():
     expected_code = """
 public class Model {
     public static double[] score(double[] input) {
-        return new double[] {3, 4};
+        return new double[] {3.0, 4.0};
     }
 }"""
 
@@ -197,10 +197,10 @@ def test_multi_output():
 public class Model {
     public static double[] score(double[] input) {
         double[] var0;
-        if ((1) == (1)) {
-            var0 = new double[] {1, 2};
+        if ((1.0) == (1.0)) {
+            var0 = new double[] {1.0, 2.0};
         } else {
-            var0 = new double[] {3, 4};
+            var0 = new double[] {3.0, 4.0};
         }
         return var0;
     }
@@ -221,7 +221,7 @@ def test_bin_vector_expr():
     expected_code = """
 public class Model {
     public static double[] score(double[] input) {
-        return addVectors(new double[] {1, 2}, new double[] {3, 4});
+        return addVectors(new double[] {1.0, 2.0}, new double[] {3.0, 4.0});
     }
     public static double[] addVectors(double[] v1, double[] v2) {
         double[] result = new double[v1.length];
@@ -252,7 +252,7 @@ def test_bin_vector_num_expr():
     expected_code = """
 public class Model {
     public static double[] score(double[] input) {
-        return mulVectorNumber(new double[] {1, 2}, 1);
+        return mulVectorNumber(new double[] {1.0, 2.0}, 1.0);
     }
     public static double[] addVectors(double[] v1, double[] v2) {
         double[] result = new double[v1.length];
@@ -397,7 +397,7 @@ public class Model {
 
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = interpreters.JavaInterpreter()
@@ -407,10 +407,10 @@ def test_depth_threshold_with_bin_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return (1) + ((1) + (subroutine0(input)));
+        return (1.0) + ((1.0) + (subroutine0(input)));
     }
     public static double subroutine0(double[] input) {
-        return (1) + ((1) + (1));
+        return (1.0) + ((1.0) + (1.0));
     }
 }"""
 
@@ -419,7 +419,7 @@ public class Model {
 
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
@@ -434,19 +434,19 @@ def test_depth_threshold_without_bin_expr():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if ((1) == (1)) {
-            var0 = 1;
+        if ((1.0) == (1.0)) {
+            var0 = 1.0;
         } else {
-            if ((1) == (1)) {
-                var0 = 1;
+            if ((1.0) == (1.0)) {
+                var0 = 1.0;
             } else {
-                if ((1) == (1)) {
-                    var0 = 1;
+                if ((1.0) == (1.0)) {
+                    var0 = 1.0;
                 } else {
-                    if ((1) == (1)) {
-                        var0 = 1;
+                    if ((1.0) == (1.0)) {
+                        var0 = 1.0;
                     } else {
-                        var0 = 1;
+                        var0 = 1.0;
                     }
                 }
             }
@@ -460,9 +460,9 @@ public class Model {
 
 def test_deep_mixed_exprs_not_reaching_threshold():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         inner = ast.NumVal(1)
-        for _ in range(2):
+        for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
@@ -479,19 +479,19 @@ def test_deep_mixed_exprs_not_reaching_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (((1) + ((1) + (1))) == (1)) {
-            var0 = 1;
+        if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+            var0 = 1.0;
         } else {
-            if (((1) + ((1) + (1))) == (1)) {
-                var0 = 1;
+            if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                var0 = 1.0;
             } else {
-                if (((1) + ((1) + (1))) == (1)) {
-                    var0 = 1;
+                if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                    var0 = 1.0;
                 } else {
-                    if (((1) + ((1) + (1))) == (1)) {
-                        var0 = 1;
+                    if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                        var0 = 1.0;
                     } else {
-                        var0 = 1;
+                        var0 = 1.0;
                     }
                 }
             }
@@ -507,12 +507,12 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for i in range(4):
-            inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
+        for j in range(4):
+            inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(1), ast.CompOpType.EQ),
+                inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -524,19 +524,19 @@ def test_deep_mixed_exprs_exceeding_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (((1) + ((1) + (subroutine0(input)))) == (1)) {
-            var0 = 1;
+        if (((3.0) + ((3.0) + (subroutine0(input)))) == (3.0)) {
+            var0 = 1.0;
         } else {
-            if (((1) + ((1) + (subroutine1(input)))) == (1)) {
-                var0 = 1;
+            if (((2.0) + ((2.0) + (subroutine1(input)))) == (3.0)) {
+                var0 = 1.0;
             } else {
-                if (((1) + ((1) + (subroutine2(input)))) == (1)) {
-                    var0 = 1;
+                if (((1.0) + ((1.0) + (subroutine2(input)))) == (3.0)) {
+                    var0 = 1.0;
                 } else {
-                    if (((1) + ((1) + (subroutine3(input)))) == (1)) {
-                        var0 = 1;
+                    if (((0.0) + ((0.0) + (subroutine3(input)))) == (3.0)) {
+                        var0 = 1.0;
                     } else {
-                        var0 = 1;
+                        var0 = 1.0;
                     }
                 }
             }
@@ -544,16 +544,16 @@ public class Model {
         return var0;
     }
     public static double subroutine0(double[] input) {
-        return (1) + ((1) + (1));
+        return (3.0) + ((3.0) + (1.0));
     }
     public static double subroutine1(double[] input) {
-        return (1) + ((1) + (1));
+        return (2.0) + ((2.0) + (1.0));
     }
     public static double subroutine2(double[] input) {
-        return (1) + ((1) + (1));
+        return (1.0) + ((1.0) + (1.0));
     }
     public static double subroutine3(double[] input) {
-        return (1) + ((1) + (1));
+        return (0.0) + ((0.0) + (1.0));
     }
 }"""
 

@@ -13,10 +13,10 @@ def test_if_expr():
     expected_code = """
 func score(input []float64) float64 {
     var var0 float64
-    if (1) == (input[0]) {
-        var0 = 2
+    if (1.0) == (input[0]) {
+        var0 = 2.0
     } else {
-        var0 = 3
+        var0 = 3.0
     }
     return var0
 }"""
@@ -34,7 +34,7 @@ def test_bin_num_expr():
 
     expected_code = """
 func score(input []float64) float64 {
-    return ((input[0]) / (-2)) * (2)
+    return ((input[0]) / (-2.0)) * (2.0)
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -59,13 +59,13 @@ def test_dependable_condition():
 func score(input []float64) float64 {
     var var0 float64
     var var1 float64
-    if (1) == (1) {
-        var1 = 1
+    if (1.0) == (1.0) {
+        var1 = 1.0
     } else {
-        var1 = 2
+        var1 = 2.0
     }
-    if ((var1) + (2)) >= ((1) / (2)) {
-        var0 = 1
+    if ((var1) + (2.0)) >= ((1.0) / (2.0)) {
+        var0 = 1.0
     } else {
         var0 = input[0]
     }
@@ -97,25 +97,25 @@ def test_nested_condition():
 func score(input []float64) float64 {
     var var0 float64
     var var1 float64
-    if (1) == (1) {
-        var1 = 1
+    if (1.0) == (1.0) {
+        var1 = 1.0
     } else {
-        var1 = 2
+        var1 = 2.0
     }
-    if (1) == ((var1) + (2)) {
+    if (1.0) == ((var1) + (2.0)) {
         var var2 float64
-        if (1) == (1) {
-            var2 = 1
+        if (1.0) == (1.0) {
+            var2 = 1.0
         } else {
-            var2 = 2
+            var2 = 2.0
         }
-        if (1) == ((var2) + (2)) {
+        if (1.0) == ((var2) + (2.0)) {
             var0 = input[2]
         } else {
-            var0 = 2
+            var0 = 2.0
         }
     } else {
-        var0 = 2
+        var0 = 2.0
     }
     return var0
 }"""
@@ -128,7 +128,7 @@ def test_raw_array():
 
     expected_code = """
 func score(input []float64) []float64 {
-    return []float64{3, 4}
+    return []float64{3.0, 4.0}
 }"""
     interpreter = interpreters.GoInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -146,10 +146,10 @@ def test_multi_output():
     expected_code = """
 func score(input []float64) []float64 {
     var var0 []float64
-    if (1) == (1) {
-        var0 = []float64{1, 2}
+    if (1.0) == (1.0) {
+        var0 = []float64{1.0, 2.0}
     } else {
-        var0 = []float64{3, 4}
+        var0 = []float64{3.0, 4.0}
     }
     return var0
 }"""
@@ -181,7 +181,7 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
     return result
 }
 func score(input []float64) []float64 {
-    return addVectors([]float64{1, 2}, []float64{3, 4})
+    return addVectors([]float64{1.0, 2.0}, []float64{3.0, 4.0})
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -210,7 +210,7 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
     return result
 }
 func score(input []float64) []float64 {
-    return mulVectorNumber([]float64{1, 2}, 1)
+    return mulVectorNumber([]float64{1.0, 2.0}, 1.0)
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 

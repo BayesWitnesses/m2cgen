@@ -13,10 +13,10 @@ def test_if_expr():
 <?php
 function score(array $input) {
     $var0 = null;
-    if ((1) === ($input[0])) {
-        $var0 = 2;
+    if ((1.0) === ($input[0])) {
+        $var0 = 2.0;
     } else {
-        $var0 = 3;
+        $var0 = 3.0;
     }
     return $var0;
 }
@@ -36,7 +36,7 @@ def test_bin_num_expr():
     expected_code = """
 <?php
 function score(array $input) {
-    return (($input[0]) / (-2)) * (2);
+    return (($input[0]) / (-2.0)) * (2.0);
 }
 """
 
@@ -65,13 +65,13 @@ def test_dependable_condition():
 function score(array $input) {
     $var0 = null;
     $var1 = null;
-    if ((1) === (1)) {
-        $var1 = 1;
+    if ((1.0) === (1.0)) {
+        $var1 = 1.0;
     } else {
-        $var1 = 2;
+        $var1 = 2.0;
     }
-    if ((($var1) + (2)) >= ((1) / (2))) {
-        $var0 = 1;
+    if ((($var1) + (2.0)) >= ((1.0) / (2.0))) {
+        $var0 = 1.0;
     } else {
         $var0 = $input[0];
     }
@@ -105,25 +105,25 @@ def test_nested_condition():
 function score(array $input) {
     $var0 = null;
     $var1 = null;
-    if ((1) === (1)) {
-        $var1 = 1;
+    if ((1.0) === (1.0)) {
+        $var1 = 1.0;
     } else {
-        $var1 = 2;
+        $var1 = 2.0;
     }
-    if ((1) === (($var1) + (2))) {
+    if ((1.0) === (($var1) + (2.0))) {
         $var2 = null;
-        if ((1) === (1)) {
-            $var2 = 1;
+        if ((1.0) === (1.0)) {
+            $var2 = 1.0;
         } else {
-            $var2 = 2;
+            $var2 = 2.0;
         }
-        if ((1) === (($var2) + (2))) {
+        if ((1.0) === (($var2) + (2.0))) {
             $var0 = $input[2];
         } else {
-            $var0 = 2;
+            $var0 = 2.0;
         }
     } else {
-        $var0 = 2;
+        $var0 = 2.0;
     }
     return $var0;
 }
@@ -139,7 +139,7 @@ def test_raw_array():
     expected_code = """
 <?php
 function score(array $input) {
-    return array(3, 4);
+    return array(3.0, 4.0);
 }
 """
 
@@ -160,10 +160,10 @@ def test_multi_output():
 <?php
 function score(array $input) {
     $var0 = array();
-    if ((1) === (1)) {
-        $var0 = array(1, 2);
+    if ((1.0) === (1.0)) {
+        $var0 = array(1.0, 2.0);
     } else {
-        $var0 = array(3, 4);
+        $var0 = array(3.0, 4.0);
     }
     return $var0;
 }
@@ -196,7 +196,7 @@ function mulVectorNumber(array $v1, $num) {
     return $result;
 }
 function score(array $input) {
-    return addVectors(array(1, 2), array(3, 4));
+    return addVectors(array(1.0, 2.0), array(3.0, 4.0));
 }
 """
 
@@ -227,7 +227,7 @@ function mulVectorNumber(array $v1, $num) {
     return $result;
 }
 function score(array $input) {
-    return mulVectorNumber(array(1, 2), 1);
+    return mulVectorNumber(array(1.0, 2.0), 1.0);
 }
 """
 

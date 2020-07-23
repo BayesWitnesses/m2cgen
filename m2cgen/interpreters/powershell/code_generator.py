@@ -48,7 +48,7 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
         self.add_code_line(
             self.tpl_var_declare(var_type=self._get_var_type(size > 1),
                                  var_name=var_name,
-                                 init_val="@(0)" if size > 1 else "0"))
+                                 init_val="@(0.0)" if size > 1 else "0.0"))
         return var_name
 
     def vector_init(self, values):

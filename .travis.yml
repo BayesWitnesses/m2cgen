@@ -11,8 +11,9 @@ python:
 env:
   - TEST=API
   - TEST=E2E LANG="c_lang or python or java or go_lang or javascript or php or haskell or ruby"
-  - TEST=E2E LANG="c_sharp or visual_basic or powershell"
+  - TEST=E2E LANG="c_sharp or visual_basic or f_sharp"
   - TEST=E2E LANG="r_lang or dart"
+  - TEST=E2E LANG="powershell"
 
 before_install:
   - bash .ci/setup.sh

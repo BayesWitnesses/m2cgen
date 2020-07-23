@@ -15,7 +15,7 @@ double score(double * input) {
     double var0;
     double var1;
     var1 = -2.0;
-    if ((var1) < (0)) {
+    if ((var1) < (0.0)) {
         var0 = (0.0) - (var1);
     } else {
         var0 = var1;
