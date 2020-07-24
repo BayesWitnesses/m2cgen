@@ -7,9 +7,7 @@ cd $BUILD_DIRECTORY
 if [[ $TEST == "API" ]]; then
   flake8 .
   pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
-  if [[ $TRAVIS == "true" ]]; then
-    coveralls
-  fi
+  coveralls
 fi
 
 if [[ $TEST == "E2E" ]]; then
