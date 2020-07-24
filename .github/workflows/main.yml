@@ -39,7 +39,7 @@ jobs:
           bash $GITHUB_WORKSPACE/.ci/test.sh
 
   e2e-test:
-    name: "Python ${{ matrix.python }}, Test: ${{ matrix.lang }}"
+    name: "Python ${{ matrix.python }} E2E tests"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
