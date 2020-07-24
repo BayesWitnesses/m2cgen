@@ -14,5 +14,5 @@ pytest-cov==2.10.0
 
 # Other stuff
 numpy==1.18.5
-scipy==1.5.1
+scipy==1.5.2
 py-mini-racer==0.3.0
