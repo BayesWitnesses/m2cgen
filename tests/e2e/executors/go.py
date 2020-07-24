@@ -55,7 +55,7 @@ class GoExecutor(base.BaseExecutor):
     def predict(self, X):
 
         exec_args = [os.path.join(self._resource_tmp_dir, self.model_name)]
-        exec_args.extend(map(str, X))
+        exec_args.extend(map(interpreters.utils.format_float, X))
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
