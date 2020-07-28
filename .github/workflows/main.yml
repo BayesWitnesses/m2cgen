@@ -24,19 +24,10 @@ jobs:
         uses: actions/checkout@v1
         with:
           fetch-depth: 5
-      - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Setup dependencies and run API tests
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST: API
-          PYTHON: ${{ matrix.python }}
-          BUILD_DIRECTORY: ${{ github.workspace }}
-        run: |
-          bash $GITHUB_WORKSPACE/.ci/setup.sh
-          bash $GITHUB_WORKSPACE/.ci/test.sh
+      - name: Build Docker image
+        run: docker build . --file Dockerfile -t m2cgen-docker --build-arg python=${{ matrix.python }}
+      - name: Run API tests
+        run: docker run -v "$GITHUB_WORKSPACE":"/m2cgen" -e TEST=API -e GITHUB_ACTIONS -e GITHUB_RUN_ID -e GITHUB_REF -e GITHUB_REPOSITORY -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} m2cgen-docker bash /m2cgen/.ci/test.sh
 
   e2e-test:
     name: "Python ${{ matrix.python }} E2E tests"
@@ -58,20 +49,7 @@ jobs:
         uses: actions/checkout@v1
         with:
           fetch-depth: 5
-      - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Setup dependencies and run E2E tests
-        env:
-          TEST: E2E
-          LANG: ${{ matrix.lang }}
-          PYTHON: ${{ matrix.python }}
-          BUILD_DIRECTORY: ${{ github.workspace }}
-          LC_ALL: en_US.UTF-8
-        run: |
-          sudo locale-gen $LC_ALL
-          sudo update-locale
-
-          bash $GITHUB_WORKSPACE/.ci/setup.sh
-          bash $GITHUB_WORKSPACE/.ci/test.sh
+      - name: Build Docker image
+        run: docker build . --file Dockerfile -t m2cgen-docker --build-arg python=${{ matrix.python }}
+      - name: Run E2E tests
+        run: docker run -v "$GITHUB_WORKSPACE":"/m2cgen" -e TEST=E2E -e LANG="${{ matrix.lang }}" m2cgen-docker bash /m2cgen/.ci/test.sh
