@@ -19,7 +19,7 @@ import m2cgen
 
 LANGUAGE_TO_EXPORTER = {
     "python": (m2cgen.export_to_python, ["indent", "function_name"]),
-    "java": (m2cgen.export_to_java, ["indent", "class_name", "package_name",
+    "java": (m2cgen.export_to_java, ["indent", "class_name", "base_class_name", "interface_name", "package_name",
                                      "function_name"]),
     "c": (m2cgen.export_to_c, ["indent", "function_name"]),
     "go": (m2cgen.export_to_go, ["indent", "function_name"]),
@@ -65,6 +65,12 @@ parser.add_argument(
 parser.add_argument(
     "--class_name", "-cn", dest="class_name", type=str,
     help="Name of the generated class (if supported by target language).")
+parser.add_argument(
+    "--base_class_name", "-bcn", dest="base_class_name", type=str,
+    help="FQDN of the base class to extend (if supported by target language).")
+parser.add_argument(
+    "--interface_name", "-in", dest="interface_name", type=str,
+    help="FQDN of the interface class (if supported by target language).")
 parser.add_argument(
     "--package_name", "-pn", dest="package_name", type=str,
     help="Package name for the generated code "

@@ -2,7 +2,7 @@ from m2cgen import assemblers
 from m2cgen import interpreters
 
 
-def export_to_java(model, package_name=None, class_name="Model", indent=4,
+def export_to_java(model, package_name=None, class_name="Model", base_class_name=None, interface_name=None, indent=4,
                    function_name="score"):
     """
     Generates a Java code representation of the given model.
@@ -15,6 +15,10 @@ def export_to_java(model, package_name=None, class_name="Model", indent=4,
         Java package name. By default no package name is used.
     class_name : string, optional
         The name of the generated class.
+    base_class_name : string, optional
+        The FQDN of class to extend.
+    interface_name : string, optional
+        The FQDN of the interface to implement.
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
@@ -27,6 +31,8 @@ def export_to_java(model, package_name=None, class_name="Model", indent=4,
     interpreter = interpreters.JavaInterpreter(
         package_name=package_name,
         class_name=class_name,
+        base_class_name=base_class_name,
+        interface_name=interface_name,
         indent=indent,
         function_name=function_name
     )

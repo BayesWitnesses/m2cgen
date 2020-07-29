@@ -32,10 +32,12 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
 
-    def __init__(self, package_name=None, class_name="Model", indent=4,
+    def __init__(self, package_name=None, class_name="Model", base_class=None, interface_name=None, indent=4,
                  function_name="score", *args, **kwargs):
         self.package_name = package_name
         self.class_name = class_name
+        self.interface_name = interface_name
+        self.base_class = base_class
         self.indent = indent
         self.function_name = function_name
 
@@ -50,7 +52,7 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
         if self.package_name:
             top_cg.add_package_name(self.package_name)
 
-        with top_cg.class_definition(self.class_name):
+        with top_cg.class_definition(self.class_name, self.base_class, self.interface_name):
 
             # Since we use SubroutinesMixin, we already have logic
             # of adding methods. We create first subroutine for incoming

@@ -8,8 +8,10 @@ class JavaCodeGenerator(CLikeCodeGenerator):
     scalar_output_type = "double"
     vector_output_type = "double[]"
 
-    def add_class_def(self, class_name, modifier="public"):
-        class_def = f"{modifier} class {class_name} {{"
+    def add_class_def(self, class_name, base_class_name, interface_name, modifier="public"):
+        extends = f"" if base_class_name is None else f"extends {base_class_name}"
+        implements = f"" if interface_name is None else f"implements {interface_name}"
+        class_def = f"{modifier} class {class_name} {extends} {implements} {{"
         self.add_code_line(class_def)
         self.increase_indent()
 
@@ -27,8 +29,8 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_code_line(f"package {package_name};")
 
     @contextlib.contextmanager
-    def class_definition(self, class_name):
-        self.add_class_def(class_name)
+    def class_definition(self, class_name, base_class_name, interface_name):
+        self.add_class_def(class_name, base_class_name, interface_name)
         yield
         self.add_block_termination()
 
