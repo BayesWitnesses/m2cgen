@@ -153,6 +153,51 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_interface_name():
+    expr = ast.NumVal(1)
+
+    interpreter = interpreters.JavaInterpreter(interface_name="foo.bar.Interface")
+
+    expected_code = """
+public class Model implements foo.bar.Interface {
+    public double score(double[] input) {
+        return 1.0;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_base_class_name():
+    expr = ast.NumVal(1)
+
+    interpreter = interpreters.JavaInterpreter(base_class_name="foo.bar.Parent")
+
+    expected_code = """
+public class Model extends foo.bar.Parent {
+    public double score(double[] input) {
+        return 1.0;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_base_class_and_interface():
+    expr = ast.NumVal(1)
+
+    interpreter = interpreters.JavaInterpreter(base_class_name="foo.bar.Parent", interface_name="foo.bar.Interface")
+
+    expected_code = """
+public class Model extends foo.bar.Parent implements foo.bar.Interface {
+    public double score(double[] input) {
+        return 1.0;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_ignores_subroutine_expr():
     expr = ast.BinNumExpr(
         ast.FeatureRef(0),

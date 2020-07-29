@@ -9,9 +9,10 @@ class JavaCodeGenerator(CLikeCodeGenerator):
     vector_output_type = "double[]"
 
     def add_class_def(self, class_name, base_class_name, interface_name, modifier="public"):
-        extends = f"" if base_class_name is None else f"extends {base_class_name}"
-        implements = f"" if interface_name is None else f"implements {interface_name}"
-        class_def = f"{modifier} class {class_name} {extends} {implements} {{"
+        extends = f"" if base_class_name is None else f" extends {base_class_name}"
+        implements = f"" if interface_name is None else f" implements {interface_name}"
+        class_def = f"{modifier} class {class_name}{extends}{implements} {{"
+
         self.add_code_line(class_def)
         self.increase_indent()
 
