@@ -71,4 +71,4 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     # Required by SubroutinesMixin to create new code generator for
     # each subroutine.
     def create_code_generator(self):
-        return JavaCodeGenerator(indent=self.indent)
+        return JavaCodeGenerator(indent=self.indent, is_static_function=self.is_static_function)
