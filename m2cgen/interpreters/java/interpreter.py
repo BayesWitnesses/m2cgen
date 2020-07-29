@@ -10,7 +10,6 @@ from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 class JavaInterpreter(ImperativeToCodeInterpreter,
                       mixins.LinearAlgebraMixin,
                       mixins.SubroutinesMixin):
-
     # The below numbers have been determined experimentally and are subject
     # to adjustments in future.
     ast_size_check_frequency = 100
@@ -32,7 +31,8 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
 
-    def __init__(self, package_name=None, class_name="Model", base_class_name=None, interface_name=None, indent=4,
+    def __init__(self, package_name=None, class_name="Model",
+                 base_class_name=None, interface_name=None, indent=4,
                  function_name="score", *args, **kwargs):
         self.package_name = package_name
         self.class_name = class_name
@@ -40,7 +40,8 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
         self.base_class_name = base_class_name
         self.indent = indent
         self.function_name = function_name
-        self.is_static_function = True if interface_name is None and base_class_name is None else False
+        self.is_static_function = True if interface_name is None and \
+                                          base_class_name is None else False
 
         # We don't provide any code generator as for each subroutine we will
         # create a new one and concatenate their results into top_cg created
@@ -53,7 +54,8 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
         if self.package_name:
             top_cg.add_package_name(self.package_name)
 
-        with top_cg.class_definition(self.class_name, self.base_class_name, self.interface_name):
+        with top_cg.class_definition(self.class_name, self.base_class_name,
+                                     self.interface_name):
 
             # Since we use SubroutinesMixin, we already have logic
             # of adding methods. We create first subroutine for incoming
@@ -71,4 +73,5 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     # Required by SubroutinesMixin to create new code generator for
     # each subroutine.
     def create_code_generator(self):
-        return JavaCodeGenerator(indent=self.indent, is_static_function=self.is_static_function)
+        return JavaCodeGenerator(indent=self.indent,
+                                 is_static_function=self.is_static_function)

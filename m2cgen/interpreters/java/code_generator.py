@@ -12,22 +12,27 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         super().__init__(indent)
         self.is_static_method = is_static_function
 
-    def add_class_def(self, class_name, base_class_name, interface_name, modifier="public"):
-        extends = f"" if base_class_name is None else f" extends {base_class_name}"
-        implements = f"" if interface_name is None else f" implements {interface_name}"
+    def add_class_def(self, class_name, base_class_name, interface_name,
+                      modifier="public"):
+        extends = f"" if base_class_name is None \
+            else f" extends {base_class_name}"
+        implements = f"" if interface_name is None \
+            else f" implements {interface_name}"
         class_def = f"{modifier} class {class_name}{extends}{implements} {{"
 
         self.add_code_line(class_def)
         self.increase_indent()
 
-    def add_method_def(self, name, args, is_vector_output, modifier="public", is_static_method=True):
+    def add_method_def(self, name, args, is_vector_output, modifier="public",
+                       is_static_method=True):
         return_type = self._get_var_declare_type(is_vector_output)
         static_key_word = "static " if is_static_method else ""
 
         func_args = ",".join([
             f"{self._get_var_declare_type(is_vector)} {n}"
             for is_vector, n in args])
-        method_def = f"{modifier} {static_key_word}{return_type} {name}({func_args}) {{"
+        method_def = f"{modifier} {static_key_word}{return_type} " \
+                     f"{name}({func_args}) {{"
         self.add_code_line(method_def)
         self.increase_indent()
 
@@ -43,7 +48,8 @@ class JavaCodeGenerator(CLikeCodeGenerator):
     @contextlib.contextmanager
     def method_definition(self, name, args, is_vector_output,
                           modifier="public"):
-        self.add_method_def(name, args, is_vector_output, modifier=modifier, is_static_method=self.is_static_method)
+        self.add_method_def(name, args, is_vector_output, modifier=modifier,
+                            is_static_method=self.is_static_method)
         yield
         self.add_block_termination()
 

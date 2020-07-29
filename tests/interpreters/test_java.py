@@ -156,10 +156,10 @@ public class Model {
 def test_interface_name():
     expr = ast.NumVal(1)
 
-    interpreter = interpreters.JavaInterpreter(interface_name="foo.bar.Interface")
+    interpreter = interpreters.JavaInterpreter(interface_name="foo.Interface")
 
     expected_code = """
-public class Model implements foo.bar.Interface {
+public class Model implements foo.Interface {
     public double score(double[] input) {
         return 1.0;
     }
@@ -171,10 +171,10 @@ public class Model implements foo.bar.Interface {
 def test_base_class_name():
     expr = ast.NumVal(1)
 
-    interpreter = interpreters.JavaInterpreter(base_class_name="foo.bar.Parent")
+    interpreter = interpreters.JavaInterpreter(base_class_name="foo.Parent")
 
     expected_code = """
-public class Model extends foo.bar.Parent {
+public class Model extends foo.Parent {
     public double score(double[] input) {
         return 1.0;
     }
@@ -186,10 +186,11 @@ public class Model extends foo.bar.Parent {
 def test_base_class_and_interface():
     expr = ast.NumVal(1)
 
-    interpreter = interpreters.JavaInterpreter(base_class_name="foo.bar.Parent", interface_name="foo.bar.Interface")
+    interpreter = interpreters.JavaInterpreter(base_class_name="foo.Parent"
+                                        ,interface_name="foo.Interface")
 
     expected_code = """
-public class Model extends foo.bar.Parent implements foo.bar.Interface {
+public class Model extends foo.Parent implements foo.Interface {
     public double score(double[] input) {
         return 1.0;
     }
