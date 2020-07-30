@@ -19,7 +19,8 @@ import m2cgen
 
 LANGUAGE_TO_EXPORTER = {
     "python": (m2cgen.export_to_python, ["indent", "function_name"]),
-    "java": (m2cgen.export_to_java, ["indent", "class_name", "base_class_name", "interface_name", "package_name",
+    "java": (m2cgen.export_to_java, ["indent", "class_name", "base_class_name",
+                                     "interface_name", "package_name",
                                      "function_name"]),
     "c": (m2cgen.export_to_c, ["indent", "function_name"]),
     "go": (m2cgen.export_to_go, ["indent", "function_name"]),

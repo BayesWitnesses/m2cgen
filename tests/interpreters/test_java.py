@@ -186,8 +186,8 @@ public class Model extends foo.Parent {
 def test_base_class_and_interface():
     expr = ast.NumVal(1)
 
-    interpreter = interpreters.JavaInterpreter(base_class_name="foo.Parent"
-                                        ,interface_name="foo.Interface")
+    interpreter = interpreters.JavaInterpreter(base_class_name="foo.Parent",
+                                               interface_name="foo.Interface")
 
     expected_code = """
 public class Model extends foo.Parent implements foo.Interface {

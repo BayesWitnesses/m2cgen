@@ -40,8 +40,10 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
         self.base_class_name = base_class_name
         self.indent = indent
         self.function_name = function_name
-        self.is_static_function = True if interface_name is None and \
-                                          base_class_name is None else False
+        if interface_name is None and base_class_name is None:
+            self.is_static_function = True
+        else:
+            self.is_static_function = False
 
         # We don't provide any code generator as for each subroutine we will
         # create a new one and concatenate their results into top_cg created

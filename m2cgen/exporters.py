@@ -2,7 +2,8 @@ from m2cgen import assemblers
 from m2cgen import interpreters
 
 
-def export_to_java(model, package_name=None, class_name="Model", base_class_name=None, interface_name=None, indent=4,
+def export_to_java(model, package_name=None, class_name="Model",
+                   base_class_name=None, interface_name=None, indent=4,
                    function_name="score"):
     """
     Generates a Java code representation of the given model.
