@@ -7,7 +7,7 @@ from m2cgen.interpreters.code_generator \
 
 class HaskellCodeGenerator(FunctionalCodeGenerator):
     tpl_function_signature = CodeTemplate("{function_name} =")
-    tpl_if_statement = CodeTemplate("if ({if_def})")
+    tpl_if_statement = CodeTemplate("if ({if_def}) then")
     tpl_else_statement = CodeTemplate("else")
     tpl_num_value = CodeTemplate("{value}")
     tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
@@ -17,18 +17,8 @@ class HaskellCodeGenerator(FunctionalCodeGenerator):
         return self.tpl_infix_expression(
             left=array_name, op="!!", right=index)
 
-    def add_if_statement(self, if_def):
-        super().add_if_statement(if_def=if_def)
-        self.add_code_line("then")
-        self.increase_indent()
-
     def add_if_termination(self):
         self.decrease_indent()
-        self.decrease_indent()
-
-    def function_invocation(self, function_name, *args):
-        function_args = " ".join(map(lambda x: f"({x})", args))
-        return f"{function_name} {function_args}"
 
     def add_function_def(self, name, args, is_scalar_output):
         types = " -> ".join(

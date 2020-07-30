@@ -236,6 +236,10 @@ class FunctionalCodeGenerator(BaseCodeGenerator):
         self.add_code_lines(function_body)
         self.decrease_indent()
 
+    def function_invocation(self, function_name, *args):
+        function_args = " ".join(map(lambda x: f"({x})", args))
+        return f"{function_name} {function_args}"
+
     def add_if_statement(self, if_def):
         self.add_code_line(self.tpl_if_statement(if_def=if_def))
         self.increase_indent()

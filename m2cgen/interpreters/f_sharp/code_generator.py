@@ -16,10 +16,6 @@ class FSharpCodeGenerator(FunctionalCodeGenerator):
     def add_if_termination(self):
         self.decrease_indent()
 
-    def function_invocation(self, function_name, *args):
-        function_args = " ".join(map(lambda x: f"({x})", args))
-        return f"{function_name} {function_args}"
-
     def add_function_def(self, name, args):
         func_args = " ".join(
             [f"({n} : double{' list' if is_vector else ''})"

@@ -235,8 +235,8 @@ class FunctionalToCodeInterpreter(ToCodeInterpreter):
     This interpreter provides default implementation for the methods
     interpreting AST expression into code.
 
-    It can be used for the most programming languages and requires only
-    language-specific instance of the CodeGenerator.
+    It can be used for the most functional programming languages and requires
+    only language-specific instance of the CodeGenerator.
 
     !!IMPORTANT!!: Code generators used by this interpreter must know nothing
     about AST.
