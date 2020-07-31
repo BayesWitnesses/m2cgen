@@ -201,3 +201,54 @@ class CLikeCodeGenerator(ImperativeCodeGenerator):
     tpl_else_statement = CodeTemplate("}} else {{")
     tpl_block_termination = CodeTemplate("}}")
     tpl_var_assignment = CodeTemplate("{var_name} = {value};")
+
+
+class FunctionalCodeGenerator(BaseCodeGenerator):
+    """
+    This class provides basic functionality to generate code. It is
+    language-agnostic, but exposes set of attributes which subclasses should
+    use to define syntax specific for certain language(s).
+
+    !!IMPORTANT!!: Code generators must know nothing about AST.
+    """
+
+    tpl_function_signature = NotImplemented
+    tpl_if_statement = NotImplemented
+    tpl_else_statement = NotImplemented
+    tpl_block_termination = NotImplemented
+
+    def reset_state(self):
+        super().reset_state()
+        self._func_idx = 0
+
+    def get_func_name(self):
+        func_name = f"func{self._func_idx}"
+        self._func_idx += 1
+        return func_name
+
+    # Following statements compute expressions using templates AND add
+    # it to the result.
+
+    def add_function(self, function_name, function_body):
+        self.add_code_line(self.tpl_function_signature(
+            function_name=function_name))
+        self.increase_indent()
+        self.add_code_lines(function_body)
+        self.decrease_indent()
+
+    def function_invocation(self, function_name, *args):
+        function_args = " ".join(map(lambda x: f"({x})", args))
+        return f"{function_name} {function_args}"
+
+    def add_if_statement(self, if_def):
+        self.add_code_line(self.tpl_if_statement(if_def=if_def))
+        self.increase_indent()
+
+    def add_else_statement(self):
+        self.decrease_indent()
+        self.add_code_line(self.tpl_else_statement())
+        self.increase_indent()
+
+    def add_block_termination(self):
+        self.decrease_indent()
+        self.add_code_line(self.tpl_block_termination())
