@@ -223,14 +223,14 @@ public class Model {
     public static double[] score(double[] input) {
         return addVectors(new double[] {1.0, 2.0}, new double[] {3.0, 4.0});
     }
-    public static double[] addVectors(double[] v1, double[] v2) {
+    private static double[] addVectors(double[] v1, double[] v2) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] + v2[i];
         }
         return result;
     }
-    public static double[] mulVectorNumber(double[] v1, double num) {
+    private static double[] mulVectorNumber(double[] v1, double num) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] * num;
@@ -254,14 +254,14 @@ public class Model {
     public static double[] score(double[] input) {
         return mulVectorNumber(new double[] {1.0, 2.0}, 1.0);
     }
-    public static double[] addVectors(double[] v1, double[] v2) {
+    private static double[] addVectors(double[] v1, double[] v2) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] + v2[i];
         }
         return result;
     }
-    public static double[] mulVectorNumber(double[] v1, double num) {
+    private static double[] mulVectorNumber(double[] v1, double num) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] * num;
