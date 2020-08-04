@@ -45,6 +45,7 @@ EXAMPLE_LANGUAGES = [
     ("dart", m2c.export_to_dart, "dart"),
     ("haskell", m2c.export_to_haskell, "hs"),
     ("ruby", m2c.export_to_ruby, "rb"),
+    ("f_sharp", m2c.export_to_f_sharp, "fs"),
 ]
 
 EXAMPLE_MODELS = [
