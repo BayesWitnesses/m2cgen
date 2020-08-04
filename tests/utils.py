@@ -14,7 +14,7 @@ from lightning.impl.base import BaseClassifier as LightBaseClassifier
 from sklearn import datasets
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 from sklearn.ensemble._forest import ForestClassifier, BaseForest
-from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
 from sklearn.linear_model._base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree._classes import BaseDecisionTree
@@ -72,17 +72,25 @@ class ModelTrainer:
         np.random.seed(seed=7)
         if dataset_name == "boston":
             self.name = "train_model_regression"
-            self.X, self.y = datasets.load_boston(True)
+            dataset = datasets.load_boston()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
         elif dataset_name == "boston_y_bounded":
             self.name = "train_model_regression_bounded"
-            self.X, self.y = datasets.load_boston(True)
+            dataset = datasets.load_boston()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
             self.y = np.arctan(self.y) / np.pi + 0.5  # (0; 1)
         elif dataset_name == "iris":
             self.name = "train_model_classification"
-            self.X, self.y = datasets.load_iris(True)
+            dataset = datasets.load_iris()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
         elif dataset_name == "breast_cancer":
             self.name = "train_model_classification_binary"
-            self.X, self.y = datasets.load_breast_cancer(True)
+            dataset = datasets.load_breast_cancer()
+            self.X, self.y = shuffle(
+                dataset.data, dataset.target, random_state=13)
         elif dataset_name == "regression_rnd":
             self.name = "train_model_regression_random_data"
             N = 1000
@@ -101,9 +109,9 @@ class ModelTrainer:
         else:
             raise ValueError("Unknown dataset name: {}".format(dataset_name))
 
-        (self.X_train, self.X_test,
-         self.y_train, self.y_test) = train_test_split(
-            self.X, self.y, test_size=test_fraction, random_state=13)
+        offset = int(self.X.shape[0] * (1 - test_fraction))
+        self.X_train, self.y_train = self.X[:offset], self.y[:offset]
+        self.X_test, self.y_test = self.X[offset:], self.y[offset:]
 
     @classmethod
     def get_instance(cls, dataset_name, test_fraction=0.02):

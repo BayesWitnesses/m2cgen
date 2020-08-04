@@ -25,17 +25,17 @@ def test_binary_classification():
                         ast.IfExpr(
                             ast.CompExpr(
                                 ast.FeatureRef(20),
-                                ast.NumVal(16.7950000763),
+                                ast.NumVal(16.7950001),
                                 ast.CompOpType.GTE),
-                            ast.NumVal(-0.5253885984),
-                            ast.NumVal(0.4967741966)),
+                            ast.NumVal(-0.519171),
+                            ast.NumVal(0.49032259)),
                         ast.IfExpr(
                             ast.CompExpr(
                                 ast.FeatureRef(27),
-                                ast.NumVal(0.1423499882),
+                                ast.NumVal(0.142349988),
                                 ast.CompOpType.GTE),
-                            ast.NumVal(-0.4393392801),
-                            ast.NumVal(0.3904181421)),
+                            ast.NumVal(-0.443304211),
+                            ast.NumVal(0.391988248)),
                         ast.BinNumOpType.ADD),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
@@ -92,17 +92,17 @@ def test_regression():
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
-                    ast.NumVal(9.7250003815),
+                    ast.NumVal(9.725),
                     ast.CompOpType.GTE),
-                ast.NumVal(5.0069689751),
-                ast.NumVal(8.7252864838)),
+                ast.NumVal(4.98425627),
+                ast.NumVal(8.75091362)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
-                    ast.NumVal(6.9409999847),
+                    ast.NumVal(6.941),
                     ast.CompOpType.GTE),
-                ast.NumVal(8.3520317078),
-                ast.NumVal(3.9274528027)),
+                ast.NumVal(8.34557438),
+                ast.NumVal(3.9141891)),
             ast.BinNumOpType.ADD),
         ast.BinNumOpType.ADD)
 
@@ -127,17 +127,17 @@ def test_regression_best_ntree_limit():
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
-                    ast.NumVal(9.7250003815),
+                    ast.NumVal(9.72500038),
                     ast.CompOpType.GTE),
-                ast.NumVal(5.0069689751),
-                ast.NumVal(8.7252864838)),
+                ast.NumVal(4.98425627),
+                ast.NumVal(8.75091362)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
-                    ast.NumVal(6.9409999847),
+                    ast.NumVal(6.94099998),
                     ast.CompOpType.GTE),
-                ast.NumVal(8.3520317078),
-                ast.NumVal(3.9274528027)),
+                ast.NumVal(8.34557438),
+                ast.NumVal(3.9141891)),
             ast.BinNumOpType.ADD),
         ast.BinNumOpType.ADD)
 
@@ -243,17 +243,17 @@ def test_regression_saved_without_feature_names():
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
-                    ast.NumVal(9.7250003815),
+                    ast.NumVal(9.72500038),
                     ast.CompOpType.GTE),
-                ast.NumVal(5.0069689751),
-                ast.NumVal(8.7252864838)),
+                ast.NumVal(4.98425627),
+                ast.NumVal(8.75091362)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
-                    ast.NumVal(6.9409999847),
+                    ast.NumVal(6.94099998),
                     ast.CompOpType.GTE),
-                ast.NumVal(8.3520317078),
-                ast.NumVal(3.9274528027)),
+                ast.NumVal(8.34557438),
+                ast.NumVal(3.9141891)),
             ast.BinNumOpType.ADD),
         ast.BinNumOpType.ADD)
 
@@ -274,55 +274,55 @@ def test_linear_model():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(-0.152305),
+            ast.NumVal(-0.151436),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.0819002),
+            ast.NumVal(0.084474),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(-0.0993571),
+            ast.NumVal(-0.10035),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(4.76251),
+            ast.NumVal(4.71537),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(1.4137),
+            ast.NumVal(1.39071),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(0.329731),
+            ast.NumVal(0.330592),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(0.0616366),
+            ast.NumVal(0.0610453),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(0.462437),
+            ast.NumVal(0.476255),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(-0.067064),
+            ast.NumVal(-0.0677851),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(-0.000510475),
+            ast.NumVal(-0.000543615),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(0.0720296),
+            ast.NumVal(0.0717916),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.0108551),
+            ast.NumVal(0.010832),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.140799),
+            ast.NumVal(-0.139375),
             ast.BinNumOpType.MUL),
     ]
 
@@ -330,7 +330,7 @@ def test_linear_model():
         ast.NumVal(0.5),
         assemblers.utils.apply_op_to_expressions(
             ast.BinNumOpType.ADD,
-            ast.NumVal(11.1651),
+            ast.NumVal(11.1287),
             *feature_weight_mul),
         ast.BinNumOpType.ADD)
 
@@ -352,17 +352,17 @@ def test_regression_random_forest():
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
-                    ast.NumVal(6.8410000801),
+                    ast.NumVal(6.94099998),
                     ast.CompOpType.GTE),
-                ast.NumVal(17.4066162109),
-                ast.NumVal(9.6789960861)),
+                ast.NumVal(18.1008453),
+                ast.NumVal(9.60167599)),
             ast.IfExpr(
                 ast.CompExpr(
-                    ast.FeatureRef(12),
-                    ast.NumVal(7.5799999237),
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.79699993),
                     ast.CompOpType.GTE),
-                ast.NumVal(9.0286970139),
-                ast.NumVal(15.9452571869)),
+                ast.NumVal(17.780262),
+                ast.NumVal(9.51712894)),
             ast.BinNumOpType.ADD),
         ast.BinNumOpType.ADD)
 
