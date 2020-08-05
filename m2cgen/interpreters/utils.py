@@ -1,5 +1,7 @@
 import re
 
+import numpy as np
+
 from collections import namedtuple
 from functools import lru_cache
 from math import ceil, log
@@ -22,3 +24,7 @@ def _get_handler_name(expr_tpe):
 
 def _normalize_expr_name(name):
     return re.sub("(?!^)([A-Z]+)", r"_\1", name).lower()
+
+
+def format_float(value):
+    return np.format_float_positional(value, unique=True, trim="0")

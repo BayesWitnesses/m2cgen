@@ -47,7 +47,7 @@ class PhpExecutor(base.BaseExecutor):
         exec_args = [self._php,
                      "-f",
                      file_name,
-                     *map(str, X)]
+                     *map(interpreters.utils.format_float, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):

@@ -38,7 +38,9 @@ class RubyExecutor(base.BaseExecutor):
     def predict(self, X):
         file_name = os.path.join(self._resource_tmp_dir,
                                  f"{self.model_name}.rb")
-        exec_args = [self._ruby, file_name, *map(str, X)]
+        exec_args = [self._ruby,
+                     file_name,
+                     *map(interpreters.utils.format_float, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
