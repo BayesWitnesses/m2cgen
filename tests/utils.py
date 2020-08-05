@@ -13,11 +13,13 @@ from lightgbm import LGBMClassifier
 from lightning.impl.base import BaseClassifier as LightBaseClassifier
 from sklearn import datasets
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from sklearn.ensemble._forest import ForestClassifier
+from sklearn.ensemble._forest import ForestClassifier, BaseForest
 from sklearn.utils import shuffle
 from sklearn.linear_model._base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree._classes import BaseDecisionTree
 from sklearn.svm import SVC, NuSVC
+from sklearn.svm._base import BaseLibSVM
 from xgboost import XGBClassifier
 
 from m2cgen import ast
@@ -125,14 +127,21 @@ class ModelTrainer:
         if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC,
                                   LightBaseClassifier)):
             y_pred = estimator.decision_function(self.X_test)
-        elif isinstance(estimator, DecisionTreeClassifier):
-            y_pred = estimator.predict_proba(self.X_test.astype(np.float32))
         elif isinstance(
                 estimator,
-                (ForestClassifier, XGBClassifier, LGBMClassifier)):
+                (ForestClassifier, DecisionTreeClassifier,
+                 XGBClassifier, LGBMClassifier)):
             y_pred = estimator.predict_proba(self.X_test)
         else:
             y_pred = estimator.predict(self.X_test)
+
+        # Some models force input data to be particular type
+        # during prediction phase in their native Python libraries.
+        # For correct comparison of testing results we mimic the same behavior
+        if isinstance(estimator, (BaseDecisionTree, BaseForest)):
+            self.X_test = self.X_test.astype(np.float32, copy=False)
+        elif isinstance(estimator, BaseLibSVM):
+            self.X_test = self.X_test.astype(np.float64, copy=False)
 
         return self.X_test, y_pred, fitted_estimator
 
@@ -238,9 +247,9 @@ def predict_from_commandline(exec_args):
     items = stdout.decode("utf-8").strip().split(" ")
 
     if len(items) == 1:
-        return float(items[0])
+        return np.float64(items[0])
     else:
-        return [float(i) for i in items]
+        return [np.float64(i) for i in items]
 
 
 def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
@@ -284,4 +293,4 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
 
 
 def _is_float(value):
-    return isinstance(value, (float, np.float16, np.float32, np.float64))
+    return isinstance(value, (float, np.floating))

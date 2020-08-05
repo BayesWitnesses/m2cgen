@@ -1,6 +1,10 @@
 from io import StringIO
 from weakref import finalize
 
+import numpy as np
+
+from m2cgen.interpreters.utils import format_float
+
 
 class CodeTemplate:
 
@@ -11,12 +15,14 @@ class CodeTemplate:
         return self.str_template
 
     def __call__(self, *args, **kwargs):
-        # Force calling str() representation
-        # because without it numpy gives the same output
-        # for different float types
+
+        def _is_float(value):
+            return isinstance(value, (float, np.floating))
+
         return self.str_template.format(
-            *[str(i) for i in args],
-            **{k: str(v) for k, v in kwargs.items()})
+            *[format_float(i) if _is_float(i) else i for i in args],
+            **{k: format_float(v) if _is_float(v) else v
+               for k, v in kwargs.items()})
 
 
 class BaseCodeGenerator:
