@@ -650,21 +650,18 @@ def test_statsmodels_glm_negativebinomial_link_func():
         ast.NumVal(-1.0),
         ast.BinNumExpr(
             ast.NumVal(1.0),
-            ast.BinNumExpr(
-                ast.NumVal(1.0),
-                ast.ExpExpr(
+            ast.ExpExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0.0),
                     ast.BinNumExpr(
                         ast.NumVal(0.0),
                         ast.BinNumExpr(
-                            ast.NumVal(0.0),
-                            ast.BinNumExpr(
-                                ast.FeatureRef(0),
-                                ast.NumVal(-1.1079583217),
-                                ast.BinNumOpType.MUL),
-                            ast.BinNumOpType.ADD),
-                        ast.BinNumOpType.SUB)),
-                ast.BinNumOpType.SUB),
-            ast.BinNumOpType.MUL),
+                            ast.FeatureRef(0),
+                            ast.NumVal(-1.1079583217),
+                            ast.BinNumOpType.MUL),
+                        ast.BinNumOpType.ADD),
+                    ast.BinNumOpType.SUB)),
+            ast.BinNumOpType.SUB),
         ast.BinNumOpType.DIV)
 
     assert utils.cmp_exprs(actual, expected)
