@@ -272,129 +272,6 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
-def test_abs_expr():
-    expr = ast.AbsExpr(ast.NumVal(-1.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.abs(-1.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_exp_expr():
-    expr = ast.ExpExpr(ast.NumVal(1.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.exp(1.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_pow_expr():
-    expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.pow(2.0, 3.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_sqrt_expr():
-    expr = ast.SqrtExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.sqrt(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_tanh_expr():
-    expr = ast.TanhExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.tanh(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_log_expr():
-    expr = ast.LogExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.log(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_log1p_expr():
-    expr = ast.Log1pExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.log1p(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_reused_expr():
-    reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        double var0;
-        var0 = Math.exp(1.0);
-        return (var0) / (var0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
     for _ in range(4):
@@ -554,6 +431,129 @@ public class Model {
     }
     public static double subroutine3(double[] input) {
         return (0.0) + ((0.0) + (1.0));
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.abs(-1.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_exp_expr():
+    expr = ast.ExpExpr(ast.NumVal(1.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.exp(1.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_pow_expr():
+    expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.pow(2.0, 3.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.sqrt(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_tanh_expr():
+    expr = ast.TanhExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.tanh(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.log(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.log1p(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_reused_expr():
+    reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
+    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        double var0;
+        var0 = Math.exp(1.0);
+        return (var0) / (var0);
     }
 }"""
 
