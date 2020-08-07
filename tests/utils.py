@@ -24,6 +24,7 @@ from xgboost import XGBClassifier
 
 from m2cgen import ast
 from m2cgen.assemblers import _get_full_model_name
+from m2cgen.interpreters.utils import format_float
 
 
 class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
@@ -69,6 +70,7 @@ class ModelTrainer:
     def __init__(self, dataset_name, test_fraction):
         self.dataset_name = dataset_name
         self.test_fraction = test_fraction
+        additional_test_data = None
         np.random.seed(seed=7)
         if dataset_name == "boston":
             self.name = "train_model_regression"
@@ -77,6 +79,12 @@ class ModelTrainer:
             self.name = "train_model_regression_bounded"
             self.X, self.y = datasets.load_boston(return_X_y=True)
             self.y = np.arctan(self.y) / np.pi + 0.5  # (0; 1)
+        elif dataset_name == "diabetes":
+            self.name = "train_model_regression_w_missing_values"
+            self.X, self.y = datasets.load_diabetes(return_X_y=True)
+            additional_test_data = np.array([
+                [np.NaN] * self.X.shape[1],
+            ])
         elif dataset_name == "iris":
             self.name = "train_model_classification"
             self.X, self.y = datasets.load_iris(return_X_y=True)
@@ -93,17 +101,36 @@ class ModelTrainer:
             N = 1000
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(3, size=(N,))
+        elif dataset_name == "classification_rnd_w_missing_values":
+            self.name = "train_model_classification_rnd_w_missing_values"
+            N = 100
+            self.X = np.random.random(size=(N, 20)) - 0.5
+            self.y = np.random.randint(3, size=(N,))
+            additional_test_data = np.array([
+                [np.NaN] * self.X.shape[1],
+            ])
         elif dataset_name == "classification_binary_rnd":
             self.name = "train_model_classification_binary_random_data"
             N = 1000
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(2, size=(N,))
+        elif dataset_name == "classification_binary_rnd_w_missing_values":
+            self.name = \
+                "train_model_classification_binary_rnd_w_missing_values"
+            N = 100
+            self.X = np.random.random(size=(N, 20)) - 0.5
+            self.y = np.random.randint(2, size=(N,))
+            additional_test_data = np.array([
+                [np.NaN] * self.X.shape[1],
+            ])
         else:
             raise ValueError(f"Unknown dataset name: {dataset_name}")
 
         (self.X_train, self.X_test,
-         self.y_train, self.y_test) = train_test_split(
+         self.y_train, _) = train_test_split(
             self.X, self.y, test_size=test_fraction, random_state=13)
+        if additional_test_data is not None:
+            self.X_test = np.vstack((additional_test_data, self.X_test))
 
     @classmethod
     def get_instance(cls, dataset_name, test_fraction=0.02):
@@ -201,8 +228,23 @@ get_classification_random_data_model_trainer = functools.partial(
 get_classification_binary_random_data_model_trainer = functools.partial(
     ModelTrainer.get_instance, "classification_binary_rnd")
 
+
 get_bounded_regression_model_trainer = functools.partial(
     ModelTrainer.get_instance, "boston_y_bounded")
+
+
+get_regression_w_missing_values_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "diabetes")
+
+
+get_classification_random_w_missing_values_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "classification_rnd_w_missing_values")
+
+
+get_classification_binary_random_w_missing_values_model_trainer = \
+    functools.partial(
+        ModelTrainer.get_instance,
+        "classification_binary_rnd_w_missing_values")
 
 
 @contextlib.contextmanager
@@ -245,7 +287,7 @@ def predict_from_commandline(exec_args):
 
 
 def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
-                         *additional_params):
+                         skip_executor_trainer_pairs, *additional_params):
     result_params = list(additional_params)
 
     # Specifying None for additional parameters makes pytest to generate
@@ -257,6 +299,9 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         executors_with_marks, models_with_trainers_with_marks)
 
     for (executor, executor_mark), (model, trainer, trainer_mark) in prod:
+        if (executor_mark, trainer_mark) in skip_executor_trainer_pairs:
+            continue
+
         # Since we reuse the same model across multiple tests we want it
         # to be clean.
         model = clone(model)
@@ -286,3 +331,10 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
 
 def _is_float(value):
     return isinstance(value, (float, np.floating))
+
+
+def format_arg(value):
+    if np.isnan(value):
+        return "NaN"
+
+    return format_float(value)

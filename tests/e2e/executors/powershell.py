@@ -40,7 +40,7 @@ class PowershellExecutor(base.BaseExecutor):
                      "-File",
                      file_name,
                      "-InputArray",
-                     ",".join(map(interpreters.utils.format_float, X))]
+                     ",".join(map(utils.format_arg, X))]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
