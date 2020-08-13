@@ -72,17 +72,17 @@ class ModelTrainer:
         np.random.seed(seed=7)
         if dataset_name == "boston":
             self.name = "train_model_regression"
-            self.X, self.y = datasets.load_boston(True)
+            self.X, self.y = datasets.load_boston(return_X_y=True)
         elif dataset_name == "boston_y_bounded":
             self.name = "train_model_regression_bounded"
-            self.X, self.y = datasets.load_boston(True)
+            self.X, self.y = datasets.load_boston(return_X_y=True)
             self.y = np.arctan(self.y) / np.pi + 0.5  # (0; 1)
         elif dataset_name == "iris":
             self.name = "train_model_classification"
-            self.X, self.y = datasets.load_iris(True)
+            self.X, self.y = datasets.load_iris(return_X_y=True)
         elif dataset_name == "breast_cancer":
             self.name = "train_model_classification_binary"
-            self.X, self.y = datasets.load_breast_cancer(True)
+            self.X, self.y = datasets.load_breast_cancer(return_X_y=True)
         elif dataset_name == "regression_rnd":
             self.name = "train_model_regression_random_data"
             N = 1000
@@ -99,7 +99,7 @@ class ModelTrainer:
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(2, size=(N,))
         else:
-            raise ValueError("Unknown dataset name: {}".format(dataset_name))
+            raise ValueError(f"Unknown dataset name: {dataset_name}")
 
         (self.X_train, self.X_test,
          self.y_train, self.y_test) = train_test_split(
