@@ -55,7 +55,7 @@ class RInterpreter(ImperativeToCodeInterpreter,
     def interpret(self, expr):
         top_cg = self.create_code_generator()
 
-        self.enqueue_subroutine(self.function_name, expr)
+        self.enqueue_subroutine(self.function_name, 0, expr)
         self.process_subroutine_queue(top_cg)
 
         current_dir = Path(__file__).absolute().parent

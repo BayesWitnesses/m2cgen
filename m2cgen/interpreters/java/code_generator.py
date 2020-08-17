@@ -33,6 +33,16 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         self.add_block_termination()
 
     @contextmanager
+    def module_definition(self, module_name):
+        self.add_class_def(module_name, modifier="private static")
+        yield
+        self.add_block_termination()
+
+    def module_function_invocation(self, module_name, function_name, *args):
+        invocation_code = self.function_invocation(function_name, *args)
+        return f"{module_name}.{invocation_code}"
+
+    @contextmanager
     def method_definition(self, name, args, is_vector_output,
                           modifier="public"):
         self.add_method_def(name, args, is_vector_output, modifier=modifier)

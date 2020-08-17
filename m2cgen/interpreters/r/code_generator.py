@@ -28,3 +28,9 @@ class RCodeGenerator(CLikeCodeGenerator):
 
     def vector_init(self, values):
         return f"c({', '.join(values)})"
+
+    def module_definition(self, module_name):
+        raise NotImplementedError("Modules in r is not supported")
+
+    def module_function_invocation(self, module_name, function_name, *args):
+        raise NotImplementedError("Modules in r is not supported")
