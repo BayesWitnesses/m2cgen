@@ -97,23 +97,25 @@ def test_exprs_hash():
 def test_exprs_str():
     assert str(EXPR_WITH_ALL_EXPRS) == """
 BinVectorNumExpr(BinVectorExpr(VectorVal([
-AbsExpr(NumVal(-2),to_reuse=False),
-AtanExpr(NumVal(2),to_reuse=False),
-ExpExpr(NumVal(2),to_reuse=False),
-LogExpr(NumVal(2),to_reuse=False),
-Log1pExpr(NumVal(2),to_reuse=False),
-SqrtExpr(NumVal(2),to_reuse=False),
-PowExpr(NumVal(2),NumVal(3),to_reuse=False),
-TanhExpr(NumVal(1),to_reuse=False),
-BinNumExpr(NumVal(0),FeatureRef(0),to_reuse=False)]),
+AbsExpr(NumVal(-2.0),to_reuse=False),
+AtanExpr(NumVal(2.0),to_reuse=False),
+ExpExpr(NumVal(2.0),to_reuse=False),
+LogExpr(NumVal(2.0),to_reuse=False),
+Log1pExpr(NumVal(2.0),to_reuse=False),
+SqrtExpr(NumVal(2.0),to_reuse=False),
+PowExpr(NumVal(2.0),NumVal(3.0),to_reuse=False),
+TanhExpr(NumVal(1.0),to_reuse=False),
+BinNumExpr(NumVal(0.0),FeatureRef(0),to_reuse=False)]),
 IdExpr(VectorVal([
-NumVal(1),NumVal(2),NumVal(3),NumVal(4),NumVal(5),NumVal(6),NumVal(7),
-NumVal(8),FeatureRef(1)]),to_reuse=False),SUB),
-IfExpr(CompExpr(NumVal(2),NumVal(0),GT),NumVal(3),NumVal(4)),MUL)
+NumVal(1.0),NumVal(2.0),NumVal(3.0),NumVal(4.0),NumVal(5.0),
+NumVal(6.0),NumVal(7.0),NumVal(8.0),FeatureRef(1)]),to_reuse=False),SUB),
+IfExpr(CompExpr(NumVal(2.0),NumVal(0.0),GT),NumVal(3.0),NumVal(4.0)),MUL)
 """.strip().replace("\n", "")
 
 
 def test_num_val():
-    assert type(ast.NumVal(1).value) == int
+    assert type(ast.NumVal(1).value) == np.float64
     assert type(ast.NumVal(1, dtype=np.float32).value) == np.float32
     assert type(ast.NumVal(1, dtype=np.float64).value) == np.float64
+    assert type(ast.NumVal(1, dtype=np.int8).value) == np.int8
+    assert type(ast.NumVal(1, dtype=int).value) == int

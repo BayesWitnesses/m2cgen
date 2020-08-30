@@ -32,6 +32,7 @@ PHP = pytest.mark.php
 DART = pytest.mark.dart
 HASKELL = pytest.mark.haskell
 RUBY = pytest.mark.ruby
+F_SHARP = pytest.mark.f_sharp
 REGRESSION = pytest.mark.regr
 CLASSIFICATION = pytest.mark.clf
 
@@ -149,6 +150,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         (executors.DartExecutor, DART),
         (executors.HaskellExecutor, HASKELL),
         (executors.RubyExecutor, RUBY),
+        (executors.FSharpExecutor, F_SHARP),
     ],
 
     # These models will be tested against each language specified in the
@@ -566,6 +568,8 @@ def test_e2e(estimator, executor_cls, model_trainer,
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
             y_pred_executed = executor.predict(X_test[idx])
+            y_pred_executed = np.array(
+                y_pred_executed, dtype=y_pred_true.dtype, copy=False)
             print(f"expected={y_pred_true[idx]}, actual={y_pred_executed}")
             res = np.isclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
             assert res if isinstance(res, bool) else res.all()

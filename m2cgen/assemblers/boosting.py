@@ -89,7 +89,7 @@ class BaseBoostingAssembler(ModelAssembler):
         proba_expr = self._bin_class_convert_output(expr)
 
         return ast.VectorVal([
-            ast.BinNumExpr(ast.NumVal(1), proba_expr, ast.BinNumOpType.SUB),
+            ast.BinNumExpr(ast.NumVal(1.0), proba_expr, ast.BinNumOpType.SUB),
             proba_expr
         ])
 
@@ -151,7 +151,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
-            return ast.NumVal(tree["leaf"])
+            return ast.NumVal(tree["leaf"], dtype=np.float32)
 
         threshold = ast.NumVal(tree["split_condition"], dtype=np.float32)
         split = tree["split"]

@@ -137,7 +137,7 @@ class SklearnSVMModelAssembler(BaseSVMModelAssembler):
         elem_wise = [
             ast.PowExpr(
                 utils.sub(ast.NumVal(support_element), ast.FeatureRef(i)),
-                ast.NumVal(2)
+                ast.NumVal(2.0)
             )
             for i, support_element in enumerate(support_vector)
         ]

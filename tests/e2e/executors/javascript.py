@@ -1,4 +1,5 @@
 import os
+
 from py_mini_racer import py_mini_racer
 
 import m2cgen as m2c
@@ -16,10 +17,11 @@ class JavascriptExecutor(base.BaseExecutor):
         with open(file_name, 'r') as myfile:
             code = myfile.read()
 
-        caller = f"score([{','.join(map(str, X))}]);\n"
+        args = ",".join(map(m2c.interpreters.utils.format_float, X))
+        caller = f"score([{args}]);\n"
 
         ctx = py_mini_racer.MiniRacer()
-        result = ctx.eval(caller + code)
+        result = ctx.eval(f"{caller}{code}")
 
         return result
 

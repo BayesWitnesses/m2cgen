@@ -14,6 +14,7 @@ from .exporters import (
     export_to_dart,
     export_to_haskell,
     export_to_ruby,
+    export_to_f_sharp,
 )
 
 __all__ = [
@@ -30,6 +31,7 @@ __all__ = [
     export_to_dart,
     export_to_haskell,
     export_to_ruby,
+    export_to_f_sharp,
 ]
 
 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),

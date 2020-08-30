@@ -14,10 +14,10 @@ namespace ML {
     public static class Model {
         public static double Score(double[] input) {
             double var0;
-            if ((1) == (input[0])) {
-                var0 = 2;
+            if ((1.0) == (input[0])) {
+                var0 = 2.0;
             } else {
-                var0 = 3;
+                var0 = 3.0;
             }
             return var0;
         }
@@ -40,7 +40,7 @@ def test_bin_num_expr():
 namespace ML {
     public static class Model {
         public static double Score(double[] input) {
-            return ((input[0]) / (-2)) * (2);
+            return ((input[0]) / (-2.0)) * (2.0);
         }
     }
 }
@@ -72,13 +72,13 @@ namespace ML {
         public static double Score(double[] input) {
             double var0;
             double var1;
-            if ((1) == (1)) {
-                var1 = 1;
+            if ((1.0) == (1.0)) {
+                var1 = 1.0;
             } else {
-                var1 = 2;
+                var1 = 2.0;
             }
-            if (((var1) + (2)) >= ((1) / (2))) {
-                var0 = 1;
+            if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+                var0 = 1.0;
             } else {
                 var0 = input[0];
             }
@@ -115,25 +115,25 @@ namespace ML {
         public static double Score(double[] input) {
             double var0;
             double var1;
-            if ((1) == (1)) {
-                var1 = 1;
+            if ((1.0) == (1.0)) {
+                var1 = 1.0;
             } else {
-                var1 = 2;
+                var1 = 2.0;
             }
-            if ((1) == ((var1) + (2))) {
+            if ((1.0) == ((var1) + (2.0))) {
                 double var2;
-                if ((1) == (1)) {
-                    var2 = 1;
+                if ((1.0) == (1.0)) {
+                    var2 = 1.0;
                 } else {
-                    var2 = 2;
+                    var2 = 2.0;
                 }
-                if ((1) == ((var2) + (2))) {
+                if ((1.0) == ((var2) + (2.0))) {
                     var0 = input[2];
                 } else {
-                    var0 = 2;
+                    var0 = 2.0;
                 }
             } else {
-                var0 = 2;
+                var0 = 2.0;
             }
             return var0;
         }
@@ -152,7 +152,7 @@ def test_namespace():
 namespace ML.Tests {
     public static class Model {
         public static double Score(double[] input) {
-            return 1;
+            return 1.0;
         }
     }
 }
@@ -169,7 +169,7 @@ def test_class_name():
 namespace ML {
     public static class TestModel {
         public static double Score(double[] input) {
-            return 1;
+            return 1.0;
         }
     }
 }
@@ -186,7 +186,7 @@ def test_raw_array():
 namespace ML {
     public static class Model {
         public static double[] Score(double[] input) {
-            return new double[2] {3, 4};
+            return new double[2] {3.0, 4.0};
         }
     }
 }
@@ -210,10 +210,10 @@ namespace ML {
     public static class Model {
         public static double[] Score(double[] input) {
             double[] var0;
-            if ((1) == (1)) {
-                var0 = new double[2] {1, 2};
+            if ((1.0) == (1.0)) {
+                var0 = new double[2] {1.0, 2.0};
             } else {
-                var0 = new double[2] {3, 4};
+                var0 = new double[2] {3.0, 4.0};
             }
             return var0;
         }
@@ -231,11 +231,12 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    expected_code = """
+    expected_code = ("""
 namespace ML {
     public static class Model {
         public static double[] Score(double[] input) {
-            return AddVectors(new double[2] {1, 2}, new double[2] {3, 4});
+            return AddVectors(new double[2] {1.0, 2.0},"""
+                     """ new double[2] {3.0, 4.0});
         }
         private static double[] AddVectors(double[] v1, double[] v2) {
             double[] result = new double[v1.Length];
@@ -253,7 +254,7 @@ namespace ML {
         }
     }
 }
-"""
+""")
 
     interpreter = CSharpInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -269,7 +270,7 @@ def test_bin_vector_num_expr():
 namespace ML {
     public static class Model {
         public static double[] Score(double[] input) {
-            return MulVectorNumber(new double[2] {1, 2}, 1);
+            return MulVectorNumber(new double[2] {1.0, 2.0}, 1.0);
         }
         private static double[] AddVectors(double[] v1, double[] v2) {
             double[] result = new double[v1.Length];

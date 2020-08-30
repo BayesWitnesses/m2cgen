@@ -35,7 +35,7 @@ log1p x
         -0.29875652015665773006710792416815e-14,
          0.55480701209082887983041321697279e-15,
         -0.10324619158271569595141333961932e-15]
-    chebyshevBroucke i = fini . foldr step [0, 0, 0]
+    chebyshevBroucke i = fini . foldr step (0, 0, 0)
         where
-            step k [b0, b1, _] = [(k + i * 2 * b0 - b1), b0, b1]
-            fini   [b0, _, b2] = (b0 - b2) * 0.5
+            step k (b0, b1, _) = ((k + i * 2 * b0 - b1), b0, b1)
+            fini (b0, _, b2) = (b0 - b2) * 0.5

@@ -14,10 +14,10 @@ def test_if_expr():
     expected_code = """
 double score(double * input) {
     double var0;
-    if ((1) == (input[0])) {
-        var0 = 2;
+    if ((1.0) == (input[0])) {
+        var0 = 2.0;
     } else {
-        var0 = 3;
+        var0 = 3.0;
     }
     return var0;
 }"""
@@ -35,7 +35,7 @@ def test_bin_num_expr():
 
     expected_code = """
 double score(double * input) {
-    return ((input[0]) / (-2)) * (2);
+    return ((input[0]) / (-2.0)) * (2.0);
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -60,13 +60,13 @@ def test_dependable_condition():
 double score(double * input) {
     double var0;
     double var1;
-    if ((1) == (1)) {
-        var1 = 1;
+    if ((1.0) == (1.0)) {
+        var1 = 1.0;
     } else {
-        var1 = 2;
+        var1 = 2.0;
     }
-    if (((var1) + (2)) >= ((1) / (2))) {
-        var0 = 1;
+    if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+        var0 = 1.0;
     } else {
         var0 = input[0];
     }
@@ -98,25 +98,25 @@ def test_nested_condition():
 double score(double * input) {
     double var0;
     double var1;
-    if ((1) == (1)) {
-        var1 = 1;
+    if ((1.0) == (1.0)) {
+        var1 = 1.0;
     } else {
-        var1 = 2;
+        var1 = 2.0;
     }
-    if ((1) == ((var1) + (2))) {
+    if ((1.0) == ((var1) + (2.0))) {
         double var2;
-        if ((1) == (1)) {
-            var2 = 1;
+        if ((1.0) == (1.0)) {
+            var2 = 1.0;
         } else {
-            var2 = 2;
+            var2 = 2.0;
         }
-        if ((1) == ((var2) + (2))) {
+        if ((1.0) == ((var2) + (2.0))) {
             var0 = input[2];
         } else {
-            var0 = 2;
+            var0 = 2.0;
         }
     } else {
-        var0 = 2;
+        var0 = 2.0;
     }
     return var0;
 }"""
@@ -130,7 +130,7 @@ def test_raw_array():
     expected_code = """
 #include <string.h>
 void score(double * input, double * output) {
-    memcpy(output, (double[]){3, 4}, 2 * sizeof(double));
+    memcpy(output, (double[]){3.0, 4.0}, 2 * sizeof(double));
 }"""
     interpreter = interpreters.CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -149,10 +149,10 @@ def test_multi_output():
 #include <string.h>
 void score(double * input, double * output) {
     double var0[2];
-    if ((1) == (1)) {
-        memcpy(var0, (double[]){1, 2}, 2 * sizeof(double));
+    if ((1.0) == (1.0)) {
+        memcpy(var0, (double[]){1.0, 2.0}, 2 * sizeof(double));
     } else {
-        memcpy(var0, (double[]){3, 4}, 2 * sizeof(double));
+        memcpy(var0, (double[]){3.0, 4.0}, 2 * sizeof(double));
     }
     memcpy(output, var0, 2 * sizeof(double));
 }"""
@@ -180,7 +180,7 @@ void mul_vector_number(double *v1, double num, int size, double *result) {
 }
 void score(double * input, double * output) {
     double var0[2];
-    add_vectors((double[]){1, 2}, (double[]){3, 4}, 2, var0);
+    add_vectors((double[]){1.0, 2.0}, (double[]){3.0, 4.0}, 2, var0);
     memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -206,7 +206,7 @@ void mul_vector_number(double *v1, double num, int size, double *result) {
 }
 void score(double * input, double * output) {
     double var0[2];
-    mul_vector_number((double[]){1, 2}, 1, 2, var0);
+    mul_vector_number((double[]){1.0, 2.0}, 1.0, 2, var0);
     memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

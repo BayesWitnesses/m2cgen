@@ -1,9 +1,22 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
+
+ARG python=3.8
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV LC_ALL en_US.UTF-8
+ENV TZ Etc/UTC
 
 RUN apt-get update && \
-    apt-get install -y software-properties-common wget apt-transport-https && \
+    apt-get install --no-install-recommends -y \
+        gpg-agent \
+        locales \
+        software-properties-common \
+        wget \
+        apt-transport-https && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    locale-gen $LC_ALL && \
+    update-locale && \
     add-apt-repository ppa:deadsnakes/ppa && \
     wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
@@ -16,10 +29,9 @@ RUN apt-get update && \
         g++ \
         libc-dev \
         libgomp1 \
-        python3.7 \
+        python${python}-dev \
         python3-setuptools \
         python3-pip \
-        python3.7-dev \
         openjdk-8-jdk \
         golang-go \
         dotnet-sdk-3.1 \
@@ -34,9 +46,7 @@ RUN apt-get update && \
 WORKDIR /m2cgen
 
 COPY requirements-test.txt ./
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1 && \
-    pip3 install --upgrade pip && \
-    pip3 install --no-cache-dir Cython numpy && \
-    pip3 install --no-cache-dir -r requirements-test.txt
-
-CMD python3 setup.py develop && pytest -v -x --fast
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python${python} 1 && \
+    python -m pip install --upgrade pip && \
+    pip install --no-cache-dir Cython numpy && \
+    pip install --no-cache-dir -r requirements-test.txt

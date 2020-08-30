@@ -11,10 +11,10 @@ def test_if_expr():
 
     expected_code = """
 score <- function(input) {
-    if ((1) == (input[1])) {
-        var0 <- 2
+    if ((1.0) == (input[1])) {
+        var0 <- 2.0
     } else {
-        var0 <- 3
+        var0 <- 3.0
     }
     return(var0)
 }
@@ -33,7 +33,7 @@ def test_bin_num_expr():
 
     expected_code = """
 score <- function(input) {
-    return(((input[1]) / (-2)) * (2))
+    return(((input[1]) / (-2.0)) * (2.0))
 }
 """
 
@@ -59,13 +59,13 @@ def test_dependable_condition():
 
     expected_code = """
 score <- function(input) {
-    if ((1) == (1)) {
-        var1 <- 1
+    if ((1.0) == (1.0)) {
+        var1 <- 1.0
     } else {
-        var1 <- 2
+        var1 <- 2.0
     }
-    if (((var1) + (2)) >= ((1) / (2))) {
-        var0 <- 1
+    if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+        var0 <- 1.0
     } else {
         var0 <- input[1]
     }
@@ -96,24 +96,24 @@ def test_nested_condition():
 
     expected_code = """
 score <- function(input) {
-    if ((1) == (1)) {
-        var1 <- 1
+    if ((1.0) == (1.0)) {
+        var1 <- 1.0
     } else {
-        var1 <- 2
+        var1 <- 2.0
     }
-    if ((1) == ((var1) + (2))) {
-        if ((1) == (1)) {
-            var2 <- 1
+    if ((1.0) == ((var1) + (2.0))) {
+        if ((1.0) == (1.0)) {
+            var2 <- 1.0
         } else {
-            var2 <- 2
+            var2 <- 2.0
         }
-        if ((1) == ((var2) + (2))) {
+        if ((1.0) == ((var2) + (2.0))) {
             var0 <- input[3]
         } else {
-            var0 <- 2
+            var0 <- 2.0
         }
     } else {
-        var0 <- 2
+        var0 <- 2.0
     }
     return(var0)
 }
@@ -128,7 +128,7 @@ def test_raw_array():
 
     expected_code = """
 score <- function(input) {
-    return(c(3, 4))
+    return(c(3.0, 4.0))
 }
 """
 
@@ -147,10 +147,10 @@ def test_multi_output():
 
     expected_code = """
 score <- function(input) {
-    if ((1) == (1)) {
-        var0 <- c(1, 2)
+    if ((1.0) == (1.0)) {
+        var0 <- c(1.0, 2.0)
     } else {
-        var0 <- c(3, 4)
+        var0 <- c(3.0, 4.0)
     }
     return(var0)
 }
@@ -168,7 +168,7 @@ def test_bin_vector_expr():
 
     expected_code = """
 score <- function(input) {
-    return((c(1, 2)) + (c(3, 4)))
+    return((c(1.0, 2.0)) + (c(3.0, 4.0)))
 }
 """
 
@@ -184,7 +184,7 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 score <- function(input) {
-    return((c(1, 2)) * (1))
+    return((c(1.0, 2.0)) * (1.0))
 }
 """
 
@@ -198,15 +198,15 @@ class CustomRInterpreter(RInterpreter):
 
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
     interpreter = CustomRInterpreter()
 
     expected_code = """
 score <- function(input) {
-    var0 <- (1) + ((1) + (1))
-    return((1) + ((1) + (var0)))
+    var0 <- (1.0) + ((1.0) + (1.0))
+    return((1.0) + ((1.0) + (var0)))
 }
 """
 
@@ -215,7 +215,7 @@ score <- function(input) {
 
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         expr = ast.IfExpr(
             ast.CompExpr(
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
@@ -226,19 +226,19 @@ def test_depth_threshold_without_bin_expr():
 
     expected_code = """
 score <- function(input) {
-    if ((1) == (1)) {
-        var0 <- 1
+    if ((1.0) == (1.0)) {
+        var0 <- 1.0
     } else {
-        if ((1) == (1)) {
-            var0 <- 1
+        if ((1.0) == (1.0)) {
+            var0 <- 1.0
         } else {
-            if ((1) == (1)) {
-                var0 <- 1
+            if ((1.0) == (1.0)) {
+                var0 <- 1.0
             } else {
-                if ((1) == (1)) {
-                    var0 <- 1
+                if ((1.0) == (1.0)) {
+                    var0 <- 1.0
                 } else {
-                    var0 <- 1
+                    var0 <- 1.0
                 }
             }
         }
@@ -252,9 +252,9 @@ score <- function(input) {
 
 def test_deep_mixed_exprs_not_reaching_threshold():
     expr = ast.NumVal(1)
-    for i in range(4):
+    for _ in range(4):
         inner = ast.NumVal(1)
-        for i in range(2):
+        for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
 
         expr = ast.IfExpr(
@@ -267,19 +267,19 @@ def test_deep_mixed_exprs_not_reaching_threshold():
 
     expected_code = """
 score <- function(input) {
-    if (((1) + ((1) + (1))) == (1)) {
-        var0 <- 1
+    if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+        var0 <- 1.0
     } else {
-        if (((1) + ((1) + (1))) == (1)) {
-            var0 <- 1
+        if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+            var0 <- 1.0
         } else {
-            if (((1) + ((1) + (1))) == (1)) {
-                var0 <- 1
+            if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                var0 <- 1.0
             } else {
-                if (((1) + ((1) + (1))) == (1)) {
-                    var0 <- 1
+                if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                    var0 <- 1.0
                 } else {
-                    var0 <- 1
+                    var0 <- 1.0
                 }
             }
         }
@@ -312,22 +312,22 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expected_code = """
 score <- function(input) {
     var1 <- subroutine0(input)
-    if (((3) + (var1)) == (3)) {
-        var0 <- 1
+    if (((3.0) + (var1)) == (3.0)) {
+        var0 <- 1.0
     } else {
         var2 <- subroutine1(input)
-        if (((2) + (var2)) == (3)) {
-            var0 <- 1
+        if (((2.0) + (var2)) == (3.0)) {
+            var0 <- 1.0
         } else {
             var3 <- subroutine2(input)
-            if (((1) + (var3)) == (3)) {
-                var0 <- 1
+            if (((1.0) + (var3)) == (3.0)) {
+                var0 <- 1.0
             } else {
                 var4 <- subroutine3(input)
-                if (((0) + (var4)) == (3)) {
-                    var0 <- 1
+                if (((0.0) + (var4)) == (3.0)) {
+                    var0 <- 1.0
                 } else {
-                    var0 <- 1
+                    var0 <- 1.0
                 }
             }
         }
@@ -335,24 +335,24 @@ score <- function(input) {
     return(var0)
 }
 subroutine0 <- function(input) {
-    var0 <- (3) + (1)
-    var1 <- (3) + (var0)
-    return((3) + (var1))
+    var0 <- (3.0) + (1.0)
+    var1 <- (3.0) + (var0)
+    return((3.0) + (var1))
 }
 subroutine1 <- function(input) {
-    var0 <- (2) + (1)
-    var1 <- (2) + (var0)
-    return((2) + (var1))
+    var0 <- (2.0) + (1.0)
+    var1 <- (2.0) + (var0)
+    return((2.0) + (var1))
 }
 subroutine2 <- function(input) {
-    var0 <- (1) + (1)
-    var1 <- (1) + (var0)
-    return((1) + (var1))
+    var0 <- (1.0) + (1.0)
+    var1 <- (1.0) + (var0)
+    return((1.0) + (var1))
 }
 subroutine3 <- function(input) {
-    var0 <- (0) + (1)
-    var1 <- (0) + (var0)
-    return((0) + (var1))
+    var0 <- (0.0) + (1.0)
+    var1 <- (0.0) + (var0)
+    return((0.0) + (var1))
 }
 """
 

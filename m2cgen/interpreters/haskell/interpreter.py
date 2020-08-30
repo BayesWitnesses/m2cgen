@@ -3,10 +3,10 @@ import os
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.haskell.code_generator import HaskellCodeGenerator
-from m2cgen.interpreters.interpreter import ToCodeInterpreter
+from m2cgen.interpreters.interpreter import FunctionalToCodeInterpreter
 
 
-class HaskellInterpreter(ToCodeInterpreter,
+class HaskellInterpreter(FunctionalToCodeInterpreter,
                          mixins.LinearAlgebraMixin):
     supported_bin_vector_ops = {
         ast.BinNumOpType.ADD: "addVectors",
@@ -32,8 +32,7 @@ class HaskellInterpreter(ToCodeInterpreter,
         self.indent = indent
         self.function_name = function_name
 
-        cg = HaskellCodeGenerator(indent=indent)
-        super().__init__(cg, *args, **kwargs)
+        super().__init__(self.create_code_generator(), *args, **kwargs)
 
     def interpret(self, expr):
         self._cg.reset_state()
@@ -65,26 +64,8 @@ class HaskellInterpreter(ToCodeInterpreter,
 
         return self._cg.finalize_and_get_generated_code()
 
-    def interpret_if_expr(self, expr, if_code_gen=None, **kwargs):
-        if if_code_gen is None:
-            code_gen = HaskellCodeGenerator(indent=self.indent)
-            nested = False
-        else:
-            code_gen = if_code_gen
-            nested = True
-
-        code_gen.add_if_statement(self._do_interpret(
-            expr.test, **kwargs))
-        code_gen.add_code_line(self._do_interpret(
-            expr.body, if_code_gen=code_gen, **kwargs))
-        code_gen.add_else_statement()
-        code_gen.add_code_line(self._do_interpret(
-            expr.orelse, if_code_gen=code_gen, **kwargs))
-        code_gen.add_if_termination()
-
-        if not nested:
-            return self._cache_reused_expr(
-                expr, code_gen.finalize_and_get_generated_code())
+    def create_code_generator(self):
+        return HaskellCodeGenerator(indent=self.indent)
 
     def interpret_pow_expr(self, expr, **kwargs):
         base_result = self._do_interpret(expr.base_expr, **kwargs)
@@ -95,17 +76,6 @@ class HaskellInterpreter(ToCodeInterpreter,
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
-
-    # Cached expressions become functions with no arguments, i.e. values
-    # which are CAFs. Therefore, they are computed only once.
-    def _cache_reused_expr(self, expr, expr_result):
-        if expr in self._cached_expr_results:
-            return self._cached_expr_results[expr].var_name
-        else:
-            func_name = self._cg.get_func_name()
-            self._cached_expr_results[expr] = utils.CachedResult(
-                var_name=func_name, expr_result=expr_result)
-            return func_name
 
     def _dump_cache(self):
         if self._cached_expr_results:

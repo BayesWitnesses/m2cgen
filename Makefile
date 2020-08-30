@@ -12,7 +12,7 @@ docker-test-unit:
 	$(DOCKER_RUN_ARGS) bash -c "pytest -v --fast tests/ --ignore=tests/e2e/"
 
 docker-generate-examples:
-	$(DOCKER_RUN_ARGS) bash -c "python3 setup.py develop && python3 tools/generate_code_examples.py generated_code_examples"
+	$(DOCKER_RUN_ARGS) bash -c "python setup.py develop && python tools/generate_code_examples.py generated_code_examples"
 
 docker-flake8:
 	$(DOCKER_RUN_ARGS) bash -c "flake8 ."
