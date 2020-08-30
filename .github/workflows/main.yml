@@ -3,7 +3,7 @@ name: GitHub Actions
 on:
   push:
     branches:
-      - cauchy
+      - master
   pull_request:
     branches:
       - master

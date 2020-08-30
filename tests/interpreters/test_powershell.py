@@ -375,7 +375,7 @@ def test_atan_expr():
 
     expected_code = """
 function Score([double[]] $InputVector) {
-    return [math]::Atan $(2.0)
+    return [math]::Atan(2.0)
 }
 """
 
