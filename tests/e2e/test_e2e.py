@@ -351,6 +351,12 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             sm.GLM,
             dict(init=dict(
                 family=sm.families.Binomial(
+                    sm.families.links.cauchy())),
+                 fit=dict(maxiter=2)))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                family=sm.families.Binomial(
                     sm.families.links.cloglog())),
                  fit=dict(maxiter=2)))),
         classification_binary(utils.StatsmodelsSklearnLikeWrapper(
