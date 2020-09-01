@@ -117,15 +117,15 @@ def test_regression_random_forest():
                     ast.FeatureRef(12),
                     ast.NumVal(5.200000000000001),
                     ast.CompOpType.GT),
-                ast.NumVal(20.206688945020474),
+                ast.NumVal(20.195681040256623),
                 ast.NumVal(38.30000037757679)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
-                    ast.NumVal(6.837500000000001),
+                    ast.NumVal(6.853000000000001),
                     ast.CompOpType.GT),
-                ast.NumVal(36.40634951405711),
-                ast.NumVal(19.57067132709245)),
+                ast.NumVal(36.14745794219976),
+                ast.NumVal(19.778245570310993)),
             ast.BinNumOpType.ADD),
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)
