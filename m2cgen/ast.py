@@ -228,7 +228,8 @@ class BinNumExpr(NumExpr, BinExpr):
         self.to_reuse = to_reuse
 
     def __str__(self):
-        return f"BinNumExpr({self.left},{self.right},to_reuse={self.to_reuse})"
+        return (f"BinNumExpr({self.left},{self.right},{self.op.name},"
+                f"to_reuse={self.to_reuse})")
 
     def __eq__(self, other):
         return _eq_bin_exprs(self, other, type(self))
