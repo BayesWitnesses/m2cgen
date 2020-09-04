@@ -40,7 +40,7 @@ class HaskellExecutor(base.BaseExecutor):
         app_name = os.path.join(self._resource_tmp_dir,
                                 self.executor_name)
         exec_args = [app_name,
-                     *map(interpreters.utils.format_float, X)]
+                     *map(utils.format_arg, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):

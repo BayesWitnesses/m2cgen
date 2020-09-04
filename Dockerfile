@@ -50,3 +50,10 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python${python
     python -m pip install --upgrade pip && \
     pip install --no-cache-dir Cython numpy && \
     pip install --no-cache-dir -r requirements-test.txt
+
+ENV MKL_NUM_THREADS=2
+ENV NUMEXPR_NUM_THREADS=2
+ENV OMP_NUM_THREADS=2
+ENV OPENBLAS_NUM_THREADS=2
+ENV VECLIB_MAXIMUM_THREADS=2
+ENV BLIS_NUM_THREADS=2

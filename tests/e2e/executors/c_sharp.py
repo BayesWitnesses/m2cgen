@@ -49,7 +49,7 @@ class CSharpExecutor(base.BaseExecutor):
 
     def predict(self, X):
         exec_args = [os.path.join(self.target_exec_dir, self.project_name)]
-        exec_args.extend(map(interpreters.utils.format_float, X))
+        exec_args.extend(map(utils.format_arg, X))
         return utils.predict_from_commandline(exec_args)
 
     @classmethod

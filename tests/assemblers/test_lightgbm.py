@@ -133,6 +133,43 @@ def test_regression_random_forest():
     assert utils.cmp_exprs(actual, expected)
 
 
+def test_regression_with_negative_values():
+    estimator = lightgbm.LGBMRegressor(n_estimators=3, random_state=1,
+                                       max_depth=1)
+    utils.get_regression_w_missing_values_model_trainer()(estimator)
+
+    assembler = assemblers.LightGBMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.BinNumExpr(
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(8),
+                    ast.NumVal(0.0),
+                    ast.CompOpType.GT),
+                ast.NumVal(155.96889994777868),
+                ast.NumVal(147.72971715548434)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(2),
+                    ast.NumVal(0.00780560282464346),
+                    ast.CompOpType.GT),
+                ast.NumVal(4.982244683562974),
+                ast.NumVal(-2.978315963345233)),
+            ast.BinNumOpType.ADD),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(8),
+                ast.NumVal(-0.0010539205031971832),
+                ast.CompOpType.LTE),
+            ast.NumVal(-3.488666332734598),
+            ast.NumVal(3.670539900363904)),
+        ast.BinNumOpType.ADD)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
 def test_simple_sigmoid_output_transform():
     estimator = lightgbm.LGBMRegressor(n_estimators=2, random_state=1,
                                        max_depth=1, objective="cross_entropy")

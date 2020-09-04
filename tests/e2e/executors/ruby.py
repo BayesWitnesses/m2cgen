@@ -40,7 +40,7 @@ class RubyExecutor(base.BaseExecutor):
                                  f"{self.model_name}.rb")
         exec_args = [self._ruby,
                      file_name,
-                     *map(interpreters.utils.format_float, X)]
+                     *map(utils.format_arg, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
