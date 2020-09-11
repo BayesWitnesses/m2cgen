@@ -22,6 +22,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     bin_depth_threshold = 465
 
     abs_function_name = "abs"
+    atan_function_name = "atan"
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"

@@ -19,6 +19,7 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "Abs"
+    atan_function_name = "Atan"
     exponent_function_name = "Exp"
     logarithm_function_name = "Log"
     log1p_function_name = "Log1p"
