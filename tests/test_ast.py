@@ -47,6 +47,7 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
     ast.BinVectorExpr(
         ast.VectorVal([
             ast.AbsExpr(ast.NumVal(-2)),
+            ast.AtanExpr(ast.NumVal(2)),
             ast.ExpExpr(ast.NumVal(2)),
             ast.LogExpr(ast.NumVal(2)),
             ast.Log1pExpr(ast.NumVal(2)),
@@ -67,6 +68,7 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
                 ast.NumVal(5),
                 ast.NumVal(6),
                 ast.NumVal(7),
+                ast.NumVal(8),
                 ast.FeatureRef(1)
             ])),
         ast.BinNumOpType.SUB),
@@ -79,7 +81,7 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
 
 
 def test_count_all_exprs_types():
-    assert ast.count_exprs(EXPR_WITH_ALL_EXPRS) == 37
+    assert ast.count_exprs(EXPR_WITH_ALL_EXPRS) == 40
 
 
 def test_exprs_equality():
@@ -96,16 +98,17 @@ def test_exprs_str():
     assert str(EXPR_WITH_ALL_EXPRS) == """
 BinVectorNumExpr(BinVectorExpr(VectorVal([
 AbsExpr(NumVal(-2.0),to_reuse=False),
+AtanExpr(NumVal(2.0),to_reuse=False),
 ExpExpr(NumVal(2.0),to_reuse=False),
 LogExpr(NumVal(2.0),to_reuse=False),
 Log1pExpr(NumVal(2.0),to_reuse=False),
 SqrtExpr(NumVal(2.0),to_reuse=False),
 PowExpr(NumVal(2.0),NumVal(3.0),to_reuse=False),
 TanhExpr(NumVal(1.0),to_reuse=False),
-BinNumExpr(NumVal(0.0),FeatureRef(0),to_reuse=False)]),
+BinNumExpr(NumVal(0.0),FeatureRef(0),ADD,to_reuse=False)]),
 IdExpr(VectorVal([
 NumVal(1.0),NumVal(2.0),NumVal(3.0),NumVal(4.0),NumVal(5.0),
-NumVal(6.0),NumVal(7.0),FeatureRef(1)]),to_reuse=False),SUB),
+NumVal(6.0),NumVal(7.0),NumVal(8.0),FeatureRef(1)]),to_reuse=False),SUB),
 IfExpr(CompExpr(NumVal(2.0),NumVal(0.0),GT),NumVal(3.0),NumVal(4.0)),MUL)
 """.strip().replace("\n", "")
 

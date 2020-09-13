@@ -2,8 +2,6 @@
 
 set -e
 
-cd $BUILD_DIRECTORY
-
 if [[ $TEST == "API" ]]; then
   flake8 .
   pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/

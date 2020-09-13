@@ -25,6 +25,7 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "Math.abs"
+    atan_function_name = "Math.atan"
     exponent_function_name = "Math.exp"
     logarithm_function_name = "Math.log"
     log1p_function_name = "Math.log1p"

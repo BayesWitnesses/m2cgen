@@ -19,6 +19,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "[math]::Abs"
+    atan_function_name = "[math]::Atan"
     exponent_function_name = "[math]::Exp"
     logarithm_function_name = "[math]::Log"
     log1p_function_name = "Log1p"
@@ -62,6 +63,11 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.math_function_invocation(
             self.abs_function_name, nested_result)
+
+    def interpret_atan_expr(self, expr, **kwargs):
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.math_function_invocation(
+            self.atan_function_name, nested_result)
 
     def interpret_exp_expr(self, expr, **kwargs):
         nested_result = self._do_interpret(expr.expr, **kwargs)

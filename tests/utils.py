@@ -13,15 +13,18 @@ from lightgbm import LGBMClassifier
 from lightning.impl.base import BaseClassifier as LightBaseClassifier
 from sklearn import datasets
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from sklearn.ensemble._forest import ForestClassifier
-from sklearn.utils import shuffle
+from sklearn.ensemble._forest import ForestClassifier, BaseForest
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model._base import LinearClassifierMixin
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree._classes import BaseDecisionTree
 from sklearn.svm import SVC, NuSVC
+from sklearn.svm._base import BaseLibSVM
 from xgboost import XGBClassifier
 
 from m2cgen import ast
 from m2cgen.assemblers import _get_full_model_name
+from m2cgen.interpreters.utils import format_float
 
 
 class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
@@ -67,49 +70,67 @@ class ModelTrainer:
     def __init__(self, dataset_name, test_fraction):
         self.dataset_name = dataset_name
         self.test_fraction = test_fraction
+        additional_test_data = None
         np.random.seed(seed=7)
         if dataset_name == "boston":
             self.name = "train_model_regression"
-            dataset = datasets.load_boston()
-            self.X, self.y = shuffle(
-                dataset.data, dataset.target, random_state=13)
+            self.X, self.y = datasets.load_boston(return_X_y=True)
         elif dataset_name == "boston_y_bounded":
             self.name = "train_model_regression_bounded"
-            dataset = datasets.load_boston()
-            self.X, self.y = shuffle(
-                dataset.data, dataset.target, random_state=13)
+            self.X, self.y = datasets.load_boston(return_X_y=True)
             self.y = np.arctan(self.y) / np.pi + 0.5  # (0; 1)
+        elif dataset_name == "diabetes":
+            self.name = "train_model_regression_w_missing_values"
+            self.X, self.y = datasets.load_diabetes(return_X_y=True)
+            additional_test_data = np.array([
+                [np.NaN] * self.X.shape[1],
+            ])
         elif dataset_name == "iris":
             self.name = "train_model_classification"
-            dataset = datasets.load_iris()
-            self.X, self.y = shuffle(
-                dataset.data, dataset.target, random_state=13)
+            self.X, self.y = datasets.load_iris(return_X_y=True)
         elif dataset_name == "breast_cancer":
             self.name = "train_model_classification_binary"
-            dataset = datasets.load_breast_cancer()
-            self.X, self.y = shuffle(
-                dataset.data, dataset.target, random_state=13)
+            self.X, self.y = datasets.load_breast_cancer(return_X_y=True)
         elif dataset_name == "regression_rnd":
             self.name = "train_model_regression_random_data"
             N = 1000
             self.X = np.random.random(size=(N, 200))
-            self.y = np.random.random(size=(N, 1))
+            self.y = np.random.random(size=(N,))
         elif dataset_name == "classification_rnd":
             self.name = "train_model_classification_random_data"
             N = 1000
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(3, size=(N,))
+        elif dataset_name == "classification_rnd_w_missing_values":
+            self.name = "train_model_classification_rnd_w_missing_values"
+            N = 100
+            self.X = np.random.random(size=(N, 20)) - 0.5
+            self.y = np.random.randint(3, size=(N,))
+            additional_test_data = np.array([
+                [np.NaN] * self.X.shape[1],
+            ])
         elif dataset_name == "classification_binary_rnd":
             self.name = "train_model_classification_binary_random_data"
             N = 1000
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(2, size=(N,))
+        elif dataset_name == "classification_binary_rnd_w_missing_values":
+            self.name = \
+                "train_model_classification_binary_rnd_w_missing_values"
+            N = 100
+            self.X = np.random.random(size=(N, 20)) - 0.5
+            self.y = np.random.randint(2, size=(N,))
+            additional_test_data = np.array([
+                [np.NaN] * self.X.shape[1],
+            ])
         else:
-            raise ValueError("Unknown dataset name: {}".format(dataset_name))
+            raise ValueError(f"Unknown dataset name: {dataset_name}")
 
-        offset = int(self.X.shape[0] * (1 - test_fraction))
-        self.X_train, self.y_train = self.X[:offset], self.y[:offset]
-        self.X_test, self.y_test = self.X[offset:], self.y[offset:]
+        (self.X_train, self.X_test,
+         self.y_train, _) = train_test_split(
+            self.X, self.y, test_size=test_fraction, random_state=13)
+        if additional_test_data is not None:
+            self.X_test = np.vstack((additional_test_data, self.X_test))
 
     @classmethod
     def get_instance(cls, dataset_name, test_fraction=0.02):
@@ -125,14 +146,21 @@ class ModelTrainer:
         if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC,
                                   LightBaseClassifier)):
             y_pred = estimator.decision_function(self.X_test)
-        elif isinstance(estimator, DecisionTreeClassifier):
-            y_pred = estimator.predict_proba(self.X_test.astype(np.float32))
         elif isinstance(
                 estimator,
-                (ForestClassifier, XGBClassifier, LGBMClassifier)):
+                (ForestClassifier, DecisionTreeClassifier,
+                 XGBClassifier, LGBMClassifier)):
             y_pred = estimator.predict_proba(self.X_test)
         else:
             y_pred = estimator.predict(self.X_test)
+
+        # Some models force input data to be particular type
+        # during prediction phase in their native Python libraries.
+        # For correct comparison of testing results we mimic the same behavior
+        if isinstance(estimator, (BaseDecisionTree, BaseForest)):
+            self.X_test = self.X_test.astype(np.float32, copy=False)
+        elif isinstance(estimator, BaseLibSVM):
+            self.X_test = self.X_test.astype(np.float64, copy=False)
 
         return self.X_test, y_pred, fitted_estimator
 
@@ -200,8 +228,23 @@ get_classification_random_data_model_trainer = functools.partial(
 get_classification_binary_random_data_model_trainer = functools.partial(
     ModelTrainer.get_instance, "classification_binary_rnd")
 
+
 get_bounded_regression_model_trainer = functools.partial(
     ModelTrainer.get_instance, "boston_y_bounded")
+
+
+get_regression_w_missing_values_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "diabetes")
+
+
+get_classification_random_w_missing_values_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "classification_rnd_w_missing_values")
+
+
+get_classification_binary_random_w_missing_values_model_trainer = \
+    functools.partial(
+        ModelTrainer.get_instance,
+        "classification_binary_rnd_w_missing_values")
 
 
 @contextlib.contextmanager
@@ -238,13 +281,13 @@ def predict_from_commandline(exec_args):
     items = stdout.decode("utf-8").strip().split(" ")
 
     if len(items) == 1:
-        return float(items[0])
+        return np.float64(items[0])
     else:
-        return [float(i) for i in items]
+        return [np.float64(i) for i in items]
 
 
 def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
-                         *additional_params):
+                         skip_executor_trainer_pairs, *additional_params):
     result_params = list(additional_params)
 
     # Specifying None for additional parameters makes pytest to generate
@@ -256,6 +299,9 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
         executors_with_marks, models_with_trainers_with_marks)
 
     for (executor, executor_mark), (model, trainer, trainer_mark) in prod:
+        if (executor_mark, trainer_mark) in skip_executor_trainer_pairs:
+            continue
+
         # Since we reuse the same model across multiple tests we want it
         # to be clean.
         model = clone(model)
@@ -284,4 +330,11 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
 
 
 def _is_float(value):
-    return isinstance(value, (float, np.float16, np.float32, np.float64))
+    return isinstance(value, (float, np.floating))
+
+
+def format_arg(value):
+    if np.isnan(value):
+        return "NaN"
+
+    return format_float(value)

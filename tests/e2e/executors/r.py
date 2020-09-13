@@ -34,7 +34,7 @@ class RExecutor(base.BaseExecutor):
         exec_args = [self._r,
                      "--vanilla",
                      file_name,
-                     *map(str, X)]
+                     *map(utils.format_arg, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):

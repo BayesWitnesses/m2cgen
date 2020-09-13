@@ -22,6 +22,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "abs"
+    atan_function_name = "math.atan"
     exponent_function_name = "math.exp"
     logarithm_function_name = "math.log"
     log1p_function_name = "math.log1p"

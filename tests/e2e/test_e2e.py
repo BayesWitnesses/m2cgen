@@ -34,6 +34,8 @@ HASKELL = pytest.mark.haskell
 RUBY = pytest.mark.ruby
 F_SHARP = pytest.mark.f_sharp
 REGRESSION = pytest.mark.regr
+REGRESSION_WITH_MISSING_VALUES = pytest.mark.regr_missing_val
+CLASSIFICATION_WITH_MISSING_VALUES = pytest.mark.clf_missing_val
 CLASSIFICATION = pytest.mark.clf
 
 
@@ -92,6 +94,32 @@ def regression_bounded(model, test_fraction=0.02):
         model,
         utils.get_bounded_regression_model_trainer(test_fraction),
         REGRESSION,
+    )
+
+
+def regression_w_missing_values(model, test_fraction=0.02):
+    return (
+        model,
+        utils.get_regression_w_missing_values_model_trainer(test_fraction),
+        REGRESSION_WITH_MISSING_VALUES,
+    )
+
+
+def classification_random_w_missing_values(model, test_fraction=0.02):
+    return (
+        model,
+        utils.get_classification_random_w_missing_values_model_trainer(
+            test_fraction),
+        CLASSIFICATION_WITH_MISSING_VALUES,
+    )
+
+
+def classification_binary_random_w_missing_values(model, test_fraction=0.02):
+    return (
+        model,
+        utils.get_classification_binary_random_w_missing_values_model_trainer(
+            test_fraction),
+        CLASSIFICATION_WITH_MISSING_VALUES,
     )
 
 
@@ -185,6 +213,14 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
             lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
         classification_binary_random(
             lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_LARGE)),
+
+        # LightGBM (Missing values during train)
+        regression_w_missing_values(
+            lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS)),
+        classification_random_w_missing_values(
+            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS)),
+        classification_binary_random_w_missing_values(
+            lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS)),
 
         # LightGBM (Different Objectives)
         regression(lightgbm.LGBMRegressor(
@@ -347,6 +383,12 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(utils.StatsmodelsSklearnLikeWrapper(
             sm.GLM,
             dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+        classification_binary(utils.StatsmodelsSklearnLikeWrapper(
+            sm.GLM,
+            dict(init=dict(
+                family=sm.families.Binomial(
+                    sm.families.links.cauchy())),
+                 fit=dict(maxiter=2)))),
         classification_binary(utils.StatsmodelsSklearnLikeWrapper(
             sm.GLM,
             dict(init=dict(
@@ -549,6 +591,10 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         classification_binary(
             ensemble.RandomForestClassifier(**FOREST_PARAMS)),
     ],
+    [
+        (R, REGRESSION_WITH_MISSING_VALUES),
+        (R, CLASSIFICATION_WITH_MISSING_VALUES),
+    ]
 
     # Following is the list of extra tests for languages/models which are
     # not fully supported yet.
@@ -568,6 +614,8 @@ def test_e2e(estimator, executor_cls, model_trainer,
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
             y_pred_executed = executor.predict(X_test[idx])
+            y_pred_executed = np.array(
+                y_pred_executed, dtype=y_pred_true.dtype, copy=False)
             print(f"expected={y_pred_true[idx]}, actual={y_pred_executed}")
             res = np.isclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
             assert res if isinstance(res, bool) else res.all()

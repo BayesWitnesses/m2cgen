@@ -24,7 +24,7 @@ class JavaExecutor(base.BaseExecutor):
             self._java_bin, "-cp", self._resource_tmp_dir,
             "Executor", "Model", "score"
         ]
-        exec_args.extend(map(str, X))
+        exec_args.extend(map(utils.format_arg, X))
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):

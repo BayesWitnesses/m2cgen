@@ -151,7 +151,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
-            return ast.NumVal(tree["leaf"])
+            return ast.NumVal(tree["leaf"], dtype=np.float32)
 
         threshold = ast.NumVal(tree["split_condition"], dtype=np.float32)
         split = tree["split"]
@@ -317,9 +317,14 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
         op = ast.CompOpType.from_str_op(tree["decision_type"])
         assert op == ast.CompOpType.LTE, "Unexpected comparison op"
 
-        # Make sure that if the "default_left" is true the left tree branch
-        # ends up in the "else" branch of the ast.IfExpr.
-        if tree["default_left"]:
+        missing_type = tree['missing_type']
+
+        if missing_type not in {"NaN", "None"}:
+            raise ValueError(f"Unknown missing_type: {missing_type}")
+
+        reverse_condition = missing_type == "NaN" and tree["default_left"]
+        reverse_condition |= missing_type == "None" and tree["threshold"] >= 0
+        if reverse_condition:
             op = ast.CompOpType.GT
             true_child = tree["right_child"]
             false_child = tree["left_child"]
