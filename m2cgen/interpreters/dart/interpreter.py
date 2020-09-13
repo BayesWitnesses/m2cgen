@@ -27,10 +27,12 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
     power_function_name = "pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
     with_tanh_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
@@ -63,6 +65,11 @@ class DartInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "log1p.dart")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
+        if self.with_softmax_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "softmax.dart")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
         if self.with_tanh_expr:
             filename = os.path.join(
                 os.path.dirname(__file__), "tanh.dart")
@@ -86,3 +93,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True
         return super().interpret_tanh_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

@@ -30,8 +30,11 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "Math.log"
     log1p_function_name = "Math.log1p"
     power_function_name = "Math.pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
+
+    with_softmax_expr = False
 
     def __init__(self, package_name=None, class_name="Model", indent=4,
                  function_name="score", *args, **kwargs):
@@ -64,9 +67,18 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
                     os.path.dirname(__file__), "linear_algebra.java")
                 top_cg.add_code_lines(utils.get_file_content(filename))
 
+            if self.with_softmax_expr:
+                filename = os.path.join(
+                    os.path.dirname(__file__), "softmax.java")
+                top_cg.add_code_lines(utils.get_file_content(filename))
+
         return top_cg.finalize_and_get_generated_code()
 
     # Required by SubroutinesMixin to create new code generator for
     # each subroutine.
     def create_code_generator(self):
         return JavaCodeGenerator(indent=self.indent)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

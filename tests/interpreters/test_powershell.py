@@ -383,6 +383,38 @@ function Score([double[]] $InputVector) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+function Softmax([double[]] $x) {
+    [int] $size = $x.Length
+    [double[]] $result = @(0) * $size
+    [double] $max = $x[0]
+    for ([int] $i = 1; $i -lt $size; ++$i) {
+        if ($x[$i] -gt $max) {
+            $max = $x[$i]
+        }
+    }
+    [double] $sum = 0.0
+    for ([int] $i = 0; $i -lt $size; ++$i) {
+        $result[$i] = [math]::Exp($x[$i] - $max)
+        $sum += $result[$i]
+    }
+    for ([int] $i = 0; $i -lt $size; ++$i) {
+        $result[$i] /= $sum;
+    }
+    return $result
+}
+function Score([double[]] $InputVector) {
+    return Softmax $(@($(2.0), $(3.0)))
+}
+"""
+
+    interpreter = PowershellInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

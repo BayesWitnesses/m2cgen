@@ -60,7 +60,7 @@ EXPR_WITH_ALL_EXPRS = ast.BinVectorNumExpr(
                 ast.BinNumOpType.ADD)
         ]),
         ast.IdExpr(
-            ast.VectorVal([
+            ast.SoftmaxExpr([
                 ast.NumVal(1),
                 ast.NumVal(2),
                 ast.NumVal(3),
@@ -106,9 +106,9 @@ SqrtExpr(NumVal(2.0),to_reuse=False),
 PowExpr(NumVal(2.0),NumVal(3.0),to_reuse=False),
 TanhExpr(NumVal(1.0),to_reuse=False),
 BinNumExpr(NumVal(0.0),FeatureRef(0),ADD,to_reuse=False)]),
-IdExpr(VectorVal([
+IdExpr(SoftmaxExpr(
 NumVal(1.0),NumVal(2.0),NumVal(3.0),NumVal(4.0),NumVal(5.0),
-NumVal(6.0),NumVal(7.0),NumVal(8.0),FeatureRef(1)]),to_reuse=False),SUB),
+NumVal(6.0),NumVal(7.0),NumVal(8.0),FeatureRef(1),to_reuse=False),to_reuse=False),SUB),
 IfExpr(CompExpr(NumVal(2.0),NumVal(0.0),GT),NumVal(3.0),NumVal(4.0)),MUL)
 """.strip().replace("\n", "")
 

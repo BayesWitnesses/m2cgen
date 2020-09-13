@@ -56,19 +56,8 @@ def test_multi_class():
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
-    exponent = ast.ExpExpr(
-        ast.NumVal(-1.0986122886681098),
-        to_reuse=True)
-
-    exponent_sum = ast.BinNumExpr(
-        ast.BinNumExpr(exponent, exponent, ast.BinNumOpType.ADD),
-        exponent,
-        ast.BinNumOpType.ADD,
-        to_reuse=True)
-
-    softmax = ast.BinNumExpr(exponent, exponent_sum, ast.BinNumOpType.DIV)
-
-    expected = ast.VectorVal([softmax] * 3)
+    num_expr = ast.NumVal(-1.0986122886681098)
+    expected = ast.SoftmaxExpr([num_expr] * 3)
 
     assert utils.cmp_exprs(actual, expected)
 

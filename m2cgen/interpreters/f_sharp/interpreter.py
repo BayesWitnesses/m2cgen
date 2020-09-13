@@ -30,10 +30,12 @@ class FSharpInterpreter(FunctionalToCodeInterpreter,
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
+    softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.indent = indent
@@ -63,6 +65,11 @@ class FSharpInterpreter(FunctionalToCodeInterpreter,
                 os.path.dirname(__file__), "log1p.fs")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_softmax_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "softmax.fs")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
         return self._cg.finalize_and_get_generated_code()
 
     def create_code_generator(self):
@@ -77,6 +84,10 @@ class FSharpInterpreter(FunctionalToCodeInterpreter,
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)
 
     def _dump_cache(self):
         if self._cached_expr_results:

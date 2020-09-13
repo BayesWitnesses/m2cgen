@@ -25,8 +25,11 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "Math.log"
     log1p_function_name = "Math.log1p"
     power_function_name = "Math.pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
+
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score",
                  *args, **kwargs):
@@ -53,4 +56,13 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.js")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
+        if self.with_softmax_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "softmax.js")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
         return self._cg.finalize_and_get_generated_code()
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

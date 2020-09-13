@@ -557,6 +557,38 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = interpreters.JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double[] score(double[] input) {
+        return softmax(new double[] {2.0, 3.0});
+    }
+    private static double[] softmax(double[] x) {
+        int size = x.length;
+        double[] result = new double[size];
+        double max = x[0];
+        for (int i = 1; i < size; ++i) {
+            if (x[i] > max)
+                max = x[i];
+        }
+        double sum = 0.0;
+        for (int i = 0; i < size; ++i) {
+            result[i] = Math.exp(x[i] - max);
+            sum += result[i];
+        }
+        for (int i = 0; i < size; ++i)
+            result[i] /= sum;
+        return result;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

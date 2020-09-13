@@ -147,3 +147,27 @@ def score(input):
         """(var5)) + (var6)) * (var7)""")
 
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_fallback_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    class InterpreterWithoutSoftmax(PythonInterpreter):
+        softmax_function_name = NotImplemented
+
+        def interpret_softmax_expr(self, expr, **kwargs):
+            return super(PythonInterpreter, self).interpret_softmax_expr(
+                expr, **kwargs)
+
+    interpreter = InterpreterWithoutSoftmax()
+
+    expected_code = """
+import math
+def score(input):
+    var0 = math.exp(2.0)
+    var1 = math.exp(3.0)
+    var2 = (var0) + (var1)
+    return [(var0) / (var2), (var1) / (var2)]
+"""
+
+    assert_code_equal(interpreter.interpret(expr), expected_code)

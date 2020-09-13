@@ -446,6 +446,27 @@ def score(input):
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = interpreters.PythonInterpreter()
+
+    expected_code = """
+import math
+def softmax(x):
+    m = max(x)
+    exps = [math.exp(i - m) for i in x]
+    s = sum(exps)
+    for idx, _ in enumerate(exps):
+        exps[idx] = exps[idx] / s
+    return exps
+def score(input):
+    return softmax([2.0, 3.0])
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

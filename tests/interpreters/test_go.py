@@ -327,6 +327,39 @@ func score(input []float64) float64 {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = interpreters.GoInterpreter()
+
+    expected_code = """
+import "math"
+func softmax(x []float64) []float64 {
+    size := len(x)
+    result := make([]float64, size)
+    max := x[0]
+    for _, v := range x {
+        if (v > max) {
+            max = v
+        }
+    }
+    sum := 0.0
+    for i := 0; i < size; i++ {
+        result[i] = math.Exp(x[i] - max)
+        sum += result[i]
+    }
+    for i := 0; i < size; i++ {
+        result[i] /= sum
+    }
+    return result
+}
+func score(input []float64) []float64 {
+    return softmax([]float64{2.0, 3.0})
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

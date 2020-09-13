@@ -21,10 +21,12 @@ class HaskellInterpreter(FunctionalToCodeInterpreter,
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
+    softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
 
     def __init__(self,  module_name="Model", indent=4, function_name="score",
                  *args, **kwargs):
@@ -59,6 +61,11 @@ class HaskellInterpreter(FunctionalToCodeInterpreter,
                 os.path.dirname(__file__), "log1p.hs")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_softmax_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "softmax.hs")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))
 
@@ -76,6 +83,10 @@ class HaskellInterpreter(FunctionalToCodeInterpreter,
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)
 
     def _dump_cache(self):
         if self._cached_expr_results:

@@ -571,6 +571,48 @@ End Module
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+Module Model
+Function Softmax(ByRef x() As Double) As Double()
+    Dim size As Integer
+    size = UBound(x) - LBound(x)
+    Dim result() As Double
+    ReDim result(size)
+    Dim max As Double
+    max = x(LBound(x))
+    Dim i As Integer
+    For i = LBound(x) + 1 To UBound(x)
+        If x(i) > max Then
+            max = x(i)
+        End If
+    Next i
+    Dim sum As Double
+    sum = 0.0
+    For i = LBound(x) To UBound(x)
+        result(i) = Math.Exp(x(i) - max)
+        sum = sum + result(i)
+    Next i
+    For i = LBound(x) To UBound(x)
+        result(i) = result(i) / sum
+    Next i
+    Softmax = result
+End Function
+Function Score(ByRef inputVector() As Double) As Double()
+    Dim var0(1) As Double
+    var0(0) = 2.0
+    var0(1) = 3.0
+    Score = Softmax(var0)
+End Function
+End Module
+"""
+
+    interpreter = VisualBasicInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

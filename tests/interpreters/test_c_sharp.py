@@ -489,6 +489,41 @@ namespace ML {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+using static System.Math;
+namespace ML {
+    public static class Model {
+        public static double[] Score(double[] input) {
+            return Softmax(new double[2] {2.0, 3.0});
+        }
+        private static double[] Softmax(double[] x) {
+            int size = x.Length;
+            double[] result = new double[size];
+            double max = x[0];
+            for (int i = 1; i < size; ++i) {
+                if (x[i] > max)
+                    max = x[i];
+            }
+            double sum = 0.0;
+            for (int i = 0; i < size; ++i) {
+                result[i] = Exp(x[i] - max);
+                sum += result[i];
+            }
+            for (int i = 0; i < size; ++i)
+                result[i] /= sum;
+            return result;
+        }
+    }
+}
+"""
+
+    interpreter = CSharpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

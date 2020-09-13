@@ -342,6 +342,37 @@ function score(input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = interpreters.JavascriptInterpreter()
+
+    expected_code = """
+function score(input) {
+    return softmax([2.0, 3.0]);
+}
+function softmax(x) {
+    let size = x.length;
+    let result = new Array(size);
+    let max = x[0];
+    for (let i = 1; i < size; ++i) {
+        if (x[i] > max)
+            max = x[i];
+    }
+    let sum = 0.0;
+    for (let i = 0; i < size; ++i) {
+        result[i] = Math.exp(x[i] - max);
+        sum += result[i];
+    }
+    for (let i = 0; i < size; ++i)
+        result[i] /= sum;
+    return result;
+}
+"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

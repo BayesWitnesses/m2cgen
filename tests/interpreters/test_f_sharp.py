@@ -455,6 +455,23 @@ let score (input : double list) =
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+let private softmax x =
+    let maxElem = List.reduce max x
+    let exps = List.map (fun i -> exp (i - maxElem)) x
+    let sumExps = List.sum exps
+    List.map (fun i -> i / sumExps) exps
+let score (input : double list) =
+    softmax ([2.0; 3.0])
+"""
+
+    interpreter = FSharpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

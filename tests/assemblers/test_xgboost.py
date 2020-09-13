@@ -57,22 +57,11 @@ def test_multi_class():
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    exponent = ast.ExpExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0.5),
-            ast.NumVal(0.0),
-            ast.BinNumOpType.ADD),
-        to_reuse=True)
-
-    exponent_sum = ast.BinNumExpr(
-        ast.BinNumExpr(exponent, exponent, ast.BinNumOpType.ADD),
-        exponent,
-        ast.BinNumOpType.ADD,
-        to_reuse=True)
-
-    softmax = ast.BinNumExpr(exponent, exponent_sum, ast.BinNumOpType.DIV)
-
-    expected = ast.VectorVal([softmax] * 3)
+    num_expr = ast.BinNumExpr(
+        ast.NumVal(0.5),
+        ast.NumVal(-7.663454759665456e-09),
+        ast.BinNumOpType.ADD)
+    expected = ast.SoftmaxExpr([num_expr] * 3)
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -156,68 +145,43 @@ def test_multi_class_best_ntree_limit():
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    estimator_exp_class1 = ast.ExpExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0.5),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(2),
-                    ast.NumVal(2.45000005),
-                    ast.CompOpType.GTE),
-                ast.NumVal(-0.219950154),
-                ast.NumVal(0.430243909)),
-            ast.BinNumOpType.ADD),
-        to_reuse=True)
+    estimator_class1 = ast.BinNumExpr(
+        ast.NumVal(0.5),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(2),
+                ast.NumVal(2.450000047683716),
+                ast.CompOpType.GTE),
+            ast.NumVal(-0.21995015442371368),
+            ast.NumVal(0.43024390935897827)),
+        ast.BinNumOpType.ADD)
 
-    estimator_exp_class2 = ast.ExpExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0.5),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(2),
-                    ast.NumVal(2.45000005),
-                    ast.CompOpType.GTE),
-                ast.NumVal(0.103241883),
-                ast.NumVal(-0.215121984)),
-            ast.BinNumOpType.ADD),
-        to_reuse=True)
+    estimator_class2 = ast.BinNumExpr(
+        ast.NumVal(0.5),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(2),
+                ast.NumVal(2.450000047683716),
+                ast.CompOpType.GTE),
+            ast.NumVal(0.10324188321828842),
+            ast.NumVal(-0.21512198448181152)),
+        ast.BinNumOpType.ADD)
 
-    estimator_exp_class3 = ast.ExpExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0.5),
-            ast.IfExpr(
-                ast.CompExpr(
-                    ast.FeatureRef(3),
-                    ast.NumVal(1.6500001),
-                    ast.CompOpType.GTE),
-                ast.NumVal(0.402985066),
-                ast.NumVal(-0.193333372)),
-            ast.BinNumOpType.ADD),
-        to_reuse=True)
+    estimator_class3 = ast.BinNumExpr(
+        ast.NumVal(0.5),
+        ast.IfExpr(
+            ast.CompExpr(
+                ast.FeatureRef(3),
+                ast.NumVal(1.6500000953674316),
+                ast.CompOpType.GTE),
+            ast.NumVal(0.4029850661754608),
+            ast.NumVal(-0.19333337247371674)),
+        ast.BinNumOpType.ADD)
 
-    exp_sum = ast.BinNumExpr(
-        ast.BinNumExpr(
-            estimator_exp_class1,
-            estimator_exp_class2,
-            ast.BinNumOpType.ADD),
-        estimator_exp_class3,
-        ast.BinNumOpType.ADD,
-        to_reuse=True)
-
-    expected = ast.VectorVal([
-        ast.BinNumExpr(
-            estimator_exp_class1,
-            exp_sum,
-            ast.BinNumOpType.DIV),
-        ast.BinNumExpr(
-            estimator_exp_class2,
-            exp_sum,
-            ast.BinNumOpType.DIV),
-        ast.BinNumExpr(
-            estimator_exp_class3,
-            exp_sum,
-            ast.BinNumOpType.DIV)
-    ])
+    expected = ast.SoftmaxExpr([
+        estimator_class1,
+        estimator_class2,
+        estimator_class3])
 
     assert utils.cmp_exprs(actual, expected)
 
