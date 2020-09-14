@@ -7,7 +7,7 @@ git+git://github.com/scikit-learn-contrib/lightning.git@782c18c12961e509099ae84c
 
 # Testing tools
 flake8==3.8.3
-pytest==6.0.1
+pytest==6.0.2
 pytest-mock==3.3.1
 coveralls==2.1.2
 pytest-cov==2.10.1
