@@ -141,55 +141,55 @@ def test_statsmodels_wo_const():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(-0.0940752519),
+            ast.NumVal(-0.0926871267),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.0461122112),
+            ast.NumVal(0.0482139967),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(-0.0034800646),
+            ast.NumVal(-0.0075524567),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(2.9669908485),
+            ast.NumVal(2.9965313383),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(-2.1264724710),
+            ast.NumVal(-3.0877925575),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(5.9738064897),
+            ast.NumVal(5.9546630146),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(-0.0062638276),
+            ast.NumVal(-0.0073548271),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(-0.9385894841),
+            ast.NumVal(-0.9828206079),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(0.1568975632),
+            ast.NumVal(0.1727389546),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(-0.0091548228),
+            ast.NumVal(-0.0094218658),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(-0.3949784315),
+            ast.NumVal(-0.3931071261),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.0135685532),
+            ast.NumVal(0.0149656744),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.4392385223),
+            ast.NumVal(-0.4133835832),
             ast.BinNumOpType.MUL),
     ]
 
@@ -213,61 +213,61 @@ def test_statsmodels_w_const():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(-0.1082106941),
+            ast.NumVal(-0.1085910250),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.0444969007),
+            ast.NumVal(0.0441988987),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(0.0189847585),
+            ast.NumVal(0.0174669054),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(2.7998640040),
+            ast.NumVal(2.8323210870),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(-16.7498366967),
+            ast.NumVal(-18.4837486980),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(3.9040863643),
+            ast.NumVal(3.8354955484),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(0.0014333844),
+            ast.NumVal(0.0001409165),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(-1.4436181595),
+            ast.NumVal(-1.5040340047),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(0.2868165881),
+            ast.NumVal(0.3106174852),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(-0.0118539736),
+            ast.NumVal(-0.0123066500),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(-0.9449930750),
+            ast.NumVal(-0.9736183985),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.0083181952),
+            ast.NumVal(0.0094039648),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.5415938640),
+            ast.NumVal(-0.5203427347),
             ast.BinNumOpType.MUL),
     ]
 
     expected = assemblers.utils.apply_op_to_expressions(
         ast.BinNumOpType.ADD,
-        ast.NumVal(35.5746356887),
+        ast.NumVal(37.1353468527),
         *feature_weight_mul)
 
     assert utils.cmp_exprs(actual, expected)
@@ -308,55 +308,55 @@ def test_statsmodels_processmle():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(-0.0915126856),
+            ast.NumVal(-0.0932673973),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.0455368812),
+            ast.NumVal(0.0480819091),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(-0.0092227692),
+            ast.NumVal(-0.0063734439),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(2.8566616798),
+            ast.NumVal(2.7510656855),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(-2.1208777964),
+            ast.NumVal(-3.0836268637),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(5.9725253309),
+            ast.NumVal(5.9605290000),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(-0.0061566965),
+            ast.NumVal(-0.0077880716),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(-0.9414114075),
+            ast.NumVal(-0.9685365627),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(0.1522429507),
+            ast.NumVal(0.1688777882),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(-0.0092123938),
+            ast.NumVal(-0.0092446419),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(-0.3928508764),
+            ast.NumVal(-0.3924930042),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.0134405151),
+            ast.NumVal(0.01506511708295605),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.4364996490),
+            ast.NumVal(-0.4177000096),
             ast.BinNumOpType.MUL),
     ]
 
@@ -743,55 +743,55 @@ def test_lightning_regression():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(-0.0610645819),
+            ast.NumVal(-0.0961163452),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.0856563713),
+            ast.NumVal(0.1574398180),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(-0.0562044566),
+            ast.NumVal(-0.0251799219),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(0.2804204925),
+            ast.NumVal(0.1975142192),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(0.1359261760),
+            ast.NumVal(0.1189621635),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(1.6307305501),
+            ast.NumVal(1.2977018274),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(0.0866147265),
+            ast.NumVal(0.1192977978),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(-0.0726894150),
+            ast.NumVal(0.0331955333),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(0.0435440193),
+            ast.NumVal(0.1433964513),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(-0.0077364839),
+            ast.NumVal(0.0014943531),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(0.2902775116),
+            ast.NumVal(0.3116036672),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.0229879957),
+            ast.NumVal(0.0258421936),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.7614706871),
+            ast.NumVal(-0.7386996349),
             ast.BinNumOpType.MUL),
     ]
 
@@ -813,123 +813,123 @@ def test_lightning_binary_class():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(0.1605265174),
+            ast.NumVal(0.1617602138),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.1045225083),
+            ast.NumVal(0.0931034793),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(0.6237391536),
+            ast.NumVal(0.6279180888),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(0.1680225811),
+            ast.NumVal(0.1856722189),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(0.0011013688),
+            ast.NumVal(0.0009999878),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(-0.0027528486),
+            ast.NumVal(-0.0028974470),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(-0.0058878714),
+            ast.NumVal(-0.0059948515),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(-0.0023719811),
+            ast.NumVal(-0.0024173728),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(0.0019944105),
+            ast.NumVal(0.0020429247),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(0.0009924456),
+            ast.NumVal(0.0009604400),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(0.0003994860),
+            ast.NumVal(0.0010933747),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.0124697033),
+            ast.NumVal(0.0078588761),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.0123674096),
+            ast.NumVal(-0.0069150246),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(13),
-            ast.NumVal(-0.2844204905),
+            ast.NumVal(-0.2583249885),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(14),
-            ast.NumVal(0.0000273704),
+            ast.NumVal(0.0000097479),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(15),
-            ast.NumVal(-0.0007498013),
+            ast.NumVal(-0.0007210600),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(16),
-            ast.NumVal(-0.0010784399),
+            ast.NumVal(-0.0011295195),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(17),
-            ast.NumVal(-0.0001848694),
+            ast.NumVal(-0.0001966115),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(18),
-            ast.NumVal(0.0000632254),
+            ast.NumVal(0.0001358314),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(19),
-            ast.NumVal(-0.0000369618),
+            ast.NumVal(-0.0000378118),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(20),
-            ast.NumVal(0.1520223021),
+            ast.NumVal(0.1555921773),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(21),
-            ast.NumVal(0.0925348635),
+            ast.NumVal(0.0621307817),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(22),
-            ast.NumVal(0.4861047372),
+            ast.NumVal(0.5138354949),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(23),
-            ast.NumVal(-0.2798670185),
+            ast.NumVal(-0.2418579612),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(24),
-            ast.NumVal(0.0009925506),
+            ast.NumVal(0.0007953821),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(25),
-            ast.NumVal(-0.0103414976),
+            ast.NumVal(-0.0110760214),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(26),
-            ast.NumVal(-0.0155024577),
+            ast.NumVal(-0.0162178044),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(27),
-            ast.NumVal(-0.0038881538),
+            ast.NumVal(-0.0040277699),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(28),
-            ast.NumVal(0.0010126166),
+            ast.NumVal(0.0015067033),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(29),
-            ast.NumVal(0.0002312558),
+            ast.NumVal(0.0001536614),
             ast.BinNumOpType.MUL),
     ]
 
@@ -956,22 +956,22 @@ def test_lightning_multi_class():
                         ast.NumVal(0.0),
                         ast.BinNumExpr(
                             ast.FeatureRef(0),
-                            ast.NumVal(0.0895848274),
+                            ast.NumVal(0.0935146297),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
                         ast.FeatureRef(1),
-                        ast.NumVal(0.3258329434),
+                        ast.NumVal(0.3213921354),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
                     ast.FeatureRef(2),
-                    ast.NumVal(-0.4900856238),
+                    ast.NumVal(-0.4855914264),
                     ast.BinNumOpType.MUL),
                 ast.BinNumOpType.ADD),
             ast.BinNumExpr(
                 ast.FeatureRef(3),
-                ast.NumVal(-0.2214482506),
+                ast.NumVal(-0.2214295302),
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD),
         ast.BinNumExpr(
@@ -981,22 +981,22 @@ def test_lightning_multi_class():
                         ast.NumVal(0.0),
                         ast.BinNumExpr(
                             ast.FeatureRef(0),
-                            ast.NumVal(-0.1074247041),
+                            ast.NumVal(-0.1103262586),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
                         ast.FeatureRef(1),
-                        ast.NumVal(-0.1693225196),
+                        ast.NumVal(-0.1662457692),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
                     ast.FeatureRef(2),
-                    ast.NumVal(0.0357417324),
+                    ast.NumVal(0.0379823341),
                     ast.BinNumOpType.MUL),
                 ast.BinNumOpType.ADD),
             ast.BinNumExpr(
                 ast.FeatureRef(3),
-                ast.NumVal(-0.0161614171),
+                ast.NumVal(-0.0128634938),
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD),
         ast.BinNumExpr(
@@ -1006,22 +1006,22 @@ def test_lightning_multi_class():
                         ast.NumVal(0.0),
                         ast.BinNumExpr(
                             ast.FeatureRef(0),
-                            ast.NumVal(-0.1825063678),
+                            ast.NumVal(-0.1685751402),
                             ast.BinNumOpType.MUL),
                         ast.BinNumOpType.ADD),
                     ast.BinNumExpr(
                         ast.FeatureRef(1),
-                        ast.NumVal(-0.2185655665),
+                        ast.NumVal(-0.2045901693),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.ADD),
                 ast.BinNumExpr(
                     ast.FeatureRef(2),
-                    ast.NumVal(0.3053017646),
+                    ast.NumVal(0.2932121798),
                     ast.BinNumOpType.MUL),
                 ast.BinNumOpType.ADD),
             ast.BinNumExpr(
                 ast.FeatureRef(3),
-                ast.NumVal(0.2175198459),
+                ast.NumVal(0.2138148665),
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD)])
 
