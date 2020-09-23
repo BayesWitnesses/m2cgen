@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 from m2cgen import ast
@@ -149,6 +151,13 @@ class GLMMixin:
             ast.NumVal(-1.0),
             utils.mul(ast.NumVal(alpha), res) if alpha != 1.0 else res)
 
+    def _cauchy_inversed(self, ast_to_transform):
+        return utils.add(
+            ast.NumVal(0.5),
+            utils.div(
+                ast.AtanExpr(ast_to_transform),
+                ast.NumVal(math.pi)))
+
     def _get_power(self):
         raise NotImplementedError
 
@@ -172,7 +181,8 @@ class StatsmodelsGLMModelAssembler(GLMMixin, StatsmodelsLinearModelAssembler):
             "log": self._log_inversed,
             "cloglog": self._cloglog_inversed,
             "negativebinomial": self._negativebinomial_inversed,
-            "nbinom": self._negativebinomial_inversed
+            "nbinom": self._negativebinomial_inversed,
+            "cauchy": self._cauchy_inversed
         }
 
     def _get_power(self):

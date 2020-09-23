@@ -18,6 +18,7 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "abs"
+    atan_function_name = "Math.atan"
     exponent_function_name = "Math.exp"
     logarithm_function_name = "Math.log"
     log1p_function_name = "log1p"

@@ -18,11 +18,13 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "Math.Abs"
+    atan_function_name = "Atan"
     exponent_function_name = "Math.Exp"
     logarithm_function_name = "Math.Log"
     log1p_function_name = "Log1p"
     tanh_function_name = "Tanh"
 
+    with_atan_expr = False
     with_log1p_expr = False
     with_tanh_expr = False
 
@@ -64,6 +66,11 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "log1p.bas")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_atan_expr:
+            filename = os.path.join(
+                os.path.dirname(__file__), "atan.bas")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))
         self._cg.add_code_line(self._cg.tpl_block_termination(
@@ -84,3 +91,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True
         return super().interpret_tanh_expr(expr, **kwargs)
+
+    def interpret_atan_expr(self, expr, **kwargs):
+        self.with_atan_expr = True
+        return super().interpret_atan_expr(expr, **kwargs)

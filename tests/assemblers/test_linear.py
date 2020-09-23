@@ -667,6 +667,36 @@ def test_statsmodels_glm_negativebinomial_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
+def test_statsmodels_glm_cauchy_link_func():
+    estimator = utils.StatsmodelsSklearnLikeWrapper(
+        sm.GLM,
+        dict(init=dict(
+            family=sm.families.Binomial(
+                sm.families.links.cauchy())),
+             fit=dict(maxiter=1)))
+    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
+
+    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.BinNumExpr(
+        ast.NumVal(0.5),
+        ast.BinNumExpr(
+            ast.AtanExpr(
+                ast.BinNumExpr(
+                    ast.NumVal(0.0),
+                    ast.BinNumExpr(
+                        ast.FeatureRef(0),
+                        ast.NumVal(-0.7279996905393095),
+                        ast.BinNumOpType.MUL),
+                    ast.BinNumOpType.ADD)),
+            ast.NumVal(3.141592653589793),
+            ast.BinNumOpType.DIV),
+        ast.BinNumOpType.ADD)
+
+    assert utils.cmp_exprs(actual, expected)
+
+
 @pytest.mark.xfail(raises=ValueError, strict=True)
 def test_statsmodels_glm_unknown_link_func():
 
