@@ -48,8 +48,7 @@ class RInterpreter(ImperativeToCodeInterpreter,
         self.process_subroutine_queue(top_cg)
 
         if self.with_softmax_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "softmax.r")
+            filename = os.path.join(os.path.dirname(__file__), "softmax.r")
             top_cg.prepend_code_lines(utils.get_file_content(filename))
 
         return top_cg.finalize_and_get_generated_code()

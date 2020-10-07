@@ -173,8 +173,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     def interpret_softmax_expr(self, expr, **kwargs):
         if self.softmax_function_name is NotImplemented:
             return self._do_interpret(
-                fallback_expressions.softmax(expr.exprs),
-                **kwargs)
+                fallback_expressions.softmax(expr.exprs), **kwargs)
         self.with_vectors = True
         self.with_math_module = True
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]

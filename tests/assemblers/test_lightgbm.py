@@ -23,18 +23,18 @@ def test_binary_classification():
                     ast.BinNumExpr(
                         ast.IfExpr(
                             ast.CompExpr(
-                                ast.FeatureRef(23),
-                                ast.NumVal(868.2000000000002),
+                                ast.FeatureRef(20),
+                                ast.NumVal(16.795),
                                 ast.CompOpType.GT),
-                            ast.NumVal(0.26400127816506497),
-                            ast.NumVal(0.633133056485969)),
+                            ast.NumVal(0.27502096830384837),
+                            ast.NumVal(0.6391171126839048)),
                         ast.IfExpr(
                             ast.CompExpr(
-                                ast.FeatureRef(22),
-                                ast.NumVal(105.95000000000002),
+                                ast.FeatureRef(27),
+                                ast.NumVal(0.14205),
                                 ast.CompOpType.GT),
-                            ast.NumVal(-0.18744882409486507),
-                            ast.NumVal(0.13458899352064668)),
+                            ast.NumVal(-0.21340153096570616),
+                            ast.NumVal(0.11583109256834748)),
                         ast.BinNumOpType.ADD),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
@@ -73,18 +73,18 @@ def test_regression():
     expected = ast.BinNumExpr(
         ast.IfExpr(
             ast.CompExpr(
-                ast.FeatureRef(5),
-                ast.NumVal(6.837500000000001),
+                ast.FeatureRef(12),
+                ast.NumVal(9.725),
                 ast.CompOpType.GT),
-            ast.NumVal(23.961356387224317),
-            ast.NumVal(22.32858336612959)),
+            ast.NumVal(22.030283219508686),
+            ast.NumVal(23.27840740210207)),
         ast.IfExpr(
             ast.CompExpr(
-                ast.FeatureRef(12),
-                ast.NumVal(9.725000000000003),
+                ast.FeatureRef(5),
+                ast.NumVal(6.8375),
                 ast.CompOpType.GT),
-            ast.NumVal(-0.5031712645462916),
-            ast.NumVal(0.6885501354513913)),
+            ast.NumVal(1.2777791671888081),
+            ast.NumVal(-0.2686772850549309)),
         ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
@@ -104,17 +104,17 @@ def test_regression_random_forest():
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
-                    ast.NumVal(5.200000000000001),
+                    ast.NumVal(9.605),
                     ast.CompOpType.GT),
-                ast.NumVal(20.195681040256623),
-                ast.NumVal(38.30000037757679)),
+                ast.NumVal(17.398543657369768),
+                ast.NumVal(29.851408659650296)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
-                    ast.NumVal(6.853000000000001),
+                    ast.NumVal(6.888),
                     ast.CompOpType.GT),
-                ast.NumVal(36.14745794219976),
-                ast.NumVal(19.778245570310993)),
+                ast.NumVal(37.2235298136268),
+                ast.NumVal(19.948122884684025)),
             ast.BinNumOpType.ADD),
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)
@@ -137,23 +137,23 @@ def test_regression_with_negative_values():
                     ast.FeatureRef(8),
                     ast.NumVal(0.0),
                     ast.CompOpType.GT),
-                ast.NumVal(155.96889994777868),
-                ast.NumVal(147.72971715548434)),
+                ast.NumVal(156.64462853604854),
+                ast.NumVal(148.40956590509697)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(2),
                     ast.NumVal(0.00780560282464346),
                     ast.CompOpType.GT),
-                ast.NumVal(4.982244683562974),
-                ast.NumVal(-2.978315963345233)),
+                ast.NumVal(4.996373375352607),
+                ast.NumVal(-3.1063596100284814)),
             ast.BinNumOpType.ADD),
         ast.IfExpr(
             ast.CompExpr(
                 ast.FeatureRef(8),
                 ast.NumVal(-0.0010539205031971832),
                 ast.CompOpType.LTE),
-            ast.NumVal(-3.488666332734598),
-            ast.NumVal(3.670539900363904)),
+            ast.NumVal(-3.5131100858883424),
+            ast.NumVal(3.6285643795846214)),
         ast.BinNumOpType.ADD)
 
     assert utils.cmp_exprs(actual, expected)
@@ -180,15 +180,15 @@ def test_simple_sigmoid_output_transform():
                                 ast.FeatureRef(12),
                                 ast.NumVal(19.23),
                                 ast.CompOpType.GT),
-                            ast.NumVal(4.0050691250),
-                            ast.NumVal(4.0914737728)),
+                            ast.NumVal(4.002437528537838),
+                            ast.NumVal(4.090096709787509)),
                         ast.IfExpr(
                             ast.CompExpr(
                                 ast.FeatureRef(12),
-                                ast.NumVal(15.065),
+                                ast.NumVal(14.895),
                                 ast.CompOpType.GT),
-                            ast.NumVal(-0.0420531079),
-                            ast.NumVal(0.0202891577)),
+                            ast.NumVal(-0.0417499606641773),
+                            ast.NumVal(0.02069953712454655)),
                         ast.BinNumOpType.ADD),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),
@@ -214,15 +214,15 @@ def test_log1p_exp_output_transform():
                         ast.FeatureRef(12),
                         ast.NumVal(19.23),
                         ast.CompOpType.GT),
-                    ast.NumVal(0.6623996001),
-                    ast.NumVal(0.6684477608)),
+                    ast.NumVal(0.6622623010380544),
+                    ast.NumVal(0.6684065452877841)),
                 ast.IfExpr(
                     ast.CompExpr(
                         ast.FeatureRef(12),
-                        ast.NumVal(15.065),
+                        ast.NumVal(15.145),
                         ast.CompOpType.GT),
-                    ast.NumVal(0.1405782705),
-                    ast.NumVal(0.1453764991)),
+                    ast.NumVal(0.1404975120475147),
+                    ast.NumVal(0.14535916856709272)),
                 ast.BinNumOpType.ADD)))
 
     assert utils.cmp_exprs(actual, expected)
@@ -242,17 +242,17 @@ def test_maybe_sqr_output_transform():
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
-                    ast.NumVal(11.655),
+                    ast.NumVal(9.725),
                     ast.CompOpType.GT),
-                ast.NumVal(4.5671830654),
-                ast.NumVal(4.6516575813)),
+                ast.NumVal(4.569350528717041),
+                ast.NumVal(4.663526439666748)),
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(12),
-                    ast.NumVal(9.725),
+                    ast.NumVal(11.655),
                     ast.CompOpType.GT),
-                ast.NumVal(-0.0348178434),
-                ast.NumVal(0.0549301624)),
+                ast.NumVal(-0.04462450027465819),
+                ast.NumVal(0.033305134773254384)),
             ast.BinNumOpType.ADD),
         to_reuse=True)
 
@@ -276,18 +276,18 @@ def test_exp_output_transform():
         ast.BinNumExpr(
             ast.IfExpr(
                 ast.CompExpr(
-                    ast.FeatureRef(5),
-                    ast.NumVal(6.8375),
-                    ast.CompOpType.GT),
-                ast.NumVal(3.1481886430),
-                ast.NumVal(3.1123367238)),
-            ast.IfExpr(
-                ast.CompExpr(
                     ast.FeatureRef(12),
                     ast.NumVal(9.725),
                     ast.CompOpType.GT),
-                ast.NumVal(-0.0113689739),
-                ast.NumVal(0.0153551274)),
+                ast.NumVal(3.1043985065105892),
+                ast.NumVal(3.1318783133960197)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.8375),
+                    ast.CompOpType.GT),
+                ast.NumVal(0.028409619436010138),
+                ast.NumVal(-0.0060740730485278754)),
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
@@ -312,11 +312,11 @@ def test_bin_class_sigmoid_output_transform():
                         ast.NumVal(0.5),
                         ast.IfExpr(
                             ast.CompExpr(
-                                ast.FeatureRef(23),
-                                ast.NumVal(868.2),
+                                ast.FeatureRef(20),
+                                ast.NumVal(16.795),
                                 ast.CompOpType.GT),
-                            ast.NumVal(0.5280025563),
-                            ast.NumVal(1.2662661130)),
+                            ast.NumVal(0.5500419366076967),
+                            ast.NumVal(1.2782342253678096)),
                         ast.BinNumOpType.MUL),
                     ast.BinNumOpType.SUB)),
             ast.BinNumOpType.ADD),

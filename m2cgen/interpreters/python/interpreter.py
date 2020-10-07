@@ -55,8 +55,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "softmax.py")
+            filename = os.path.join(os.path.dirname(__file__), "softmax.py")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_math_module:

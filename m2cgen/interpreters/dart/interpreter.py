@@ -66,8 +66,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "softmax.dart")
+            filename = os.path.join(os.path.dirname(__file__), "softmax.dart")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_tanh_expr:

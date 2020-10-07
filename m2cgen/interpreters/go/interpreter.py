@@ -55,8 +55,7 @@ class GoInterpreter(ImperativeToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "softmax.go")
+            filename = os.path.join(os.path.dirname(__file__), "softmax.go")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_math_module:

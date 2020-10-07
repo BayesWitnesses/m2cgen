@@ -62,8 +62,7 @@ class HaskellInterpreter(FunctionalToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "softmax.hs")
+            filename = os.path.join(os.path.dirname(__file__), "softmax.hs")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(

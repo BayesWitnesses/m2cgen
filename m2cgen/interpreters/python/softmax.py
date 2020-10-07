@@ -3,5 +3,5 @@ def softmax(x):
     exps = [math.exp(i - m) for i in x]
     s = sum(exps)
     for idx, _ in enumerate(exps):
-        exps[idx] = exps[idx] / s
+        exps[idx] /= s
     return exps

@@ -251,7 +251,8 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
     def _multi_class_sigmoid_transform(self, exprs):
         return ast.VectorVal([
             self._bin_class_sigmoid_transform(expr, to_reuse=False)
-            for expr in exprs])
+            for expr in exprs
+        ])
 
     def _bin_class_convert_output(self, expr, to_reuse=True):
         supported_objectives = {

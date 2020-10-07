@@ -60,8 +60,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "softmax.ps1")
+            filename = os.path.join(os.path.dirname(__file__), "softmax.ps1")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()

@@ -93,7 +93,7 @@ def test_generate_code():
     utils.verify_python_model_is_expected(
         generated_code,
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-        expected_output=-39.924763953119275)
+        expected_output=-44.40540274041321)
 
 
 def test_function_name():
@@ -167,4 +167,4 @@ def test_unsupported_args_are_ignored():
     utils.verify_python_model_is_expected(
         generated_code,
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-        expected_output=-39.924763953119275)
+        expected_output=-44.40540274041321)

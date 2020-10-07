@@ -65,8 +65,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "softmax.c")
+            filename = os.path.join(os.path.dirname(__file__), "softmax.c")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_vectors:
