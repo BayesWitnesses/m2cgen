@@ -1,5 +1,5 @@
 # Supported models
-scikit-learn==0.23.2
+scikit-learn==0.24.0
 xgboost==1.2.0
 lightgbm==3.0.0
 statsmodels==0.12.0
