@@ -3,7 +3,7 @@ scikit-learn==0.23.2
 xgboost==1.2.0
 lightgbm==3.0.0
 statsmodels==0.12.0
-git+git://github.com/scikit-learn-contrib/lightning.git@782c18c12961e509099ae84c68dd361010642f7e
+git+git://github.com/scikit-learn-contrib/lightning.git@ecd9ad06ee2f8f4711893a0b8c03038185121d2b
 
 # Testing tools
 flake8==3.8.3
