@@ -95,6 +95,7 @@ SUPPORTED_MODELS = {
     "lightning_SAGARegressor": SklearnLinearModelAssembler,
     "lightning_SAGRegressor": SklearnLinearModelAssembler,
     "lightning_SDCARegressor": SklearnLinearModelAssembler,
+    "lightning_SGDRegressor": SklearnLinearModelAssembler,
 
     # Sklearn Linear Classifiers
     "sklearn_LogisticRegression": SklearnLinearModelAssembler,
