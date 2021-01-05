@@ -505,7 +505,9 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(light_reg.SAGARegressor(random_state=RANDOM_SEED)),
         regression(light_reg.SAGRegressor(random_state=RANDOM_SEED)),
         regression(light_reg.SDCARegressor(random_state=RANDOM_SEED)),
-        regression(light_reg.SGDRegressor(random_state=RANDOM_SEED)),
+        regression(light_reg.SGDRegressor(
+            loss='epsilon_insensitive',  # default results in NANs in coefs_
+            random_state=RANDOM_SEED)),
 
         # Sklearn Linear Classifiers
         classification(linear_model.LogisticRegression(
