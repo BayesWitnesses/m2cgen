@@ -8,6 +8,10 @@ if [[ $TEST == "API" ]]; then
   coveralls
 fi
 
+if [[ $TEST == "submit-coveralls" ]]; then
+  coveralls --finish
+fi
+
 if [[ $TEST == "E2E" ]]; then
   python setup.py install
   rm -rfd m2cgen/
