@@ -5,11 +5,7 @@ set -e
 if [[ $TEST == "API" ]]; then
   flake8 .
   pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
-  coveralls --service=github
-fi
-
-if [[ $TEST == "submit-coveralls" ]]; then
-  coveralls --finish
+  coveralls
 fi
 
 if [[ $TEST == "E2E" ]]; then
