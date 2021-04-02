@@ -79,6 +79,13 @@ class DartInterpreter(ImperativeToCodeInterpreter,
             obj=self._do_interpret(expr.expr, **kwargs),
             args=[])
 
+    def interpret_pow_expr(self, expr, **kwargs):
+        pow_result = super().interpret_pow_expr(expr, **kwargs)
+        return self._cg.method_invocation(
+            method_name="toDouble",
+            obj=pow_result,
+            args=[])
+
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
