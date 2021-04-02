@@ -64,33 +64,33 @@ jobs:
             m2cgen-docker \
             bash /m2cgen/.ci/test.sh
 
-  e2e-test:
-    name: "Python ${{ matrix.python }} E2E tests"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python:
-          - 3.6
-          - 3.7
-          - 3.8
-        lang:
-          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby"
-          - "c_sharp or visual_basic or f_sharp"
-          - "r_lang or dart"
-          - "powershell"
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 5
-      - name: Build Docker image
-        run: docker build . --file Dockerfile -t m2cgen-docker --build-arg python=${{ matrix.python }}
-      - name: Run E2E tests
-        run: |
-          docker run \
-            -v "$GITHUB_WORKSPACE":"/m2cgen" \
-            -e TEST=E2E \
-            -e LANG="${{ matrix.lang }}" \
-            m2cgen-docker \
-            bash /m2cgen/.ci/test.sh
+#  e2e-test:
+#    name: "Python ${{ matrix.python }} E2E tests"
+#    runs-on: ubuntu-latest
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        python:
+#          - 3.6
+#          - 3.7
+#          - 3.8
+#        lang:
+#          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby"
+#          - "c_sharp or visual_basic or f_sharp"
+#          - "r_lang or dart"
+#          - "powershell"
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v1
+#        with:
+#          fetch-depth: 5
+#      - name: Build Docker image
+#        run: docker build . --file Dockerfile -t m2cgen-docker --build-arg python=${{ matrix.python }}
+#      - name: Run E2E tests
+#        run: |
+#          docker run \
+#            -v "$GITHUB_WORKSPACE":"/m2cgen" \
+#            -e TEST=E2E \
+#            -e LANG="${{ matrix.lang }}" \
+#            m2cgen-docker \
+#            bash /m2cgen/.ci/test.sh
