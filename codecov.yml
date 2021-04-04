@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+        if_ci_failed: error
+        informational: false
+        only_pulls: false
+comment: false
+codecov:
+  require_ci_to_pass: false
+  notify:
+    wait_for_ci: false
