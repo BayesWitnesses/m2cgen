@@ -7,4 +7,7 @@ coverage:
         base: auto
         informational: false
         only_pulls: false
+    patch:
+      default:
+        enabled: false
 comment: false
