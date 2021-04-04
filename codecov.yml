@@ -1,5 +1,6 @@
 coverage:
   status:
+    patch: off
     project:
       default:
         target: auto
@@ -7,7 +8,4 @@ coverage:
         base: auto
         informational: false
         only_pulls: false
-    patch:
-      default:
-        enabled: false
 comment: false
