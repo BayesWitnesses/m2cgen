@@ -31,7 +31,9 @@ jobs:
         with:
           fetch-depth: 5
       - name: Build Docker image
-        run: docker build . --file Dockerfile -t m2cgen-docker --build-arg python=${{ matrix.python }}
+        run: |
+          sudo sysctl -w net.ipv4.tcp_mtu_probing=1
+          docker build . --file Dockerfile -t m2cgen-docker --build-arg python=${{ matrix.python }}
       - name: Run tests
         run: |
           if [[ "${{ matrix.lang }}" == "API" ]]; then
