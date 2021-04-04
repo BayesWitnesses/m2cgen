@@ -8,4 +8,4 @@ coverage:
         if_ci_failed: error
         informational: false
         only_pulls: false
-comment: false
+#comment: false
