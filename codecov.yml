@@ -7,4 +7,4 @@ coverage:
         base: auto
         informational: false
         only_pulls: false
-#comment: false
+comment: false
