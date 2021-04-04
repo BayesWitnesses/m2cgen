@@ -5,7 +5,7 @@ set -e
 if [[ $TEST == "API" ]]; then
   flake8 .
   pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
-  coveralls
+  bash <(curl -s https://codecov.io/bash)
 fi
 
 if [[ $TEST == "E2E" ]]; then
