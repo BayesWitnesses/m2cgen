@@ -44,8 +44,11 @@ jobs:
             -e TEST \
             -e LANG="${{ matrix.lang }}" \
             -e GITHUB_ACTIONS \
+            -e GITHUB_WORKFLOW \
             -e GITHUB_RUN_ID \
+            -e GITHUB_SHA \
             -e GITHUB_REF \
+            -e GITHUB_HEAD_REF \
             -e GITHUB_REPOSITORY \
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             m2cgen-docker \

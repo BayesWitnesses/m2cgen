@@ -8,6 +8,7 @@ ENV TZ Etc/UTC
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
+        curl \
         gpg-agent \
         dirmngr \
         locales \
