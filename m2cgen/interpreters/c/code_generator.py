@@ -5,8 +5,8 @@ from m2cgen.interpreters.code_generator import CLikeCodeGenerator, CodeTemplate
 
 class CCodeGenerator(CLikeCodeGenerator):
 
-    tpl_scalar_var_declare = CT("double {var_name};")
-    tpl_vector_var_declare = CT("double {var_name}[{size}];")
+    tpl_scalar_var_declare = CodeTemplate("double {var_name};")
+    tpl_vector_var_declare = CodeTemplate("double {var_name}[{size}];")
 
     scalar_type = "double"
     vector_type = "double *"
