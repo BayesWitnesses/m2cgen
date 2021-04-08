@@ -1,22 +1,35 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 ARG python=3.8
 
-ENV JAVA_HOME /usr/lib/jvm/zulu-8-amd64
-ENV LC_ALL en_US.UTF-8
-ENV TZ Etc/UTC
+ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
+    LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    TZ=Etc/UTC \
+    MKL_NUM_THREADS=2 \
+    NUMEXPR_NUM_THREADS=2 \
+    OMP_NUM_THREADS=2 \
+    OPENBLAS_NUM_THREADS=2 \
+    VECLIB_MAXIMUM_THREADS=2 \
+    BLIS_NUM_THREADS=2
 
-RUN apt-get update && \
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    echo '* soft memlock unlimited' >> /etc/security/limits.conf && \
+    echo '* hard memlock unlimited' >> /etc/security/limits.conf && \
+    echo '* soft stack unlimited' >> /etc/security/limits.conf && \
+    echo '* hard stack unlimited' >> /etc/security/limits.conf && \
+    apt-get update && \
     apt-get install --no-install-recommends -y \
+        apt-transport-https \
         curl \
-        gpg-agent \
         dirmngr \
+        dpkg-dev \
+        gpg-agent \
         locales \
         software-properties-common \
-        wget \
-        apt-transport-https && \
-    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
-    echo $TZ > /etc/timezone && \
+        wget && \
     locale-gen $LC_ALL && \
     update-locale && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
@@ -28,23 +41,21 @@ RUN apt-get update && \
     add-apt-repository "deb http://repos.azulsystems.com/ubuntu stable main" -y && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
-        git \
-        gcc \
-        g++ \
-        libc-dev \
-        libgomp1 \
-        python${python}-dev \
-        python3-setuptools \
-        python3-pip \
-        zulu-8 \
-        golang-go \
-        dotnet-sdk-5.0 \
-        powershell \
-        r-base \
-        php \
         dart \
+        dotnet-sdk-5.0 \
+        g++ \
+        gcc \
+        git \
+        golang-go \
         haskell-platform \
-        ruby-full && \
+        php \
+        powershell \
+        python${python}-dev \
+        python3-pip \
+        python3-setuptools \
+        r-base \
+        ruby-full \
+        zulu-8 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen
@@ -52,12 +63,5 @@ WORKDIR /m2cgen
 COPY requirements-test.txt ./
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python${python} 1 && \
     python -m pip install --upgrade pip && \
-    pip install --no-cache-dir Cython numpy && \
+    pip install --no-cache-dir Cython "numpy==1.19.2" && \
     pip install --no-cache-dir -r requirements-test.txt
-
-ENV MKL_NUM_THREADS=2
-ENV NUMEXPR_NUM_THREADS=2
-ENV OMP_NUM_THREADS=2
-ENV OPENBLAS_NUM_THREADS=2
-ENV VECLIB_MAXIMUM_THREADS=2
-ENV BLIS_NUM_THREADS=2
