@@ -1,8 +1,7 @@
 import contextlib
 
 from m2cgen.ast import CompOpType
-from m2cgen.interpreters.code_generator \
-    import FunctionalCodeGenerator, CodeTemplate
+from m2cgen.interpreters.code_generator CodeTemplate, FunctionalCodeGenerator
 
 
 class HaskellCodeGenerator(FunctionalCodeGenerator):
