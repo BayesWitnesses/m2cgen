@@ -3,10 +3,10 @@ import os
 import sys
 
 import m2cgen as m2c
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 
-class PythonExecutor(base.BaseExecutor):
+class PythonExecutor(BaseExecutor):
 
     def __init__(self, model):
         self.model = model
