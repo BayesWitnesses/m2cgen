@@ -1,7 +1,7 @@
 import contextlib
 
 from m2cgen.ast import CompOpType
-from m2cgen.interpreters.code_generator CodeTemplate, FunctionalCodeGenerator
+from m2cgen.interpreters.code_generator import CodeTemplate, FunctionalCodeGenerator
 
 
 class FSharpCodeGenerator(FunctionalCodeGenerator):
