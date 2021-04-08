@@ -1,6 +1,6 @@
 FROM ubuntu:bionic
 
-ARG python=3.8
+ARG python=3.9
 
 ENV JAVA_HOME /usr/lib/jvm/zulu-8-amd64
 ENV LC_ALL en_US.UTF-8
