@@ -1,16 +1,15 @@
 import contextlib
 
 from m2cgen.ast import CompOpType
-from m2cgen.interpreters.code_generator import CLikeCodeGenerator
-from m2cgen.interpreters.code_generator import CodeTemplate as CT
+from m2cgen.interpreters.code_generator import CLikeCodeGenerator, CodeTemplate
 
 
 class PowershellCodeGenerator(CLikeCodeGenerator):
 
-    tpl_var_declare = CT("{var_type}{var_name} = {init_val}")
-    tpl_var_assignment = CT("{var_name} = {value}")
-    tpl_array_index_access = CT("${array_name}[{index}]")
-    tpl_return_statement = CT("return {value}")
+    tpl_var_declare = CodeTemplate("{var_type}{var_name} = {init_val}")
+    tpl_var_assignment = CodeTemplate("{var_name} = {value}")
+    tpl_array_index_access = CodeTemplate("${array_name}[{index}]")
+    tpl_return_statement = CodeTemplate("return {value}")
 
     scalar_type = "[double]"
     vector_type = "[double[]]"
