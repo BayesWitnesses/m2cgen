@@ -38,7 +38,7 @@ RUN apt-get update && \
         python3-pip \
         zulu-8 \
         golang-go \
-        dotnet-sdk-3.1 \
+        dotnet-sdk-5.0 \
         powershell \
         r-base \
         php \
