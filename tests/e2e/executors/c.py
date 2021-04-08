@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from m2cgen import interpreters, assemblers
+from m2cgen import assemblers, interpreters
 from tests import utils
 from tests.e2e.executors import base
 
