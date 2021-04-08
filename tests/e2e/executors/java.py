@@ -4,10 +4,10 @@ import shutil
 
 import m2cgen as m2c
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 
-class JavaExecutor(base.BaseExecutor):
+class JavaExecutor(BaseExecutor):
 
     def __init__(self, model):
         self.model = model
