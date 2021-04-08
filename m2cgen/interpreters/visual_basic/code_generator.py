@@ -7,8 +7,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGener
 class VisualBasicCodeGenerator(ImperativeCodeGenerator):
     tpl_num_value = CodeTemplate("{value}")
     tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
-    tpl_var_declaration = \
-        CodeTemplate("Dim {var_name}{type_modifier} As {var_type}")
+    tpl_var_declaration = CodeTemplate("Dim {var_name}{type_modifier} As {var_type}")
     tpl_return_statement = CodeTemplate("{func_name} = {value}")
     tpl_if_statement = CodeTemplate("If {if_def} Then")
     tpl_else_statement = CodeTemplate("Else")
