@@ -1,7 +1,6 @@
 import contextlib
 
-from m2cgen.interpreters.code_generator \
-    import ImperativeCodeGenerator, CodeTemplate
+from m2cgen.interpreters.code_generator CodeTemplate, ImperativeCodeGenerator
 
 
 class GoCodeGenerator(ImperativeCodeGenerator):
