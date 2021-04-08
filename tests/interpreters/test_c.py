@@ -1,5 +1,4 @@
-from m2cgen import ast
-from m2cgen import interpreters
+from m2cgen import ast, interpreters
 from tests import utils
 
 
