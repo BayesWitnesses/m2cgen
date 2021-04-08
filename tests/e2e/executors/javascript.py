@@ -2,7 +2,7 @@ import os
 
 from py_mini_racer import py_mini_racer
 
-import m2cgen as m2c
+from m2cgen import export_to_javascript
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
 
@@ -27,7 +27,7 @@ class JavascriptExecutor(BaseExecutor):
         return result
 
     def prepare(self):
-        code = m2c.export_to_javascript(self.model)
+        code = export_to_javascript(self.model)
 
         file_name = os.path.join(self._resource_tmp_dir, "model.js")
 
