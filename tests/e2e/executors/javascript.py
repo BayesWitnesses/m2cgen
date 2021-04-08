@@ -4,10 +4,10 @@ from py_mini_racer import py_mini_racer
 
 import m2cgen as m2c
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 
-class JavascriptExecutor(base.BaseExecutor):
+class JavascriptExecutor(BaseExecutor):
 
     def __init__(self, model):
         self.model = model
