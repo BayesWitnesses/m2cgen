@@ -1,8 +1,7 @@
 import contextlib
 
 from m2cgen.ast import CompOpType
-from m2cgen.interpreters.code_generator \
-    import ImperativeCodeGenerator, CodeTemplate
+from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGenerator
 
 
 class VisualBasicCodeGenerator(ImperativeCodeGenerator):
