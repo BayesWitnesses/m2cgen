@@ -115,8 +115,7 @@ class ModelTrainer:
             self.X = np.random.random(size=(N, 200))
             self.y = np.random.randint(2, size=(N,))
         elif dataset_name == "classification_binary_rnd_w_missing_values":
-            self.name = \
-                "train_model_classification_binary_rnd_w_missing_values"
+            self.name = "train_model_classification_binary_rnd_w_missing_values"
             N = 100
             self.X = np.random.random(size=(N, 20)) - 0.5
             self.y = np.random.randint(2, size=(N,))
@@ -241,10 +240,8 @@ get_classification_random_w_missing_values_model_trainer = functools.partial(
     ModelTrainer.get_instance, "classification_rnd_w_missing_values")
 
 
-get_classification_binary_random_w_missing_values_model_trainer = \
-    functools.partial(
-        ModelTrainer.get_instance,
-        "classification_binary_rnd_w_missing_values")
+get_classification_binary_random_w_missing_values_model_trainer = functools.partial(
+    ModelTrainer.get_instance, "classification_binary_rnd_w_missing_values")
 
 
 @contextlib.contextmanager

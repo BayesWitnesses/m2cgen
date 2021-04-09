@@ -1,6 +1,6 @@
 import os
 
-from .exporters import (
+from m2cgen.exporters import (
     export_to_c,
     export_to_go,
     export_to_java,

@@ -1,11 +1,9 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import mixins
-from m2cgen.interpreters import utils
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.javascript.code_generator \
-    import JavascriptCodeGenerator
+from m2cgen.interpreters.javascript.code_generator import JavascriptCodeGenerator
 
 
 class JavascriptInterpreter(ImperativeToCodeInterpreter,

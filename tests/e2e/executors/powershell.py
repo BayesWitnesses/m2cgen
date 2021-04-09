@@ -3,7 +3,7 @@ import platform
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 param (
@@ -19,7 +19,7 @@ Score $InputArray | ForEach-Object {{
 """
 
 
-class PowershellExecutor(base.BaseExecutor):
+class PowershellExecutor(BaseExecutor):
     model_name = "score"
 
     def __init__(self, model):
