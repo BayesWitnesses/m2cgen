@@ -16,10 +16,6 @@ ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
-    echo '* soft memlock unlimited' >> /etc/security/limits.conf && \
-    echo '* hard memlock unlimited' >> /etc/security/limits.conf && \
-    echo '* soft stack unlimited' >> /etc/security/limits.conf && \
-    echo '* hard stack unlimited' >> /etc/security/limits.conf && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         apt-transport-https \
