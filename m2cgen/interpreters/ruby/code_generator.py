@@ -1,20 +1,19 @@
 import contextlib
 
-from m2cgen.interpreters.code_generator import ImperativeCodeGenerator
-from m2cgen.interpreters.code_generator import CodeTemplate as CT
+from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGenerator
 
 
 class RubyCodeGenerator(ImperativeCodeGenerator):
 
-    tpl_var_declaration = CT("")
-    tpl_num_value = CT("{value}")
-    tpl_infix_expression = CT("({left}) {op} ({right})")
+    tpl_var_declaration = CodeTemplate("")
+    tpl_num_value = CodeTemplate("{value}")
+    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
     tpl_return_statement = tpl_num_value
-    tpl_array_index_access = CT("{array_name}[{index}]")
-    tpl_if_statement = CT("if {if_def}")
-    tpl_else_statement = CT("else")
-    tpl_block_termination = CT("end")
-    tpl_var_assignment = CT("{var_name} = {value}")
+    tpl_array_index_access = CodeTemplate("{array_name}[{index}]")
+    tpl_if_statement = CodeTemplate("if {if_def}")
+    tpl_else_statement = CodeTemplate("else")
+    tpl_block_termination = CodeTemplate("end")
+    tpl_var_assignment = CodeTemplate("{var_name} = {value}")
 
     def add_function_def(self, name, args):
         func_def = f"def {name}({', '.join(args)})"

@@ -3,7 +3,7 @@ import subprocess
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 {model_code}
@@ -20,7 +20,7 @@ PRINT_SCALAR = """printf "%f" res"""
 PRINT_VECTOR = """res |> List.iter (printf "%f ")"""
 
 
-class FSharpExecutor(base.BaseExecutor):
+class FSharpExecutor(BaseExecutor):
 
     target_exec_dir = None
     project_name = "test_model"
