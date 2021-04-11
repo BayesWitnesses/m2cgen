@@ -3,7 +3,7 @@ import subprocess
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 using System;
@@ -34,7 +34,7 @@ EXECUTE_AND_PRINT_VECTOR = """
 """
 
 
-class CSharpExecutor(base.BaseExecutor):
+class CSharpExecutor(BaseExecutor):
 
     target_exec_dir = None
     project_name = "test_model"

@@ -2,7 +2,7 @@ import os
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 input_array = ARGV.map(&:to_f)
@@ -23,7 +23,7 @@ puts res.join(" ")
 """
 
 
-class RubyExecutor(base.BaseExecutor):
+class RubyExecutor(BaseExecutor):
     model_name = "score"
 
     def __init__(self, model):

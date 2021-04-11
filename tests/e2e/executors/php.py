@@ -2,7 +2,7 @@ import os
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 <?php
@@ -27,7 +27,7 @@ echo(implode(" ", $res));
 """
 
 
-class PhpExecutor(base.BaseExecutor):
+class PhpExecutor(BaseExecutor):
 
     executor_name = "score"
     model_name = "model"
