@@ -2,7 +2,7 @@ import os
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 {model_code}
@@ -24,7 +24,7 @@ EXECUTE_AND_PRINT_VECTOR = """
 """
 
 
-class DartExecutor(base.BaseExecutor):
+class DartExecutor(BaseExecutor):
 
     executor_name = "score"
 

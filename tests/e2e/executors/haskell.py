@@ -3,7 +3,7 @@ import subprocess
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 module {executor_name} where
@@ -22,7 +22,7 @@ PRINT_SCALAR = "print res"
 PRINT_VECTOR = r"""mapM_ (putStr . \x -> show x ++ " ") res"""
 
 
-class HaskellExecutor(base.BaseExecutor):
+class HaskellExecutor(BaseExecutor):
 
     executor_name = "Main"
     model_name = "Model"

@@ -1,8 +1,7 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import mixins
-from m2cgen.interpreters import utils
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.dart.code_generator import DartCodeGenerator
 
@@ -77,6 +76,13 @@ class DartInterpreter(ImperativeToCodeInterpreter,
         return self._cg.method_invocation(
             method_name=self.abs_function_name,
             obj=self._do_interpret(expr.expr, **kwargs),
+            args=[])
+
+    def interpret_pow_expr(self, expr, **kwargs):
+        pow_result = super().interpret_pow_expr(expr, **kwargs)
+        return self._cg.method_invocation(
+            method_name="toDouble",
+            obj=pow_result,
             args=[])
 
     def interpret_log1p_expr(self, expr, **kwargs):

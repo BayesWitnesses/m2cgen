@@ -1,7 +1,7 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import utils, mixins
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.php.code_generator import PhpCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 

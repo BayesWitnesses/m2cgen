@@ -1,5 +1,4 @@
-from m2cgen import assemblers
-from m2cgen import interpreters
+from m2cgen import assemblers, interpreters
 
 
 def export_to_java(model, package_name=None, class_name="Model", indent=4,

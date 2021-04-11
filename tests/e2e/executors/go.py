@@ -3,7 +3,7 @@ import subprocess
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 package main
@@ -40,7 +40,7 @@ EXECUTE_AND_PRINT_VECTOR = """
 """
 
 
-class GoExecutor(base.BaseExecutor):
+class GoExecutor(BaseExecutor):
     model_name = "score"
 
     def __init__(self, model):
