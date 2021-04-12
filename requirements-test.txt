@@ -1,6 +1,6 @@
 # Supported models
 scikit-learn==0.23.2
-xgboost==1.2.0
+xgboost==1.3.3
 lightgbm==3.0.0
 statsmodels==0.12.0
 git+git://github.com/scikit-learn-contrib/lightning.git@e1d7a405c8f4f547c3bc507b2ad1cd8867ec2625
