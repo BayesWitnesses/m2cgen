@@ -13,3 +13,8 @@ if [[ $TEST == "E2E" ]]; then
   rm -rfd m2cgen/
   pytest -v "-m=$LANG" tests/e2e/
 fi
+
+if [[ $RELEASE == "true" ]]; then
+  python setup.py bdist_wheel --plat-name=any --python-tag=py3
+  python setup.py sdist
+fi
