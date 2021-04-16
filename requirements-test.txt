@@ -6,7 +6,7 @@ statsmodels==0.12.2
 git+git://github.com/scikit-learn-contrib/lightning.git@e1d7a405c8f4f547c3bc507b2ad1cd8867ec2625
 
 # Testing tools
-flake8==3.9.0
+flake8==3.9.1
 pytest==6.2.3
 pytest-mock==3.5.1
 pytest-cov==2.11.1
