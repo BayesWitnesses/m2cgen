@@ -12,6 +12,7 @@ pytest-mock==3.5.1
 pytest-cov==2.11.1
 
 # Other stuff
-numpy==1.19.2
+numpy==1.20.2; python_version > "3.6"
+numpy==1.19.5; python_version <= "3.6"
 scipy==1.5.2
 py-mini-racer==0.5.0
