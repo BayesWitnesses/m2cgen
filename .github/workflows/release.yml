@@ -1,0 +1,35 @@
+name: GitHub Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+      - name: Build Docker image
+        run: docker build . --file Dockerfile -t m2cgen-docker
+      - name: Build wheel file and source archive
+        run: |
+          docker run \
+            -v "$GITHUB_WORKSPACE":"/m2cgen" \
+            -e RELEASE="true" \
+            m2cgen-docker \
+            bash /m2cgen/.ci/test.sh
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
+          prerelease: false
+          files: |
+            ${{ github.workspace }}/dist/*.whl
+            ${{ github.workspace }}/dist/*.tar.gz
