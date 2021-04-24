@@ -61,7 +61,7 @@ WORKDIR /m2cgen
 COPY requirements-test.txt ./
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python${python} 1 && \
     python -m pip install --upgrade pip && \
-    pip install --no-cache-dir "Cython==0.29.8" && \
+    pip install --no-cache-dir "Cython==0.29.9" && \
     if [ "$python" = "3.6" ]; then \
         pip install --no-cache-dir "numpy==1.19.5"; \
     else \
