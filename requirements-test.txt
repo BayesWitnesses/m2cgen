@@ -3,17 +3,17 @@ scikit-learn==0.24.1
 xgboost==1.4.1
 lightgbm==3.2.1
 statsmodels==0.12.2
-git+git://github.com/StrikerRUS/lightning.git@c95201774afe84e49eef3885ff85492a5ce42e01
+git+git://github.com/scikit-learn-contrib/lightning.git@refs/pull/154/merge
 
 # Testing tools
 flake8==3.9.1
 pytest==6.2.3
-pytest-mock==3.5.1
+pytest-mock==3.6.0
 pytest-cov==2.11.1
 
 # Other stuff
 numpy==1.20.2; python_version > "3.6"
 numpy==1.19.5; python_version <= "3.6"
-scipy==1.6.2; python_version > "3.6"
+scipy==1.6.3; python_version > "3.6"
 scipy==1.5.4; python_version <= "3.6"
 py-mini-racer==0.5.0
