@@ -10,10 +10,10 @@ flake8==3.9.1
 pytest==6.2.3
 pytest-mock==3.5.1
 pytest-cov==2.11.1
+py-mini-racer==0.6.0
 
 # Other stuff
 numpy==1.20.2; python_version > "3.6"
 numpy==1.19.5; python_version <= "3.6"
 scipy==1.6.3; python_version > "3.6"
 scipy==1.5.4; python_version <= "3.6"
-py-mini-racer==0.6.0
