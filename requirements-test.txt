@@ -1,14 +1,14 @@
 # Supported models
-scikit-learn==0.24.1
+scikit-learn==0.24.2
 xgboost==1.4.1
 lightgbm==3.2.1
 statsmodels==0.12.2
-git+git://github.com/scikit-learn-contrib/lightning.git@e1d7a405c8f4f547c3bc507b2ad1cd8867ec2625
+git+git://github.com/scikit-learn-contrib/lightning.git@refs/pull/154/merge
 
 # Testing tools
 flake8==3.9.1
 pytest==6.2.3
-pytest-mock==3.5.1
+pytest-mock==3.6.0
 pytest-cov==2.11.1
 py-mini-racer==0.6.0
 

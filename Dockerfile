@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ARG python=3.8
+ARG python=3.9
 
 ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
     LANG=en_US.UTF-8 \
