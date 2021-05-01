@@ -19,10 +19,11 @@ class JavascriptExecutor(BaseExecutor):
             code = myfile.read()
 
         args = ",".join(map(utils.format_arg, X))
-        caller = f"score([{args}]);\n"
+        caller = f"score([{args}])"
 
         ctx = py_mini_racer.MiniRacer()
-        result = ctx.eval(f"{caller}{code}")
+        ctx.eval(code)
+        result = ctx.execute(caller)
 
         return result
 
