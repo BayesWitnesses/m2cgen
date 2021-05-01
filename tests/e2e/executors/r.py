@@ -17,31 +17,29 @@ cat(res, sep = " ")
 
 class RExecutor(BaseExecutor):
 
-    model_name = "score"
-
     def __init__(self, model):
+        self.model_name = "score"
         self.model = model
         self.interpreter = interpreters.RInterpreter()
 
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._r = "Rscript"
+        self.script_path = None
 
     def predict(self, X):
-        file_name = os.path.join(self._resource_tmp_dir,
-                                 f"{self.model_name}.r")
-        exec_args = [self._r,
-                     "--vanilla",
-                     file_name,
-                     *map(utils.format_arg, X)]
+        exec_args = [
+            "Rscript",
+            "--vanilla",
+            self.script_path,
+            *map(utils.format_arg, X)
+        ]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
         executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast))
 
-        file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.model_name}.r")
-        with open(file_name, "w") as f:
+        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.model_name}.r")
+        with open(self.script_path, "w") as f:
             f.write(executor_code)

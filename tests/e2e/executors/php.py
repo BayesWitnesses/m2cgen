@@ -29,26 +29,26 @@ echo(implode(" ", $res));
 
 class PhpExecutor(BaseExecutor):
 
-    executor_name = "score"
-    model_name = "model"
-
     def __init__(self, model):
+        self.model_name = "model"
         self.model = model
         self.interpreter = interpreters.PhpInterpreter()
 
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._php = "php"
+        self.executor_name = "score"
+
+        self.script_path = None
 
     def predict(self, X):
-        file_name = os.path.join(self._resource_tmp_dir,
-                                 f"{self.executor_name}.php")
-        exec_args = [self._php,
-                     "-f",
-                     file_name,
-                     "--",
-                     *map(utils.format_arg, X)]
+        exec_args = [
+            "php",
+            "-f",
+            self.script_path,
+            "--",
+            *map(utils.format_arg, X)
+        ]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
@@ -59,13 +59,12 @@ class PhpExecutor(BaseExecutor):
         executor_code = EXECUTOR_CODE_TPL.format(
             model_file=self.model_name,
             print_code=print_code)
-        model_code = self.interpreter.interpret(self.model_ast)
 
-        executor_file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.executor_name}.php")
-        model_file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.model_name}.php")
-        with open(executor_file_name, "w") as f:
+        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.executor_name}.php")
+        with open(self.script_path, "w") as f:
             f.write(executor_code)
+
+        model_code = self.interpreter.interpret(self.model_ast)
+        model_file_name = os.path.join(self._resource_tmp_dir, f"{self.model_name}.php")
         with open(model_file_name, "w") as f:
             f.write(model_code)

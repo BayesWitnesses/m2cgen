@@ -12,11 +12,11 @@ class JavascriptExecutor(BaseExecutor):
     def __init__(self, model):
         self.model = model
 
-    def predict(self, X):
-        file_name = os.path.join(self._resource_tmp_dir, "model.js")
+        self.script_path = None
 
-        with open(file_name, 'r') as myfile:
-            code = myfile.read()
+    def predict(self, X):
+        with open(self.script_path, "r") as f:
+            code = f.read()
 
         args = ",".join(map(utils.format_arg, X))
         caller = f"score([{args}]);\n"
@@ -29,7 +29,6 @@ class JavascriptExecutor(BaseExecutor):
     def prepare(self):
         code = export_to_javascript(self.model)
 
-        file_name = os.path.join(self._resource_tmp_dir, "model.js")
-
-        with open(file_name, "w") as f:
+        self.script_path = os.path.join(self._resource_tmp_dir, "model.js")
+        with open(self.script_path, "w") as f:
             f.write(code)

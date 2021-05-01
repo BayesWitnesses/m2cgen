@@ -604,8 +604,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
 
     # <empty>
 )
-def test_e2e(estimator, executor_cls, model_trainer,
-             is_fast, global_tmp_dir):
+def test_e2e(estimator, executor_cls, model_trainer, is_fast, global_tmp_dir):
     sys.setrecursionlimit(RECURSION_LIMIT)
 
     X_test, y_pred_true, fitted_estimator = model_trainer(estimator)
@@ -617,8 +616,7 @@ def test_e2e(estimator, executor_cls, model_trainer,
     with executor.prepare_then_cleanup():
         for idx in idxs_to_test:
             y_pred_executed = executor.predict(X_test[idx])
-            y_pred_executed = np.array(
-                y_pred_executed, dtype=y_pred_true.dtype, copy=False)
+            y_pred_executed = np.array(y_pred_executed, dtype=y_pred_true.dtype, copy=False)
             print(f"expected={y_pred_true[idx]}, actual={y_pred_executed}")
             res = np.isclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
             assert res if isinstance(res, bool) else res.all()

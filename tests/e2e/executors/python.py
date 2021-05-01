@@ -31,6 +31,5 @@ class PythonExecutor(BaseExecutor):
         code = export_to_python(self.model)
 
         file_name = os.path.join(self._resource_tmp_dir, "model.py")
-
         with open(file_name, "w") as f:
             f.write(code)
