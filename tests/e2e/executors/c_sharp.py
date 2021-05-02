@@ -38,7 +38,6 @@ class CSharpExecutor(BaseExecutor):
 
     target_exec_dir = None
     project_name = "test_model"
-    _dotnet = "dotnet"
 
     def __init__(self, model):
         self.model = model
@@ -48,8 +47,10 @@ class CSharpExecutor(BaseExecutor):
         self.model_ast = assembler_cls(model).assemble()
 
     def predict(self, X):
-        exec_args = [os.path.join(self.target_exec_dir, self.project_name)]
-        exec_args.extend(map(utils.format_arg, X))
+        exec_args = [
+            os.path.join(self.target_exec_dir, self.project_name),
+            *map(utils.format_arg, X)
+        ]
         return utils.predict_from_commandline(exec_args)
 
     @classmethod
@@ -57,16 +58,17 @@ class CSharpExecutor(BaseExecutor):
         super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
             cls.target_exec_dir = os.path.join(cls._global_tmp_dir, "bin")
-
-            subprocess.call([cls._dotnet,
-                             "new",
-                             "console",
-                             "--output",
-                             cls._global_tmp_dir,
-                             "--name",
-                             cls.project_name,
-                             "--language",
-                             "C#"])
+            subprocess.call([
+                "dotnet",
+                "new",
+                "console",
+                "--output",
+                cls._global_tmp_dir,
+                "--name",
+                cls.project_name,
+                "--language",
+                "C#"
+            ])
 
     def prepare(self):
         if self.model_ast.output_size > 1:
@@ -84,9 +86,10 @@ class CSharpExecutor(BaseExecutor):
         with open(executor_file_name, "w") as f:
             f.write(executor_code)
 
-        subprocess.call([self._dotnet,
-                         "build",
-                         os.path.join(self._global_tmp_dir,
-                                      f"{self.project_name}.csproj"),
-                         "--output",
-                         self.target_exec_dir])
+        subprocess.call([
+            "dotnet",
+            "build",
+            os.path.join(self._global_tmp_dir, f"{self.project_name}.csproj"),
+            "--output",
+            self.target_exec_dir
+        ])

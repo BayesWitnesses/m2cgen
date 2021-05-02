@@ -26,23 +26,22 @@ EXECUTE_AND_PRINT_VECTOR = """
 
 class DartExecutor(BaseExecutor):
 
-    executor_name = "score"
-
     def __init__(self, model):
+        self.model_name = "score"
         self.model = model
         self.interpreter = interpreters.DartInterpreter()
 
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._dart = "dart"
+        self.script_path = None
 
     def predict(self, X):
-        file_name = os.path.join(self._resource_tmp_dir,
-                                 f"{self.executor_name}.dart")
-        exec_args = [self._dart,
-                     file_name,
-                     *map(utils.format_arg, X)]
+        exec_args = [
+            "dart",
+            self.script_path,
+            *map(utils.format_arg, X)
+        ]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
@@ -51,12 +50,10 @@ class DartExecutor(BaseExecutor):
         else:
             print_code = EXECUTE_AND_PRINT_SCALAR
 
-        model_code = self.interpreter.interpret(self.model_ast)
         executor_code = EXECUTOR_CODE_TPL.format(
-            model_code=model_code,
+            model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
-        executor_file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.executor_name}.dart")
-        with open(executor_file_name, "w") as f:
+        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.model_name}.dart")
+        with open(self.script_path, "w") as f:
             f.write(executor_code)

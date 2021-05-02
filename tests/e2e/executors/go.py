@@ -41,25 +41,22 @@ EXECUTE_AND_PRINT_VECTOR = """
 
 
 class GoExecutor(BaseExecutor):
-    model_name = "score"
 
     def __init__(self, model):
+        self.model_name = "score"
         self.model = model
         self.interpreter = interpreters.GoInterpreter()
 
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._go = "go"
+        self.exec_path = None
 
     def predict(self, X):
-
-        exec_args = [os.path.join(self._resource_tmp_dir, self.model_name)]
-        exec_args.extend(map(utils.format_arg, X))
+        exec_args = [self.exec_path, *map(utils.format_arg, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
-
         if self.model_ast.output_size > 1:
             print_code = EXECUTE_AND_PRINT_VECTOR
         else:
@@ -69,12 +66,15 @@ class GoExecutor(BaseExecutor):
             model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
-        file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.model_name}.go")
-
+        file_name = os.path.join(self._resource_tmp_dir, f"{self.model_name}.go")
         with open(file_name, "w") as f:
             f.write(executor_code)
 
-        target = os.path.join(self._resource_tmp_dir, self.model_name)
-        exec_args = [self._go, "build", "-o", target, file_name]
-        subprocess.call(exec_args)
+        self.exec_path = os.path.join(self._resource_tmp_dir, self.model_name)
+        subprocess.call([
+            "go",
+            "build",
+            "-o",
+            self.exec_path,
+            file_name
+        ])

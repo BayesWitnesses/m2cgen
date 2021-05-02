@@ -24,23 +24,23 @@ puts res.join(" ")
 
 
 class RubyExecutor(BaseExecutor):
-    model_name = "score"
 
     def __init__(self, model):
+        self.model_name = "score"
         self.model = model
         self.interpreter = interpreters.RubyInterpreter()
 
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._ruby = "ruby"
+        self.script_path = None
 
     def predict(self, X):
-        file_name = os.path.join(self._resource_tmp_dir,
-                                 f"{self.model_name}.rb")
-        exec_args = [self._ruby,
-                     file_name,
-                     *map(utils.format_arg, X)]
+        exec_args = [
+            "ruby",
+            self.script_path,
+            *map(utils.format_arg, X)
+        ]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
@@ -52,7 +52,6 @@ class RubyExecutor(BaseExecutor):
             model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
-        file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.model_name}.rb")
-        with open(file_name, "w") as f:
+        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.model_name}.rb")
+        with open(self.script_path, "w") as f:
             f.write(executor_code)
