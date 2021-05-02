@@ -103,9 +103,9 @@ def test_regression_best_ntree_limit():
     estimator = xgboost.XGBRegressor(n_estimators=3, random_state=1,
                                      max_depth=1, base_score=base_score)
 
-    estimator.best_ntree_limit = 2
-
     utils.get_regression_model_trainer()(estimator)
+
+    estimator.get_booster().best_ntree_limit = 2
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
@@ -138,9 +138,9 @@ def test_multi_class_best_ntree_limit():
     estimator = xgboost.XGBClassifier(n_estimators=100, random_state=1,
                                       max_depth=1, base_score=base_score)
 
-    estimator.best_ntree_limit = 1
-
     utils.get_classification_model_trainer()(estimator)
+
+    estimator.get_booster().best_ntree_limit = 1
 
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()

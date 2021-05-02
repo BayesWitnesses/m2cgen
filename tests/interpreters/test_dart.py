@@ -178,14 +178,14 @@ List<double> score(List<double> input) {
     return addVectors([1.0, 2.0], [3.0, 4.0]);
 }
 List<double> addVectors(List<double> v1, List<double> v2) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] + v2[i];
     }
     return result;
 }
 List<double> mulVectorNumber(List<double> v1, double num) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] * num;
     }
@@ -208,14 +208,14 @@ List<double> score(List<double> input) {
     return mulVectorNumber([1.0, 2.0], 1.0);
 }
 List<double> addVectors(List<double> v1, List<double> v2) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] + v2[i];
     }
     return result;
 }
 List<double> mulVectorNumber(List<double> v1, double num) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] * num;
     }
@@ -412,7 +412,7 @@ def test_pow_expr():
     expected_code = """
 import 'dart:math';
 double score(List<double> input) {
-    return pow(2.0, 3.0);
+    return (pow(2.0, 3.0)).toDouble();
 }
 """
 

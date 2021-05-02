@@ -1,5 +1,5 @@
 from m2cgen import ast
-from m2cgen import interpreters
+from m2cgen.interpreters import JavaInterpreter
 from tests import utils
 
 
@@ -9,7 +9,7 @@ def test_if_expr():
         ast.NumVal(2),
         ast.NumVal(3))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -35,7 +35,7 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -82,7 +82,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -133,14 +133,14 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_package_name():
     expr = ast.NumVal(1)
 
-    interpreter = interpreters.JavaInterpreter(package_name="foo.bar")
+    interpreter = JavaInterpreter(package_name="foo.bar")
 
     expected_code = """
 package foo.bar;
@@ -166,7 +166,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -180,7 +180,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -206,7 +206,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -216,7 +216,7 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -247,7 +247,7 @@ def test_bin_vector_num_expr():
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -277,7 +277,7 @@ def test_depth_threshold_with_bin_expr():
     for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -303,7 +303,7 @@ def test_depth_threshold_without_bin_expr():
             ast.NumVal(1),
             expr)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 2
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -348,7 +348,7 @@ def test_deep_mixed_exprs_not_reaching_threshold():
             ast.NumVal(1),
             expr)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -393,7 +393,7 @@ def test_deep_mixed_exprs_exceeding_threshold():
             ast.NumVal(1),
             expr)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -440,7 +440,7 @@ public class Model {
 def test_abs_expr():
     expr = ast.AbsExpr(ast.NumVal(-1.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -455,7 +455,7 @@ public class Model {
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -470,7 +470,7 @@ public class Model {
 def test_pow_expr():
     expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -485,7 +485,7 @@ public class Model {
 def test_sqrt_expr():
     expr = ast.SqrtExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -500,7 +500,7 @@ public class Model {
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -515,7 +515,7 @@ public class Model {
 def test_log_expr():
     expr = ast.LogExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -530,7 +530,7 @@ public class Model {
 def test_log1p_expr():
     expr = ast.Log1pExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -545,7 +545,7 @@ public class Model {
 def test_atan_expr():
     expr = ast.AtanExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -593,7 +593,7 @@ def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {

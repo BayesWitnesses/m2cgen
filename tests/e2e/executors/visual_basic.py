@@ -3,7 +3,7 @@ import subprocess
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 Module Program
@@ -36,11 +36,10 @@ EXECUTE_AND_PRINT_VECTOR = """
 """
 
 
-class VisualBasicExecutor(base.BaseExecutor):
+class VisualBasicExecutor(BaseExecutor):
 
     target_exec_dir = None
     project_name = "test_model"
-    _dotnet = "dotnet"
 
     def __init__(self, model):
         self.model = model
@@ -50,8 +49,10 @@ class VisualBasicExecutor(base.BaseExecutor):
         self.model_ast = assembler_cls(model).assemble()
 
     def predict(self, X):
-        exec_args = [os.path.join(self.target_exec_dir, self.project_name)]
-        exec_args.extend(map(utils.format_arg, X))
+        exec_args = [
+            os.path.join(self.target_exec_dir, self.project_name),
+            *map(utils.format_arg, X)
+        ]
         return utils.predict_from_commandline(exec_args)
 
     @classmethod
@@ -59,16 +60,17 @@ class VisualBasicExecutor(base.BaseExecutor):
         super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
             cls.target_exec_dir = os.path.join(cls._global_tmp_dir, "bin")
-
-            subprocess.call([cls._dotnet,
-                             "new",
-                             "console",
-                             "--output",
-                             cls._global_tmp_dir,
-                             "--name",
-                             cls.project_name,
-                             "--language",
-                             "VB"])
+            subprocess.call([
+                "dotnet",
+                "new",
+                "console",
+                "--output",
+                cls._global_tmp_dir,
+                "--name",
+                cls.project_name,
+                "--language",
+                "VB"
+            ])
 
     def prepare(self):
         if self.model_ast.output_size > 1:
@@ -86,9 +88,10 @@ class VisualBasicExecutor(base.BaseExecutor):
         with open(executor_file_name, "w") as f:
             f.write(executor_code)
 
-        subprocess.call([self._dotnet,
-                         "build",
-                         os.path.join(self._global_tmp_dir,
-                                      f"{self.project_name}.vbproj"),
-                         "--output",
-                         self.target_exec_dir])
+        subprocess.call([
+            "dotnet",
+            "build",
+            os.path.join(self._global_tmp_dir, f"{self.project_name}.vbproj"),
+            "--output",
+            self.target_exec_dir
+        ])

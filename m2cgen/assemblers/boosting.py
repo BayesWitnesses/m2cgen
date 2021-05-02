@@ -154,7 +154,10 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
         threshold = ast.NumVal(tree["split_condition"], dtype=np.float32)
         split = tree["split"]
-        feature_idx = self._feature_name_to_idx.get(split, split)
+        if split in self._feature_name_to_idx:
+            feature_idx = self._feature_name_to_idx[split]
+        else:
+            feature_idx = int(split)
         feature_ref = ast.FeatureRef(feature_idx)
 
         # Since comparison with NaN (missing) value always returns false we

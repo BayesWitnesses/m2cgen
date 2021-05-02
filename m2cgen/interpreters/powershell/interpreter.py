@@ -1,9 +1,8 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import utils, mixins
-from m2cgen.interpreters.powershell.code_generator \
-    import PowershellCodeGenerator
+from m2cgen.interpreters import mixins, utils
+from m2cgen.interpreters.powershell.code_generator import PowershellCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 
 

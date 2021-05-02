@@ -3,7 +3,7 @@ import platform
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 param (
@@ -19,10 +19,10 @@ Score $InputArray | ForEach-Object {{
 """
 
 
-class PowershellExecutor(base.BaseExecutor):
-    model_name = "score"
+class PowershellExecutor(BaseExecutor):
 
     def __init__(self, model):
+        self.model_name = "score"
         self.model = model
         self.interpreter = interpreters.PowershellInterpreter()
 
@@ -33,21 +33,22 @@ class PowershellExecutor(base.BaseExecutor):
                             if platform.system() in ('Windows', 'Microsoft')
                             else "pwsh")
 
+        self.script_path = None
+
     def predict(self, X):
-        file_name = os.path.join(self._resource_tmp_dir,
-                                 f"{self.model_name}.ps1")
-        exec_args = [self._powershell,
-                     "-File",
-                     file_name,
-                     "-InputArray",
-                     ",".join(map(utils.format_arg, X))]
+        exec_args = [
+            self._powershell,
+            "-File",
+            self.script_path,
+            "-InputArray",
+            ",".join(map(utils.format_arg, X))
+        ]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
         executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast))
 
-        file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.model_name}.ps1")
-        with open(file_name, "w") as f:
+        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.model_name}.ps1")
+        with open(self.script_path, "w") as f:
             f.write(executor_code)

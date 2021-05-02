@@ -3,8 +3,7 @@ import os
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.visual_basic.code_generator \
-    import VisualBasicCodeGenerator
+from m2cgen.interpreters.visual_basic.code_generator import VisualBasicCodeGenerator
 
 
 class VisualBasicInterpreter(ImperativeToCodeInterpreter,
