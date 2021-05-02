@@ -327,7 +327,7 @@ double score(double * input) {
 def test_softmax_expr():
     expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <string.h>

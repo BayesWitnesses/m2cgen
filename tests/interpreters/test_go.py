@@ -331,7 +331,7 @@ func score(input []float64) float64 {
 def test_softmax_expr():
     expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"

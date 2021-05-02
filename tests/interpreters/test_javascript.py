@@ -345,7 +345,7 @@ function score(input) {
 def test_softmax_expr():
     expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
 
-    interpreter = interpreters.JavascriptInterpreter()
+    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {

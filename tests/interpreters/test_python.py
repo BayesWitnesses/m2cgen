@@ -449,7 +449,7 @@ def score(input):
 def test_softmax_expr():
     expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
