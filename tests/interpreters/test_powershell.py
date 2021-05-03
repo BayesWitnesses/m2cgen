@@ -174,6 +174,9 @@ def test_bin_vector_expr():
         ast.BinNumOpType.ADD)
 
     expected_code = """
+function Score([double[]] $InputVector) {
+    return Add-Vectors $(@($(1.0), $(2.0))) $(@($(3.0), $(4.0)))
+}
 function Add-Vectors([double[]] $v1, [double[]] $v2) {
     [int] $length = $v1.Length
     [double[]] $result = @(0) * $length
@@ -189,9 +192,6 @@ function Mul-Vector-Number([double[]] $v1, [double] $num) {
         $result[$i] = $v1[$i] * $num
     }
     return $result
-}
-function Score([double[]] $InputVector) {
-    return Add-Vectors $(@($(1.0), $(2.0))) $(@($(3.0), $(4.0)))
 }
 """
 
@@ -206,6 +206,9 @@ def test_bin_vector_num_expr():
         ast.BinNumOpType.MUL)
 
     expected_code = """
+function Score([double[]] $InputVector) {
+    return Mul-Vector-Number $(@($(1.0), $(2.0))) $(1.0)
+}
 function Add-Vectors([double[]] $v1, [double[]] $v2) {
     [int] $length = $v1.Length
     [double[]] $result = @(0) * $length
@@ -221,9 +224,6 @@ function Mul-Vector-Number([double[]] $v1, [double] $num) {
         $result[$i] = $v1[$i] * $num
     }
     return $result
-}
-function Score([double[]] $InputVector) {
-    return Mul-Vector-Number $(@($(1.0), $(2.0))) $(1.0)
 }
 """
 
@@ -313,6 +313,9 @@ def test_log1p_expr():
     expr = ast.Log1pExpr(ast.NumVal(2.0))
 
     expected_code = """
+function Score([double[]] $InputVector) {
+    return Log1p $(2.0)
+}
 function Log1p([double] $x) {
     if ($x -eq 0.0) { return 0.0 }
     if ($x -eq -1.0) { return [double]::NegativeInfinity }
@@ -361,9 +364,6 @@ function Chebyshev-Broucke([double] $x, [double[]] $coeffs) {
     }
     return ($b0 - $b2) * 0.5
 }
-function Score([double[]] $InputVector) {
-    return Log1p $(2.0)
-}
 """
 
     interpreter = PowershellInterpreter()
@@ -387,6 +387,9 @@ def test_softmax_expr():
     expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
 
     expected_code = """
+function Score([double[]] $InputVector) {
+    return Softmax $(@($(2.0), $(3.0)))
+}
 function Softmax([double[]] $x) {
     [int] $size = $x.Length
     [double[]] $result = @(0) * $size
@@ -405,9 +408,6 @@ function Softmax([double[]] $x) {
         $result[$i] /= $sum;
     }
     return $result
-}
-function Score([double[]] $InputVector) {
-    return Softmax $(@($(2.0), $(3.0)))
 }
 """
 
