@@ -324,6 +324,36 @@ double score(double * input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = CInterpreter()
+
+    expected_code = """
+#include <string.h>
+void softmax(double *x, int size, double *result) {
+    double max = x[0];
+    for (int i = 1; i < size; ++i) {
+        if (x[i] > max)
+            max = x[i];
+    }
+    double sum = 0.0;
+    for (int i = 0; i < size; ++i) {
+        result[i] = exp(x[i] - max);
+        sum += result[i];
+    }
+    for (int i = 0; i < size; ++i)
+        result[i] /= sum;
+}
+void score(double * input, double * output) {
+    double var0[2];
+    softmax((double[]){2.0, 3.0}, 2, var0);
+    memcpy(output, var0, 2 * sizeof(double));
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

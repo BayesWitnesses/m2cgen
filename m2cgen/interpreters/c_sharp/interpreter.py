@@ -23,10 +23,12 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "Log"
     log1p_function_name = "Log1p"
     power_function_name = "Pow"
+    softmax_function_name = "Softmax"
     sqrt_function_name = "Sqrt"
     tanh_function_name = "Tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
 
     def __init__(self, namespace="ML", class_name="Model", indent=4,
                  function_name="Score", *args, **kwargs):
@@ -65,6 +67,10 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
                         os.path.dirname(__file__), "log1p.cs")
                     self._cg.add_code_lines(utils.get_file_content(filename))
 
+                if self.with_softmax_expr:
+                    filename = os.path.join(os.path.dirname(__file__), "softmax.cs")
+                    self._cg.add_code_lines(utils.get_file_content(filename))
+
         if self.with_math_module:
             self._cg.add_dependency("System.Math")
 
@@ -73,3 +79,7 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

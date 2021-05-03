@@ -566,6 +566,32 @@ double score(List<double> input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+import 'dart:math';
+List<double> score(List<double> input) {
+    return softmax([2.0, 3.0]);
+}
+List<double> softmax(List<double> x) {
+    int size = x.length;
+    List<double> result = new List<double>.filled(size, 0.0);
+    double maxElem = x.reduce(max);
+    double sum = 0.0;
+    for (int i = 0; i < size; ++i) {
+        result[i] = exp(x[i] - maxElem);
+        sum += result[i];
+    }
+    for (int i = 0; i < size; ++i)
+        result[i] /= sum;
+    return result;
+}
+"""
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

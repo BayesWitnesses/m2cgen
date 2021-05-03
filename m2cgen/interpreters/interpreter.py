@@ -87,6 +87,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     logarithm_function_name = NotImplemented
     log1p_function_name = NotImplemented
     power_function_name = NotImplemented
+    softmax_function_name = NotImplemented
     sqrt_function_name = NotImplemented
     tanh_function_name = NotImplemented
 
@@ -168,6 +169,16 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.log1p_function_name, nested_result)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        if self.softmax_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.softmax(expr.exprs), **kwargs)
+        self.with_vectors = True
+        self.with_math_module = True
+        nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
+        return self._cg.function_invocation(
+            self.softmax_function_name, self._cg.vector_init(nested))
 
     def interpret_sqrt_expr(self, expr, **kwargs):
         if self.sqrt_function_name is NotImplemented:

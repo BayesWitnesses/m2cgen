@@ -190,7 +190,7 @@ def softmax(exprs):
     exp_exprs = [ast.ExpExpr(e, to_reuse=True) for e in exprs]
     exp_sum_expr = utils.apply_op_to_expressions(
         ast.BinNumOpType.ADD, *exp_exprs, to_reuse=True)
-    return [
+    return ast.VectorVal([
         ast.BinNumExpr(e, exp_sum_expr, ast.BinNumOpType.DIV)
         for e in exp_exprs
-    ]
+    ])

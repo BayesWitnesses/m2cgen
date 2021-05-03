@@ -21,10 +21,12 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "Math.Exp"
     logarithm_function_name = "Math.Log"
     log1p_function_name = "Log1p"
+    softmax_function_name = "Softmax"
     tanh_function_name = "Tanh"
 
     with_atan_expr = False
     with_log1p_expr = False
+    with_softmax_expr = False
     with_tanh_expr = False
 
     def __init__(self, module_name="Model", indent=4, function_name="Score",
@@ -50,24 +52,24 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
             self._cg.add_return_statement(last_result, func_name)
 
         if self.with_linear_algebra:
-            filename = os.path.join(
-                os.path.dirname(__file__), "linear_algebra.bas")
+            filename = os.path.join(os.path.dirname(__file__), "linear_algebra.bas")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
+        if self.with_atan_expr:
+            filename = os.path.join(os.path.dirname(__file__), "atan.bas")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
+        if self.with_log1p_expr:
+            filename = os.path.join(os.path.dirname(__file__), "log1p.bas")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
+        if self.with_softmax_expr:
+            filename = os.path.join(os.path.dirname(__file__), "softmax.bas")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         # Use own Tanh function in order to be compatible with both VB and VBA
         if self.with_tanh_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "tanh.bas")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
-
-        if self.with_log1p_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "log1p.bas")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
-
-        if self.with_atan_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "atan.bas")
+            filename = os.path.join(os.path.dirname(__file__), "tanh.bas")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
@@ -94,3 +96,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     def interpret_atan_expr(self, expr, **kwargs):
         self.with_atan_expr = True
         return super().interpret_atan_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

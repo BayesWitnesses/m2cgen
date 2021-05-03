@@ -22,10 +22,12 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "Math.exp"
     logarithm_function_name = "Math.log"
     log1p_function_name = "log1p"
+    softmax_function_name = "softmax"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
@@ -46,11 +48,15 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
         if self.with_linear_algebra:
             filename = os.path.join(
                 os.path.dirname(__file__), "linear_algebra.rb")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_log1p_expr:
             filename = os.path.join(
                 os.path.dirname(__file__), "log1p.rb")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_softmax_expr:
+            filename = os.path.join(os.path.dirname(__file__), "softmax.rb")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()
@@ -80,3 +86,7 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

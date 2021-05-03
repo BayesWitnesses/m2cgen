@@ -266,6 +266,29 @@ class VectorVal(VectorExpr):
         return hash(tuple(self.exprs))
 
 
+class SoftmaxExpr(VectorExpr):
+
+    def __init__(self, exprs, to_reuse=False):
+        assert all(e.output_size == 1 for e in exprs), (
+            "All expressions for SoftmaxExpr must be scalar")
+
+        self.exprs = exprs
+        self.to_reuse = to_reuse
+        self.output_size = len(exprs)
+
+    def __str__(self):
+        args = ",".join([str(e) for e in self.exprs])
+        return f"SoftmaxExpr({args},to_reuse={self.to_reuse})"
+
+    def __eq__(self, other):
+        return (type(other) is SoftmaxExpr and
+                self.output_size == other.output_size and
+                all(i == j for i, j in zip(self.exprs, other.exprs)))
+
+    def __hash__(self):
+        return hash(tuple(self.exprs))
+
+
 class BinVectorExpr(VectorExpr, BinExpr):
 
     def __init__(self, left, right, op):
@@ -384,9 +407,9 @@ TOTAL_NUMBER_OF_EXPRESSIONS = len(getmembers(modules[__name__], isclass))
 
 NESTED_EXPRS_MAPPINGS = [
     ((BinExpr, CompExpr), lambda e: [e.left, e.right]),
-    (PowExpr, lambda e: [e.base_expr, e.exp_expr]),
-    (VectorVal, lambda e: e.exprs),
-    (IfExpr, lambda e: [e.test, e.body, e.orelse]),
+    ((PowExpr), lambda e: [e.base_expr, e.exp_expr]),
+    ((VectorVal, SoftmaxExpr), lambda e: e.exprs),
+    ((IfExpr), lambda e: [e.test, e.body, e.orelse]),
     ((AbsExpr, AtanExpr, ExpExpr, IdExpr, LogExpr, Log1pExpr,
       SqrtExpr, TanhExpr),
      lambda e: [e.expr]),

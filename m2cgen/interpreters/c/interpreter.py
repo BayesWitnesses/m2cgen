@@ -23,8 +23,11 @@ class CInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
     power_function_name = "pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
+
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
@@ -59,6 +62,10 @@ class CInterpreter(ImperativeToCodeInterpreter,
         if self.with_linear_algebra:
             filename = os.path.join(
                 os.path.dirname(__file__), "linear_algebra.c")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
+        if self.with_softmax_expr:
+            filename = os.path.join(os.path.dirname(__file__), "softmax.c")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_vectors:
@@ -98,4 +105,19 @@ class CInterpreter(ImperativeToCodeInterpreter,
 
         self._cg.add_code_line(f"{func_inv};")
 
+        return var_name
+
+    # Do the same things for softmax as for linear algebra.
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_vectors = True
+        self.with_softmax_expr = True
+
+        var_name = self._cg.add_var_declaration(expr.output_size)
+        nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
+        func_inv = self._cg.function_invocation(
+            self.softmax_function_name,
+            self._cg.vector_init(nested),
+            expr.output_size,
+            var_name)
+        self._cg.add_code_line(f"{func_inv};")
         return var_name

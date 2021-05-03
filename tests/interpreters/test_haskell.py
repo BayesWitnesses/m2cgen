@@ -361,6 +361,27 @@ score input =
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = r"""
+module Model where
+softmax :: [Double] -> [Double]
+softmax x =
+    let
+        m = maximum x
+        exps = map (\i -> exp (i - m)) x
+        sumExps = sum exps
+    in map (\i -> i / sumExps) exps
+score :: [Double] -> [Double]
+score input =
+    softmax ([2.0, 3.0])
+"""
+
+    interpreter = HaskellInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

@@ -27,8 +27,11 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "math.log"
     log1p_function_name = "math.log1p"
     power_function_name = "math.pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "math.sqrt"
     tanh_function_name = "math.tanh"
+
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
@@ -51,6 +54,10 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
                 os.path.dirname(__file__), "linear_algebra.py")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
+        if self.with_softmax_expr:
+            filename = os.path.join(os.path.dirname(__file__), "softmax.py")
+            self._cg.prepend_code_lines(utils.get_file_content(filename))
+
         if self.with_math_module:
             self._cg.add_dependency("math")
 
@@ -60,3 +67,7 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.abs_function_name, nested_result)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

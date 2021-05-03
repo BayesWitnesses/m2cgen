@@ -72,8 +72,7 @@ class BaseBoostingAssembler(ModelAssembler):
             for i, e in enumerate(splits)
         ]
 
-        proba_exprs = self._multi_class_convert_output(exprs)
-        return ast.VectorVal(proba_exprs)
+        return self._multi_class_convert_output(exprs)
 
     def _assemble_bin_class_output(self, estimator_params):
         # Base score is calculated based on
@@ -97,7 +96,7 @@ class BaseBoostingAssembler(ModelAssembler):
         return ast_to_transform
 
     def _multi_class_convert_output(self, exprs):
-        return fallback_expressions.softmax(exprs)
+        return ast.SoftmaxExpr(exprs)
 
     def _bin_class_convert_output(self, expr, to_reuse=True):
         return fallback_expressions.sigmoid(expr, to_reuse=to_reuse)
@@ -253,8 +252,10 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
         return supported_objectives[self.objective_name](exprs)
 
     def _multi_class_sigmoid_transform(self, exprs):
-        return [self._bin_class_sigmoid_transform(expr, to_reuse=False)
-                for expr in exprs]
+        return ast.VectorVal([
+            self._bin_class_sigmoid_transform(expr, to_reuse=False)
+            for expr in exprs
+        ])
 
     def _bin_class_convert_output(self, expr, to_reuse=True):
         supported_objectives = {
