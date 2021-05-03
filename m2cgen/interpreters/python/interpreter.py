@@ -49,13 +49,14 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
+        current_dir = os.path.dirname(__file__)
+
         if self.with_linear_algebra:
-            filename = os.path.join(
-                os.path.dirname(__file__), "linear_algebra.py")
+            filename = os.path.join(current_dir, "linear_algebra.py")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(os.path.dirname(__file__), "softmax.py")
+            filename = os.path.join(current_dir, "softmax.py")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_math_module:
