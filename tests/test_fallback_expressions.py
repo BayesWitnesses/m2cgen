@@ -156,7 +156,8 @@ def test_softmax_fallback_expr():
         softmax_function_name = NotImplemented
 
         def interpret_softmax_expr(self, expr, **kwargs):
-            return super().interpret_softmax_expr(expr, **kwargs)
+            return super(PythonInterpreter, self).interpret_softmax_expr(
+                expr, **kwargs)
 
     interpreter = InterpreterWithoutSoftmax()
 
