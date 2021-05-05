@@ -171,3 +171,24 @@ def score(input):
 """
 
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sigmoid_fallback_expr():
+    expr = ast.SigmoidExpr(ast.NumVal(2.0))
+
+    class InterpreterWithoutSigmoid(PythonInterpreter):
+        sigmoid_function_name = NotImplemented
+
+        def interpret_sigmoid_expr(self, expr, **kwargs):
+            return super(PythonInterpreter, self).interpret_sigmoid_expr(
+                expr, **kwargs)
+
+    interpreter = InterpreterWithoutSigmoid()
+
+    expected_code = """
+import math
+def score(input):
+    return (1.0) / ((1.0) + (math.exp((0.0) - (2.0))))
+"""
+
+    assert_code_equal(interpreter.interpret(expr), expected_code)

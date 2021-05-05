@@ -386,6 +386,26 @@ end
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sigmoid_expr():
+    expr = ast.SigmoidExpr(ast.NumVal(2.0))
+
+    expected_code = """
+def score(input)
+    sigmoid(2.0)
+end
+def sigmoid(x)
+    if x < 0.0
+        z = Math.exp(x)
+        return z / (1.0 + z)
+    end
+    return 1.0 / (1.0 + Math.exp(-x))
+end
+"""
+
+    interpreter = RubyInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

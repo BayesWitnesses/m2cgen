@@ -87,6 +87,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     logarithm_function_name = NotImplemented
     log1p_function_name = NotImplemented
     power_function_name = NotImplemented
+    sigmoid_function_name = NotImplemented
     softmax_function_name = NotImplemented
     sqrt_function_name = NotImplemented
     tanh_function_name = NotImplemented
@@ -169,6 +170,15 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(
             self.log1p_function_name, nested_result)
+
+    def interpret_sigmoid_expr(self, expr, **kwargs):
+        if self.sigmoid_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.sigmoid(expr.expr), **kwargs)
+        self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.sigmoid_function_name, nested_result)
 
     def interpret_softmax_expr(self, expr, **kwargs):
         if self.softmax_function_name is NotImplemented:

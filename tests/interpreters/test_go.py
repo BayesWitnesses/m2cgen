@@ -361,6 +361,27 @@ func softmax(x []float64) []float64 {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sigmoid_expr():
+    expr = ast.SigmoidExpr(ast.NumVal(2.0))
+
+    interpreter = GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return sigmoid(2.0)
+}
+func sigmoid(x float64) float64 {
+    if (x < 0.0) {
+        z := math.Exp(x)
+        return z / (1.0 + z)
+    }
+    return 1.0 / (1.0 + math.Exp(-x))
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

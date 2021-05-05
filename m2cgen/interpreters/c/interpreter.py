@@ -23,10 +23,12 @@ class CInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
     power_function_name = "pow"
+    sigmoid_function_name = "sigmoid"
     softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
+    with_sigmoid_expr = False
     with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
@@ -67,6 +69,10 @@ class CInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_softmax_expr:
             filename = os.path.join(current_dir, "softmax.c")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_sigmoid_expr:
+            filename = os.path.join(current_dir, "sigmoid.c")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_vectors:
@@ -122,3 +128,7 @@ class CInterpreter(ImperativeToCodeInterpreter,
             var_name)
         self._cg.add_code_line(f"{func_inv};")
         return var_name
+
+    def interpret_sigmoid_expr(self, expr, **kwargs):
+        self.with_sigmoid_expr = True
+        return super().interpret_sigmoid_expr(expr, **kwargs)

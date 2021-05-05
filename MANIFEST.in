@@ -5,4 +5,5 @@ recursive-include m2cgen log1p.*
 recursive-include m2cgen tanh.*
 recursive-include m2cgen atan.*
 recursive-include m2cgen softmax.*
+recursive-include m2cgen sigmoid.*
 global-exclude *.py[cod]
