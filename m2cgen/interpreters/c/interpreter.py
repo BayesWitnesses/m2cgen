@@ -63,11 +63,11 @@ class CInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = os.path.join(current_dir, "linear_algebra.c")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = os.path.join(current_dir, "softmax.c")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_vectors:
             self._cg.add_dependency("<string.h>")

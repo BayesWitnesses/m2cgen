@@ -49,11 +49,11 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = os.path.join(current_dir, "linear_algebra.php")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = os.path.join(current_dir, "softmax.php")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line("<?php")
 

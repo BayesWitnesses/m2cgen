@@ -55,15 +55,15 @@ class HaskellInterpreter(FunctionalToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = os.path.join(current_dir, "linear_algebra.hs")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_log1p_expr:
             filename = os.path.join(current_dir, "log1p.hs")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = os.path.join(current_dir, "softmax.hs")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))

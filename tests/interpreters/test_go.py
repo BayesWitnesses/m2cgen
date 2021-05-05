@@ -167,6 +167,9 @@ def test_bin_vector_expr():
     interpreter = GoInterpreter()
 
     expected_code = """
+func score(input []float64) []float64 {
+    return addVectors([]float64{1.0, 2.0}, []float64{3.0, 4.0})
+}
 func addVectors(v1, v2 []float64) []float64 {
     result := make([]float64, len(v1))
     for i := 0; i < len(v1); i++ {
@@ -180,9 +183,6 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
         result[i] = v1[i] * num
     }
     return result
-}
-func score(input []float64) []float64 {
-    return addVectors([]float64{1.0, 2.0}, []float64{3.0, 4.0})
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -196,6 +196,9 @@ def test_bin_vector_num_expr():
     interpreter = GoInterpreter()
 
     expected_code = """
+func score(input []float64) []float64 {
+    return mulVectorNumber([]float64{1.0, 2.0}, 1.0)
+}
 func addVectors(v1, v2 []float64) []float64 {
     result := make([]float64, len(v1))
     for i := 0; i < len(v1); i++ {
@@ -209,9 +212,6 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
         result[i] = v1[i] * num
     }
     return result
-}
-func score(input []float64) []float64 {
-    return mulVectorNumber([]float64{1.0, 2.0}, 1.0)
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -335,6 +335,9 @@ def test_softmax_expr():
 
     expected_code = """
 import "math"
+func score(input []float64) []float64 {
+    return softmax([]float64{2.0, 3.0})
+}
 func softmax(x []float64) []float64 {
     size := len(x)
     result := make([]float64, size)
@@ -353,9 +356,6 @@ func softmax(x []float64) []float64 {
         result[i] /= sum
     }
     return result
-}
-func score(input []float64) []float64 {
-    return softmax([]float64{2.0, 3.0})
 }"""
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)

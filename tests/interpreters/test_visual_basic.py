@@ -211,6 +211,15 @@ def test_bin_vector_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double()
+    Dim var0(1) As Double
+    var0(0) = 1.0
+    var0(1) = 2.0
+    Dim var1(1) As Double
+    var1(0) = 3.0
+    var1(1) = 4.0
+    Score = AddVectors(var0, var1)
+End Function
 Function AddVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
@@ -236,15 +245,6 @@ Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Next i
 
     MulVectorNumber = result
-End Function
-Function Score(ByRef inputVector() As Double) As Double()
-    Dim var0(1) As Double
-    var0(0) = 1.0
-    var0(1) = 2.0
-    Dim var1(1) As Double
-    var1(0) = 3.0
-    var1(1) = 4.0
-    Score = AddVectors(var0, var1)
 End Function
 End Module
 """
@@ -261,6 +261,12 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double()
+    Dim var0(1) As Double
+    var0(0) = 1.0
+    var0(1) = 2.0
+    Score = MulVectorNumber(var0, 1.0)
+End Function
 Function AddVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
@@ -286,12 +292,6 @@ Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Next i
 
     MulVectorNumber = result
-End Function
-Function Score(ByRef inputVector() As Double) As Double()
-    Dim var0(1) As Double
-    var0(0) = 1.0
-    var0(1) = 2.0
-    Score = MulVectorNumber(var0, 1.0)
 End Function
 End Module
 """
@@ -365,6 +365,9 @@ def test_tanh_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Tanh(2.0)
+End Function
 Function Tanh(ByVal number As Double) As Double
     ' Implementation is taken from
     ' https://github.com/golang/go/blob/master/src/math/tanh.go
@@ -400,9 +403,6 @@ Function Tanh(ByVal number As Double) As Double
            * s + 0.484406305325125486048e+4)
     Tanh = z
 End Function
-Function Score(ByRef inputVector() As Double) As Double
-    Score = Tanh(2.0)
-End Function
 End Module
 """
 
@@ -430,6 +430,9 @@ def test_log1p_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Log1p(2.0)
+End Function
 Function ChebyshevBroucke(ByVal x As Double, _
                           ByRef coeffs() As Double) As Double
     Dim b2 as Double
@@ -502,9 +505,6 @@ Function Log1p(ByVal x As Double) As Double
     End If
     Log1p = Math.log(1.0 + x)
 End Function
-Function Score(ByRef inputVector() As Double) As Double
-    Score = Log1p(2.0)
-End Function
 End Module
 """
 
@@ -517,6 +517,9 @@ def test_atan_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Atan(2.0)
+End Function
 Function Xatan(ByVal x As Double) As Double
     Dim z As Double
     z = x * x
@@ -561,9 +564,6 @@ Function Atan(ByVal number As Double) As Double
     End If
     Atan = -Satan(-number)
 End Function
-Function Score(ByRef inputVector() As Double) As Double
-    Score = Atan(2.0)
-End Function
 End Module
 """
 
@@ -576,6 +576,12 @@ def test_softmax_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double()
+    Dim var0(1) As Double
+    var0(0) = 2.0
+    var0(1) = 3.0
+    Score = Softmax(var0)
+End Function
 Function Softmax(ByRef x() As Double) As Double()
     Dim size As Integer
     size = UBound(x) - LBound(x)
@@ -599,12 +605,6 @@ Function Softmax(ByRef x() As Double) As Double()
         result(i) = result(i) / sum
     Next i
     Softmax = result
-End Function
-Function Score(ByRef inputVector() As Double) As Double()
-    Dim var0(1) As Double
-    var0(0) = 2.0
-    var0(1) = 3.0
-    Score = Softmax(var0)
 End Function
 End Module
 """

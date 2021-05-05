@@ -170,6 +170,11 @@ def test_bin_vector_expr():
 
     expected_code = """
 #include <string.h>
+void score(double * input, double * output) {
+    double var0[2];
+    add_vectors((double[]){1.0, 2.0}, (double[]){3.0, 4.0}, 2, var0);
+    memcpy(output, var0, 2 * sizeof(double));
+}
 void add_vectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -177,11 +182,6 @@ void add_vectors(double *v1, double *v2, int size, double *result) {
 void mul_vector_number(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
-}
-void score(double * input, double * output) {
-    double var0[2];
-    add_vectors((double[]){1.0, 2.0}, (double[]){3.0, 4.0}, 2, var0);
-    memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -196,6 +196,11 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 #include <string.h>
+void score(double * input, double * output) {
+    double var0[2];
+    mul_vector_number((double[]){1.0, 2.0}, 1.0, 2, var0);
+    memcpy(output, var0, 2 * sizeof(double));
+}
 void add_vectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -203,11 +208,6 @@ void add_vectors(double *v1, double *v2, int size, double *result) {
 void mul_vector_number(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
-}
-void score(double * input, double * output) {
-    double var0[2];
-    mul_vector_number((double[]){1.0, 2.0}, 1.0, 2, var0);
-    memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -331,6 +331,11 @@ def test_softmax_expr():
 
     expected_code = """
 #include <string.h>
+void score(double * input, double * output) {
+    double var0[2];
+    softmax((double[]){2.0, 3.0}, 2, var0);
+    memcpy(output, var0, 2 * sizeof(double));
+}
 void softmax(double *x, int size, double *result) {
     double max = x[0];
     for (int i = 1; i < size; ++i) {
@@ -344,11 +349,6 @@ void softmax(double *x, int size, double *result) {
     }
     for (int i = 0; i < size; ++i)
         result[i] /= sum;
-}
-void score(double * input, double * output) {
-    double var0[2];
-    softmax((double[]){2.0, 3.0}, 2, var0);
-    memcpy(output, var0, 2 * sizeof(double));
 }"""
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
