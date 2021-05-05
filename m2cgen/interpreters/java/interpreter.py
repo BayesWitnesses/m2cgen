@@ -1,8 +1,7 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import mixins
-from m2cgen.interpreters import utils
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
 
@@ -25,12 +24,16 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "Math.abs"
+    atan_function_name = "Math.atan"
     exponent_function_name = "Math.exp"
     logarithm_function_name = "Math.log"
     log1p_function_name = "Math.log1p"
     power_function_name = "Math.pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "Math.sqrt"
     tanh_function_name = "Math.tanh"
+
+    with_softmax_expr = False
 
     def __init__(self, package_name=None, class_name="Model", indent=4,
                  function_name="score", *args, **kwargs):
@@ -58,9 +61,14 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
             self.enqueue_subroutine(self.function_name, expr)
             self.process_subroutine_queue(top_cg)
 
+            current_dir = os.path.dirname(__file__)
+
             if self.with_linear_algebra:
-                filename = os.path.join(
-                    os.path.dirname(__file__), "linear_algebra.java")
+                filename = os.path.join(current_dir, "linear_algebra.java")
+                top_cg.add_code_lines(utils.get_file_content(filename))
+
+            if self.with_softmax_expr:
+                filename = os.path.join(current_dir, "softmax.java")
                 top_cg.add_code_lines(utils.get_file_content(filename))
 
         return top_cg.finalize_and_get_generated_code()
@@ -69,3 +77,7 @@ class JavaInterpreter(ImperativeToCodeInterpreter,
     # each subroutine.
     def create_code_generator(self):
         return JavaCodeGenerator(indent=self.indent)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

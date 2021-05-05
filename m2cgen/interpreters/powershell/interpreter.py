@@ -1,9 +1,8 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import utils, mixins
-from m2cgen.interpreters.powershell.code_generator \
-    import PowershellCodeGenerator
+from m2cgen.interpreters import mixins, utils
+from m2cgen.interpreters.powershell.code_generator import PowershellCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 
 
@@ -19,14 +18,17 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "[math]::Abs"
+    atan_function_name = "[math]::Atan"
     exponent_function_name = "[math]::Exp"
     logarithm_function_name = "[math]::Log"
     log1p_function_name = "Log1p"
     power_function_name = "[math]::Pow"
+    softmax_function_name = "Softmax"
     sqrt_function_name = "[math]::Sqrt"
     tanh_function_name = "[math]::Tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="Score", *args, **kwargs):
         self.function_name = function_name
@@ -46,15 +48,19 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
+        current_dir = os.path.dirname(__file__)
+
         if self.with_linear_algebra:
-            filename = os.path.join(
-                os.path.dirname(__file__), "linear_algebra.ps1")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            filename = os.path.join(current_dir, "linear_algebra.ps1")
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_log1p_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "log1p.ps1")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            filename = os.path.join(current_dir, "log1p.ps1")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_softmax_expr:
+            filename = os.path.join(current_dir, "softmax.ps1")
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()
 
@@ -62,6 +68,11 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.math_function_invocation(
             self.abs_function_name, nested_result)
+
+    def interpret_atan_expr(self, expr, **kwargs):
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.math_function_invocation(
+            self.atan_function_name, nested_result)
 
     def interpret_exp_expr(self, expr, **kwargs):
         nested_result = self._do_interpret(expr.expr, **kwargs)
@@ -92,3 +103,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.math_function_invocation(
             self.power_function_name, base_result, exp_result)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

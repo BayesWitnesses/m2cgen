@@ -1,5 +1,5 @@
 from m2cgen import ast
-from m2cgen import interpreters
+from m2cgen.interpreters import JavaInterpreter
 from tests import utils
 
 
@@ -9,7 +9,7 @@ def test_if_expr():
         ast.NumVal(2),
         ast.NumVal(3))
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -35,7 +35,7 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
@@ -82,7 +82,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -133,14 +133,14 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_package_name():
     expr = ast.NumVal(1)
 
-    interpreter = interpreters.JavaInterpreter(package_name="foo.bar")
+    interpreter = JavaInterpreter(package_name="foo.bar")
 
     expected_code = """
 package foo.bar;
@@ -166,7 +166,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -180,7 +180,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -206,7 +206,7 @@ public class Model {
     }
 }"""
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -216,21 +216,21 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
     public static double[] score(double[] input) {
         return addVectors(new double[] {1.0, 2.0}, new double[] {3.0, 4.0});
     }
-    public static double[] addVectors(double[] v1, double[] v2) {
+    private static double[] addVectors(double[] v1, double[] v2) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] + v2[i];
         }
         return result;
     }
-    public static double[] mulVectorNumber(double[] v1, double num) {
+    private static double[] mulVectorNumber(double[] v1, double num) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] * num;
@@ -247,21 +247,21 @@ def test_bin_vector_num_expr():
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
 
     expected_code = """
 public class Model {
     public static double[] score(double[] input) {
         return mulVectorNumber(new double[] {1.0, 2.0}, 1.0);
     }
-    public static double[] addVectors(double[] v1, double[] v2) {
+    private static double[] addVectors(double[] v1, double[] v2) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] + v2[i];
         }
         return result;
     }
-    public static double[] mulVectorNumber(double[] v1, double num) {
+    private static double[] mulVectorNumber(double[] v1, double num) {
         double[] result = new double[v1.length];
         for (int i = 0; i < v1.length; i++) {
             result[i] = v1[i] * num;
@@ -272,135 +272,12 @@ public class Model {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
-def test_abs_expr():
-    expr = ast.AbsExpr(ast.NumVal(-1.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.abs(-1.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_exp_expr():
-    expr = ast.ExpExpr(ast.NumVal(1.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.exp(1.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_pow_expr():
-    expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.pow(2.0, 3.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_sqrt_expr():
-    expr = ast.SqrtExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.sqrt(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_tanh_expr():
-    expr = ast.TanhExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.tanh(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_log_expr():
-    expr = ast.LogExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.log(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_log1p_expr():
-    expr = ast.Log1pExpr(ast.NumVal(2.0))
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        return Math.log1p(2.0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
-def test_reused_expr():
-    reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
-
-    interpreter = interpreters.JavaInterpreter()
-
-    expected_code = """
-public class Model {
-    public static double score(double[] input) {
-        double var0;
-        var0 = Math.exp(1.0);
-        return (var0) / (var0);
-    }
-}"""
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
-
-
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
     for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -426,7 +303,7 @@ def test_depth_threshold_without_bin_expr():
             ast.NumVal(1),
             expr)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 2
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -471,7 +348,7 @@ def test_deep_mixed_exprs_not_reaching_threshold():
             ast.NumVal(1),
             expr)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -516,7 +393,7 @@ def test_deep_mixed_exprs_exceeding_threshold():
             ast.NumVal(1),
             expr)
 
-    interpreter = interpreters.JavaInterpreter()
+    interpreter = JavaInterpreter()
     interpreter.ast_size_check_frequency = 3
     interpreter.ast_size_per_subroutine_threshold = 1
 
@@ -554,6 +431,176 @@ public class Model {
     }
     public static double subroutine3(double[] input) {
         return (0.0) + ((0.0) + (1.0));
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_abs_expr():
+    expr = ast.AbsExpr(ast.NumVal(-1.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.abs(-1.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_exp_expr():
+    expr = ast.ExpExpr(ast.NumVal(1.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.exp(1.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_pow_expr():
+    expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.pow(2.0, 3.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_sqrt_expr():
+    expr = ast.SqrtExpr(ast.NumVal(2.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.sqrt(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_tanh_expr():
+    expr = ast.TanhExpr(ast.NumVal(2.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.tanh(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log_expr():
+    expr = ast.LogExpr(ast.NumVal(2.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.log(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_log1p_expr():
+    expr = ast.Log1pExpr(ast.NumVal(2.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.log1p(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return Math.atan(2.0);
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double[] score(double[] input) {
+        return softmax(new double[] {2.0, 3.0});
+    }
+    private static double[] softmax(double[] x) {
+        int size = x.length;
+        double[] result = new double[size];
+        double max = x[0];
+        for (int i = 1; i < size; ++i) {
+            if (x[i] > max)
+                max = x[i];
+        }
+        double sum = 0.0;
+        for (int i = 0; i < size; ++i) {
+            result[i] = Math.exp(x[i] - max);
+            sum += result[i];
+        }
+        for (int i = 0; i < size; ++i)
+            result[i] /= sum;
+        return result;
+    }
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_reused_expr():
+    reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
+    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+
+    interpreter = JavaInterpreter()
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        double var0;
+        var0 = Math.exp(1.0);
+        return (var0) / (var0);
     }
 }"""
 

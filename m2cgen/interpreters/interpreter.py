@@ -82,10 +82,12 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     """
 
     abs_function_name = NotImplemented
+    atan_function_name = NotImplemented
     exponent_function_name = NotImplemented
     logarithm_function_name = NotImplemented
     log1p_function_name = NotImplemented
     power_function_name = NotImplemented
+    softmax_function_name = NotImplemented
     sqrt_function_name = NotImplemented
     tanh_function_name = NotImplemented
 
@@ -132,10 +134,19 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return self._cg.function_invocation(
             self.abs_function_name, nested_result)
 
+    def interpret_atan_expr(self, expr, **kwargs):
+        if self.atan_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.atan(expr.expr), **kwargs)
+        self.with_math_module = True
+        nested_result = self._do_interpret(expr.expr, **kwargs)
+        return self._cg.function_invocation(
+            self.atan_function_name, nested_result)
+
     def interpret_exp_expr(self, expr, **kwargs):
         if self.exponent_function_name is NotImplemented:
             return self._do_interpret(
-                fallback_expressions.exp(expr.expr, to_reuse=expr.to_reuse),
+                fallback_expressions.exp(expr.expr),
                 **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
@@ -159,10 +170,20 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         return self._cg.function_invocation(
             self.log1p_function_name, nested_result)
 
+    def interpret_softmax_expr(self, expr, **kwargs):
+        if self.softmax_function_name is NotImplemented:
+            return self._do_interpret(
+                fallback_expressions.softmax(expr.exprs), **kwargs)
+        self.with_vectors = True
+        self.with_math_module = True
+        nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
+        return self._cg.function_invocation(
+            self.softmax_function_name, self._cg.vector_init(nested))
+
     def interpret_sqrt_expr(self, expr, **kwargs):
         if self.sqrt_function_name is NotImplemented:
             return self._do_interpret(
-                fallback_expressions.sqrt(expr.expr, to_reuse=expr.to_reuse),
+                fallback_expressions.sqrt(expr.expr),
                 **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
@@ -228,3 +249,51 @@ class ImperativeToCodeInterpreter(ToCodeInterpreter):
         self._cached_expr_results[expr] = CachedResult(
             var_name=var_name, expr_result=None)
         return var_name
+
+
+class FunctionalToCodeInterpreter(ToCodeInterpreter):
+    """
+    This interpreter provides default implementation for the methods
+    interpreting AST expression into code.
+
+    It can be used for the most functional programming languages and requires
+    only language-specific instance of the CodeGenerator.
+
+    !!IMPORTANT!!: Code generators used by this interpreter must know nothing
+    about AST.
+    """
+
+    def interpret_if_expr(self, expr, if_code_gen=None, **kwargs):
+        if if_code_gen is None:
+            code_gen = self.create_code_generator()
+            nested = False
+        else:
+            code_gen = if_code_gen
+            nested = True
+
+        code_gen.add_if_statement(self._do_interpret(
+            expr.test, **kwargs))
+        code_gen.add_code_line(self._do_interpret(
+            expr.body, if_code_gen=code_gen, **kwargs))
+        code_gen.add_else_statement()
+        code_gen.add_code_line(self._do_interpret(
+            expr.orelse, if_code_gen=code_gen, **kwargs))
+        code_gen.add_if_termination()
+
+        if not nested:
+            return self._cache_reused_expr(
+                expr, code_gen.finalize_and_get_generated_code())
+
+    # Cached expressions become functions with no arguments, i.e. values
+    # which are CAFs. Therefore, they are computed only once.
+    def _cache_reused_expr(self, expr, expr_result):
+        if expr in self._cached_expr_results:
+            return self._cached_expr_results[expr].var_name
+        else:
+            func_name = self._cg.get_func_name()
+            self._cached_expr_results[expr] = CachedResult(
+                var_name=func_name, expr_result=expr_result)
+            return func_name
+
+    def create_code_generator(self):
+        raise NotImplementedError

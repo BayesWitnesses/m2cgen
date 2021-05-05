@@ -181,6 +181,9 @@ def test_bin_vector_expr():
 
     expected_code = """
 <?php
+function score(array $input) {
+    return addVectors(array(1.0, 2.0), array(3.0, 4.0));
+}
 function addVectors(array $v1, array $v2) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
@@ -194,9 +197,6 @@ function mulVectorNumber(array $v1, $num) {
         $result[] = $v1[$i] * $num;
     }
     return $result;
-}
-function score(array $input) {
-    return addVectors(array(1.0, 2.0), array(3.0, 4.0));
 }
 """
 
@@ -212,6 +212,9 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 <?php
+function score(array $input) {
+    return mulVectorNumber(array(1.0, 2.0), 1.0);
+}
 function addVectors(array $v1, array $v2) {
     $result = array();
     for ($i = 0; $i < count($v1); ++$i) {
@@ -225,9 +228,6 @@ function mulVectorNumber(array $v1, $num) {
         $result[] = $v1[$i] * $num;
     }
     return $result;
-}
-function score(array $input) {
-    return mulVectorNumber(array(1.0, 2.0), 1.0);
 }
 """
 
@@ -326,6 +326,48 @@ def test_log1p_expr():
 <?php
 function score(array $input) {
     return log1p(2.0);
+}
+"""
+
+    interpreter = PhpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    expected_code = """
+<?php
+function score(array $input) {
+    return atan(2.0);
+}
+"""
+
+    interpreter = PhpInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+<?php
+function score(array $input) {
+    return softmax(array(2.0, 3.0));
+}
+function softmax(array $x) {
+    $size = count($x);
+    $result = array();
+    $m = max($x);
+    $sum = 0.0;
+    for ($i = 0; $i < $size; ++$i) {
+        $result[$i] = exp($x[$i] - $m);
+        $sum += $result[$i];
+    }
+    for ($i = 0; $i < $size; ++$i) {
+        $result[$i] /= $sum;
+    }
+    return $result;
 }
 """
 

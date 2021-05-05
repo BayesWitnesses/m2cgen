@@ -1,8 +1,7 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import mixins
-from m2cgen.interpreters import utils
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.c_sharp.code_generator import CSharpCodeGenerator
 
@@ -19,14 +18,17 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "Abs"
+    atan_function_name = "Atan"
     exponent_function_name = "Exp"
     logarithm_function_name = "Log"
     log1p_function_name = "Log1p"
     power_function_name = "Pow"
+    softmax_function_name = "Softmax"
     sqrt_function_name = "Sqrt"
     tanh_function_name = "Tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
 
     def __init__(self, namespace="ML", class_name="Model", indent=4,
                  function_name="Score", *args, **kwargs):
@@ -55,14 +57,18 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
                     last_result = self._do_interpret(expr)
                     self._cg.add_return_statement(last_result)
 
+                current_dir = os.path.dirname(__file__)
+
                 if self.with_linear_algebra:
-                    filename = os.path.join(
-                        os.path.dirname(__file__), "linear_algebra.cs")
+                    filename = os.path.join(current_dir, "linear_algebra.cs")
                     self._cg.add_code_lines(utils.get_file_content(filename))
 
                 if self.with_log1p_expr:
-                    filename = os.path.join(
-                        os.path.dirname(__file__), "log1p.cs")
+                    filename = os.path.join(current_dir, "log1p.cs")
+                    self._cg.add_code_lines(utils.get_file_content(filename))
+
+                if self.with_softmax_expr:
+                    filename = os.path.join(current_dir, "softmax.cs")
                     self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_math_module:
@@ -73,3 +79,7 @@ class CSharpInterpreter(ImperativeToCodeInterpreter,
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

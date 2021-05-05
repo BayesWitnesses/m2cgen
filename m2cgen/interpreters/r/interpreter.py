@@ -1,4 +1,6 @@
-from m2cgen.interpreters import mixins
+import os
+
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.r.code_generator import RCodeGenerator
 
@@ -23,11 +25,15 @@ class RInterpreter(ImperativeToCodeInterpreter,
     ast_size_per_subroutine_threshold = 200
 
     abs_function_name = "abs"
+    atan_function_name = "atan"
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
+    softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
+
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.indent = indent
@@ -41,6 +47,12 @@ class RInterpreter(ImperativeToCodeInterpreter,
         self.enqueue_subroutine(self.function_name, expr)
         self.process_subroutine_queue(top_cg)
 
+        current_dir = os.path.dirname(__file__)
+
+        if self.with_softmax_expr:
+            filename = os.path.join(current_dir, "softmax.r")
+            top_cg.prepend_code_lines(utils.get_file_content(filename))
+
         return top_cg.finalize_and_get_generated_code()
 
     def create_code_generator(self):
@@ -51,6 +63,10 @@ class RInterpreter(ImperativeToCodeInterpreter,
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
         return self._cg.infix_expression(
             left=base_result, right=exp_result, op="^")
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)
 
     def interpret_bin_vector_expr(self, expr, **kwargs):
         self.with_linear_algebra = True

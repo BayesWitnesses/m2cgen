@@ -3,8 +3,7 @@ import os
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.visual_basic.code_generator \
-    import VisualBasicCodeGenerator
+from m2cgen.interpreters.visual_basic.code_generator import VisualBasicCodeGenerator
 
 
 class VisualBasicInterpreter(ImperativeToCodeInterpreter,
@@ -18,12 +17,16 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "Math.Abs"
+    atan_function_name = "Atan"
     exponent_function_name = "Math.Exp"
     logarithm_function_name = "Math.Log"
     log1p_function_name = "Log1p"
+    softmax_function_name = "Softmax"
     tanh_function_name = "Tanh"
 
+    with_atan_expr = False
     with_log1p_expr = False
+    with_softmax_expr = False
     with_tanh_expr = False
 
     def __init__(self, module_name="Model", indent=4, function_name="Score",
@@ -48,21 +51,28 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result, func_name)
 
+        current_dir = os.path.dirname(__file__)
+
         if self.with_linear_algebra:
-            filename = os.path.join(
-                os.path.dirname(__file__), "linear_algebra.bas")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            filename = os.path.join(current_dir, "linear_algebra.bas")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_atan_expr:
+            filename = os.path.join(current_dir, "atan.bas")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_log1p_expr:
+            filename = os.path.join(current_dir, "log1p.bas")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_softmax_expr:
+            filename = os.path.join(current_dir, "softmax.bas")
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         # Use own Tanh function in order to be compatible with both VB and VBA
         if self.with_tanh_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "tanh.bas")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
-
-        if self.with_log1p_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "log1p.bas")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            filename = os.path.join(current_dir, "tanh.bas")
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))
@@ -84,3 +94,11 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True
         return super().interpret_tanh_expr(expr, **kwargs)
+
+    def interpret_atan_expr(self, expr, **kwargs):
+        self.with_atan_expr = True
+        return super().interpret_atan_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

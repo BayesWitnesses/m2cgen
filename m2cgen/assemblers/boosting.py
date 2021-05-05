@@ -72,8 +72,7 @@ class BaseBoostingAssembler(ModelAssembler):
             for i, e in enumerate(splits)
         ]
 
-        proba_exprs = self._multi_class_convert_output(exprs)
-        return ast.VectorVal(proba_exprs)
+        return self._multi_class_convert_output(exprs)
 
     def _assemble_bin_class_output(self, estimator_params):
         # Base score is calculated based on
@@ -97,7 +96,7 @@ class BaseBoostingAssembler(ModelAssembler):
         return ast_to_transform
 
     def _multi_class_convert_output(self, exprs):
-        return fallback_expressions.softmax(exprs)
+        return ast.SoftmaxExpr(exprs)
 
     def _bin_class_convert_output(self, expr, to_reuse=True):
         return fallback_expressions.sigmoid(expr, to_reuse=to_reuse)
@@ -151,11 +150,14 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
     def _assemble_tree(self, tree):
         if "leaf" in tree:
-            return ast.NumVal(tree["leaf"])
+            return ast.NumVal(tree["leaf"], dtype=np.float32)
 
         threshold = ast.NumVal(tree["split_condition"], dtype=np.float32)
         split = tree["split"]
-        feature_idx = self._feature_name_to_idx.get(split, split)
+        if split in self._feature_name_to_idx:
+            feature_idx = self._feature_name_to_idx[split]
+        else:
+            feature_idx = int(split)
         feature_ref = ast.FeatureRef(feature_idx)
 
         # Since comparison with NaN (missing) value always returns false we
@@ -250,8 +252,10 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
         return supported_objectives[self.objective_name](exprs)
 
     def _multi_class_sigmoid_transform(self, exprs):
-        return [self._bin_class_sigmoid_transform(expr, to_reuse=False)
-                for expr in exprs]
+        return ast.VectorVal([
+            self._bin_class_sigmoid_transform(expr, to_reuse=False)
+            for expr in exprs
+        ])
 
     def _bin_class_convert_output(self, expr, to_reuse=True):
         supported_objectives = {
@@ -317,9 +321,14 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
         op = ast.CompOpType.from_str_op(tree["decision_type"])
         assert op == ast.CompOpType.LTE, "Unexpected comparison op"
 
-        # Make sure that if the "default_left" is true the left tree branch
-        # ends up in the "else" branch of the ast.IfExpr.
-        if tree["default_left"]:
+        missing_type = tree['missing_type']
+
+        if missing_type not in {"NaN", "None"}:
+            raise ValueError(f"Unknown missing_type: {missing_type}")
+
+        reverse_condition = missing_type == "NaN" and tree["default_left"]
+        reverse_condition |= missing_type == "None" and tree["threshold"] >= 0
+        if reverse_condition:
             op = ast.CompOpType.GT
             true_child = tree["right_child"]
             false_child = tree["left_child"]

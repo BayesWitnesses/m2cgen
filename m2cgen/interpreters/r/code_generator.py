@@ -1,7 +1,6 @@
 import contextlib
 
-from m2cgen.interpreters.code_generator import CLikeCodeGenerator
-from m2cgen.interpreters.code_generator import CodeTemplate
+from m2cgen.interpreters.code_generator import CLikeCodeGenerator, CodeTemplate
 
 
 class RCodeGenerator(CLikeCodeGenerator):

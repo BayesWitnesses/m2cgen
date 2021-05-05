@@ -1,0 +1,7 @@
+[flake8]
+max-line-length = 120
+exclude =
+    .git,
+    generated_code_examples/,
+    m2cgen/interpreters/python/linear_algebra.py,
+    m2cgen/interpreters/python/softmax.py

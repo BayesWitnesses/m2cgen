@@ -211,6 +211,15 @@ def test_bin_vector_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double()
+    Dim var0(1) As Double
+    var0(0) = 1.0
+    var0(1) = 2.0
+    Dim var1(1) As Double
+    var1(0) = 3.0
+    var1(1) = 4.0
+    Score = AddVectors(var0, var1)
+End Function
 Function AddVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
@@ -236,15 +245,6 @@ Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Next i
 
     MulVectorNumber = result
-End Function
-Function Score(ByRef inputVector() As Double) As Double()
-    Dim var0(1) As Double
-    var0(0) = 1.0
-    var0(1) = 2.0
-    Dim var1(1) As Double
-    var1(0) = 3.0
-    var1(1) = 4.0
-    Score = AddVectors(var0, var1)
 End Function
 End Module
 """
@@ -261,6 +261,12 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double()
+    Dim var0(1) As Double
+    var0(0) = 1.0
+    var0(1) = 2.0
+    Score = MulVectorNumber(var0, 1.0)
+End Function
 Function AddVectors(ByRef v1() As Double, ByRef v2() As Double) As Double()
     Dim resLength As Integer
     resLength = UBound(v1) - LBound(v1)
@@ -286,12 +292,6 @@ Function MulVectorNumber(ByRef v1() As Double, ByVal num As Double) As Double()
     Next i
 
     MulVectorNumber = result
-End Function
-Function Score(ByRef inputVector() As Double) As Double()
-    Dim var0(1) As Double
-    var0(0) = 1.0
-    var0(1) = 2.0
-    Score = MulVectorNumber(var0, 1.0)
 End Function
 End Module
 """
@@ -365,6 +365,9 @@ def test_tanh_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Tanh(2.0)
+End Function
 Function Tanh(ByVal number As Double) As Double
     ' Implementation is taken from
     ' https://github.com/golang/go/blob/master/src/math/tanh.go
@@ -400,9 +403,6 @@ Function Tanh(ByVal number As Double) As Double
            * s + 0.484406305325125486048e+4)
     Tanh = z
 End Function
-Function Score(ByRef inputVector() As Double) As Double
-    Score = Tanh(2.0)
-End Function
 End Module
 """
 
@@ -430,6 +430,9 @@ def test_log1p_expr():
 
     expected_code = """
 Module Model
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Log1p(2.0)
+End Function
 Function ChebyshevBroucke(ByVal x As Double, _
                           ByRef coeffs() As Double) As Double
     Dim b2 as Double
@@ -502,8 +505,106 @@ Function Log1p(ByVal x As Double) As Double
     End If
     Log1p = Math.log(1.0 + x)
 End Function
+End Module
+"""
+
+    interpreter = VisualBasicInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    expected_code = """
+Module Model
 Function Score(ByRef inputVector() As Double) As Double
-    Score = Log1p(2.0)
+    Score = Atan(2.0)
+End Function
+Function Xatan(ByVal x As Double) As Double
+    Dim z As Double
+    z = x * x
+    z = z * ((((-8.750608600031904122785e-01 * z _
+                - 1.615753718733365076637e+01) * z _
+               - 7.500855792314704667340e+01) * z _
+              - 1.228866684490136173410e+02) * z _
+             - 6.485021904942025371773e+01) _
+        / (((((z + 2.485846490142306297962e+01) * z _
+              + 1.650270098316988542046e+02) * z _
+             + 4.328810604912902668951e+02) * z _
+            + 4.853903996359136964868e+02) * z _
+           + 1.945506571482613964425e+02)
+    Xatan = x * z + x
+End Function
+Function Satan(ByVal x As Double) As Double
+    Dim morebits as Double
+    Dim tan3pio8 as Double
+    morebits = 6.123233995736765886130e-17
+    tan3pio8 = 2.41421356237309504880
+    If x <= 0.66 Then
+        Satan = Xatan(x)
+        Exit Function
+    End If
+    If x > tan3pio8 Then
+        Satan = 1.57079632679489661923132169163 - Xatan(1.0 / x) + morebits
+        Exit Function
+    End If
+    Satan = 0.78539816339744830961566084581 + Xatan((x - 1) / (x + 1)) _
+            + 3.061616997868382943065e-17
+End Function
+Function Atan(ByVal number As Double) As Double
+    ' Implementation is taken from
+    ' https://github.com/golang/go/blob/master/src/math/atan.go
+    If number = 0.0 Then
+        Atan = 0.0
+        Exit Function
+    End If
+    If number > 0.0 Then
+        Atan = Satan(number)
+        Exit Function
+    End If
+    Atan = -Satan(-number)
+End Function
+End Module
+"""
+
+    interpreter = VisualBasicInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+Module Model
+Function Score(ByRef inputVector() As Double) As Double()
+    Dim var0(1) As Double
+    var0(0) = 2.0
+    var0(1) = 3.0
+    Score = Softmax(var0)
+End Function
+Function Softmax(ByRef x() As Double) As Double()
+    Dim size As Integer
+    size = UBound(x) - LBound(x)
+    Dim result() As Double
+    ReDim result(size)
+    Dim max As Double
+    max = x(LBound(x))
+    Dim i As Integer
+    For i = LBound(x) + 1 To UBound(x)
+        If x(i) > max Then
+            max = x(i)
+        End If
+    Next i
+    Dim sum As Double
+    sum = 0.0
+    For i = LBound(x) To UBound(x)
+        result(i) = Math.Exp(x(i) - max)
+        sum = sum + result(i)
+    Next i
+    For i = LBound(x) To UBound(x)
+        result(i) = result(i) / sum
+    Next i
+    Softmax = result
 End Function
 End Module
 """

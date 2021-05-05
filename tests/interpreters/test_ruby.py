@@ -167,14 +167,14 @@ def test_bin_vector_expr():
         ast.BinNumOpType.ADD)
 
     expected_code = """
+def score(input)
+    add_vectors([1.0, 2.0], [3.0, 4.0])
+end
 def add_vectors(v1, v2)
     v1.zip(v2).map { |x, y| x + y }
 end
 def mul_vector_number(v1, num)
     v1.map { |i| i * num }
-end
-def score(input)
-    add_vectors([1.0, 2.0], [3.0, 4.0])
 end
 """
 
@@ -189,14 +189,14 @@ def test_bin_vector_num_expr():
         ast.BinNumOpType.MUL)
 
     expected_code = """
+def score(input)
+    mul_vector_number([1.0, 2.0], 1.0)
+end
 def add_vectors(v1, v2)
     v1.zip(v2).map { |x, y| x + y }
 end
 def mul_vector_number(v1, num)
     v1.map { |i| i * num }
-end
-def score(input)
-    mul_vector_number([1.0, 2.0], 1.0)
 end
 """
 
@@ -343,6 +343,42 @@ def chebyshev_broucke(x, coeffs)
         b0 = x2 * b1 - b2 + i
     end
     (b0 - b2) * 0.5
+end
+"""
+
+    interpreter = RubyInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    expected_code = """
+def score(input)
+    Math.atan(2.0)
+end
+"""
+
+    interpreter = RubyInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+def score(input)
+    softmax([2.0, 3.0])
+end
+def softmax(x)
+    m = x.max
+    exps = []
+    s = 0.0
+    x.each_with_index do |v, i|
+        exps[i] = Math.exp(v - m)
+        s += exps[i]
+    end
+    exps.map { |i| i / s }
 end
 """
 

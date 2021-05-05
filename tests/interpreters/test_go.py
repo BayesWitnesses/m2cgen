@@ -1,4 +1,5 @@
-from m2cgen import ast, interpreters
+from m2cgen import ast
+from m2cgen.interpreters import GoInterpreter
 from tests import utils
 
 
@@ -8,7 +9,7 @@ def test_if_expr():
         ast.NumVal(2),
         ast.NumVal(3))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 func score(input []float64) float64 {
@@ -30,7 +31,7 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 func score(input []float64) float64 {
@@ -72,7 +73,7 @@ func score(input []float64) float64 {
     return var0
 }"""
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -119,7 +120,7 @@ func score(input []float64) float64 {
     }
     return var0
 }"""
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -130,7 +131,7 @@ def test_raw_array():
 func score(input []float64) []float64 {
     return []float64{3.0, 4.0}
 }"""
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -153,7 +154,7 @@ func score(input []float64) []float64 {
     }
     return var0
 }"""
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -163,9 +164,12 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
+func score(input []float64) []float64 {
+    return addVectors([]float64{1.0, 2.0}, []float64{3.0, 4.0})
+}
 func addVectors(v1, v2 []float64) []float64 {
     result := make([]float64, len(v1))
     for i := 0; i < len(v1); i++ {
@@ -179,9 +183,6 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
         result[i] = v1[i] * num
     }
     return result
-}
-func score(input []float64) []float64 {
-    return addVectors([]float64{1.0, 2.0}, []float64{3.0, 4.0})
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -192,9 +193,12 @@ def test_bin_vector_num_expr():
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
+func score(input []float64) []float64 {
+    return mulVectorNumber([]float64{1.0, 2.0}, 1.0)
+}
 func addVectors(v1, v2 []float64) []float64 {
     result := make([]float64, len(v1))
     for i := 0; i < len(v1); i++ {
@@ -208,9 +212,6 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
         result[i] = v1[i] * num
     }
     return result
-}
-func score(input []float64) []float64 {
-    return mulVectorNumber([]float64{1.0, 2.0}, 1.0)
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -218,7 +219,7 @@ func score(input []float64) []float64 {
 def test_abs_expr():
     expr = ast.AbsExpr(ast.NumVal(-1.0))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -232,7 +233,7 @@ func score(input []float64) float64 {
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -246,7 +247,7 @@ func score(input []float64) float64 {
 def test_pow_expr():
     expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -260,7 +261,7 @@ func score(input []float64) float64 {
 def test_sqrt_expr():
     expr = ast.SqrtExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -274,7 +275,7 @@ func score(input []float64) float64 {
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -288,7 +289,7 @@ func score(input []float64) float64 {
 def test_log_expr():
     expr = ast.LogExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -302,7 +303,7 @@ func score(input []float64) float64 {
 def test_log1p_expr():
     expr = ast.Log1pExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -313,11 +314,58 @@ func score(input []float64) float64 {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    interpreter = GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) float64 {
+    return math.Atan(2.0)
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = GoInterpreter()
+
+    expected_code = """
+import "math"
+func score(input []float64) []float64 {
+    return softmax([]float64{2.0, 3.0})
+}
+func softmax(x []float64) []float64 {
+    size := len(x)
+    result := make([]float64, size)
+    max := x[0]
+    for _, v := range x {
+        if (v > max) {
+            max = v
+        }
+    }
+    sum := 0.0
+    for i := 0; i < size; i++ {
+        result[i] = math.Exp(x[i] - max)
+        sum += result[i]
+    }
+    for i := 0; i < size; i++ {
+        result[i] /= sum
+    }
+    return result
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
 
-    interpreter = interpreters.GoInterpreter()
+    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"

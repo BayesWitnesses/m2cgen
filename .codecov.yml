@@ -1,0 +1,11 @@
+coverage:
+  status:
+    patch: off
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+        informational: false
+        only_pulls: false
+comment: false

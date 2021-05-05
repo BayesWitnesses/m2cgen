@@ -1,8 +1,7 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import mixins
-from m2cgen.interpreters import utils
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.dart.code_generator import DartCodeGenerator
 
@@ -22,14 +21,17 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     bin_depth_threshold = 465
 
     abs_function_name = "abs"
+    atan_function_name = "atan"
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
     power_function_name = "pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
     with_log1p_expr = False
+    with_softmax_expr = False
     with_tanh_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
@@ -52,19 +54,22 @@ class DartInterpreter(ImperativeToCodeInterpreter,
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
+        current_dir = os.path.dirname(__file__)
+
         if self.with_linear_algebra:
-            filename = os.path.join(
-                os.path.dirname(__file__), "linear_algebra.dart")
+            filename = os.path.join(current_dir, "linear_algebra.dart")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_log1p_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "log1p.dart")
+            filename = os.path.join(current_dir, "log1p.dart")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_softmax_expr:
+            filename = os.path.join(current_dir, "softmax.dart")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_tanh_expr:
-            filename = os.path.join(
-                os.path.dirname(__file__), "tanh.dart")
+            filename = os.path.join(current_dir, "tanh.dart")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_math_module:
@@ -78,6 +83,13 @@ class DartInterpreter(ImperativeToCodeInterpreter,
             obj=self._do_interpret(expr.expr, **kwargs),
             args=[])
 
+    def interpret_pow_expr(self, expr, **kwargs):
+        pow_result = super().interpret_pow_expr(expr, **kwargs)
+        return self._cg.method_invocation(
+            method_name="toDouble",
+            obj=pow_result,
+            args=[])
+
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
         return super().interpret_log1p_expr(expr, **kwargs)
@@ -85,3 +97,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     def interpret_tanh_expr(self, expr, **kwargs):
         self.with_tanh_expr = True
         return super().interpret_tanh_expr(expr, **kwargs)
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

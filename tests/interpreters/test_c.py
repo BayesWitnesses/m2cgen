@@ -1,5 +1,5 @@
 from m2cgen import ast
-from m2cgen import interpreters
+from m2cgen.interpreters import CInterpreter
 from tests import utils
 
 
@@ -9,7 +9,7 @@ def test_if_expr():
         ast.NumVal(2),
         ast.NumVal(3))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 double score(double * input) {
@@ -31,7 +31,7 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 double score(double * input) {
@@ -73,7 +73,7 @@ double score(double * input) {
     return var0;
 }"""
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -120,7 +120,7 @@ double score(double * input) {
     }
     return var0;
 }"""
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -132,7 +132,7 @@ def test_raw_array():
 void score(double * input, double * output) {
     memcpy(output, (double[]){3.0, 4.0}, 2 * sizeof(double));
 }"""
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -156,7 +156,7 @@ void score(double * input, double * output) {
     }
     memcpy(output, var0, 2 * sizeof(double));
 }"""
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -166,10 +166,15 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <string.h>
+void score(double * input, double * output) {
+    double var0[2];
+    add_vectors((double[]){1.0, 2.0}, (double[]){3.0, 4.0}, 2, var0);
+    memcpy(output, var0, 2 * sizeof(double));
+}
 void add_vectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -177,11 +182,6 @@ void add_vectors(double *v1, double *v2, int size, double *result) {
 void mul_vector_number(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
-}
-void score(double * input, double * output) {
-    double var0[2];
-    add_vectors((double[]){1.0, 2.0}, (double[]){3.0, 4.0}, 2, var0);
-    memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -192,10 +192,15 @@ def test_bin_vector_num_expr():
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <string.h>
+void score(double * input, double * output) {
+    double var0[2];
+    mul_vector_number((double[]){1.0, 2.0}, 1.0, 2, var0);
+    memcpy(output, var0, 2 * sizeof(double));
+}
 void add_vectors(double *v1, double *v2, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] + v2[i];
@@ -203,11 +208,6 @@ void add_vectors(double *v1, double *v2, int size, double *result) {
 void mul_vector_number(double *v1, double num, int size, double *result) {
     for(int i = 0; i < size; ++i)
         result[i] = v1[i] * num;
-}
-void score(double * input, double * output) {
-    double var0[2];
-    mul_vector_number((double[]){1.0, 2.0}, 1.0, 2, var0);
-    memcpy(output, var0, 2 * sizeof(double));
 }"""
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -215,7 +215,7 @@ void score(double * input, double * output) {
 def test_abs_expr():
     expr = ast.AbsExpr(ast.NumVal(-1.0))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>
@@ -229,7 +229,7 @@ double score(double * input) {
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>
@@ -243,7 +243,7 @@ double score(double * input) {
 def test_pow_expr():
     expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>
@@ -257,7 +257,7 @@ double score(double * input) {
 def test_sqrt_expr():
     expr = ast.SqrtExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>
@@ -271,7 +271,7 @@ double score(double * input) {
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>
@@ -285,7 +285,7 @@ double score(double * input) {
 def test_log_expr():
     expr = ast.LogExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>
@@ -299,7 +299,7 @@ double score(double * input) {
 def test_log1p_expr():
     expr = ast.Log1pExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>
@@ -310,11 +310,55 @@ double score(double * input) {
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    interpreter = CInterpreter()
+
+    expected_code = """
+#include <math.h>
+double score(double * input) {
+    return atan(2.0);
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = CInterpreter()
+
+    expected_code = """
+#include <string.h>
+void score(double * input, double * output) {
+    double var0[2];
+    softmax((double[]){2.0, 3.0}, 2, var0);
+    memcpy(output, var0, 2 * sizeof(double));
+}
+void softmax(double *x, int size, double *result) {
+    double max = x[0];
+    for (int i = 1; i < size; ++i) {
+        if (x[i] > max)
+            max = x[i];
+    }
+    double sum = 0.0;
+    for (int i = 0; i < size; ++i) {
+        result[i] = exp(x[i] - max);
+        sum += result[i];
+    }
+    for (int i = 0; i < size; ++i)
+        result[i] /= sum;
+}"""
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
 
-    interpreter = interpreters.CInterpreter()
+    interpreter = CInterpreter()
 
     expected_code = """
 #include <math.h>

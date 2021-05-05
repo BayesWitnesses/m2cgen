@@ -3,4 +3,6 @@ recursive-include m2cgen VERSION.txt
 recursive-include m2cgen linear_algebra.*
 recursive-include m2cgen log1p.*
 recursive-include m2cgen tanh.*
+recursive-include m2cgen atan.*
+recursive-include m2cgen softmax.*
 global-exclude *.py[cod]

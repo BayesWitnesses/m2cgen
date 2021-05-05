@@ -1,7 +1,9 @@
+import math
+
 import numpy as np
 
 from m2cgen import ast
-from m2cgen.assemblers import utils
+from m2cgen.assemblers import fallback_expressions, utils
 from m2cgen.assemblers.base import ModelAssembler
 
 
@@ -95,14 +97,7 @@ class GLMMixin:
         raise NotImplementedError
 
     def _logit_inversed(self, ast_to_transform):
-        return utils.div(
-            ast.NumVal(1.0),
-            utils.add(
-                ast.NumVal(1.0),
-                ast.ExpExpr(
-                    utils.sub(
-                        ast.NumVal(0.0),
-                        ast_to_transform))))
+        return fallback_expressions.sigmoid(ast_to_transform)
 
     def _power_inversed(self, ast_to_transform):
         power = self._get_power()
@@ -146,16 +141,22 @@ class GLMMixin:
 
     def _negativebinomial_inversed(self, ast_to_transform):
         alpha = self._get_alpha()
+        res = utils.sub(
+            ast.NumVal(1.0),
+            ast.ExpExpr(
+                utils.sub(
+                    ast.NumVal(0.0),
+                    ast_to_transform)))
         return utils.div(
             ast.NumVal(-1.0),
-            utils.mul(
-                ast.NumVal(alpha),
-                utils.sub(
-                    ast.NumVal(1.0),
-                    ast.ExpExpr(
-                        utils.sub(
-                            ast.NumVal(0.0),
-                            ast_to_transform)))))
+            utils.mul(ast.NumVal(alpha), res) if alpha != 1.0 else res)
+
+    def _cauchy_inversed(self, ast_to_transform):
+        return utils.add(
+            ast.NumVal(0.5),
+            utils.div(
+                ast.AtanExpr(ast_to_transform),
+                ast.NumVal(math.pi)))
 
     def _get_power(self):
         raise NotImplementedError
@@ -180,7 +181,8 @@ class StatsmodelsGLMModelAssembler(GLMMixin, StatsmodelsLinearModelAssembler):
             "log": self._log_inversed,
             "cloglog": self._cloglog_inversed,
             "negativebinomial": self._negativebinomial_inversed,
-            "nbinom": self._negativebinomial_inversed
+            "nbinom": self._negativebinomial_inversed,
+            "cauchy": self._cauchy_inversed
         }
 
     def _get_power(self):

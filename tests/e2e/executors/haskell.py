@@ -3,7 +3,7 @@ import subprocess
 
 from m2cgen import assemblers, interpreters
 from tests import utils
-from tests.e2e.executors import base
+from tests.e2e.executors.base import BaseExecutor
 
 EXECUTOR_CODE_TPL = """
 module {executor_name} where
@@ -22,7 +22,7 @@ PRINT_SCALAR = "print res"
 PRINT_VECTOR = r"""mapM_ (putStr . \x -> show x ++ " ") res"""
 
 
-class HaskellExecutor(base.BaseExecutor):
+class HaskellExecutor(BaseExecutor):
 
     executor_name = "Main"
     model_name = "Model"
@@ -34,12 +34,10 @@ class HaskellExecutor(base.BaseExecutor):
         assembler_cls = assemblers.get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._ghc = "ghc"
+        self.exec_path = None
 
     def predict(self, X):
-        app_name = os.path.join(self._resource_tmp_dir,
-                                self.executor_name)
-        exec_args = [app_name, *map(str, X)]
+        exec_args = [self.exec_path, *map(utils.format_arg, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
@@ -53,17 +51,18 @@ class HaskellExecutor(base.BaseExecutor):
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
-        executor_file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.executor_name}.hs")
-        model_file_name = os.path.join(
-            self._resource_tmp_dir, f"{self.model_name}.hs")
+        executor_file_name = os.path.join(self._resource_tmp_dir, f"{self.executor_name}.hs")
+        model_file_name = os.path.join(self._resource_tmp_dir, f"{self.model_name}.hs")
         with open(executor_file_name, "w") as f:
             f.write(executor_code)
         with open(model_file_name, "w") as f:
             f.write(model_code)
 
-        exec_args = [self._ghc, executor_file_name,
-                     f"-i{self._resource_tmp_dir}",
-                     "-o", os.path.join(self._resource_tmp_dir,
-                                        self.executor_name)]
-        subprocess.call(exec_args)
+        self.exec_path = os.path.join(self._resource_tmp_dir, self.executor_name)
+        subprocess.call([
+            "ghc",
+            executor_file_name,
+            f"-i{self._resource_tmp_dir}",
+            "-o",
+            self.exec_path
+        ])

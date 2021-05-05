@@ -1,7 +1,7 @@
 import os
 
 from m2cgen import ast
-from m2cgen.interpreters import utils, mixins
+from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.php.code_generator import PhpCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 
@@ -18,12 +18,16 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
     }
 
     abs_function_name = "abs"
+    atan_function_name = "atan"
     exponent_function_name = "exp"
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
     power_function_name = "pow"
+    softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
+
+    with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.function_name = function_name
@@ -41,11 +45,20 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
+        current_dir = os.path.dirname(__file__)
+
         if self.with_linear_algebra:
-            filename = os.path.join(
-                os.path.dirname(__file__), "linear_algebra.php")
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            filename = os.path.join(current_dir, "linear_algebra.php")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_softmax_expr:
+            filename = os.path.join(current_dir, "softmax.php")
+            self._cg.add_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line("<?php")
 
         return self._cg.finalize_and_get_generated_code()
+
+    def interpret_softmax_expr(self, expr, **kwargs):
+        self.with_softmax_expr = True
+        return super().interpret_softmax_expr(expr, **kwargs)

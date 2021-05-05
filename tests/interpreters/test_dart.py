@@ -178,14 +178,14 @@ List<double> score(List<double> input) {
     return addVectors([1.0, 2.0], [3.0, 4.0]);
 }
 List<double> addVectors(List<double> v1, List<double> v2) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] + v2[i];
     }
     return result;
 }
 List<double> mulVectorNumber(List<double> v1, double num) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] * num;
     }
@@ -208,14 +208,14 @@ List<double> score(List<double> input) {
     return mulVectorNumber([1.0, 2.0], 1.0);
 }
 List<double> addVectors(List<double> v1, List<double> v2) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] + v2[i];
     }
     return result;
 }
 List<double> mulVectorNumber(List<double> v1, double num) {
-    List<double> result = new List<double>(v1.length);
+    List<double> result = new List<double>.filled(v1.length, 0.0);
     for (int i = 0; i < v1.length; i++) {
         result[i] = v1[i] * num;
     }
@@ -412,7 +412,7 @@ def test_pow_expr():
     expected_code = """
 import 'dart:math';
 double score(List<double> input) {
-    return pow(2.0, 3.0);
+    return (pow(2.0, 3.0)).toDouble();
 }
 """
 
@@ -547,6 +547,45 @@ double chebyshevBroucke(double x, List<double> coeffs) {
         b0 = x2 * b1 - b2 + coeffs[i];
     }
     return (b0 - b2) * 0.5;
+}
+"""
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    expected_code = """
+import 'dart:math';
+double score(List<double> input) {
+    return atan(2.0);
+}
+"""
+    interpreter = DartInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = """
+import 'dart:math';
+List<double> score(List<double> input) {
+    return softmax([2.0, 3.0]);
+}
+List<double> softmax(List<double> x) {
+    int size = x.length;
+    List<double> result = new List<double>.filled(size, 0.0);
+    double maxElem = x.reduce(max);
+    double sum = 0.0;
+    for (int i = 0; i < size; ++i) {
+        result[i] = exp(x[i] - maxElem);
+        sum += result[i];
+    }
+    for (int i = 0; i < size; ++i)
+        result[i] /= sum;
+    return result;
 }
 """
     interpreter = DartInterpreter()

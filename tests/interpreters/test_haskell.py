@@ -16,11 +16,10 @@ score input =
     func0
     where
         func0 =
-            if ((1.0) == ((input) !! (0)))
-                then
-                    2.0
-                else
-                    3.0
+            if ((1.0) == ((input) !! (0))) then
+                2.0
+            else
+                3.0
 """
 
     interpreter = HaskellInterpreter()
@@ -68,17 +67,15 @@ score input =
     func1
     where
         func0 =
-            if ((1.0) == (1.0))
-                then
-                    1.0
-                else
-                    2.0
+            if ((1.0) == (1.0)) then
+                1.0
+            else
+                2.0
         func1 =
-            if (((func0) + (2.0)) >= ((1.0) / (2.0)))
-                then
-                    1.0
-                else
-                    (input) !! (0)
+            if (((func0) + (2.0)) >= ((1.0) / (2.0))) then
+                1.0
+            else
+                (input) !! (0)
 """
 
     interpreter = HaskellInterpreter()
@@ -110,21 +107,18 @@ score input =
     func1
     where
         func0 =
-            if ((1.0) == (1.0))
-                then
-                    1.0
-                else
-                    2.0
+            if ((1.0) == (1.0)) then
+                1.0
+            else
+                2.0
         func1 =
-            if ((1.0) == ((func0) + (2.0)))
-                then
-                    if ((1.0) == ((func0) + (2.0)))
-                        then
-                            (input) !! (2)
-                        else
-                            2.0
+            if ((1.0) == ((func0) + (2.0))) then
+                if ((1.0) == ((func0) + (2.0))) then
+                    (input) !! (2)
                 else
                     2.0
+            else
+                2.0
 """
 
     interpreter = HaskellInterpreter()
@@ -162,11 +156,10 @@ score input =
     func0
     where
         func0 =
-            if ((1.0) == (1.0))
-                then
-                    [1.0, 2.0]
-                else
-                    [3.0, 4.0]
+            if ((1.0) == (1.0)) then
+                [1.0, 2.0]
+            else
+                [3.0, 4.0]
 """
 
     interpreter = HaskellInterpreter()
@@ -181,13 +174,13 @@ def test_bin_vector_expr():
 
     expected_code = """
 module Model where
+score :: [Double] -> [Double]
+score input =
+    addVectors ([1.0, 2.0]) ([3.0, 4.0])
 addVectors :: [Double] -> [Double] -> [Double]
 addVectors v1 v2 = zipWith (+) v1 v2
 mulVectorNumber :: [Double] -> Double -> [Double]
 mulVectorNumber v1 num = [i * num | i <- v1]
-score :: [Double] -> [Double]
-score input =
-    addVectors ([1.0, 2.0]) ([3.0, 4.0])
 """
 
     interpreter = HaskellInterpreter()
@@ -202,13 +195,13 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 module Model where
+score :: [Double] -> [Double]
+score input =
+    mulVectorNumber ([1.0, 2.0]) (1.0)
 addVectors :: [Double] -> [Double] -> [Double]
 addVectors v1 v2 = zipWith (+) v1 v2
 mulVectorNumber :: [Double] -> Double -> [Double]
 mulVectorNumber v1 num = [i * num | i <- v1]
-score :: [Double] -> [Double]
-score input =
-    mulVectorNumber ([1.0, 2.0]) (1.0)
 """
 
     interpreter = HaskellInterpreter()
@@ -304,6 +297,9 @@ def test_log1p_expr():
 
     expected_code = """
 module Model where
+score :: [Double] -> Double
+score input =
+    log1p (2.0)
 log1p :: Double -> Double
 log1p x
     | x == 0               = 0
@@ -345,9 +341,41 @@ log1p x
         where
             step k (b0, b1, _) = ((k + i * 2 * b0 - b1), b0, b1)
             fini (b0, _, b2) = (b0 - b2) * 0.5
+"""
+
+    interpreter = HaskellInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    expected_code = """
+module Model where
 score :: [Double] -> Double
 score input =
-    log1p (2.0)
+    atan (2.0)
+"""
+
+    interpreter = HaskellInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    expected_code = r"""
+module Model where
+score :: [Double] -> [Double]
+score input =
+    softmax ([2.0, 3.0])
+softmax :: [Double] -> [Double]
+softmax x =
+    let
+        m = maximum x
+        exps = map (\i -> exp (i - m)) x
+        sumExps = sum exps
+    in map (\i -> i / sumExps) exps
 """
 
     interpreter = HaskellInterpreter()

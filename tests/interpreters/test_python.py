@@ -1,5 +1,5 @@
 from m2cgen import ast
-from m2cgen import interpreters
+from m2cgen.interpreters import PythonInterpreter
 from tests import utils
 
 
@@ -9,7 +9,7 @@ def test_if_expr():
         ast.NumVal(2),
         ast.NumVal(3))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 def score(input):
@@ -30,7 +30,7 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 def score(input):
@@ -69,7 +69,7 @@ def score(input):
     return var0
     """
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -111,7 +111,7 @@ def score(input):
     return var0
     """
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -123,7 +123,7 @@ def score(input):
     return [3.0, 4.0]
     """
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -145,7 +145,7 @@ def score(input):
     return var0
     """
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -155,7 +155,7 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 def add_vectors(v1, v2):
@@ -175,7 +175,7 @@ def test_bin_vector_num_expr():
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 def add_vectors(v1, v2):
@@ -189,7 +189,7 @@ def score(input):
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
-class CustomPythonInterpreter(interpreters.PythonInterpreter):
+class CustomPythonInterpreter(PythonInterpreter):
     bin_depth_threshold = 2
 
 
@@ -322,7 +322,7 @@ def test_deep_expression():
     for _ in range(120):
         expr = ast.BinNumExpr(expr, ast.NumVal(1), ast.BinNumOpType.ADD)
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     result_code = interpreter.interpret(expr)
     result_code += """
@@ -338,7 +338,7 @@ result = score(None)
 def test_abs_expr():
     expr = ast.AbsExpr(ast.NumVal(-1.0))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 def score(input):
@@ -351,7 +351,7 @@ def score(input):
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
@@ -365,7 +365,7 @@ def score(input):
 def test_pow_expr():
     expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
@@ -379,7 +379,7 @@ def score(input):
 def test_sqrt_expr():
     expr = ast.SqrtExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
@@ -393,7 +393,7 @@ def score(input):
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
@@ -407,7 +407,7 @@ def score(input):
 def test_log_expr():
     expr = ast.LogExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
@@ -421,7 +421,7 @@ def score(input):
 def test_log1p_expr():
     expr = ast.Log1pExpr(ast.NumVal(2.0))
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
@@ -432,11 +432,46 @@ def score(input):
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_atan_expr():
+    expr = ast.AtanExpr(ast.NumVal(2.0))
+
+    interpreter = PythonInterpreter()
+
+    expected_code = """
+import math
+def score(input):
+    return math.atan(2.0)
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_softmax_expr():
+    expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
+
+    interpreter = PythonInterpreter()
+
+    expected_code = """
+import math
+def softmax(x):
+    m = max(x)
+    exps = [math.exp(i - m) for i in x]
+    s = sum(exps)
+    for idx, _ in enumerate(exps):
+        exps[idx] /= s
+    return exps
+def score(input):
+    return softmax([2.0, 3.0])
+    """
+
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
 
-    interpreter = interpreters.PythonInterpreter()
+    interpreter = PythonInterpreter()
 
     expected_code = """
 import math
