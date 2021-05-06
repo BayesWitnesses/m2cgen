@@ -23,11 +23,13 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "[math]::Log"
     log1p_function_name = "Log1p"
     power_function_name = "[math]::Pow"
+    sigmoid_function_name = "Sigmoid"
     softmax_function_name = "Softmax"
     sqrt_function_name = "[math]::Sqrt"
     tanh_function_name = "[math]::Tanh"
 
     with_log1p_expr = False
+    with_sigmoid_expr = False
     with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="Score", *args, **kwargs):
@@ -60,6 +62,10 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_softmax_expr:
             filename = os.path.join(current_dir, "softmax.ps1")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_sigmoid_expr:
+            filename = os.path.join(current_dir, "sigmoid.ps1")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()
@@ -107,3 +113,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
     def interpret_softmax_expr(self, expr, **kwargs):
         self.with_softmax_expr = True
         return super().interpret_softmax_expr(expr, **kwargs)
+
+    def interpret_sigmoid_expr(self, expr, **kwargs):
+        self.with_sigmoid_expr = True
+        return super().interpret_sigmoid_expr(expr, **kwargs)

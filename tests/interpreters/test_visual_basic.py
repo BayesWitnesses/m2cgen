@@ -613,6 +613,30 @@ End Module
     utils.assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_sigmoid_expr():
+    expr = ast.SigmoidExpr(ast.NumVal(2.0))
+
+    expected_code = """
+Module Model
+Function Score(ByRef inputVector() As Double) As Double
+    Score = Sigmoid(2.0)
+End Function
+Function Sigmoid(ByVal number As Double) As Double
+    If number < 0.0 Then
+        Dim z As Double
+        z = Math.Exp(number)
+        Sigmoid = z / (1.0 + z)
+        Exit Function
+    End If
+    Sigmoid = 1.0 / (1.0 + Math.Exp(-number))
+End Function
+End Module
+"""
+
+    interpreter = VisualBasicInterpreter()
+    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)

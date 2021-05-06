@@ -26,11 +26,13 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "log"
     log1p_function_name = "log1p"
     power_function_name = "pow"
+    sigmoid_function_name = "sigmoid"
     softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
     with_log1p_expr = False
+    with_sigmoid_expr = False
     with_softmax_expr = False
     with_tanh_expr = False
 
@@ -62,6 +64,10 @@ class DartInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_log1p_expr:
             filename = os.path.join(current_dir, "log1p.dart")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
+        if self.with_sigmoid_expr:
+            filename = os.path.join(current_dir, "sigmoid.dart")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
@@ -101,3 +107,7 @@ class DartInterpreter(ImperativeToCodeInterpreter,
     def interpret_softmax_expr(self, expr, **kwargs):
         self.with_softmax_expr = True
         return super().interpret_softmax_expr(expr, **kwargs)
+
+    def interpret_sigmoid_expr(self, expr, **kwargs):
+        self.with_sigmoid_expr = True
+        return super().interpret_sigmoid_expr(expr, **kwargs)

@@ -154,6 +154,23 @@ class Log1pExpr(NumExpr):
         return hash(self.expr)
 
 
+class SigmoidExpr(NumExpr):
+    def __init__(self, expr, to_reuse=False):
+        assert expr.output_size == 1, "Only scalars are supported"
+
+        self.expr = expr
+        self.to_reuse = to_reuse
+
+    def __str__(self):
+        return f"SigmoidExpr({self.expr},to_reuse={self.to_reuse})"
+
+    def __eq__(self, other):
+        return type(other) is SigmoidExpr and self.expr == other.expr
+
+    def __hash__(self):
+        return hash(self.expr)
+
+
 class SqrtExpr(NumExpr):
     def __init__(self, expr, to_reuse=False):
         assert expr.output_size == 1, "Only scalars are supported"
@@ -411,7 +428,7 @@ NESTED_EXPRS_MAPPINGS = [
     ((VectorVal, SoftmaxExpr), lambda e: e.exprs),
     ((IfExpr), lambda e: [e.test, e.body, e.orelse]),
     ((AbsExpr, AtanExpr, ExpExpr, IdExpr, LogExpr, Log1pExpr,
-      SqrtExpr, TanhExpr),
+      SigmoidExpr, SqrtExpr, TanhExpr),
      lambda e: [e.expr]),
 ]
 

@@ -22,10 +22,12 @@ class GoInterpreter(ImperativeToCodeInterpreter,
     logarithm_function_name = "math.Log"
     log1p_function_name = "math.Log1p"
     power_function_name = "math.Pow"
+    sigmoid_function_name = "sigmoid"
     softmax_function_name = "softmax"
     sqrt_function_name = "math.Sqrt"
     tanh_function_name = "math.Tanh"
 
+    with_sigmoid_expr = False
     with_softmax_expr = False
 
     def __init__(self, indent=4, function_name="score", *args, **kwargs):
@@ -59,6 +61,10 @@ class GoInterpreter(ImperativeToCodeInterpreter,
             filename = os.path.join(current_dir, "softmax.go")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
+        if self.with_sigmoid_expr:
+            filename = os.path.join(current_dir, "sigmoid.go")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
         if self.with_math_module:
             self._cg.add_dependency("math")
 
@@ -67,3 +73,7 @@ class GoInterpreter(ImperativeToCodeInterpreter,
     def interpret_softmax_expr(self, expr, **kwargs):
         self.with_softmax_expr = True
         return super().interpret_softmax_expr(expr, **kwargs)
+
+    def interpret_sigmoid_expr(self, expr, **kwargs):
+        self.with_sigmoid_expr = True
+        return super().interpret_sigmoid_expr(expr, **kwargs)

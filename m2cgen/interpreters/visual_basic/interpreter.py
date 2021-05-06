@@ -21,11 +21,13 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     exponent_function_name = "Math.Exp"
     logarithm_function_name = "Math.Log"
     log1p_function_name = "Log1p"
+    sigmoid_function_name = "Sigmoid"
     softmax_function_name = "Softmax"
     tanh_function_name = "Tanh"
 
     with_atan_expr = False
     with_log1p_expr = False
+    with_sigmoid_expr = False
     with_softmax_expr = False
     with_tanh_expr = False
 
@@ -65,6 +67,10 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
             filename = os.path.join(current_dir, "log1p.bas")
             self._cg.add_code_lines(utils.get_file_content(filename))
 
+        if self.with_sigmoid_expr:
+            filename = os.path.join(current_dir, "sigmoid.bas")
+            self._cg.add_code_lines(utils.get_file_content(filename))
+
         if self.with_softmax_expr:
             filename = os.path.join(current_dir, "softmax.bas")
             self._cg.add_code_lines(utils.get_file_content(filename))
@@ -102,3 +108,7 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     def interpret_softmax_expr(self, expr, **kwargs):
         self.with_softmax_expr = True
         return super().interpret_softmax_expr(expr, **kwargs)
+
+    def interpret_sigmoid_expr(self, expr, **kwargs):
+        self.with_sigmoid_expr = True
+        return super().interpret_sigmoid_expr(expr, **kwargs)

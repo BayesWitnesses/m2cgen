@@ -5,3 +5,4 @@ exclude =
     generated_code_examples/,
     m2cgen/interpreters/python/linear_algebra.py,
     m2cgen/interpreters/python/softmax.py
+    m2cgen/interpreters/python/sigmoid.py
