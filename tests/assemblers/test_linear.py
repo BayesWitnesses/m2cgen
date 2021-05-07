@@ -380,23 +380,14 @@ def test_statsmodels_glm_logit_link_func():
     assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    expected = ast.BinNumExpr(
-        ast.NumVal(1.0),
+    expected = ast.SigmoidExpr(
         ast.BinNumExpr(
-            ast.NumVal(1.0),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0.0),
-                    ast.BinNumExpr(
-                        ast.NumVal(0.0),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.NumVal(-0.8567815987),
-                            ast.BinNumOpType.MUL),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumOpType.SUB)),
-            ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV)
+            ast.NumVal(0.0),
+            ast.BinNumExpr(
+                ast.FeatureRef(0),
+                ast.NumVal(-0.8567815987),
+                ast.BinNumOpType.MUL),
+            ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
 

@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 from m2cgen import ast
-from m2cgen.assemblers import fallback_expressions, utils
+from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
 from m2cgen.assemblers.linear import _linear_to_ast
 
@@ -99,7 +99,7 @@ class BaseBoostingAssembler(ModelAssembler):
         return ast.SoftmaxExpr(exprs)
 
     def _bin_class_convert_output(self, expr, to_reuse=True):
-        return fallback_expressions.sigmoid(expr, to_reuse=to_reuse)
+        return ast.SigmoidExpr(expr, to_reuse=to_reuse)
 
     def _single_convert_output(self, expr):
         return expr
@@ -280,7 +280,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
     def _single_convert_output(self, expr):
         supported_objectives = {
-            "cross_entropy": fallback_expressions.sigmoid,
+            "cross_entropy": ast.SigmoidExpr,
             "cross_entropy_lambda": self._log1p_exp_transform,
             "regression": self._maybe_sqr_transform,
             "regression_l1": self._maybe_sqr_transform,

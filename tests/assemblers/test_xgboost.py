@@ -14,32 +14,23 @@ def test_binary_classification():
     assembler = assemblers.XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
 
-    sigmoid = ast.BinNumExpr(
-        ast.NumVal(1),
+    sigmoid = ast.SigmoidExpr(
         ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0),
-                    ast.BinNumExpr(
-                        ast.IfExpr(
-                            ast.CompExpr(
-                                ast.FeatureRef(20),
-                                ast.NumVal(16.795),
-                                ast.CompOpType.GTE),
-                            ast.NumVal(-0.5178947448730469),
-                            ast.NumVal(0.4880000054836273)),
-                        ast.IfExpr(
-                            ast.CompExpr(
-                                ast.FeatureRef(27),
-                                ast.NumVal(0.142349988),
-                                ast.CompOpType.GTE),
-                            ast.NumVal(-0.4447747468948364),
-                            ast.NumVal(0.39517202973365784)),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumOpType.SUB)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(20),
+                    ast.NumVal(16.795),
+                    ast.CompOpType.GTE),
+                ast.NumVal(-0.5178947448730469),
+                ast.NumVal(0.4880000054836273)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(27),
+                    ast.NumVal(0.142349988),
+                    ast.CompOpType.GTE),
+                ast.NumVal(-0.4447747468948364),
+                ast.NumVal(0.39517202973365784)),
             ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV,
         to_reuse=True)
 
     expected = ast.VectorVal([

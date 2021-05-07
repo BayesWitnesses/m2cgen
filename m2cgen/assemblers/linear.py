@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 from m2cgen import ast
-from m2cgen.assemblers import fallback_expressions, utils
+from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
 
 
@@ -97,7 +97,7 @@ class GLMMixin:
         raise NotImplementedError
 
     def _logit_inversed(self, ast_to_transform):
-        return fallback_expressions.sigmoid(ast_to_transform)
+        return ast.SigmoidExpr(ast_to_transform)
 
     def _power_inversed(self, ast_to_transform):
         power = self._get_power()
