@@ -13,32 +13,23 @@ def test_binary_classification():
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
-    sigmoid = ast.BinNumExpr(
-        ast.NumVal(1),
+    sigmoid = ast.SigmoidExpr(
         ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0),
-                    ast.BinNumExpr(
-                        ast.IfExpr(
-                            ast.CompExpr(
-                                ast.FeatureRef(20),
-                                ast.NumVal(16.795),
-                                ast.CompOpType.GT),
-                            ast.NumVal(0.27502096830384837),
-                            ast.NumVal(0.6391171126839048)),
-                        ast.IfExpr(
-                            ast.CompExpr(
-                                ast.FeatureRef(27),
-                                ast.NumVal(0.14205),
-                                ast.CompOpType.GT),
-                            ast.NumVal(-0.21340153096570616),
-                            ast.NumVal(0.11583109256834748)),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumOpType.SUB)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(20),
+                    ast.NumVal(16.795),
+                    ast.CompOpType.GT),
+                ast.NumVal(0.27502096830384837),
+                ast.NumVal(0.6391171126839048)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(27),
+                    ast.NumVal(0.14205),
+                    ast.CompOpType.GT),
+                ast.NumVal(-0.21340153096570616),
+                ast.NumVal(0.11583109256834748)),
             ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV,
         to_reuse=True)
 
     expected = ast.VectorVal([
@@ -167,32 +158,23 @@ def test_simple_sigmoid_output_transform():
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
-    expected = ast.BinNumExpr(
-        ast.NumVal(1),
+    expected = ast.SigmoidExpr(
         ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0),
-                    ast.BinNumExpr(
-                        ast.IfExpr(
-                            ast.CompExpr(
-                                ast.FeatureRef(12),
-                                ast.NumVal(19.23),
-                                ast.CompOpType.GT),
-                            ast.NumVal(4.002437528537838),
-                            ast.NumVal(4.090096709787509)),
-                        ast.IfExpr(
-                            ast.CompExpr(
-                                ast.FeatureRef(12),
-                                ast.NumVal(14.895),
-                                ast.CompOpType.GT),
-                            ast.NumVal(-0.0417499606641773),
-                            ast.NumVal(0.02069953712454655)),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumOpType.SUB)),
-            ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV)
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(12),
+                    ast.NumVal(19.23),
+                    ast.CompOpType.GT),
+                ast.NumVal(4.002437528537838),
+                ast.NumVal(4.090096709787509)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(12),
+                    ast.NumVal(14.895),
+                    ast.CompOpType.GT),
+                ast.NumVal(-0.0417499606641773),
+                ast.NumVal(0.02069953712454655)),
+            ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
 
@@ -301,26 +283,17 @@ def test_bin_class_sigmoid_output_transform():
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
-    sigmoid = ast.BinNumExpr(
-        ast.NumVal(1),
+    sigmoid = ast.SigmoidExpr(
         ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0),
-                    ast.BinNumExpr(
-                        ast.NumVal(0.5),
-                        ast.IfExpr(
-                            ast.CompExpr(
-                                ast.FeatureRef(20),
-                                ast.NumVal(16.795),
-                                ast.CompOpType.GT),
-                            ast.NumVal(0.5500419366076967),
-                            ast.NumVal(1.2782342253678096)),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.SUB)),
-            ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV,
+            ast.NumVal(0.5),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(20),
+                    ast.NumVal(16.795),
+                    ast.CompOpType.GT),
+                ast.NumVal(0.5500419366076967),
+                ast.NumVal(1.2782342253678096)),
+            ast.BinNumOpType.MUL),
         to_reuse=True)
 
     expected = ast.VectorVal([
@@ -339,20 +312,11 @@ def test_multi_class_sigmoid_output_transform():
     assembler = assemblers.LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
-    sigmoid = ast.BinNumExpr(
-        ast.NumVal(1),
+    sigmoid = ast.SigmoidExpr(
         ast.BinNumExpr(
-            ast.NumVal(1),
-            ast.ExpExpr(
-                ast.BinNumExpr(
-                    ast.NumVal(0),
-                    ast.BinNumExpr(
-                        ast.NumVal(0.5),
-                        ast.NumVal(-1.3862943611),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.SUB)),
-            ast.BinNumOpType.ADD),
-        ast.BinNumOpType.DIV)
+            ast.NumVal(0.5),
+            ast.NumVal(-1.3862943611),
+            ast.BinNumOpType.MUL))
 
     expected = ast.VectorVal([sigmoid] * 3)
 
