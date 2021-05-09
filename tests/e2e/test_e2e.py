@@ -154,6 +154,8 @@ LIGHTGBM_PARAMS_GOSS = dict(n_estimators=10, boosting_type='goss',
 LIGHTGBM_PARAMS_RF = dict(n_estimators=10, boosting_type='rf',
                           subsample=0.7, subsample_freq=1,
                           random_state=RANDOM_SEED)
+LIGHTGBM_PARAMS_EXTRA_TREES = dict(n_estimators=10, extra_trees=True,
+                                   random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64,
                              random_state=RANDOM_SEED)
 SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
@@ -205,6 +207,11 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_RF)),
         classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
         classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_RF)),
+
+        # LightGBM (Extra Trees)
+        regression(lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS_EXTRA_TREES)),
+        classification(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_EXTRA_TREES)),
+        classification_binary(lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS_EXTRA_TREES)),
 
         # LightGBM (Large Trees)
         regression_random(
