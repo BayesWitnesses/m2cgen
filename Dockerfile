@@ -3,6 +3,7 @@ FROM ubuntu:focal
 ARG python=3.9
 
 ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
+    PATH="/root/.cargo/bin:$PATH" \
     LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     TZ=Etc/UTC \
@@ -37,6 +38,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     add-apt-repository "deb http://repos.azulsystems.com/ubuntu stable main" -y && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" -y && \
+    curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain stable -y && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         dart \

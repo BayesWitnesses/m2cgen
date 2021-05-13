@@ -32,6 +32,7 @@ LANGUAGE_TO_EXPORTER = {
     "haskell": (m2cgen.export_to_haskell, ["module_name", "indent", "function_name"]),
     "ruby": (m2cgen.export_to_ruby, ["indent", "function_name"]),
     "f_sharp": (m2cgen.export_to_f_sharp, ["indent", "function_name"]),
+    "rust": (m2cgen.export_to_rust, ["indent", "function_name"]),
 }
 
 
