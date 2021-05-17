@@ -9,7 +9,7 @@ git+git://github.com/scikit-learn-contrib/lightning.git@3393a272ca64ee71563b8f88
 flake8==3.9.2
 pytest==6.2.4
 pytest-mock==3.6.1
-pytest-cov==2.11.1
+pytest-cov==2.12.0
 py-mini-racer==0.6.0
 
 # Other stuff
