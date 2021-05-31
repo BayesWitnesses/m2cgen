@@ -51,9 +51,7 @@ class CSharpCodeGenerator(CLikeCodeGenerator):
         return (f"new double[{len(values)}] {{{', '.join(values)}}}")
 
     def _get_var_declare_type(self, is_vector):
-        return (
-            self.vector_type if is_vector
-            else self.scalar_type)
+        return self.vector_type if is_vector else self.scalar_type
 
     def add_dependency(self, dep, modifier="static"):
         self.prepend_code_line(f"using {modifier} {dep};")
