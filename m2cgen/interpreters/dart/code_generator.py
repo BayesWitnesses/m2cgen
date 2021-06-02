@@ -30,9 +30,7 @@ class DartCodeGenerator(CLikeCodeGenerator):
         return f"[{', '.join(values)}]"
 
     def _get_var_declare_type(self, is_vector):
-        return (
-            self.vector_type if is_vector
-            else self.scalar_type)
+        return self.vector_type if is_vector else self.scalar_type
 
     def add_dependency(self, dep):
         self.prepend_code_line(f"import '{dep}';")

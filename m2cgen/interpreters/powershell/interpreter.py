@@ -45,8 +45,7 @@ class PowershellInterpreter(ImperativeToCodeInterpreter,
 
         with self._cg.function_definition(
                 name=self.function_name,
-                args=[(True, self._feature_array_name)],
-                is_scalar_output=expr.output_size == 1):
+                args=[(True, self._feature_array_name)]):
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
