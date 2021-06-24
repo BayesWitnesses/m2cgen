@@ -65,6 +65,6 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python${python
     if [ "$python" = "3.6" ]; then \
         pip install --no-cache-dir "numpy==1.19.5"; \
     else \
-        pip install --no-cache-dir "numpy==1.20.3"; \
+        pip install --no-cache-dir "numpy==1.21.0"; \
     fi && \
     pip install --no-cache-dir -r requirements-test.txt
