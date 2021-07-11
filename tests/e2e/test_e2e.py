@@ -625,5 +625,4 @@ def test_e2e(estimator, executor_cls, model_trainer, is_fast, global_tmp_dir):
             y_pred_executed = executor.predict(X_test[idx])
             y_pred_executed = np.array(y_pred_executed, dtype=y_pred_true.dtype, copy=False)
             print(f"expected={y_pred_true[idx]}, actual={y_pred_executed}")
-            res = np.isclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
-            assert res if isinstance(res, bool) else res.all()
+            np.testing.assert_allclose(y_pred_true[idx], y_pred_executed, atol=ATOL)
