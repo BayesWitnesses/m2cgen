@@ -15,7 +15,7 @@ class CCodeGenerator(CLikeCodeGenerator):
         return_type = self.scalar_type if is_scalar_output else "void"
 
         func_args = ", ".join([
-            f"{self._get_var_type(is_vector)} {n}"
+            f"{self._get_var_declare_type(is_vector)} {n}"
             for is_vector, n in args])
         function_def = f"{return_type} {name}({func_args}) {{"
         self.add_code_line(function_def)
@@ -56,7 +56,5 @@ class CCodeGenerator(CLikeCodeGenerator):
     def vector_init(self, values):
         return f"(double[]){{{', '.join(values)}}}"
 
-    def _get_var_type(self, is_vector):
-        return (
-            self.vector_type if is_vector
-            else self.scalar_type)
+    def _get_var_declare_type(self, is_vector):
+        return self.vector_type if is_vector else self.scalar_type

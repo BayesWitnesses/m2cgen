@@ -18,17 +18,17 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
                     CompOpType.GTE: "-ge", CompOpType.LTE: "-le",
                     CompOpType.GT: "-gt", CompOpType.LT: "-lt"}
 
-    def add_function_def(self, name, args, is_scalar_output):
+    def add_function_def(self, name, args):
         func_args = ", ".join([
-            f"{self._get_var_type(is_vector)} ${n}"
+            f"{self._get_var_declare_type(is_vector)} ${n}"
             for is_vector, n in args])
         function_def = f"function {name}({func_args}) {{"
         self.add_code_line(function_def)
         self.increase_indent()
 
     @contextlib.contextmanager
-    def function_definition(self, name, args, is_scalar_output):
-        self.add_function_def(name, args, is_scalar_output)
+    def function_definition(self, name, args):
+        self.add_function_def(name, args)
         yield
         self.add_block_termination()
 
@@ -45,7 +45,7 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
     def add_var_declaration(self, size):
         var_name = self.get_var_name()
         self.add_code_line(
-            self.tpl_var_declaration(var_type=self._get_var_type(size > 1),
+            self.tpl_var_declaration(var_type=self._get_var_declare_type(size > 1),
                                      var_name=var_name,
                                      init_val="@(0.0)" if size > 1 else "0.0"))
         return var_name
@@ -54,7 +54,7 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
         vals = ", ".join(map(lambda x: f"$({x})", values))
         return f"@({vals})"
 
-    def _get_var_type(self, is_vector):
+    def _get_var_declare_type(self, is_vector):
         return self.vector_type if is_vector else self.scalar_type
 
     def _comp_op_overwrite(self, op):

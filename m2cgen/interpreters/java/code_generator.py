@@ -43,9 +43,7 @@ class JavaCodeGenerator(CLikeCodeGenerator):
         return f"new {self.vector_output_type} {{{', '.join(values)}}}"
 
     def _get_var_declare_type(self, is_vector):
-        return (
-            self.vector_output_type if is_vector
-            else self.scalar_output_type)
+        return self.vector_output_type if is_vector else self.scalar_output_type
 
     # Method `function_definition` is required by SubroutinesMixin.
     # We already have this functionality in `method_definition` method.
