@@ -1,10 +1,10 @@
+from pathlib import Path
+
 from setuptools import find_packages, setup
 
-with open("README.md", encoding="utf-8") as f:
-    long_description = f.read()
-
-with open("m2cgen/VERSION.txt") as f:
-    version = f.read().strip()
+cur_dir = Path(__file__).absolute().parent
+long_description = (cur_dir / "README.md").read_text(encoding="utf-8")
+version = (cur_dir / "m2cgen" / "VERSION.txt").read_text(encoding="utf-8").strip()
 
 setup(
     name="m2cgen",

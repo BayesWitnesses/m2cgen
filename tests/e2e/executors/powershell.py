@@ -1,4 +1,3 @@
-import os
 import platform
 
 from m2cgen import assemblers, interpreters
@@ -39,7 +38,7 @@ class PowershellExecutor(BaseExecutor):
         exec_args = [
             self._powershell,
             "-File",
-            self.script_path,
+            str(self.script_path),
             "-InputArray",
             ",".join(map(utils.format_arg, X))
         ]
@@ -49,6 +48,5 @@ class PowershellExecutor(BaseExecutor):
         executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast))
 
-        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.model_name}.ps1")
-        with open(self.script_path, "w") as f:
-            f.write(executor_code)
+        self.script_path = self._resource_tmp_dir / f"{self.model_name}.ps1"
+        utils.write_content_to_file(executor_code, self.script_path)

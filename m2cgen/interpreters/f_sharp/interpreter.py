@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
@@ -57,22 +57,22 @@ class FSharpInterpreter(FunctionalToCodeInterpreter,
             self._dump_cache()
             self._cg.add_code_line(last_result)
 
-        current_dir = os.path.dirname(__file__)
+        current_dir = Path(__file__).absolute().parent
 
         if self.with_linear_algebra:
-            filename = os.path.join(current_dir, "linear_algebra.fs")
+            filename = current_dir / "linear_algebra.fs"
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_log1p_expr:
-            filename = os.path.join(current_dir, "log1p.fs")
+            filename = current_dir / "log1p.fs"
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(current_dir, "softmax.fs")
+            filename = current_dir / "softmax.fs"
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_sigmoid_expr:
-            filename = os.path.join(current_dir, "sigmoid.fs")
+            filename = current_dir / "sigmoid.fs"
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()

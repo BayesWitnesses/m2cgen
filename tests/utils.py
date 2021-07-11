@@ -4,6 +4,7 @@ import itertools
 import shutil
 import subprocess
 import tempfile
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -246,8 +247,7 @@ get_classification_binary_random_w_missing_values_model_trainer = functools.part
 
 @contextlib.contextmanager
 def tmp_dir():
-    dirpath = tempfile.mkdtemp()
-
+    dirpath = Path(tempfile.mkdtemp())
     try:
         yield dirpath
     finally:
@@ -335,3 +335,7 @@ def format_arg(value):
         return "NaN"
 
     return format_float(value)
+
+
+def write_content_to_file(content, path):
+    path.write_text(content, encoding="utf-8")

@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -50,7 +49,7 @@ class VisualBasicExecutor(BaseExecutor):
 
     def predict(self, X):
         exec_args = [
-            os.path.join(self.target_exec_dir, self.project_name),
+            str(self.target_exec_dir / self.project_name),
             *map(utils.format_arg, X)
         ]
         return utils.predict_from_commandline(exec_args)
@@ -59,13 +58,13 @@ class VisualBasicExecutor(BaseExecutor):
     def prepare_global(cls, **kwargs):
         super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
-            cls.target_exec_dir = os.path.join(cls._global_tmp_dir, "bin")
+            cls.target_exec_dir = cls._global_tmp_dir / "bin"
             subprocess.call([
                 "dotnet",
                 "new",
                 "console",
                 "--output",
-                cls._global_tmp_dir,
+                str(cls._global_tmp_dir),
                 "--name",
                 cls.project_name,
                 "--language",
@@ -81,17 +80,15 @@ class VisualBasicExecutor(BaseExecutor):
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
-        model_file_name = os.path.join(self._global_tmp_dir, "Model.vb")
-        executor_file_name = os.path.join(self._global_tmp_dir, "Program.vb")
-        with open(model_file_name, "w") as f:
-            f.write(model_code)
-        with open(executor_file_name, "w") as f:
-            f.write(executor_code)
+        model_file_name = self._global_tmp_dir / "Model.vb"
+        executor_file_name = self._global_tmp_dir / "Program.vb"
+        utils.write_content_to_file(model_code, model_file_name)
+        utils.write_content_to_file(executor_code, executor_file_name)
 
         subprocess.call([
             "dotnet",
             "build",
-            os.path.join(self._global_tmp_dir, f"{self.project_name}.vbproj"),
+            str(self._global_tmp_dir / f"{self.project_name}.vbproj"),
             "--output",
-            self.target_exec_dir
+            str(self.target_exec_dir)
         ])

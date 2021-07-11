@@ -13,8 +13,7 @@ CachedResult = namedtuple('CachedResult', ['var_name', 'expr_result'])
 
 
 def get_file_content(path):
-    with open(path) as f:
-        return f.read()
+    return path.read_text(encoding="utf-8")
 
 
 @lru_cache(maxsize=1 << ceil(log(TOTAL_NUMBER_OF_EXPRESSIONS, 2)))

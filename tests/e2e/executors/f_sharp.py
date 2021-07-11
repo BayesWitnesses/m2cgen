@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -34,7 +33,7 @@ class FSharpExecutor(BaseExecutor):
 
     def predict(self, X):
         exec_args = [
-            os.path.join(self.target_exec_dir, self.project_name),
+            str(self.target_exec_dir / self.project_name),
             *map(utils.format_arg, X)
         ]
         return utils.predict_from_commandline(exec_args)
@@ -43,13 +42,13 @@ class FSharpExecutor(BaseExecutor):
     def prepare_global(cls, **kwargs):
         super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
-            cls.target_exec_dir = os.path.join(cls._global_tmp_dir, "bin")
+            cls.target_exec_dir = cls._global_tmp_dir / "bin"
             subprocess.call([
                 "dotnet",
                 "new",
                 "console",
                 "--output",
-                cls._global_tmp_dir,
+                str(cls._global_tmp_dir),
                 "--name",
                 cls.project_name,
                 "--language",
@@ -66,14 +65,13 @@ class FSharpExecutor(BaseExecutor):
             print_code=print_code,
             model_code=self.interpreter.interpret(self.model_ast))
 
-        file_name = os.path.join(self._global_tmp_dir, "Program.fs")
-        with open(file_name, "w") as f:
-            f.write(code)
+        file_name = self._global_tmp_dir / "Program.fs"
+        utils.write_content_to_file(code, file_name)
 
         subprocess.call([
             "dotnet",
             "build",
-            os.path.join(self._global_tmp_dir, f"{self.project_name}.fsproj"),
+            str(self._global_tmp_dir / f"{self.project_name}.fsproj"),
             "--output",
-            self.target_exec_dir
+            str(self.target_exec_dir)
         ])
