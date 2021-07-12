@@ -6,7 +6,6 @@ from m2cgen.interpreters.code_generator import CLikeCodeGenerator, CodeTemplate
 class RustCodeGenerator(CLikeCodeGenerator):
 
     tpl_var_declaration = CodeTemplate("let {var_name}: {var_type};")
-    tpl_var_assignment = CodeTemplate("{var_name} = {value};")
     tpl_num_value = CodeTemplate("{value}_f64")
     tpl_if_statement = CodeTemplate("if {if_def} {{")
 

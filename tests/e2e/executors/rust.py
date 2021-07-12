@@ -24,7 +24,7 @@ EXECUTE_SCALAR = """
 
 EXECUTE_VECTOR = """
     let res_vec: Vec<f64> = score(args);
-    let res: String = res_vec.iter().map(|&id| id.to_string()).collect::<Vec<String>>().join(" ");
+    let res: String = res_vec.iter().map(|&x| x.to_string()).collect::<Vec<String>>().join(" ");
 """
 
 
