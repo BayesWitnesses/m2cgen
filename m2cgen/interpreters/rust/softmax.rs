@@ -7,5 +7,5 @@ fn softmax(x: Vec<f64>) -> Vec<f64> {
         exps[i] = (v - m).exp();
         s += exps[i];
     }
-    return exps.iter().map(|&i| i / s).collect::<Vec<f64>>();
+    exps.iter().map(|&i| i / s).collect::<Vec<f64>>();
 }
