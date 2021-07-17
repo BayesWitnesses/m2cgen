@@ -12,6 +12,7 @@ from m2cgen.interpreters.dart.interpreter import DartInterpreter
 from m2cgen.interpreters.haskell.interpreter import HaskellInterpreter
 from m2cgen.interpreters.ruby.interpreter import RubyInterpreter
 from m2cgen.interpreters.f_sharp.interpreter import FSharpInterpreter
+from m2cgen.interpreters.rust.interpreter import RustInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -28,4 +29,5 @@ __all__ = [
     HaskellInterpreter,
     RubyInterpreter,
     FSharpInterpreter,
+    RustInterpreter,
 ]

@@ -15,6 +15,7 @@ from m2cgen.exporters import (
     export_to_haskell,
     export_to_ruby,
     export_to_f_sharp,
+    export_to_rust,
 )
 
 __all__ = [
@@ -32,6 +33,7 @@ __all__ = [
     export_to_haskell,
     export_to_ruby,
     export_to_f_sharp,
+    export_to_rust,
 ]
 
 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),

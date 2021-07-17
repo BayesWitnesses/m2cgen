@@ -401,6 +401,30 @@ def export_to_f_sharp(model, indent=4, function_name="score"):
     return _export(model, interpreter)
 
 
+def export_to_rust(model, indent=4, function_name="score"):
+    """
+    Generates a Rust code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    indent : int, optional
+        The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.RustInterpreter(
+        indent=indent,
+        function_name=function_name,
+    )
+    return _export(model, interpreter)
+
+
 def _export(model, interpreter):
     assembler_cls = assemblers.get_assembler_cls(model)
     model_ast = assembler_cls(model).assemble()

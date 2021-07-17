@@ -6,7 +6,7 @@ from m2cgen.interpreters.code_generator import CLikeCodeGenerator, CodeTemplate
 
 class PowershellCodeGenerator(CLikeCodeGenerator):
 
-    tpl_var_declare = CodeTemplate("{var_type}{var_name} = {init_val}")
+    tpl_var_declaration = CodeTemplate("{var_type}{var_name} = {init_val}")
     tpl_var_assignment = CodeTemplate("{var_name} = {value}")
     tpl_array_index_access = CodeTemplate("${array_name}[{index}]")
     tpl_return_statement = CodeTemplate("return {value}")
@@ -45,9 +45,9 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
     def add_var_declaration(self, size):
         var_name = self.get_var_name()
         self.add_code_line(
-            self.tpl_var_declare(var_type=self._get_var_declare_type(size > 1),
-                                 var_name=var_name,
-                                 init_val="@(0.0)" if size > 1 else "0.0"))
+            self.tpl_var_declaration(var_type=self._get_var_declare_type(size > 1),
+                                     var_name=var_name,
+                                     init_val="@(0.0)" if size > 1 else "0.0"))
         return var_name
 
     def vector_init(self, values):

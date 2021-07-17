@@ -7,7 +7,7 @@
 [![PyPI Version](https://img.shields.io/pypi/v/m2cgen.svg?logo=pypi&logoColor=white)](https://pypi.org/project/m2cgen)
 [![Downloads](https://pepy.tech/badge/m2cgen)](https://pepy.tech/project/m2cgen)
 
-**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#, PowerShell, R, PHP, Dart, Haskell, Ruby, F#).
+**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#, PowerShell, R, PHP, Dart, Haskell, Ruby, F#, Rust).
 
 * [Installation](#installation)
 * [Supported Languages](#supported-languages)
@@ -39,6 +39,7 @@ pip install m2cgen
 - Python
 - R
 - Ruby
+- Rust
 - Visual Basic (VBA-compatible)
 
 ## Supported Models
