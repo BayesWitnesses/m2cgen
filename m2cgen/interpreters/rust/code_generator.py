@@ -8,6 +8,7 @@ class RustCodeGenerator(CLikeCodeGenerator):
     tpl_var_declaration = CodeTemplate("let {var_name}: {var_type};")
     tpl_num_value = CodeTemplate("{value}_f64")
     tpl_if_statement = CodeTemplate("if {if_def} {{")
+    tpl_return_statement = CodeTemplate("{value}")
 
     scalar_type = "f64"
     vector_type = "Vec<f64>"
