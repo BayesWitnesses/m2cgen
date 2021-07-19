@@ -40,11 +40,12 @@ class JavaExecutor(BaseExecutor):
 
         # Move Executor.java to the same temp dir.
         module_path = Path(__file__).absolute().parent
-        shutil.copyfile(module_path / "Executor.java", self._resource_tmp_dir)
+        executor_path = self._resource_tmp_dir / "Executor.java"
+        shutil.copyfile(module_path / "Executor.java", executor_path)
 
         # Compile all files together.
         subprocess.call([
             str(self._javac_bin),
             str(code_file_name),
-            str(self._resource_tmp_dir / "Executor.java")
+            str(executor_path)
         ])

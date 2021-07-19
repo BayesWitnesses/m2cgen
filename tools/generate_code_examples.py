@@ -72,7 +72,7 @@ EXAMPLE_MODELS = [
     (
         "regression", "random_forest",
         ensemble.RandomForestRegressor(**FOREST_PARAMS),
-        utils.get_regression_model_trainer(),Р91ФЧСВАМПИРТОЛДЖЭХЪ\
+        utils.get_regression_model_trainer(),
     ),
     (
         "classification", "random_forest",
