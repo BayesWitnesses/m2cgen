@@ -12,6 +12,7 @@ from tests.e2e.executors.dart import DartExecutor
 from tests.e2e.executors.haskell import HaskellExecutor
 from tests.e2e.executors.ruby import RubyExecutor
 from tests.e2e.executors.f_sharp import FSharpExecutor
+from tests.e2e.executors.rust import RustExecutor
 
 __all__ = [
     JavaExecutor,
@@ -28,4 +29,5 @@ __all__ = [
     HaskellExecutor,
     RubyExecutor,
     FSharpExecutor,
+    RustExecutor,
 ]

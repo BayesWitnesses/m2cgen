@@ -33,6 +33,7 @@ DART = pytest.mark.dart
 HASKELL = pytest.mark.haskell
 RUBY = pytest.mark.ruby
 F_SHARP = pytest.mark.f_sharp
+RUST = pytest.mark.rust
 REGRESSION = pytest.mark.regr
 REGRESSION_WITH_MISSING_VALUES = pytest.mark.regr_missing_val
 CLASSIFICATION_WITH_MISSING_VALUES = pytest.mark.clf_missing_val
@@ -181,6 +182,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net",
         (executors.HaskellExecutor, HASKELL),
         (executors.RubyExecutor, RUBY),
         (executors.FSharpExecutor, F_SHARP),
+        (executors.RustExecutor, RUST),
     ],
 
     # These models will be tested against each language specified in the
