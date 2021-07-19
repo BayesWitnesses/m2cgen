@@ -17,7 +17,7 @@ fn score(input: Vec<f64>) -> f64 {
     } else {
         var0 = 3.0_f64;
     }
-    var0;
+    var0
 }
 """
 
@@ -34,7 +34,7 @@ def test_bin_num_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    ((input[0]) / (-2.0_f64)) * (2.0_f64);
+    ((input[0]) / (-2.0_f64)) * (2.0_f64)
 }
 """
 
@@ -72,7 +72,7 @@ fn score(input: Vec<f64>) -> f64 {
     } else {
         var0 = input[0];
     }
-    var0;
+    var0
 }
 """
 
@@ -121,7 +121,7 @@ fn score(input: Vec<f64>) -> f64 {
     } else {
         var0 = 2.0_f64;
     }
-    var0;
+    var0
 }
 """
 
@@ -134,7 +134,7 @@ def test_raw_array():
 
     expected_code = """
 fn score(input: Vec<f64>) -> Vec<f64> {
-    vec![3.0_f64, 4.0_f64];
+    vec![3.0_f64, 4.0_f64]
 }
 """
 
@@ -159,7 +159,7 @@ fn score(input: Vec<f64>) -> Vec<f64> {
     } else {
         var0 = vec![3.0_f64, 4.0_f64];
     }
-    var0;
+    var0
 }
 """
 
@@ -175,13 +175,13 @@ def test_bin_vector_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> Vec<f64> {
-    add_vectors(vec![1.0_f64, 2.0_f64], vec![3.0_f64, 4.0_f64]);
+    add_vectors(vec![1.0_f64, 2.0_f64], vec![3.0_f64, 4.0_f64])
 }
 fn add_vectors(v1: Vec<f64>, v2: Vec<f64>) -> Vec<f64> {
-    v1.iter().zip(v2.iter()).map(|(&x, &y)| x + y).collect::<Vec<f64>>();
+    v1.iter().zip(v2.iter()).map(|(&x, &y)| x + y).collect::<Vec<f64>>()
 }
 fn mul_vector_number(v1: Vec<f64>, num: f64) -> Vec<f64> {
-    v1.iter().map(|&i| i * num).collect::<Vec<f64>>();
+    v1.iter().map(|&i| i * num).collect::<Vec<f64>>()
 }
 """
 
@@ -197,13 +197,13 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> Vec<f64> {
-    mul_vector_number(vec![1.0_f64, 2.0_f64], 1.0_f64);
+    mul_vector_number(vec![1.0_f64, 2.0_f64], 1.0_f64)
 }
 fn add_vectors(v1: Vec<f64>, v2: Vec<f64>) -> Vec<f64> {
-    v1.iter().zip(v2.iter()).map(|(&x, &y)| x + y).collect::<Vec<f64>>();
+    v1.iter().zip(v2.iter()).map(|(&x, &y)| x + y).collect::<Vec<f64>>()
 }
 fn mul_vector_number(v1: Vec<f64>, num: f64) -> Vec<f64> {
-    v1.iter().map(|&i| i * num).collect::<Vec<f64>>();
+    v1.iter().map(|&i| i * num).collect::<Vec<f64>>()
 }
 """
 
@@ -216,7 +216,7 @@ def test_abs_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::abs(-1.0_f64);
+    f64::abs(-1.0_f64)
 }
 """
 
@@ -229,7 +229,7 @@ def test_exp_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::exp(1.0_f64);
+    f64::exp(1.0_f64)
 }
 """
 
@@ -242,7 +242,7 @@ def test_pow_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::powf(2.0_f64, 3.0_f64);
+    f64::powf(2.0_f64, 3.0_f64)
 }
 """
 
@@ -255,7 +255,7 @@ def test_sqrt_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::sqrt(2.0_f64);
+    f64::sqrt(2.0_f64)
 }
 """
 
@@ -268,7 +268,7 @@ def test_tanh_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::tanh(2.0_f64);
+    f64::tanh(2.0_f64)
 }
 """
 
@@ -281,7 +281,7 @@ def test_log_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::ln(2.0_f64);
+    f64::ln(2.0_f64)
 }
 """
 
@@ -294,7 +294,7 @@ def test_log1p_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::ln_1p(2.0_f64);
+    f64::ln_1p(2.0_f64)
 }
 """
 
@@ -307,7 +307,7 @@ def test_atan_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    f64::atan(2.0_f64);
+    f64::atan(2.0_f64)
 }
 """
 
@@ -320,7 +320,7 @@ def test_softmax_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> Vec<f64> {
-    softmax(vec![2.0_f64, 3.0_f64]);
+    softmax(vec![2.0_f64, 3.0_f64])
 }
 fn softmax(x: Vec<f64>) -> Vec<f64> {
     let size: usize = x.len();
@@ -331,7 +331,7 @@ fn softmax(x: Vec<f64>) -> Vec<f64> {
         exps[i] = (v - m).exp();
         s += exps[i];
     }
-    exps.iter().map(|&i| i / s).collect::<Vec<f64>>();
+    exps.iter().map(|&i| i / s).collect::<Vec<f64>>()
 }
 """
 
@@ -344,14 +344,14 @@ def test_sigmoid_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    sigmoid(2.0_f64);
+    sigmoid(2.0_f64)
 }
 fn sigmoid(x: f64) -> f64 {
     if x < 0.0_f64 {
         let z: f64 = x.exp();
         return z / (1.0_f64 + z);
     }
-    1.0_f64 / (1.0_f64 + (-x).exp());
+    1.0_f64 / (1.0_f64 + (-x).exp())
 }
 """
 
@@ -367,7 +367,7 @@ def test_reused_expr():
 fn score(input: Vec<f64>) -> f64 {
     let var0: f64;
     var0 = f64::exp(1.0_f64);
-    (var0) / (var0);
+    (var0) / (var0)
 }
 """
 
