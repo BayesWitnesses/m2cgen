@@ -6,7 +6,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate, FunctionalCodeGener
 
 class HaskellCodeGenerator(FunctionalCodeGenerator):
     tpl_function_signature = CodeTemplate("{function_name} =")
-    tpl_if_statement = CodeTemplate("if ({if_def}) then")
+    tpl_if_statement = CodeTemplate("if {if_def} then")
     tpl_else_statement = CodeTemplate("else")
     tpl_num_value = CodeTemplate("{value}")
     tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
