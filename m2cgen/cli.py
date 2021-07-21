@@ -8,10 +8,10 @@ Example usage:
 Model can also be piped:
     # cat <path_to_file> | m2cgen --language java
 """
-import argparse
-import inspect
 import pickle
 import sys
+from argparse import ArgumentParser, FileType
+from inspect import signature
 
 import numpy as np
 
@@ -40,11 +40,11 @@ LANGUAGE_TO_EXPORTER = {
 MAX_RECURSION_DEPTH = np.iinfo(np.intc).max
 
 
-parser = argparse.ArgumentParser(
+parser = ArgumentParser(
     prog="m2cgen",
     description="Generate code in native language for provided model.")
 parser.add_argument(
-    "infile", type=argparse.FileType("rb"), nargs="?",
+    "infile", type=FileType("rb"), nargs="?",
     default=sys.stdin.buffer,
     help="File with pickle representation of the model.")
 parser.add_argument(
@@ -113,7 +113,7 @@ def generate_code(args):
         # https://github.com/BayesWitnesses/m2cgen/pull/166#discussion_r379867601
         # for more).
         if arg_name == 'function_name' and arg_value is None:
-            param = inspect.signature(exporter).parameters['function_name']
+            param = signature(exporter).parameters['function_name']
             kwargs[arg_name] = param.default
 
     return exporter(model, **kwargs)
