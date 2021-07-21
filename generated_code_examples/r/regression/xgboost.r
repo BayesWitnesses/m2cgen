@@ -1,38 +1,29 @@
 score <- function(input) {
-    return(subroutine0(input))
-}
-subroutine0 <- function(input) {
-    return(((0.5) + (subroutine1(input))) + (subroutine2(input)))
-}
-subroutine1 <- function(input) {
-    if ((input[13]) >= (9.72500038)) {
-        if ((input[13]) >= (16.0849991)) {
-            var0 <- 1.36374998
+    if ((input[13]) >= (9.725)) {
+        if ((input[13]) >= (19.23)) {
+            var0 <- 3.5343752
         } else {
-            var0 <- 1.96335626
+            var0 <- 5.5722494
         }
     } else {
-        if ((input[6]) >= (6.94099998)) {
-            var0 <- 3.74704218
+        if ((input[6]) >= (6.941)) {
+            var0 <- 11.1947155
         } else {
-            var0 <- 2.48376822
+            var0 <- 7.4582143
         }
     }
-    return(var0)
-}
-subroutine2 <- function(input) {
-    if ((input[13]) >= (9.63000011)) {
-        if ((input[13]) >= (19.2299995)) {
-            var0 <- 1.05852115
+    if ((input[13]) >= (5.1549997)) {
+        if ((input[13]) >= (15.0)) {
+            var1 <- 2.8350503
         } else {
-            var0 <- 1.68638802
+            var1 <- 4.8024607
         }
     } else {
-        if ((input[6]) >= (7.43700027)) {
-            var0 <- 3.95318961
+        if ((input[6]) >= (7.406)) {
+            var1 <- 10.0011215
         } else {
-            var0 <- 2.40278864
+            var1 <- 6.787523
         }
     }
-    return(var0)
+    return((0.5) + ((var0) + (var1)))
 }

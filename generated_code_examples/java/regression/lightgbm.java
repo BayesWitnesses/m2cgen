@@ -1,43 +1,33 @@
 public class Model {
-
     public static double score(double[] input) {
-        return subroutine0(input);
-    }
-    public static double subroutine0(double[] input) {
-        return ((0) + (subroutine1(input))) + (subroutine2(input));
-    }
-    public static double subroutine1(double[] input) {
         double var0;
-        if ((input[5]) > (6.918000000000001)) {
-            if ((input[5]) > (7.437)) {
-                var0 = 24.81112131071211;
+        if ((input[12]) > (9.725000000000003)) {
+            if ((input[12]) > (16.205000000000002)) {
+                var0 = 21.71499740307178;
             } else {
-                var0 = 23.5010290754961;
+                var0 = 22.322292901846218;
+            }
+        } else {
+            if ((input[5]) > (7.418000000000001)) {
+                var0 = 24.75760617150803;
+            } else {
+                var0 = 23.02910423871904;
+            }
+        }
+        double var1;
+        if ((input[5]) > (6.837500000000001)) {
+            if ((input[5]) > (7.462000000000001)) {
+                var1 = 2.0245964808123453;
+            } else {
+                var1 = 0.859548540618913;
             }
         } else {
             if ((input[12]) > (14.365)) {
-                var0 = 21.796569516771488;
+                var1 = -0.7009440524656984;
             } else {
-                var0 = 22.640634908349323;
+                var1 = 0.052794864734003494;
             }
         }
-        return var0;
-    }
-    public static double subroutine2(double[] input) {
-        double var0;
-        if ((input[12]) > (9.63)) {
-            if ((input[12]) > (19.23)) {
-                var0 = -0.9218520876020193;
-            } else {
-                var0 = -0.30490175606373926;
-            }
-        } else {
-            if ((input[5]) > (7.437)) {
-                var0 = 2.028554553190867;
-            } else {
-                var0 = 0.45970642160364367;
-            }
-        }
-        return var0;
+        return (var0) + (var1);
     }
 }

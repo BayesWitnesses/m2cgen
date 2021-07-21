@@ -1,57 +1,63 @@
 def score(input)
     if (input[2]) >= (2.45)
-        var0 = -0.219950154
+        var0 = -0.21995015
     else
-        var0 = 0.430243909
+        var0 = 0.4302439
     end
     if (input[2]) >= (2.45)
-        var1 = -0.196918547
+        var1 = -0.19691855
     else
-        var1 = 0.294934332
+        var1 = 0.29493433
     end
-    var2 = Math.exp(((0.5) + (var0)) + (var1))
     if (input[2]) >= (2.45)
         if (input[3]) >= (1.75)
-            var3 = -0.200518161
+            var2 = -0.20051816
         else
-            var3 = 0.369124442
+            var2 = 0.36912444
         end
     else
-        var3 = -0.215121984
+        var2 = -0.21512198
     end
     if (input[2]) >= (2.45)
         if (input[2]) >= (4.8500004)
-            var4 = -0.148884818
+            var3 = -0.14888482
         else
-            var4 = 0.279661298
+            var3 = 0.2796613
         end
     else
-        var4 = -0.191438049
+        var3 = -0.19143805
     end
-    var5 = Math.exp(((0.5) + (var3)) + (var4))
     if (input[3]) >= (1.6500001)
-        var6 = 0.402985066
+        var4 = 0.40298507
     else
         if (input[2]) >= (4.95)
-            var6 = 0.217241377
+            var4 = 0.21724138
         else
-            var6 = -0.219740286
+            var4 = -0.21974029
         end
     end
     if (input[2]) >= (4.75)
         if (input[3]) >= (1.75)
-            var7 = 0.286929518
+            var5 = 0.28692952
         else
-            var7 = 0.0627289712
+            var5 = 0.06272897
         end
     else
         if (input[3]) >= (1.55)
-            var7 = 0.00989914499
+            var5 = 0.009899145
         else
-            var7 = -0.196593687
+            var5 = -0.19659369
         end
     end
-    var8 = Math.exp(((0.5) + (var6)) + (var7))
-    var9 = ((var2) + (var5)) + (var8)
-    [(var2).fdiv(var9), (var5).fdiv(var9), (var8).fdiv(var9)]
+    softmax([(0.5) + ((var0) + (var1)), (0.5) + ((var2) + (var3)), (0.5) + ((var4) + (var5))])
+end
+def softmax(x)
+    m = x.max
+    exps = []
+    s = 0.0
+    x.each_with_index do |v, i|
+        exps[i] = Math.exp(v - m)
+        s += exps[i]
+    end
+    exps.map { |i| i / s }
 end

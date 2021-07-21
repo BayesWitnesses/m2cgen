@@ -27,5 +27,5 @@ fn score(input: Vec<f64>) -> f64 {
             var1 = 0.052794864734003494_f64;
         }
     }
-    return (var0) + (var1);
+    (var0) + (var1)
 }

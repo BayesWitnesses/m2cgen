@@ -1,104 +1,79 @@
+softmax <- function (x) {
+    m <- max(x)
+    exps <- exp(x - m)
+    s <- sum(exps)
+    return(exps / s)
+}
 score <- function(input) {
-    var0 <- exp(subroutine0(input))
-    var1 <- exp(subroutine1(input))
-    var2 <- exp(subroutine2(input))
-    var3 <- ((var0) + (var1)) + (var2)
-    return(c((var0) / (var3), (var1) / (var3), (var2) / (var3)))
-}
-subroutine0 <- function(input) {
-    return(((0) + (subroutine3(input))) + (subroutine4(input)))
-}
-subroutine1 <- function(input) {
-    return(((0) + (subroutine5(input))) + (subroutine6(input)))
-}
-subroutine2 <- function(input) {
-    return(((0) + (subroutine7(input))) + (subroutine8(input)))
-}
-subroutine3 <- function(input) {
     if ((input[3]) > (3.1500000000000004)) {
-        var0 <- -1.1736122903444903
+        var0 <- -1.1986122886681099
     } else {
         if ((input[2]) > (3.35)) {
-            var0 <- -0.9486122853153485
+            var0 <- -0.8986122886681098
         } else {
-            var0 <- -0.9598622855668056
+            var0 <- -0.9136122886681098
         }
     }
-    return(var0)
-}
-subroutine4 <- function(input) {
     if ((input[3]) > (3.1500000000000004)) {
         if ((input[3]) > (4.450000000000001)) {
-            var0 <- -0.07218200074594171
+            var1 <- -0.09503010837903424
         } else {
-            var0 <- -0.0725391787456957
+            var1 <- -0.09563272415214283
         }
     } else {
         if ((input[2]) > (3.35)) {
-            var0 <- 0.130416969124648
+            var1 <- 0.16640323607832397
         } else {
-            var0 <- 0.12058330491181404
+            var1 <- 0.15374604217339707
         }
     }
-    return(var0)
-}
-subroutine5 <- function(input) {
     if ((input[3]) > (1.8)) {
         if ((input[4]) > (1.6500000000000001)) {
-            var0 <- -1.1840003561812273
+            var2 <- -1.2055899476674514
         } else {
-            var0 <- -0.99234128317334
+            var2 <- -0.9500445227622534
         }
     } else {
-        var0 <- -1.1934739985732523
+        var2 <- -1.2182214705715104
     }
-    return(var0)
-}
-subroutine6 <- function(input) {
     if ((input[4]) > (0.45000000000000007)) {
         if ((input[4]) > (1.6500000000000001)) {
-            var0 <- -0.06203313079859976
+            var3 <- -0.08146437273923739
         } else {
-            var0 <- 0.11141505233015861
+            var3 <- 0.14244886188108738
         }
     } else {
         if ((input[3]) > (1.4500000000000002)) {
-            var0 <- -0.0720353255122301
+            var3 <- -0.0950888159264695
         } else {
-            var0 <- -0.07164473223425313
+            var3 <- -0.09438233722389686
         }
     }
-    return(var0)
-}
-subroutine7 <- function(input) {
     if ((input[4]) > (1.6500000000000001)) {
         if ((input[3]) > (5.3500000000000005)) {
-            var0 <- -0.9314095846701695
+            var4 <- -0.8824095771015287
         } else {
-            var0 <- -0.9536869036452162
+            var4 <- -0.9121126703829481
         }
     } else {
         if ((input[3]) > (4.450000000000001)) {
-            var0 <- -1.115439610985773
+            var4 <- -1.1277829563828181
         } else {
-            var0 <- -1.1541827744206368
+            var4 <- -1.1794405099157212
         }
     }
-    return(var0)
-}
-subroutine8 <- function(input) {
     if ((input[3]) > (4.750000000000001)) {
         if ((input[3]) > (5.150000000000001)) {
-            var0 <- 0.12968922424213622
+            var5 <- 0.16625543464258166
         } else {
-            var0 <- 0.07468384042736965
+            var5 <- 0.09608601737074281
         }
     } else {
-        if ((input[2]) > (2.7500000000000004)) {
-            var0 <- -0.07311533184609437
+        if ((input[1]) > (4.950000000000001)) {
+            var5 <- -0.09644547407948921
         } else {
-            var0 <- -0.06204412771870974
+            var5 <- -0.08181864271444342
         }
     }
-    return(var0)
+    return(softmax(c((var0) + (var1), (var2) + (var3), (var4) + (var5))))
 }
