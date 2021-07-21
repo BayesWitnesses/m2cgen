@@ -1,69 +1,57 @@
 module Model where
 score :: [Double] -> [Double]
 score input =
-    [(func2) / (func9), (func5) / (func9), (func8) / (func9)]
+    softmax ([(0.5) + ((func0) + (func1)), (0.5) + ((func2) + (func3)), (0.5) + ((func4) + (func5))])
     where
         func0 =
-            if (((input) !! (2)) >= (2.45))
-                then
-                    -0.219950154
-                else
-                    0.430243909
+            if ((input) !! (2)) >= (2.45) then
+                -0.21995015
+            else
+                0.4302439
         func1 =
-            if (((input) !! (2)) >= (2.45))
-                then
-                    -0.196918547
-                else
-                    0.294934332
+            if ((input) !! (2)) >= (2.45) then
+                -0.19691855
+            else
+                0.29493433
         func2 =
-            exp (((0.5) + (func0)) + (func1))
+            if ((input) !! (2)) >= (2.45) then
+                if ((input) !! (3)) >= (1.75) then
+                    -0.20051816
+                else
+                    0.36912444
+            else
+                -0.21512198
         func3 =
-            if (((input) !! (2)) >= (2.45))
-                then
-                    if (((input) !! (3)) >= (1.75))
-                        then
-                            -0.200518161
-                        else
-                            0.369124442
+            if ((input) !! (2)) >= (2.45) then
+                if ((input) !! (2)) >= (4.8500004) then
+                    -0.14888482
                 else
-                    -0.215121984
+                    0.2796613
+            else
+                -0.19143805
         func4 =
-            if (((input) !! (2)) >= (2.45))
-                then
-                    if (((input) !! (2)) >= (4.8500004))
-                        then
-                            -0.148884818
-                        else
-                            0.279661298
+            if ((input) !! (3)) >= (1.6500001) then
+                0.40298507
+            else
+                if ((input) !! (2)) >= (4.95) then
+                    0.21724138
                 else
-                    -0.191438049
+                    -0.21974029
         func5 =
-            exp (((0.5) + (func3)) + (func4))
-        func6 =
-            if (((input) !! (3)) >= (1.6500001))
-                then
-                    0.402985066
+            if ((input) !! (2)) >= (4.75) then
+                if ((input) !! (3)) >= (1.75) then
+                    0.28692952
                 else
-                    if (((input) !! (2)) >= (4.95))
-                        then
-                            0.217241377
-                        else
-                            -0.219740286
-        func7 =
-            if (((input) !! (2)) >= (4.75))
-                then
-                    if (((input) !! (3)) >= (1.75))
-                        then
-                            0.286929518
-                        else
-                            0.0627289712
+                    0.06272897
+            else
+                if ((input) !! (3)) >= (1.55) then
+                    0.009899145
                 else
-                    if (((input) !! (3)) >= (1.55))
-                        then
-                            0.00989914499
-                        else
-                            -0.196593687
-        func8 =
-            exp (((0.5) + (func6)) + (func7))
-        func9 =
-            ((func2) + (func5)) + (func8)
+                    -0.19659369
+softmax :: [Double] -> [Double]
+softmax x =
+    let
+        m = maximum x
+        exps = map (\i -> exp (i - m)) x
+        sumExps = sum exps
+    in map (\i -> i / sumExps) exps

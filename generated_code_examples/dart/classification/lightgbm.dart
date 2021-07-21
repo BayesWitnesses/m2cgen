@@ -2,87 +2,92 @@ import 'dart:math';
 List<double> score(List<double> input) {
     double var0;
     if ((input[2]) > (3.1500000000000004)) {
-        var0 = -1.1736122903444903;
+        var0 = -1.1986122886681099;
     } else {
         if ((input[1]) > (3.35)) {
-            var0 = -0.9486122853153485;
+            var0 = -0.8986122886681098;
         } else {
-            var0 = -0.9598622855668056;
+            var0 = -0.9136122886681098;
         }
     }
     double var1;
     if ((input[2]) > (3.1500000000000004)) {
         if ((input[2]) > (4.450000000000001)) {
-            var1 = -0.07218200074594171;
+            var1 = -0.09503010837903424;
         } else {
-            var1 = -0.0725391787456957;
+            var1 = -0.09563272415214283;
         }
     } else {
         if ((input[1]) > (3.35)) {
-            var1 = 0.130416969124648;
+            var1 = 0.16640323607832397;
         } else {
-            var1 = 0.12058330491181404;
+            var1 = 0.15374604217339707;
         }
     }
     double var2;
-    var2 = exp(((0) + (var0)) + (var1));
-    double var3;
     if ((input[2]) > (1.8)) {
         if ((input[3]) > (1.6500000000000001)) {
-            var3 = -1.1840003561812273;
+            var2 = -1.2055899476674514;
         } else {
-            var3 = -0.99234128317334;
+            var2 = -0.9500445227622534;
         }
     } else {
-        var3 = -1.1934739985732523;
+        var2 = -1.2182214705715104;
     }
-    double var4;
+    double var3;
     if ((input[3]) > (0.45000000000000007)) {
         if ((input[3]) > (1.6500000000000001)) {
-            var4 = -0.06203313079859976;
+            var3 = -0.08146437273923739;
         } else {
-            var4 = 0.11141505233015861;
+            var3 = 0.14244886188108738;
         }
     } else {
         if ((input[2]) > (1.4500000000000002)) {
-            var4 = -0.0720353255122301;
+            var3 = -0.0950888159264695;
         } else {
-            var4 = -0.07164473223425313;
+            var3 = -0.09438233722389686;
         }
     }
-    double var5;
-    var5 = exp(((0) + (var3)) + (var4));
-    double var6;
+    double var4;
     if ((input[3]) > (1.6500000000000001)) {
         if ((input[2]) > (5.3500000000000005)) {
-            var6 = -0.9314095846701695;
+            var4 = -0.8824095771015287;
         } else {
-            var6 = -0.9536869036452162;
+            var4 = -0.9121126703829481;
         }
     } else {
         if ((input[2]) > (4.450000000000001)) {
-            var6 = -1.115439610985773;
+            var4 = -1.1277829563828181;
         } else {
-            var6 = -1.1541827744206368;
+            var4 = -1.1794405099157212;
         }
     }
-    double var7;
+    double var5;
     if ((input[2]) > (4.750000000000001)) {
         if ((input[2]) > (5.150000000000001)) {
-            var7 = 0.12968922424213622;
+            var5 = 0.16625543464258166;
         } else {
-            var7 = 0.07468384042736965;
+            var5 = 0.09608601737074281;
         }
     } else {
-        if ((input[1]) > (2.7500000000000004)) {
-            var7 = -0.07311533184609437;
+        if ((input[0]) > (4.950000000000001)) {
+            var5 = -0.09644547407948921;
         } else {
-            var7 = -0.06204412771870974;
+            var5 = -0.08181864271444342;
         }
     }
-    double var8;
-    var8 = exp(((0) + (var6)) + (var7));
-    double var9;
-    var9 = ((var2) + (var5)) + (var8);
-    return [(var2) / (var9), (var5) / (var9), (var8) / (var9)];
+    return softmax([(var0) + (var1), (var2) + (var3), (var4) + (var5)]);
+}
+List<double> softmax(List<double> x) {
+    int size = x.length;
+    List<double> result = new List<double>.filled(size, 0.0);
+    double maxElem = x.reduce(max);
+    double sum = 0.0;
+    for (int i = 0; i < size; ++i) {
+        result[i] = exp(x[i] - maxElem);
+        sum += result[i];
+    }
+    for (int i = 0; i < size; ++i)
+        result[i] /= sum;
+    return result;
 }

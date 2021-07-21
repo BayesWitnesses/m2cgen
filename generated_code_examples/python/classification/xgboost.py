@@ -1,49 +1,49 @@
 import math
+def softmax(x):
+    m = max(x)
+    exps = [math.exp(i - m) for i in x]
+    s = sum(exps)
+    for idx, _ in enumerate(exps):
+        exps[idx] /= s
+    return exps
 def score(input):
-    if (input[2]) >= (2.5999999):
-        var0 = -0.0731707439
+    if (input[2]) >= (2.45):
+        var0 = -0.21995015
     else:
-        var0 = 0.142857149
-    if (input[2]) >= (2.5999999):
-        var1 = -0.0705206916
+        var0 = 0.4302439
+    if (input[2]) >= (2.45):
+        var1 = -0.19691855
     else:
-        var1 = 0.12477719
-    var2 = math.exp(((0.5) + (var0)) + (var1))
-    if (input[2]) >= (2.5999999):
-        if (input[2]) >= (4.85000038):
-            var3 = -0.0578680299
-        else:
-            var3 = 0.132596686
-    else:
-        var3 = -0.0714285821
-    if (input[2]) >= (2.5999999):
-        if (input[2]) >= (4.85000038):
-            var4 = -0.0552999265
-        else:
-            var4 = 0.116139404
-    else:
-        var4 = -0.0687687024
-    var5 = math.exp(((0.5) + (var3)) + (var4))
-    if (input[2]) >= (4.85000038):
+        var1 = 0.29493433
+    if (input[2]) >= (2.45):
         if (input[3]) >= (1.75):
-            var6 = 0.142011836
+            var2 = -0.20051816
         else:
-            var6 = 0.0405405387
+            var2 = 0.36912444
     else:
-        if (input[3]) >= (1.6500001):
-            var6 = 0.0428571403
+        var2 = -0.21512198
+    if (input[2]) >= (2.45):
+        if (input[2]) >= (4.8500004):
+            var3 = -0.14888482
         else:
-            var6 = -0.0730659068
-    if (input[2]) >= (4.85000038):
+            var3 = 0.2796613
+    else:
+        var3 = -0.19143805
+    if (input[3]) >= (1.6500001):
+        var4 = 0.40298507
+    else:
+        if (input[2]) >= (4.95):
+            var4 = 0.21724138
+        else:
+            var4 = -0.21974029
+    if (input[2]) >= (4.75):
         if (input[3]) >= (1.75):
-            var7 = 0.124653697
+            var5 = 0.28692952
         else:
-            var7 = 0.035562478
+            var5 = 0.06272897
     else:
-        if (input[3]) >= (1.6500001):
-            var7 = 0.0425687581
+        if (input[3]) >= (1.55):
+            var5 = 0.009899145
         else:
-            var7 = -0.0704230517
-    var8 = math.exp(((0.5) + (var6)) + (var7))
-    var9 = ((var2) + (var5)) + (var8)
-    return [(var2) / (var9), (var5) / (var9), (var8) / (var9)]
+            var5 = -0.19659369
+    return softmax([(0.5) + ((var0) + (var1)), (0.5) + ((var2) + (var3)), (0.5) + ((var4) + (var5))])
