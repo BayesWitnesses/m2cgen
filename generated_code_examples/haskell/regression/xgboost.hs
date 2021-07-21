@@ -1,33 +1,27 @@
 module Model where
 score :: [Double] -> Double
 score input =
-    ((0.5) + (func0)) + (func1)
+    (0.5) + ((func0) + (func1))
     where
         func0 =
-            if (((input) !! (12)) >= (9.725))
-                then
-                    if (((input) !! (12)) >= (16.085))
-                        then
-                            4.09124994
-                        else
-                            5.89006901
+            if ((input) !! (12)) >= (9.725) then
+                if ((input) !! (12)) >= (19.23) then
+                    3.5343752
                 else
-                    if (((input) !! (5)) >= (6.941))
-                        then
-                            11.241127
-                        else
-                            7.45130444
+                    5.5722494
+            else
+                if ((input) !! (5)) >= (6.941) then
+                    11.1947155
+                else
+                    7.4582143
         func1 =
-            if (((input) !! (12)) >= (5.1549997))
-                then
-                    if (((input) !! (12)) >= (14.4))
-                        then
-                            3.00165963
-                        else
-                            4.8301239
+            if ((input) !! (12)) >= (5.1549997) then
+                if ((input) !! (12)) >= (15.0) then
+                    2.8350503
                 else
-                    if (((input) !! (5)) >= (7.406))
-                        then
-                            9.98775578
-                        else
-                            6.78264093
+                    4.8024607
+            else
+                if ((input) !! (5)) >= (7.406) then
+                    10.0011215
+                else
+                    6.787523
