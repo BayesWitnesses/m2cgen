@@ -7,6 +7,7 @@ sklearn-contrib-lightning==0.6.1
 
 # Testing tools
 flake8==3.9.2
+isort==5.9.2
 pytest==6.2.4
 pytest-mock==3.6.1
 pytest-cov==2.12.1

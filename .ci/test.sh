@@ -4,6 +4,7 @@ set -e
 
 if [[ $TEST == "API" ]]; then
   flake8 .
+  isort . --check-only
   pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
   bash <(curl -s https://codecov.io/bash)
 fi

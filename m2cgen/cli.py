@@ -8,14 +8,14 @@ Example usage:
 Model can also be piped:
     # cat <path_to_file> | m2cgen --language java
 """
-import pickle
 import argparse
-import sys
 import inspect
+import pickle
+import sys
+
 import numpy as np
 
 import m2cgen
-
 
 LANGUAGE_TO_EXPORTER = {
     "python": (m2cgen.export_to_python, ["indent", "function_name"]),
