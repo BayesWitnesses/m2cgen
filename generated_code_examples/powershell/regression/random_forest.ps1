@@ -1,39 +1,39 @@
 function Score([double[]] $InputVector) {
-    [double]$var0 = 0
-    if (($InputVector[5]) -le (6.92)) {
-        if (($InputVector[12]) -le (14.3)) {
-            if (($InputVector[7]) -le (1.47415)) {
+    [double]$var0 = 0.0
+    if (($InputVector[12]) -le (9.845000267028809)) {
+        if (($InputVector[5]) -le (6.959500074386597)) {
+            if (($InputVector[6]) -le (96.20000076293945)) {
+                $var0 = 25.093162393162395
+            } else {
                 $var0 = 50.0
-            } else {
-                $var0 = 23.203669724770638
             }
         } else {
-            $var0 = 15.177333333333326
+            $var0 = 38.074999999999996
         }
     } else {
-        if (($InputVector[5]) -le (7.4370003)) {
-            $var0 = 32.92407407407408
+        if (($InputVector[12]) -le (15.074999809265137)) {
+            $var0 = 20.518439716312056
         } else {
-            $var0 = 45.04827586206897
+            $var0 = 14.451282051282046
         }
     }
-    [double]$var1 = 0
-    if (($InputVector[12]) -le (9.725)) {
-        if (($InputVector[5]) -le (7.4525)) {
-            if (($InputVector[5]) -le (6.7539997)) {
-                $var1 = 24.805
+    [double]$var1 = 0.0
+    if (($InputVector[12]) -le (9.650000095367432)) {
+        if (($InputVector[5]) -le (7.437000036239624)) {
+            if (($InputVector[7]) -le (1.47284996509552)) {
+                $var1 = 50.0
             } else {
-                $var1 = 32.55238095238095
+                $var1 = 26.7965317919075
             }
         } else {
-            $var1 = 47.88333333333334
+            $var1 = 44.21176470588236
         }
     } else {
-        if (($InputVector[12]) -le (15.0)) {
-            $var1 = 20.52100840336134
+        if (($InputVector[12]) -le (17.980000495910645)) {
+            $var1 = 19.645652173913035
         } else {
-            $var1 = 14.718709677419358
+            $var1 = 12.791919191919195
         }
     }
-    return (($var0) * (0.5)) + (($var1) * (0.5))
+    return (($var0) + ($var1)) * (0.5)
 }

@@ -1,77 +1,89 @@
 Module Model
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0 As Double
-    If (inputVector(2)) >= (2.5999999) Then
-        var0 = -0.0731707439
+    If (inputVector(2)) >= (2.45) Then
+        var0 = -0.21995015
     Else
-        var0 = 0.142857149
+        var0 = 0.4302439
     End If
     Dim var1 As Double
-    If (inputVector(2)) >= (2.5999999) Then
-        var1 = -0.0705206916
+    If (inputVector(2)) >= (2.45) Then
+        var1 = -0.19691855
     Else
-        var1 = 0.12477719
+        var1 = 0.29493433
     End If
     Dim var2 As Double
-    var2 = Math.Exp(((0.5) + (var0)) + (var1))
-    Dim var3 As Double
-    If (inputVector(2)) >= (2.5999999) Then
-        If (inputVector(2)) >= (4.85000038) Then
-            var3 = -0.0578680299
+    If (inputVector(2)) >= (2.45) Then
+        If (inputVector(3)) >= (1.75) Then
+            var2 = -0.20051816
         Else
-            var3 = 0.132596686
+            var2 = 0.36912444
         End If
     Else
-        var3 = -0.0714285821
+        var2 = -0.21512198
+    End If
+    Dim var3 As Double
+    If (inputVector(2)) >= (2.45) Then
+        If (inputVector(2)) >= (4.8500004) Then
+            var3 = -0.14888482
+        Else
+            var3 = 0.2796613
+        End If
+    Else
+        var3 = -0.19143805
     End If
     Dim var4 As Double
-    If (inputVector(2)) >= (2.5999999) Then
-        If (inputVector(2)) >= (4.85000038) Then
-            var4 = -0.0552999265
-        Else
-            var4 = 0.116139404
-        End If
+    If (inputVector(3)) >= (1.6500001) Then
+        var4 = 0.40298507
     Else
-        var4 = -0.0687687024
+        If (inputVector(2)) >= (4.95) Then
+            var4 = 0.21724138
+        Else
+            var4 = -0.21974029
+        End If
     End If
     Dim var5 As Double
-    var5 = Math.Exp(((0.5) + (var3)) + (var4))
-    Dim var6 As Double
-    If (inputVector(2)) >= (4.85000038) Then
+    If (inputVector(2)) >= (4.75) Then
         If (inputVector(3)) >= (1.75) Then
-            var6 = 0.142011836
+            var5 = 0.28692952
         Else
-            var6 = 0.0405405387
+            var5 = 0.06272897
         End If
     Else
-        If (inputVector(3)) >= (1.6500001) Then
-            var6 = 0.0428571403
+        If (inputVector(3)) >= (1.55) Then
+            var5 = 0.009899145
         Else
-            var6 = -0.0730659068
+            var5 = -0.19659369
         End If
     End If
-    Dim var7 As Double
-    If (inputVector(2)) >= (4.85000038) Then
-        If (inputVector(3)) >= (1.75) Then
-            var7 = 0.124653697
-        Else
-            var7 = 0.035562478
+    Dim var6(2) As Double
+    var6(0) = (0.5) + ((var0) + (var1))
+    var6(1) = (0.5) + ((var2) + (var3))
+    var6(2) = (0.5) + ((var4) + (var5))
+    Score = Softmax(var6)
+End Function
+Function Softmax(ByRef x() As Double) As Double()
+    Dim size As Integer
+    size = UBound(x) - LBound(x)
+    Dim result() As Double
+    ReDim result(size)
+    Dim max As Double
+    max = x(LBound(x))
+    Dim i As Integer
+    For i = LBound(x) + 1 To UBound(x)
+        If x(i) > max Then
+            max = x(i)
         End If
-    Else
-        If (inputVector(3)) >= (1.6500001) Then
-            var7 = 0.0425687581
-        Else
-            var7 = -0.0704230517
-        End If
-    End If
-    Dim var8 As Double
-    var8 = Math.Exp(((0.5) + (var6)) + (var7))
-    Dim var9 As Double
-    var9 = ((var2) + (var5)) + (var8)
-    Dim var10(2) As Double
-    var10(0) = (var2) / (var9)
-    var10(1) = (var5) / (var9)
-    var10(2) = (var8) / (var9)
-    Score = var10
+    Next i
+    Dim sum As Double
+    sum = 0.0
+    For i = LBound(x) To UBound(x)
+        result(i) = Math.Exp(x(i) - max)
+        sum = sum + result(i)
+    Next i
+    For i = LBound(x) To UBound(x)
+        result(i) = result(i) / sum
+    Next i
+    Softmax = result
 End Function
 End Module

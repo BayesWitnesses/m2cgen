@@ -55,7 +55,7 @@ fn score(input: Vec<f64>) -> Vec<f64> {
             var5 = -0.19659369_f64;
         }
     }
-    return softmax(vec![(0.5_f64) + ((var0) + (var1)), (0.5_f64) + ((var2) + (var3)), (0.5_f64) + ((var4) + (var5))]);
+    softmax(vec![(0.5_f64) + ((var0) + (var1)), (0.5_f64) + ((var2) + (var3)), (0.5_f64) + ((var4) + (var5))])
 }
 fn softmax(x: Vec<f64>) -> Vec<f64> {
     let size: usize = x.len();
@@ -66,5 +66,5 @@ fn softmax(x: Vec<f64>) -> Vec<f64> {
         exps[i] = (v - m).exp();
         s += exps[i];
     }
-    return exps.iter().map(|&i| i / s).collect::<Vec<f64>>();
+    exps.iter().map(|&i| i / s).collect::<Vec<f64>>()
 }

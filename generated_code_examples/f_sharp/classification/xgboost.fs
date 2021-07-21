@@ -1,55 +1,52 @@
+let private softmax x =
+    let maxElem = List.reduce max x
+    let exps = List.map (fun i -> exp (i - maxElem)) x
+    let sumExps = List.sum exps
+    List.map (fun i -> i / sumExps) exps
 let score (input : double list) =
     let func0 =
-        if ((input.[2]) >= (2.45)) then
-            -0.219950154
+        if (input.[2]) >= (2.45) then
+            -0.21995015
         else
-            0.430243909
+            0.4302439
     let func1 =
-        if ((input.[2]) >= (2.45)) then
-            -0.196918547
+        if (input.[2]) >= (2.45) then
+            -0.19691855
         else
-            0.294934332
+            0.29493433
     let func2 =
-        exp ((0.5) + ((func0) + (func1)))
+        if (input.[2]) >= (2.45) then
+            if (input.[3]) >= (1.75) then
+                -0.20051816
+            else
+                0.36912444
+        else
+            -0.21512198
     let func3 =
-        if ((input.[2]) >= (2.45)) then
-            if ((input.[3]) >= (1.75)) then
-                -0.200518161
+        if (input.[2]) >= (2.45) then
+            if (input.[2]) >= (4.8500004) then
+                -0.14888482
             else
-                0.369124442
+                0.2796613
         else
-            -0.215121984
+            -0.19143805
     let func4 =
-        if ((input.[2]) >= (2.45)) then
-            if ((input.[2]) >= (4.8500004)) then
-                -0.148884818
-            else
-                0.279661298
+        if (input.[3]) >= (1.6500001) then
+            0.40298507
         else
-            -0.191438049
+            if (input.[2]) >= (4.95) then
+                0.21724138
+            else
+                -0.21974029
     let func5 =
-        exp ((0.5) + ((func3) + (func4)))
-    let func6 =
-        if ((input.[3]) >= (1.6500001)) then
-            0.402985066
+        if (input.[2]) >= (4.75) then
+            if (input.[3]) >= (1.75) then
+                0.28692952
+            else
+                0.06272897
         else
-            if ((input.[2]) >= (4.95)) then
-                0.217241377
+            if (input.[3]) >= (1.55) then
+                0.009899145
             else
-                -0.219740286
-    let func7 =
-        if ((input.[2]) >= (4.75)) then
-            if ((input.[3]) >= (1.75)) then
-                0.286929518
-            else
-                0.0627289712
-        else
-            if ((input.[3]) >= (1.55)) then
-                0.00989914499
-            else
-                -0.196593687
-    let func8 =
-        exp ((0.5) + ((func6) + (func7)))
-    let func9 =
-        ((func2) + (func5)) + (func8)
-    [(func2) / (func9); (func5) / (func9); (func8) / (func9)]
+                -0.19659369
+    softmax ([(0.5) + ((func0) + (func1)); (0.5) + ((func2) + (func3)); (0.5) + ((func4) + (func5))])

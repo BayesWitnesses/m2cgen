@@ -1,31 +1,31 @@
 func score(input []float64) float64 {
     var var0 float64
-    if (input[12]) >= (9.72500038) {
-        if (input[12]) >= (19.8299999) {
-            var0 = 1.1551429
+    if (input[12]) >= (9.725) {
+        if (input[12]) >= (19.23) {
+            var0 = 3.5343752
         } else {
-            var0 = 1.8613131
+            var0 = 5.5722494
         }
     } else {
-        if (input[5]) >= (6.94099998) {
-            var0 = 3.75848508
+        if (input[5]) >= (6.941) {
+            var0 = 11.1947155
         } else {
-            var0 = 2.48056006
+            var0 = 7.4582143
         }
     }
     var var1 float64
-    if (input[12]) >= (7.68499994) {
-        if (input[12]) >= (15) {
-            var1 = 1.24537706
+    if (input[12]) >= (5.1549997) {
+        if (input[12]) >= (15.0) {
+            var1 = 2.8350503
         } else {
-            var1 = 1.92129695
+            var1 = 4.8024607
         }
     } else {
-        if (input[5]) >= (7.43700027) {
-            var1 = 3.96021533
+        if (input[5]) >= (7.406) {
+            var1 = 10.0011215
         } else {
-            var1 = 2.51493931
+            var1 = 6.787523
         }
     }
-    return ((0.5) + (var0)) + (var1)
+    return (0.5) + ((var0) + (var1))
 }
