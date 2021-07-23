@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
@@ -47,18 +47,18 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
-        current_dir = os.path.dirname(__file__)
+        current_dir = Path(__file__).absolute().parent
 
         if self.with_linear_algebra:
-            filename = os.path.join(current_dir, "linear_algebra.php")
+            filename = current_dir / "linear_algebra.php"
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(current_dir, "softmax.php")
+            filename = current_dir / "softmax.php"
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_sigmoid_expr:
-            filename = os.path.join(current_dir, "sigmoid.php")
+            filename = current_dir / "sigmoid.php"
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line("<?php")

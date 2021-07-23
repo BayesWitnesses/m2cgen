@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
@@ -49,14 +49,14 @@ class RInterpreter(ImperativeToCodeInterpreter,
         self.enqueue_subroutine(self.function_name, expr)
         self.process_subroutine_queue(top_cg)
 
-        current_dir = os.path.dirname(__file__)
+        current_dir = Path(__file__).absolute().parent
 
         if self.with_softmax_expr:
-            filename = os.path.join(current_dir, "softmax.r")
+            filename = current_dir / "softmax.r"
             top_cg.prepend_code_lines(utils.get_file_content(filename))
 
         if self.with_sigmoid_expr:
-            filename = os.path.join(current_dir, "sigmoid.r")
+            filename = current_dir / "sigmoid.r"
             top_cg.prepend_code_lines(utils.get_file_content(filename))
 
         return top_cg.finalize_and_get_generated_code()

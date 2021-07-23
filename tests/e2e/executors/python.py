@@ -1,8 +1,8 @@
 import importlib
-import os
 import sys
 
 from m2cgen import export_to_python
+from tests import utils
 from tests.e2e.executors.base import BaseExecutor
 
 
@@ -14,10 +14,10 @@ class PythonExecutor(BaseExecutor):
     def predict(self, X):
         # Hacky way to dynamically import generated function
 
-        parent_dir = os.path.dirname(self._resource_tmp_dir)
-        package = os.path.basename(self._resource_tmp_dir)
+        parent_dir = self._resource_tmp_dir.parent
+        package = self._resource_tmp_dir.name
 
-        sys.path.append(parent_dir)
+        sys.path.append(str(parent_dir))
 
         try:
             score = importlib.import_module(f"{package}.model").score
@@ -30,6 +30,5 @@ class PythonExecutor(BaseExecutor):
     def prepare(self):
         code = export_to_python(self.model)
 
-        file_name = os.path.join(self._resource_tmp_dir, "model.py")
-        with open(file_name, "w") as f:
-            f.write(code)
+        file_name = self._resource_tmp_dir / "model.py"
+        utils.write_content_to_file(code, file_name)

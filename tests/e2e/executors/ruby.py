@@ -1,5 +1,3 @@
-import os
-
 from m2cgen import assemblers, interpreters
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
@@ -38,7 +36,7 @@ class RubyExecutor(BaseExecutor):
     def predict(self, X):
         exec_args = [
             "ruby",
-            self.script_path,
+            str(self.script_path),
             *map(utils.format_arg, X)
         ]
         return utils.predict_from_commandline(exec_args)
@@ -52,6 +50,5 @@ class RubyExecutor(BaseExecutor):
             model_code=self.interpreter.interpret(self.model_ast),
             print_code=print_code)
 
-        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.model_name}.rb")
-        with open(self.script_path, "w") as f:
-            f.write(executor_code)
+        self.script_path = self._resource_tmp_dir / f"{self.model_name}.rb"
+        utils.write_content_to_file(executor_code, self.script_path)

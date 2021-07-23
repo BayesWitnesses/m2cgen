@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from m2cgen.exporters import (
     export_to_c,
@@ -36,6 +36,4 @@ __all__ = [
     export_to_visual_basic,
 ]
 
-with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                       "VERSION.txt")) as version_file:
-    __version__ = version_file.read().strip()
+__version__ = (Path(__file__).absolute().parent / "VERSION.txt").read_text(encoding="utf-8").strip()

@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -37,7 +36,7 @@ class HaskellExecutor(BaseExecutor):
         self.exec_path = None
 
     def predict(self, X):
-        exec_args = [self.exec_path, *map(utils.format_arg, X)]
+        exec_args = [str(self.exec_path), *map(utils.format_arg, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
@@ -51,18 +50,16 @@ class HaskellExecutor(BaseExecutor):
             print_code=print_code)
         model_code = self.interpreter.interpret(self.model_ast)
 
-        executor_file_name = os.path.join(self._resource_tmp_dir, f"{self.executor_name}.hs")
-        model_file_name = os.path.join(self._resource_tmp_dir, f"{self.model_name}.hs")
-        with open(executor_file_name, "w") as f:
-            f.write(executor_code)
-        with open(model_file_name, "w") as f:
-            f.write(model_code)
+        executor_file_name = self._resource_tmp_dir / f"{self.executor_name}.hs"
+        model_file_name = self._resource_tmp_dir / f"{self.model_name}.hs"
+        utils.write_content_to_file(executor_code, executor_file_name)
+        utils.write_content_to_file(model_code, model_file_name)
 
-        self.exec_path = os.path.join(self._resource_tmp_dir, self.executor_name)
+        self.exec_path = self._resource_tmp_dir / self.executor_name
         subprocess.call([
             "ghc",
-            executor_file_name,
+            str(executor_file_name),
             f"-i{self._resource_tmp_dir}",
             "-o",
-            self.exec_path
+            str(self.exec_path)
         ])
