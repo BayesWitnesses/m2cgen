@@ -1,5 +1,3 @@
-import os
-
 from m2cgen import assemblers, interpreters
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
@@ -45,7 +43,7 @@ class PhpExecutor(BaseExecutor):
         exec_args = [
             "php",
             "-f",
-            self.script_path,
+            str(self.script_path),
             "--",
             *map(utils.format_arg, X)
         ]
@@ -60,11 +58,9 @@ class PhpExecutor(BaseExecutor):
             model_file=self.model_name,
             print_code=print_code)
 
-        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.executor_name}.php")
-        with open(self.script_path, "w") as f:
-            f.write(executor_code)
+        self.script_path = self._resource_tmp_dir / f"{self.executor_name}.php"
+        utils.write_content_to_file(executor_code, self.script_path)
 
         model_code = self.interpreter.interpret(self.model_ast)
-        model_file_name = os.path.join(self._resource_tmp_dir, f"{self.model_name}.php")
-        with open(model_file_name, "w") as f:
-            f.write(model_code)
+        model_file_name = self._resource_tmp_dir / f"{self.model_name}.php"
+        utils.write_content_to_file(model_code, model_file_name)

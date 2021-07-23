@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 from m2cgen import assemblers, interpreters
@@ -41,7 +40,7 @@ class RustExecutor(BaseExecutor):
         self.exec_path = None
 
     def predict(self, X):
-        exec_args = [self.exec_path, *map(utils.format_arg, X)]
+        exec_args = [str(self.exec_path), *map(utils.format_arg, X)]
         return utils.predict_from_commandline(exec_args)
 
     def prepare(self):
@@ -54,13 +53,12 @@ class RustExecutor(BaseExecutor):
             model_code=self.interpreter.interpret(self.model_ast),
             execute_code=execute_code)
 
-        executor_file_name = os.path.join(self._resource_tmp_dir, f"{self.model_name}.rs")
-        with open(executor_file_name, "w") as f:
-            f.write(executor_code)
-        self.exec_path = os.path.join(self._resource_tmp_dir, self.model_name)
+        executor_file_name = self._resource_tmp_dir / f"{self.model_name}.rs"
+        utils.write_content_to_file(executor_code, executor_file_name)
+        self.exec_path = self._resource_tmp_dir / self.model_name
         subprocess.call([
             "rustc",
-            executor_file_name,
+            str(executor_file_name),
             "-o",
-            self.exec_path
+            str(self.exec_path)
         ])

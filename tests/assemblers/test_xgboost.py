@@ -1,6 +1,5 @@
 import xgboost
 import numpy as np
-import os
 
 from m2cgen import assemblers, ast
 from tests import utils
@@ -184,7 +183,7 @@ def test_regression_saved_without_feature_names():
     utils.get_regression_model_trainer()(estimator)
 
     with utils.tmp_dir() as tmp_dirpath:
-        filename = os.path.join(tmp_dirpath, "tmp.file")
+        filename = tmp_dirpath / "tmp.file"
         estimator.save_model(filename)
         estimator = xgboost.XGBRegressor(base_score=base_score)
         estimator.load_model(filename)

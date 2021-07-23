@@ -8,9 +8,9 @@ The structure of the exported code will be:
 
 <absolute_path_to_folder>/<language>/<model_type><model_name>.<language_ext>
 """
-import os
 import sys
 import itertools
+from pathlib import Path
 
 import lightgbm
 import xgboost
@@ -24,10 +24,9 @@ RECURSION_LIMIT = 5000
 
 RANDOM_SEED = 1234
 TREE_PARAMS = dict(random_state=RANDOM_SEED, max_leaf_nodes=5)
-FOREST_PARAMS = dict(
-    n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
+FOREST_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_leaf_nodes=5)
 XGBOOST_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
-LIGHT_GBM_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
+LIGHTGBM_PARAMS = dict(n_estimators=2, random_state=RANDOM_SEED, max_depth=2)
 SVC_PARAMS = dict(kernel="rbf", nu=0.1, random_state=RANDOM_SEED)
 
 
@@ -92,12 +91,12 @@ EXAMPLE_MODELS = [
     ),
     (
         "regression", "lightgbm",
-        lightgbm.LGBMRegressor(**LIGHT_GBM_PARAMS),
+        lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS),
         utils.get_regression_model_trainer(),
     ),
     (
         "classification", "lightgbm",
-        lightgbm.LGBMClassifier(**LIGHT_GBM_PARAMS),
+        lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS),
         utils.get_classification_model_trainer(),
     ),
     (
@@ -120,18 +119,15 @@ if __name__ == "__main__":
         print("Path to the export folder is required")
         sys.exit(1)
 
-    export_folder = os.path.abspath(sys.argv[1])
+    export_folder = Path(sys.argv[1]).absolute()
 
     prod = itertools.product(EXAMPLE_LANGUAGES, EXAMPLE_MODELS)
     for (language, exporter, file_ext), (mtype, mname, model, trainer) in prod:
         trainer(model)
 
         # Make sure path exists, create if doesn't.
-        folder = os.path.join(export_folder, language, mtype)
-        os.makedirs(folder, exist_ok=True)
+        folder = export_folder / language / mtype
+        folder.mkdir(parents=True, exist_ok=True)
 
-        model_filename = f"{mname}.{file_ext}"
-        model_path = os.path.join(folder, model_filename)
-
-        with open(model_path, "w") as f:
-            f.write(exporter(model))
+        model_path = folder / f"{mname}.{file_ext}"
+        model_path.write_text(exporter(model), encoding="utf-8")

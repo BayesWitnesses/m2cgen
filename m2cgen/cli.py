@@ -8,10 +8,11 @@ Example usage:
 Model can also be piped:
     # cat <path_to_file> | m2cgen --language java
 """
-import pickle
 import argparse
-import sys
 import inspect
+import pickle
+import sys
+
 import numpy as np
 
 import m2cgen

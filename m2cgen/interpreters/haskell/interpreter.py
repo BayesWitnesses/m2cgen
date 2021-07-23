@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from m2cgen import ast
 from m2cgen.interpreters import mixins, utils
@@ -53,22 +53,22 @@ class HaskellInterpreter(FunctionalToCodeInterpreter,
             self._cg.add_code_line(last_result)
             self._dump_cache()
 
-        current_dir = os.path.dirname(__file__)
+        current_dir = Path(__file__).absolute().parent
 
         if self.with_linear_algebra:
-            filename = os.path.join(current_dir, "linear_algebra.hs")
+            filename = current_dir / "linear_algebra.hs"
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_log1p_expr:
-            filename = os.path.join(current_dir, "log1p.hs")
+            filename = current_dir / "log1p.hs"
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_softmax_expr:
-            filename = os.path.join(current_dir, "softmax.hs")
+            filename = current_dir / "softmax.hs"
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         if self.with_sigmoid_expr:
-            filename = os.path.join(current_dir, "sigmoid.hs")
+            filename = current_dir / "sigmoid.hs"
             self._cg.add_code_lines(utils.get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(

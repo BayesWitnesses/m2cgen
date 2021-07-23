@@ -1,5 +1,3 @@
-import os
-
 from m2cgen import assemblers, interpreters
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
@@ -31,7 +29,7 @@ class RExecutor(BaseExecutor):
         exec_args = [
             "Rscript",
             "--vanilla",
-            self.script_path,
+            str(self.script_path),
             *map(utils.format_arg, X)
         ]
         return utils.predict_from_commandline(exec_args)
@@ -40,6 +38,5 @@ class RExecutor(BaseExecutor):
         executor_code = EXECUTOR_CODE_TPL.format(
             model_code=self.interpreter.interpret(self.model_ast))
 
-        self.script_path = os.path.join(self._resource_tmp_dir, f"{self.model_name}.r")
-        with open(self.script_path, "w") as f:
-            f.write(executor_code)
+        self.script_path = self._resource_tmp_dir / f"{self.model_name}.r"
+        utils.write_content_to_file(executor_code, self.script_path)
