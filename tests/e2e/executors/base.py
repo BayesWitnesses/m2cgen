@@ -1,15 +1,15 @@
-import contextlib
+from contextlib import contextmanager
 
-from tests import utils
+from tests.utils import tmp_dir
 
 
 class BaseExecutor:
 
     _resource_tmp_dir = None
 
-    @contextlib.contextmanager
+    @contextmanager
     def prepare_then_cleanup(self):
-        with utils.tmp_dir() as tmp_dirpath:
+        with tmp_dir() as tmp_dirpath:
             self._resource_tmp_dir = tmp_dirpath
             self.prepare()
 

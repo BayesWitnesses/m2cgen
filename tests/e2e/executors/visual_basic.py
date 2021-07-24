@@ -1,6 +1,8 @@
 import subprocess
 
-from m2cgen import assemblers, interpreters
+from m2cgen.assemblers import get_assembler_cls
+from m2cgen.interpreters import VisualBasicInterpreter
+
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
 
@@ -42,9 +44,9 @@ class VisualBasicExecutor(BaseExecutor):
 
     def __init__(self, model):
         self.model = model
-        self.interpreter = interpreters.VisualBasicInterpreter()
+        self.interpreter = VisualBasicInterpreter()
 
-        assembler_cls = assemblers.get_assembler_cls(model)
+        assembler_cls = get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
     def predict(self, X):

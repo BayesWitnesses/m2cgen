@@ -1,9 +1,10 @@
-import os
 import subprocess
-import shutil
+from os import environ
 from pathlib import Path
+from shutil import copyfile
 
 from m2cgen import export_to_java
+
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
 
@@ -14,7 +15,7 @@ class JavaExecutor(BaseExecutor):
         self.model = model
         self.class_name = "Model"
 
-        java_home = os.environ.get("JAVA_HOME")
+        java_home = environ.get("JAVA_HOME")
         assert java_home, "JAVA_HOME is not specified"
         java_home = Path(java_home)
         self._java_bin = java_home / "bin" / "java"
@@ -41,7 +42,7 @@ class JavaExecutor(BaseExecutor):
         # Move Executor.java to the same temp dir.
         module_path = Path(__file__).absolute().parent
         executor_path = self._resource_tmp_dir / "Executor.java"
-        shutil.copyfile(module_path / "Executor.java", executor_path)
+        copyfile(module_path / "Executor.java", executor_path)
 
         # Compile all files together.
         subprocess.call([
