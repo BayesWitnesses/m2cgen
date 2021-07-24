@@ -1,5 +1,5 @@
 from m2cgen import ast
-from m2cgen.assemblers import utils, TreeModelAssembler
+from m2cgen.assemblers import TreeModelAssembler, utils
 from m2cgen.assemblers.base import ModelAssembler
 
 

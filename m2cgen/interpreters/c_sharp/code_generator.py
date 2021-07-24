@@ -1,4 +1,4 @@
-import contextlib
+from contextlib import contextmanager
 
 from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 
@@ -28,20 +28,20 @@ class CSharpCodeGenerator(CLikeCodeGenerator):
         self.add_code_line(namespace_def)
         self.increase_indent()
 
-    @contextlib.contextmanager
+    @contextmanager
     def class_definition(self, class_name, modifier="public"):
         self.add_class_def(class_name, modifier=modifier)
         yield
         self.add_block_termination()
 
-    @contextlib.contextmanager
+    @contextmanager
     def method_definition(self, name, args, is_vector_output,
                           modifier="private"):
         self.add_method_def(name, args, is_vector_output, modifier=modifier)
         yield
         self.add_block_termination()
 
-    @contextlib.contextmanager
+    @contextmanager
     def namespace_definition(self, namespace):
         self.add_namespace_def(namespace)
         yield

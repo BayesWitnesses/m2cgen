@@ -1,4 +1,4 @@
-import contextlib
+from contextlib import contextmanager
 
 from m2cgen.ast import CompOpType
 from m2cgen.interpreters.code_generator import CodeTemplate, FunctionalCodeGenerator
@@ -32,7 +32,7 @@ class HaskellCodeGenerator(FunctionalCodeGenerator):
 
         self.increase_indent()
 
-    @contextlib.contextmanager
+    @contextmanager
     def function_definition(self, name, args, is_scalar_output):
         self.add_function_def(name, args, is_scalar_output)
         yield

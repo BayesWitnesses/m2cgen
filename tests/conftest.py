@@ -1,6 +1,6 @@
 import pytest
 
-from tests import utils
+from tests.utils import tmp_dir
 
 
 def pytest_addoption(parser):
@@ -17,5 +17,5 @@ def is_fast(request):
 
 @pytest.fixture(scope="module")
 def global_tmp_dir():
-    with utils.tmp_dir() as directory:
+    with tmp_dir() as directory:
         yield directory

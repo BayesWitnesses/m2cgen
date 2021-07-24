@@ -1,20 +1,21 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import mixins, utils
-from m2cgen.interpreters.rust.code_generator import RustCodeGenerator
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.rust.code_generator import RustCodeGenerator
+from m2cgen.interpreters.utils import get_file_content
 
 
 class RustInterpreter(ImperativeToCodeInterpreter,
-                      mixins.LinearAlgebraMixin):
+                      LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "add_vectors",
+        BinNumOpType.ADD: "add_vectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mul_vector_number",
+        BinNumOpType.MUL: "mul_vector_number",
     }
 
     abs_function_name = "f64::abs"
@@ -52,15 +53,15 @@ class RustInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.rs"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.rs"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.rs"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()
 

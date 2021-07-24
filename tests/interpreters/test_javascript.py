@@ -1,6 +1,7 @@
 from m2cgen import ast
 from m2cgen.interpreters import JavascriptInterpreter
-from tests import utils
+
+from tests.utils import assert_code_equal
 
 
 def test_if_expr():
@@ -8,8 +9,6 @@ def test_if_expr():
         ast.CompExpr(ast.NumVal(1), ast.FeatureRef(0), ast.CompOpType.EQ),
         ast.NumVal(2),
         ast.NumVal(3))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -23,7 +22,8 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -33,15 +33,14 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = JavascriptInterpreter()
-
     expected_code = """
 function score(input) {
     return ((input[0]) / (-2.0)) * (2.0);
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -54,10 +53,8 @@ def test_dependable_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
     bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
-
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
@@ -79,8 +76,7 @@ function score(input) {
 """
 
     interpreter = JavascriptInterpreter()
-
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -93,11 +89,8 @@ def test_nested_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     bool_test = ast.CompExpr(ast.NumVal(1), left, ast.CompOpType.EQ)
-
     expr_nested = ast.IfExpr(bool_test, ast.FeatureRef(2), ast.NumVal(2))
-
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
@@ -129,7 +122,7 @@ function score(input) {
 """
 
     interpreter = JavascriptInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_raw_array():
@@ -142,7 +135,7 @@ function score(input) {
 """
 
     interpreter = JavascriptInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -167,7 +160,7 @@ function score(input) {
 """
 
     interpreter = JavascriptInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -175,8 +168,6 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -197,7 +188,9 @@ function mulVectorNumber(v1, num) {
     return result;
 }
 """
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -205,8 +198,6 @@ def test_bin_vector_num_expr():
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -227,13 +218,13 @@ function mulVectorNumber(v1, num) {
     return result;
 }
 """
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_abs_expr():
     expr = ast.AbsExpr(ast.NumVal(-1.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -241,13 +232,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -255,13 +245,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
     expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -269,13 +258,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sqrt_expr():
     expr = ast.SqrtExpr(ast.NumVal(2.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -283,13 +271,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -297,13 +284,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log_expr():
     expr = ast.LogExpr(ast.NumVal(2.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -311,13 +297,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log1p_expr():
     expr = ast.Log1pExpr(ast.NumVal(2.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -325,13 +310,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_atan_expr():
     expr = ast.AtanExpr(ast.NumVal(2.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -339,13 +323,12 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_softmax_expr():
     expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -370,13 +353,12 @@ function softmax(x) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sigmoid_expr():
     expr = ast.SigmoidExpr(ast.NumVal(2.0))
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -391,14 +373,13 @@ function sigmoid(x) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
-
-    interpreter = JavascriptInterpreter()
 
     expected_code = """
 function score(input) {
@@ -408,4 +389,5 @@ function score(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = JavascriptInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)

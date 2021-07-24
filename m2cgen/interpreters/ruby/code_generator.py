@@ -1,4 +1,4 @@
-import contextlib
+from contextlib import contextmanager
 
 from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGenerator
 
@@ -20,7 +20,7 @@ class RubyCodeGenerator(ImperativeCodeGenerator):
         self.add_code_line(func_def)
         self.increase_indent()
 
-    @contextlib.contextmanager
+    @contextmanager
     def function_definition(self, name, args):
         self.add_function_def(name, args)
         yield

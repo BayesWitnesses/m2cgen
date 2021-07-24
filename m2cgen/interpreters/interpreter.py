@@ -1,5 +1,5 @@
-from m2cgen import ast
 from m2cgen.assemblers import fallback_expressions
+from m2cgen.ast import IfExpr
 from m2cgen.interpreters.utils import CachedResult, _get_handler_name
 
 
@@ -238,7 +238,7 @@ class ImperativeToCodeInterpreter(ToCodeInterpreter):
             var_name = self._cg.add_var_declaration(expr.output_size)
 
         def handle_nested_expr(nested):
-            if isinstance(nested, ast.IfExpr):
+            if isinstance(nested, IfExpr):
                 self._do_interpret(nested, if_var_name=var_name, **kwargs)
             else:
                 nested_result = self._do_interpret(nested, **kwargs)

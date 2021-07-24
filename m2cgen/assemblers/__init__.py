@@ -1,17 +1,21 @@
-from m2cgen.assemblers.linear import (SklearnLinearModelAssembler,
-                                      StatsmodelsLinearModelAssembler,
-                                      ProcessMLEModelAssembler,
-                                      StatsmodelsGLMModelAssembler,
-                                      StatsmodelsModelAssemblerSelector,
-                                      SklearnGLMModelAssembler)
-from m2cgen.assemblers.tree import TreeModelAssembler
+from m2cgen.assemblers.boosting import (
+    LightGBMModelAssembler,
+    XGBoostLinearModelAssembler,
+    XGBoostModelAssemblerSelector,
+    XGBoostTreeModelAssembler
+)
 from m2cgen.assemblers.ensemble import RandomForestModelAssembler
-from m2cgen.assemblers.boosting import (XGBoostModelAssemblerSelector,
-                                        XGBoostTreeModelAssembler,
-                                        XGBoostLinearModelAssembler,
-                                        LightGBMModelAssembler)
-from m2cgen.assemblers.svm import SklearnSVMModelAssembler, LightningSVMModelAssembler
+from m2cgen.assemblers.linear import (
+    ProcessMLEModelAssembler,
+    SklearnGLMModelAssembler,
+    SklearnLinearModelAssembler,
+    StatsmodelsGLMModelAssembler,
+    StatsmodelsLinearModelAssembler,
+    StatsmodelsModelAssemblerSelector
+)
 from m2cgen.assemblers.meta import RANSACModelAssembler
+from m2cgen.assemblers.svm import LightningSVMModelAssembler, SklearnSVMModelAssembler
+from m2cgen.assemblers.tree import TreeModelAssembler
 
 __all__ = [
     SklearnLinearModelAssembler,

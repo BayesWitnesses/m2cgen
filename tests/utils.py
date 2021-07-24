@@ -1,27 +1,26 @@
-import contextlib
-import functools
-import itertools
-import shutil
 import subprocess
-import tempfile
+from contextlib import contextmanager
+from functools import partial, wraps
+from itertools import product
 from pathlib import Path
+from shutil import rmtree
+from tempfile import mkdtemp
 
+import lightgbm as lgb
 import numpy as np
 import pytest
 import statsmodels.api as sm
-
-from lightgbm import LGBMClassifier
+import xgboost as xgb
 from lightning.impl.base import BaseClassifier as LightBaseClassifier
 from sklearn import datasets
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from sklearn.ensemble._forest import ForestClassifier, BaseForest
-from sklearn.model_selection import train_test_split
+from sklearn.ensemble._forest import BaseForest, ForestClassifier
 from sklearn.linear_model._base import LinearClassifierMixin
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.tree._classes import BaseDecisionTree
+from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC, NuSVC
 from sklearn.svm._base import BaseLibSVM
-from xgboost import XGBClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree._classes import BaseDecisionTree
 
 from m2cgen import ast
 from m2cgen.assemblers import _get_full_model_name
@@ -126,8 +125,7 @@ class ModelTrainer:
         else:
             raise ValueError(f"Unknown dataset name: {dataset_name}")
 
-        (self.X_train, self.X_test,
-         self.y_train, _) = train_test_split(
+        self.X_train, self.X_test, self.y_train, _ = train_test_split(
             self.X, self.y, test_size=test_fraction, random_state=15)
         if additional_test_data is not None:
             self.X_test = np.vstack((additional_test_data, self.X_test))
@@ -136,20 +134,17 @@ class ModelTrainer:
     def get_instance(cls, dataset_name, test_fraction=0.02):
         key = f"{dataset_name} {test_fraction}"
         if key not in cls._class_instances:
-            cls._class_instances[key] = ModelTrainer(
-                dataset_name, test_fraction)
+            cls._class_instances[key] = ModelTrainer(dataset_name, test_fraction)
         return cls._class_instances[key]
 
     def __call__(self, estimator):
         fitted_estimator = estimator.fit(self.X_train, self.y_train)
 
-        if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC,
-                                  LightBaseClassifier)):
+        if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC, LightBaseClassifier)):
             y_pred = estimator.decision_function(self.X_test)
         elif isinstance(
                 estimator,
-                (ForestClassifier, DecisionTreeClassifier,
-                 XGBClassifier, LGBMClassifier)):
+                (ForestClassifier, DecisionTreeClassifier, xgb.XGBClassifier, lgb.LGBMClassifier)):
             y_pred = estimator.predict_proba(self.X_test)
         else:
             y_pred = estimator.predict(self.X_test)
@@ -189,12 +184,10 @@ def cmp_exprs(left, right):
             f"Expected instance of {type(right)}, received {type(left)}")
 
         # Only compare attributes which don't start with __
-        attrs_to_compare = filter(
-            lambda attr_name: not attr_name.startswith('__'), dir(left))
+        attrs_to_compare = filter(lambda attr_name: not attr_name.startswith('__'), dir(left))
 
         for attr_name in attrs_to_compare:
-            assert cmp_exprs(
-                getattr(left, attr_name), getattr(right, attr_name))
+            assert cmp_exprs(getattr(left, attr_name), getattr(right, attr_name))
 
         return True
 
@@ -205,53 +198,45 @@ def assert_code_equal(actual, expected):
     assert actual.strip() == expected.strip()
 
 
-get_regression_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "boston")
+get_regression_model_trainer = partial(ModelTrainer.get_instance, "boston")
 
 
-get_classification_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "iris")
+get_classification_model_trainer = partial(ModelTrainer.get_instance, "iris")
 
 
-get_binary_classification_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "breast_cancer")
+get_binary_classification_model_trainer = partial(ModelTrainer.get_instance, "breast_cancer")
 
 
-get_regression_random_data_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "regression_rnd")
+get_regression_random_data_model_trainer = partial(ModelTrainer.get_instance, "regression_rnd")
 
 
-get_classification_random_data_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "classification_rnd")
+get_classification_random_data_model_trainer = partial(ModelTrainer.get_instance, "classification_rnd")
 
 
-get_classification_binary_random_data_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "classification_binary_rnd")
+get_classification_binary_random_data_model_trainer = partial(ModelTrainer.get_instance, "classification_binary_rnd")
 
 
-get_bounded_regression_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "boston_y_bounded")
+get_bounded_regression_model_trainer = partial(ModelTrainer.get_instance, "boston_y_bounded")
 
 
-get_regression_w_missing_values_model_trainer = functools.partial(
-    ModelTrainer.get_instance, "diabetes")
+get_regression_w_missing_values_model_trainer = partial(ModelTrainer.get_instance, "diabetes")
 
 
-get_classification_random_w_missing_values_model_trainer = functools.partial(
+get_classification_random_w_missing_values_model_trainer = partial(
     ModelTrainer.get_instance, "classification_rnd_w_missing_values")
 
 
-get_classification_binary_random_w_missing_values_model_trainer = functools.partial(
+get_classification_binary_random_w_missing_values_model_trainer = partial(
     ModelTrainer.get_instance, "classification_binary_rnd_w_missing_values")
 
 
-@contextlib.contextmanager
+@contextmanager
 def tmp_dir():
-    dirpath = Path(tempfile.mkdtemp())
+    dirpath = Path(mkdtemp())
     try:
         yield dirpath
     finally:
-        shutil.rmtree(dirpath)
+        rmtree(dirpath)
 
 
 def verify_python_model_is_expected(model_code, input, expected_output):
@@ -267,13 +252,11 @@ result = score({input_str})"""
 
 
 def predict_from_commandline(exec_args):
-    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE)
+    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = result.communicate()
     if result.returncode != 0:
         raise Exception(
-            f"Bad exit code ({result.returncode}), "
-            f"stderr:\n{stderr.decode('utf-8')}")
+            f"Bad exit code ({result.returncode}), stderr:\n{stderr.decode('utf-8')}")
 
     items = stdout.decode("utf-8").strip().split(" ")
 
@@ -292,8 +275,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
     # number of parameters doesn't match number of provided ids
     ids = [None] * len(additional_params)
 
-    prod = itertools.product(
-        executors_with_marks, models_with_trainers_with_marks)
+    prod = product(executors_with_marks, models_with_trainers_with_marks)
 
     for (executor, executor_mark), (model, trainer, trainer_mark) in prod:
         if (executor_mark, trainer_mark) in skip_executor_trainer_pairs:
@@ -305,8 +287,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
 
         # We use custom id since pytest for some reason can't show name of
         # the model in the automatic id. Which sucks.
-        ids.append(f"{_get_full_model_name(model)} - "
-                   f"{executor_mark.name} - {trainer.name}")
+        ids.append(f"{_get_full_model_name(model)} - {executor_mark.name} - {trainer.name}")
 
         result_params.append(pytest.param(
             model, executor, trainer, marks=[executor_mark, trainer_mark],
@@ -317,7 +298,7 @@ def cartesian_e2e_params(executors_with_marks, models_with_trainers_with_marks,
     def wrap(func):
 
         @pytest.mark.parametrize(param_names, result_params, ids=ids)
-        @functools.wraps(func)
+        @wraps(func)
         def inner(*args, **kwarg):
             return func(*args, **kwarg)
 

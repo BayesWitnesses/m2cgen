@@ -1,6 +1,7 @@
 from m2cgen import ast
 from m2cgen.interpreters import DartInterpreter
-from tests import utils
+
+from tests.utils import assert_code_equal
 
 
 def test_if_expr():
@@ -22,7 +23,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -39,7 +40,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -52,10 +53,8 @@ def test_dependable_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
     bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
-
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
@@ -77,7 +76,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -90,11 +89,8 @@ def test_nested_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     bool_test = ast.CompExpr(ast.NumVal(1), left, ast.CompOpType.EQ)
-
     expr_nested = ast.IfExpr(bool_test, ast.FeatureRef(2), ast.NumVal(2))
-
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
@@ -126,7 +122,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_raw_array():
@@ -139,7 +135,7 @@ List<double> score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -164,7 +160,7 @@ List<double> score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -194,7 +190,7 @@ List<double> mulVectorNumber(List<double> v1, double num) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -224,7 +220,7 @@ List<double> mulVectorNumber(List<double> v1, double num) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 class CustomDartInterpreter(DartInterpreter):
@@ -236,8 +232,6 @@ def test_depth_threshold_with_bin_expr():
     for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
-    interpreter = CustomDartInterpreter()
-
     expected_code = """
 double score(List<double> input) {
     double var0;
@@ -246,7 +240,8 @@ double score(List<double> input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = CustomDartInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_depth_threshold_without_bin_expr():
@@ -257,8 +252,6 @@ def test_depth_threshold_without_bin_expr():
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
-
-    interpreter = CustomDartInterpreter()
 
     expected_code = """
 double score(List<double> input) {
@@ -284,7 +277,8 @@ double score(List<double> input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = CustomDartInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_deep_mixed_exprs_not_reaching_threshold():
@@ -293,14 +287,11 @@ def test_deep_mixed_exprs_not_reaching_threshold():
         inner = ast.NumVal(1)
         for __ in range(2):
             inner = ast.BinNumExpr(ast.NumVal(1), inner, ast.BinNumOpType.ADD)
-
         expr = ast.IfExpr(
             ast.CompExpr(
                 inner, ast.NumVal(1), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
-
-    interpreter = CustomDartInterpreter()
 
     expected_code = """
 double score(List<double> input) {
@@ -326,7 +317,8 @@ double score(List<double> input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = CustomDartInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_deep_mixed_exprs_exceeding_threshold():
@@ -335,14 +327,11 @@ def test_deep_mixed_exprs_exceeding_threshold():
         inner = ast.NumVal(1)
         for j in range(4):
             inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
-
         expr = ast.IfExpr(
             ast.CompExpr(
                 inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
-
-    interpreter = CustomDartInterpreter()
 
     expected_code = """
 double score(List<double> input) {
@@ -376,7 +365,8 @@ double score(List<double> input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = CustomDartInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_abs_expr():
@@ -389,7 +379,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
@@ -403,7 +393,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
@@ -417,7 +407,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sqrt_expr():
@@ -431,7 +421,7 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
@@ -472,8 +462,9 @@ double tanh(double x) {
     return z;
 }
 """
+
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log_expr():
@@ -485,8 +476,9 @@ double score(List<double> input) {
     return log(2.0);
 }
 """
+
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log1p_expr():
@@ -549,8 +541,9 @@ double chebyshevBroucke(double x, List<double> coeffs) {
     return (b0 - b2) * 0.5;
 }
 """
+
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_atan_expr():
@@ -562,8 +555,9 @@ double score(List<double> input) {
     return atan(2.0);
 }
 """
+
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_softmax_expr():
@@ -588,8 +582,9 @@ List<double> softmax(List<double> x) {
     return result;
 }
 """
+
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sigmoid_expr():
@@ -608,8 +603,9 @@ double sigmoid(double x) {
     return 1.0 / (1.0 + exp(-x));
 }
 """
+
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():
@@ -626,4 +622,4 @@ double score(List<double> input) {
 """
 
     interpreter = DartInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)

@@ -1,20 +1,21 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import utils, mixins
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.c.code_generator import CCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.utils import get_file_content
 
 
 class CInterpreter(ImperativeToCodeInterpreter,
-                   mixins.LinearAlgebraMixin):
+                   LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "add_vectors",
+        BinNumOpType.ADD: "add_vectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mul_vector_number",
+        BinNumOpType.MUL: "mul_vector_number",
     }
 
     abs_function_name = "fabs"
@@ -65,15 +66,15 @@ class CInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.c"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.c"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.c"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_vectors:
             self._cg.add_dependency("<string.h>")

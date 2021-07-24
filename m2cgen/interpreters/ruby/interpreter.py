@@ -1,20 +1,21 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import mixins, utils
-from m2cgen.interpreters.ruby.code_generator import RubyCodeGenerator
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.ruby.code_generator import RubyCodeGenerator
+from m2cgen.interpreters.utils import get_file_content
 
 
 class RubyInterpreter(ImperativeToCodeInterpreter,
-                      mixins.LinearAlgebraMixin):
+                      LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "add_vectors",
+        BinNumOpType.ADD: "add_vectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mul_vector_number",
+        BinNumOpType.MUL: "mul_vector_number",
     }
 
     abs_function_name = "abs"
@@ -51,24 +52,24 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.rb"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_log1p_expr:
             filename = current_dir / "log1p.rb"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.rb"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.rb"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()
 
     def interpret_bin_num_expr(self, expr, **kwargs):
-        if expr.op == ast.BinNumOpType.DIV:
+        if expr.op == BinNumOpType.DIV:
             # Always force float result
             return self._cg.method_invocation(
                 method_name="fdiv",

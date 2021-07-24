@@ -1,6 +1,7 @@
 from m2cgen import ast
 from m2cgen.interpreters import RustInterpreter
-from tests import utils
+
+from tests.utils import assert_code_equal
 
 
 def test_if_expr():
@@ -22,7 +23,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -39,7 +40,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -52,10 +53,8 @@ def test_dependable_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
     bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
-
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
@@ -77,7 +76,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -90,11 +89,8 @@ def test_nested_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     bool_test = ast.CompExpr(ast.NumVal(1), left, ast.CompOpType.EQ)
-
     expr_nested = ast.IfExpr(bool_test, ast.FeatureRef(2), ast.NumVal(2))
-
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
@@ -126,7 +122,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_raw_array():
@@ -139,7 +135,7 @@ fn score(input: Vec<f64>) -> Vec<f64> {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -164,7 +160,7 @@ fn score(input: Vec<f64>) -> Vec<f64> {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -186,7 +182,7 @@ fn mul_vector_number(v1: Vec<f64>, num: f64) -> Vec<f64> {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -208,7 +204,7 @@ fn mul_vector_number(v1: Vec<f64>, num: f64) -> Vec<f64> {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_abs_expr():
@@ -221,7 +217,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
@@ -234,7 +230,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
@@ -247,7 +243,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sqrt_expr():
@@ -260,7 +256,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
@@ -273,7 +269,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log_expr():
@@ -286,7 +282,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log1p_expr():
@@ -299,7 +295,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_atan_expr():
@@ -312,7 +308,7 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_softmax_expr():
@@ -336,7 +332,7 @@ fn softmax(x: Vec<f64>) -> Vec<f64> {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sigmoid_expr():
@@ -356,7 +352,7 @@ fn sigmoid(x: f64) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():
@@ -372,4 +368,4 @@ fn score(input: Vec<f64>) -> f64 {
 """
 
     interpreter = RustInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
