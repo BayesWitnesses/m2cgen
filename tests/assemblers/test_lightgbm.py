@@ -1,16 +1,17 @@
-import lightgbm
+import lightgbm as lgb
 import numpy as np
 
-from m2cgen import assemblers, ast
+from m2cgen import ast
+from m2cgen.assemblers import LightGBMModelAssembler
+
 from tests import utils
 
 
 def test_binary_classification():
-    estimator = lightgbm.LGBMClassifier(n_estimators=2, random_state=1,
-                                        max_depth=1)
+    estimator = lgb.LGBMClassifier(n_estimators=2, random_state=1, max_depth=1)
     utils.get_binary_classification_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     sigmoid = ast.SigmoidExpr(
@@ -40,11 +41,10 @@ def test_binary_classification():
 
 
 def test_multi_class():
-    estimator = lightgbm.LGBMClassifier(n_estimators=1, random_state=1,
-                                        max_depth=1)
+    estimator = lgb.LGBMClassifier(n_estimators=1, random_state=1, max_depth=1)
     estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     num_expr = ast.NumVal(-1.0986122886681098)
@@ -54,11 +54,10 @@ def test_multi_class():
 
 
 def test_regression():
-    estimator = lightgbm.LGBMRegressor(n_estimators=2, random_state=1,
-                                       max_depth=1)
+    estimator = lgb.LGBMRegressor(n_estimators=2, random_state=1, max_depth=1)
     utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -82,12 +81,11 @@ def test_regression():
 
 
 def test_regression_random_forest():
-    estimator = lightgbm.LGBMRegressor(boosting_type="rf", n_estimators=2,
-                                       random_state=1, max_depth=1,
-                                       subsample=0.7, subsample_freq=1)
+    estimator = lgb.LGBMRegressor(boosting_type="rf", n_estimators=2, random_state=1,
+                                  max_depth=1, subsample=0.7, subsample_freq=1)
     utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -114,11 +112,10 @@ def test_regression_random_forest():
 
 
 def test_regression_with_negative_values():
-    estimator = lightgbm.LGBMRegressor(n_estimators=3, random_state=1,
-                                       max_depth=1)
+    estimator = lgb.LGBMRegressor(n_estimators=3, random_state=1, max_depth=1)
     utils.get_regression_w_missing_values_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -151,11 +148,10 @@ def test_regression_with_negative_values():
 
 
 def test_simple_sigmoid_output_transform():
-    estimator = lightgbm.LGBMRegressor(n_estimators=2, random_state=1,
-                                       max_depth=1, objective="cross_entropy")
+    estimator = lgb.LGBMRegressor(n_estimators=2, random_state=1, max_depth=1, objective="cross_entropy")
     utils.get_bounded_regression_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.SigmoidExpr(
@@ -180,12 +176,10 @@ def test_simple_sigmoid_output_transform():
 
 
 def test_log1p_exp_output_transform():
-    estimator = lightgbm.LGBMRegressor(n_estimators=2, random_state=1,
-                                       max_depth=1,
-                                       objective="cross_entropy_lambda")
+    estimator = lgb.LGBMRegressor(n_estimators=2, random_state=1, max_depth=1, objective="cross_entropy_lambda")
     utils.get_bounded_regression_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.Log1pExpr(
@@ -211,12 +205,10 @@ def test_log1p_exp_output_transform():
 
 
 def test_maybe_sqr_output_transform():
-    estimator = lightgbm.LGBMRegressor(n_estimators=2, random_state=1,
-                                       max_depth=1, reg_sqrt=True,
-                                       objective="regression_l1")
+    estimator = lgb.LGBMRegressor(n_estimators=2, random_state=1, max_depth=1, reg_sqrt=True, objective="regression_l1")
     utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     raw_output = ast.IdExpr(
@@ -247,11 +239,10 @@ def test_maybe_sqr_output_transform():
 
 
 def test_exp_output_transform():
-    estimator = lightgbm.LGBMRegressor(n_estimators=2, random_state=1,
-                                       max_depth=1, objective="poisson")
+    estimator = lgb.LGBMRegressor(n_estimators=2, random_state=1, max_depth=1, objective="poisson")
     utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.ExpExpr(
@@ -276,11 +267,10 @@ def test_exp_output_transform():
 
 
 def test_bin_class_sigmoid_output_transform():
-    estimator = lightgbm.LGBMClassifier(n_estimators=1, random_state=1,
-                                        max_depth=1, sigmoid=0.5)
+    estimator = lgb.LGBMClassifier(n_estimators=1, random_state=1, max_depth=1, sigmoid=0.5)
     utils.get_binary_classification_model_trainer()(estimator)
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     sigmoid = ast.SigmoidExpr(
@@ -304,12 +294,10 @@ def test_bin_class_sigmoid_output_transform():
 
 
 def test_multi_class_sigmoid_output_transform():
-    estimator = lightgbm.LGBMClassifier(n_estimators=1, random_state=1,
-                                        max_depth=1, sigmoid=0.5,
-                                        objective="ovr")
+    estimator = lgb.LGBMClassifier(n_estimators=1, random_state=1, max_depth=1, sigmoid=0.5, objective="ovr")
     estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
 
-    assembler = assemblers.LightGBMModelAssembler(estimator)
+    assembler = LightGBMModelAssembler(estimator)
     actual = assembler.assemble()
 
     sigmoid = ast.SigmoidExpr(

@@ -1,5 +1,6 @@
 import json
 import math
+
 import numpy as np
 
 from m2cgen import ast

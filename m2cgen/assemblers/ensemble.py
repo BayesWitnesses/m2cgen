@@ -1,11 +1,13 @@
 from m2cgen import ast
-from m2cgen.assemblers import utils, TreeModelAssembler
 from m2cgen.assemblers.base import ModelAssembler
 
 
 class RandomForestModelAssembler(ModelAssembler):
 
     def assemble(self):
+        # import here to avoid circular import error
+        from m2cgen.assemblers import TreeModelAssembler, utils
+
         trees = self.model.estimators_
 
         def assemble_tree_expr(t):

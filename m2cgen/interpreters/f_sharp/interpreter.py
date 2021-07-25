@@ -1,14 +1,15 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import mixins, utils
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.f_sharp.code_generator import FSharpCodeGenerator
 from m2cgen.interpreters.interpreter import FunctionalToCodeInterpreter
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin
+from m2cgen.interpreters.utils import get_file_content
 
 
 class FSharpInterpreter(FunctionalToCodeInterpreter,
-                        mixins.LinearAlgebraMixin,
-                        mixins.BinExpressionDepthTrackingMixin):
+                        LinearAlgebraMixin,
+                        BinExpressionDepthTrackingMixin):
 
     # Too long lines causes F# compiler to crash with
     # error FS0193 : internal error :
@@ -18,11 +19,11 @@ class FSharpInterpreter(FunctionalToCodeInterpreter,
     bin_depth_threshold = 250
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "addVectors",
+        BinNumOpType.ADD: "addVectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mulVectorNumber",
+        BinNumOpType.MUL: "mulVectorNumber",
     }
 
     abs_function_name = "abs"
@@ -61,19 +62,19 @@ class FSharpInterpreter(FunctionalToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.fs"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_log1p_expr:
             filename = current_dir / "log1p.fs"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.fs"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.fs"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         return self._cg.finalize_and_get_generated_code()
 

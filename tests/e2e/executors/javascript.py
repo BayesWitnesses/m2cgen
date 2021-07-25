@@ -2,6 +2,7 @@ from py_mini_racer import py_mini_racer
 
 from m2cgen import export_to_javascript
 from m2cgen.interpreters.utils import get_file_content
+
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
 

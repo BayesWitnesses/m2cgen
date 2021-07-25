@@ -1,19 +1,20 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import mixins, utils
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.utils import get_file_content
 from m2cgen.interpreters.visual_basic.code_generator import VisualBasicCodeGenerator
 
 
 class VisualBasicInterpreter(ImperativeToCodeInterpreter,
-                             mixins.LinearAlgebraMixin):
+                             LinearAlgebraMixin):
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "AddVectors",
+        BinNumOpType.ADD: "AddVectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "MulVectorNumber",
+        BinNumOpType.MUL: "MulVectorNumber",
     }
 
     abs_function_name = "Math.Abs"
@@ -57,28 +58,28 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.bas"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_atan_expr:
             filename = current_dir / "atan.bas"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_log1p_expr:
             filename = current_dir / "log1p.bas"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.bas"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.bas"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         # Use own Tanh function in order to be compatible with both VB and VBA
         if self.with_tanh_expr:
             filename = current_dir / "tanh.bas"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         self._cg.prepend_code_line(self._cg.tpl_module_definition(
             module_name=self.module_name))

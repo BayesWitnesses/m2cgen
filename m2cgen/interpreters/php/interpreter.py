@@ -1,20 +1,21 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import mixins, utils
-from m2cgen.interpreters.php.code_generator import PhpCodeGenerator
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.php.code_generator import PhpCodeGenerator
+from m2cgen.interpreters.utils import get_file_content
 
 
 class PhpInterpreter(ImperativeToCodeInterpreter,
-                     mixins.LinearAlgebraMixin):
+                     LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "addVectors",
+        BinNumOpType.ADD: "addVectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mulVectorNumber",
+        BinNumOpType.MUL: "mulVectorNumber",
     }
 
     abs_function_name = "abs"
@@ -51,15 +52,15 @@ class PhpInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.php"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.php"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.php"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         self._cg.prepend_code_line("<?php")
 

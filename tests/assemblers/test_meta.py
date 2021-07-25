@@ -1,20 +1,20 @@
 import pytest
-from sklearn import linear_model
 from sklearn.dummy import DummyRegressor
+from sklearn.linear_model import RANSACRegressor
 from sklearn.tree import DecisionTreeRegressor
 
-from m2cgen import assemblers, ast
-from tests import utils
+from m2cgen import ast
+from m2cgen.assemblers import RANSACModelAssembler
+
+from tests.utils import cmp_exprs
 
 
 def test_ransac_custom_base_estimator():
     base_estimator = DecisionTreeRegressor()
-    estimator = linear_model.RANSACRegressor(
-        base_estimator=base_estimator,
-        random_state=1)
+    estimator = RANSACRegressor(base_estimator=base_estimator, random_state=1)
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 
-    assembler = assemblers.RANSACModelAssembler(estimator)
+    assembler = RANSACModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.IfExpr(
@@ -25,16 +25,14 @@ def test_ransac_custom_base_estimator():
         ast.NumVal(2.0),
         ast.NumVal(3.0))
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 @pytest.mark.xfail(raises=NotImplementedError, strict=True)
 def test_ransac_unknown_base_estimator():
     base_estimator = DummyRegressor()
-    estimator = linear_model.RANSACRegressor(
-        base_estimator=base_estimator,
-        random_state=1)
+    estimator = RANSACRegressor(base_estimator=base_estimator, random_state=1)
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 
-    assembler = assemblers.RANSACModelAssembler(estimator)
+    assembler = RANSACModelAssembler(estimator)
     assembler.assemble()

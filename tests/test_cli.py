@@ -1,13 +1,14 @@
 import io
 import pickle
 import sys
-
-from _pytest import capture
-from sklearn import linear_model
 from unittest import mock
 
-from m2cgen import cli, __version__
-from tests import utils
+from _pytest import capture
+from sklearn.linear_model import LinearRegression
+
+from m2cgen import __version__, cli
+
+from tests.utils import get_regression_model_trainer, verify_python_model_is_expected
 
 
 def _get_mock_args(indent=4, function_name=None, namespace=None,
@@ -21,8 +22,8 @@ def _get_mock_args(indent=4, function_name=None, namespace=None,
 
 
 def _get_pickled_trained_model():
-    estimator = linear_model.LinearRegression()
-    utils.get_regression_model_trainer()(estimator)
+    estimator = LinearRegression()
+    get_regression_model_trainer()(estimator)
 
     infile = io.BytesIO()
     pickle.dump(estimator, infile)
@@ -90,7 +91,7 @@ def test_generate_code():
     mock_args = _get_mock_args(infile=infile, language="python")
     generated_code = cli.generate_code(mock_args)
 
-    utils.verify_python_model_is_expected(
+    verify_python_model_is_expected(
         generated_code,
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
         expected_output=-44.40540274041321)
@@ -164,7 +165,7 @@ def test_unsupported_args_are_ignored():
         package_name="foo.bar.baz")
     generated_code = cli.generate_code(mock_args)
 
-    utils.verify_python_model_is_expected(
+    verify_python_model_is_expected(
         generated_code,
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
         expected_output=-44.40540274041321)

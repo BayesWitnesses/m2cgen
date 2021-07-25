@@ -9,16 +9,16 @@ The structure of the exported code will be:
 <absolute_path_to_folder>/<language>/<model_type><model_name>.<language_ext>
 """
 import sys
-import itertools
+from itertools import product
 from pathlib import Path
 
-import lightgbm
-import xgboost
-from sklearn import linear_model, tree, ensemble, svm
+import lightgbm as lgb
+import xgboost as xgb
+from sklearn import ensemble, linear_model, svm, tree
 
 import m2cgen as m2c
-from tests import utils
 
+from tests import utils
 
 RECURSION_LIMIT = 5000
 
@@ -81,22 +81,22 @@ EXAMPLE_MODELS = [
     ),
     (
         "regression", "xgboost",
-        xgboost.XGBRegressor(**XGBOOST_PARAMS),
+        xgb.XGBRegressor(**XGBOOST_PARAMS),
         utils.get_regression_model_trainer(),
     ),
     (
         "classification", "xgboost",
-        xgboost.XGBClassifier(**XGBOOST_PARAMS),
+        xgb.XGBClassifier(**XGBOOST_PARAMS),
         utils.get_classification_model_trainer(),
     ),
     (
         "regression", "lightgbm",
-        lightgbm.LGBMRegressor(**LIGHTGBM_PARAMS),
+        lgb.LGBMRegressor(**LIGHTGBM_PARAMS),
         utils.get_regression_model_trainer(),
     ),
     (
         "classification", "lightgbm",
-        lightgbm.LGBMClassifier(**LIGHTGBM_PARAMS),
+        lgb.LGBMClassifier(**LIGHTGBM_PARAMS),
         utils.get_classification_model_trainer(),
     ),
     (
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
     export_folder = Path(sys.argv[1]).absolute()
 
-    prod = itertools.product(EXAMPLE_LANGUAGES, EXAMPLE_MODELS)
+    prod = product(EXAMPLE_LANGUAGES, EXAMPLE_MODELS)
     for (language, exporter, file_ext), (mtype, mname, model, trainer) in prod:
         trainer(model)
 

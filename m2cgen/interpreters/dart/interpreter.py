@@ -1,21 +1,22 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import mixins, utils
-from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.dart.code_generator import DartCodeGenerator
+from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin
+from m2cgen.interpreters.utils import get_file_content
 
 
 class DartInterpreter(ImperativeToCodeInterpreter,
-                      mixins.LinearAlgebraMixin,
-                      mixins.BinExpressionDepthTrackingMixin):
+                      LinearAlgebraMixin,
+                      BinExpressionDepthTrackingMixin):
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "addVectors",
+        BinNumOpType.ADD: "addVectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mulVectorNumber",
+        BinNumOpType.MUL: "mulVectorNumber",
     }
 
     bin_depth_threshold = 465
@@ -60,23 +61,23 @@ class DartInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.dart"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_log1p_expr:
             filename = current_dir / "log1p.dart"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.dart"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.dart"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_tanh_expr:
             filename = current_dir / "tanh.dart"
-            self._cg.add_code_lines(utils.get_file_content(filename))
+            self._cg.add_code_lines(get_file_content(filename))
 
         if self.with_math_module:
             self._cg.add_dependency("dart:math")

@@ -1,5 +1,5 @@
-import sys
 import math
+import sys
 from collections import namedtuple
 
 from m2cgen import ast

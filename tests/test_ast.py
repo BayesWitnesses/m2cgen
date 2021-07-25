@@ -1,4 +1,5 @@
 from copy import deepcopy
+
 import numpy as np
 
 from m2cgen import ast

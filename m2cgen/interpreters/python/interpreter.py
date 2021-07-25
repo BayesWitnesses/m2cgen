@@ -1,24 +1,25 @@
 from pathlib import Path
 
-from m2cgen import ast
-from m2cgen.interpreters import mixins, utils
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin
 from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
+from m2cgen.interpreters.utils import get_file_content
 
 
 class PythonInterpreter(ImperativeToCodeInterpreter,
-                        mixins.BinExpressionDepthTrackingMixin,
-                        mixins.LinearAlgebraMixin):
+                        BinExpressionDepthTrackingMixin,
+                        LinearAlgebraMixin):
 
     # 60 raises MemoryError for some SVM models with RBF kernel.
     bin_depth_threshold = 55
 
     supported_bin_vector_ops = {
-        ast.BinNumOpType.ADD: "add_vectors",
+        BinNumOpType.ADD: "add_vectors",
     }
 
     supported_bin_vector_num_ops = {
-        ast.BinNumOpType.MUL: "mul_vector_number",
+        BinNumOpType.MUL: "mul_vector_number",
     }
 
     abs_function_name = "abs"
@@ -55,15 +56,15 @@ class PythonInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_linear_algebra:
             filename = current_dir / "linear_algebra.py"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.py"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.py"
-            self._cg.prepend_code_lines(utils.get_file_content(filename))
+            self._cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_math_module:
             self._cg.add_dependency("math")

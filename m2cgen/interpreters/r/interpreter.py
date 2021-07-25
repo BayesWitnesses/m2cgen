@@ -1,14 +1,15 @@
 from pathlib import Path
 
-from m2cgen.interpreters import mixins, utils
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, SubroutinesMixin
 from m2cgen.interpreters.r.code_generator import RCodeGenerator
+from m2cgen.interpreters.utils import get_file_content
 
 
 class RInterpreter(ImperativeToCodeInterpreter,
-                   mixins.LinearAlgebraMixin,
-                   mixins.BinExpressionDepthTrackingMixin,
-                   mixins.SubroutinesMixin):
+                   LinearAlgebraMixin,
+                   BinExpressionDepthTrackingMixin,
+                   SubroutinesMixin):
 
     # R doesn't allow to have more than 50 nested if, [, [[, {, ( calls.
     # It raises contextstack overflow error not only for explicitly nested
@@ -53,11 +54,11 @@ class RInterpreter(ImperativeToCodeInterpreter,
 
         if self.with_softmax_expr:
             filename = current_dir / "softmax.r"
-            top_cg.prepend_code_lines(utils.get_file_content(filename))
+            top_cg.prepend_code_lines(get_file_content(filename))
 
         if self.with_sigmoid_expr:
             filename = current_dir / "sigmoid.r"
-            top_cg.prepend_code_lines(utils.get_file_content(filename))
+            top_cg.prepend_code_lines(get_file_content(filename))
 
         return top_cg.finalize_and_get_generated_code()
 

@@ -1,13 +1,11 @@
+import math
 import re
+from collections import namedtuple
+from functools import lru_cache
 
 import numpy as np
 
-from collections import namedtuple
-from functools import lru_cache
-from math import ceil, log
-
 from m2cgen.ast import TOTAL_NUMBER_OF_EXPRESSIONS
-
 
 CachedResult = namedtuple('CachedResult', ['var_name', 'expr_result'])
 
@@ -16,7 +14,7 @@ def get_file_content(path):
     return path.read_text(encoding="utf-8")
 
 
-@lru_cache(maxsize=1 << ceil(log(TOTAL_NUMBER_OF_EXPRESSIONS, 2)))
+@lru_cache(maxsize=1 << math.ceil(math.log(TOTAL_NUMBER_OF_EXPRESSIONS, 2)))
 def _get_handler_name(expr_tpe):
     return f"interpret_{_normalize_expr_name(expr_tpe.__name__)}"
 

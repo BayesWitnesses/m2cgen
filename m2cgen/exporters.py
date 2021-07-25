@@ -1,4 +1,5 @@
-from m2cgen import assemblers, interpreters
+from m2cgen import interpreters
+from m2cgen.assemblers import get_assembler_cls
 
 
 def export_to_java(model, package_name=None, class_name="Model", indent=4,
@@ -426,6 +427,6 @@ def export_to_rust(model, indent=4, function_name="score"):
 
 
 def _export(model, interpreter):
-    assembler_cls = assemblers.get_assembler_cls(model)
+    assembler_cls = get_assembler_cls(model)
     model_ast = assembler_cls(model).assemble()
     return interpreter.interpret(model_ast)

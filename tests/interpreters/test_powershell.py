@@ -1,6 +1,7 @@
 from m2cgen import ast
 from m2cgen.interpreters import PowershellInterpreter
-from tests import utils
+
+from tests.utils import assert_code_equal
 
 
 def test_if_expr():
@@ -22,7 +23,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -39,7 +40,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -52,10 +53,8 @@ def test_dependable_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
     bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
-
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
@@ -77,7 +76,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -90,11 +89,8 @@ def test_nested_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     bool_test = ast.CompExpr(ast.NumVal(1), left, ast.CompOpType.EQ)
-
     expr_nested = ast.IfExpr(bool_test, ast.FeatureRef(2), ast.NumVal(2))
-
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
@@ -126,7 +122,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_raw_array():
@@ -139,7 +135,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -164,7 +160,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -196,7 +192,7 @@ function Mul-Vector-Number([double[]] $v1, [double] $num) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -228,7 +224,7 @@ function Mul-Vector-Number([double[]] $v1, [double] $num) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_abs_expr():
@@ -241,7 +237,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
@@ -254,7 +250,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
@@ -267,7 +263,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sqrt_expr():
@@ -280,7 +276,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
@@ -293,7 +289,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log_expr():
@@ -306,7 +302,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log1p_expr():
@@ -367,7 +363,7 @@ function Chebyshev-Broucke([double] $x, [double[]] $coeffs) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_atan_expr():
@@ -380,7 +376,7 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_softmax_expr():
@@ -412,7 +408,7 @@ function Softmax([double[]] $x) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sigmoid_expr():
@@ -432,7 +428,7 @@ function Sigmoid([double] $x) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():
@@ -448,4 +444,4 @@ function Score([double[]] $InputVector) {
 """
 
     interpreter = PowershellInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)

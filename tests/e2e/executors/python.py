@@ -1,9 +1,10 @@
-import importlib
 import sys
+from importlib import import_module
 
 from m2cgen import export_to_python
-from tests import utils
+
 from tests.e2e.executors.base import BaseExecutor
+from tests.utils import write_content_to_file
 
 
 class PythonExecutor(BaseExecutor):
@@ -20,7 +21,7 @@ class PythonExecutor(BaseExecutor):
         sys.path.append(str(parent_dir))
 
         try:
-            score = importlib.import_module(f"{package}.model").score
+            score = import_module(f"{package}.model").score
         finally:
             sys.path.pop()
 
@@ -31,4 +32,4 @@ class PythonExecutor(BaseExecutor):
         code = export_to_python(self.model)
 
         file_name = self._resource_tmp_dir / "model.py"
-        utils.write_content_to_file(code, file_name)
+        write_content_to_file(code, file_name)

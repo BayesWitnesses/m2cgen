@@ -1,4 +1,6 @@
-from m2cgen import assemblers, interpreters
+from m2cgen.assemblers import get_assembler_cls
+from m2cgen.interpreters import PhpInterpreter
+
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
 
@@ -30,9 +32,9 @@ class PhpExecutor(BaseExecutor):
     def __init__(self, model):
         self.model_name = "model"
         self.model = model
-        self.interpreter = interpreters.PhpInterpreter()
+        self.interpreter = PhpInterpreter()
 
-        assembler_cls = assemblers.get_assembler_cls(model)
+        assembler_cls = get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
         self.executor_name = "score"

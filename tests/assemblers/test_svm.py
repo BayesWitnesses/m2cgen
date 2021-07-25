@@ -1,33 +1,35 @@
-import pytest
 import numpy as np
-from sklearn import svm
+import pytest
 from lightning.classification import KernelSVC
+from sklearn.svm import SVC
 
-from m2cgen import assemblers, ast
-from tests import utils
+from m2cgen import ast
+from m2cgen.assemblers import LightningSVMModelAssembler, SklearnSVMModelAssembler
+
+from tests.utils import cmp_exprs
 
 
 def test_rbf_kernel():
-    estimator = svm.SVC(kernel="rbf", random_state=1, gamma=2.0)
+    estimator = SVC(kernel="rbf", random_state=1, gamma=2.0)
 
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = assemblers.SklearnSVMModelAssembler(estimator)
+    assembler = SklearnSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
     kernels = [_rbf_kernel_ast(estimator, 1.), _rbf_kernel_ast(estimator, 2.)]
     expected = _create_expected_single_output_ast(
         estimator.dual_coef_, estimator.intercept_, kernels)
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_linear_kernel():
-    estimator = svm.SVC(kernel="linear", random_state=1)
+    estimator = SVC(kernel="linear", random_state=1)
 
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = assemblers.SklearnSVMModelAssembler(estimator)
+    assembler = SklearnSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
@@ -40,15 +42,15 @@ def test_linear_kernel():
         estimator.dual_coef_, estimator.intercept_,
         [kernel_ast(1.0), kernel_ast(2.0)])
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_sigmoid_kernel():
-    estimator = svm.SVC(kernel="sigmoid", random_state=1, gamma=2.0)
+    estimator = SVC(kernel="sigmoid", random_state=1, gamma=2.0)
 
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = assemblers.SklearnSVMModelAssembler(estimator)
+    assembler = SklearnSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
@@ -68,15 +70,15 @@ def test_sigmoid_kernel():
         estimator.dual_coef_, estimator.intercept_,
         [kernel_ast(1.0), kernel_ast(2.0)])
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_poly_kernel():
-    estimator = svm.SVC(kernel="poly", random_state=1, gamma=2.0, degree=2)
+    estimator = SVC(kernel="poly", random_state=1, gamma=2.0, degree=2)
 
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = assemblers.SklearnSVMModelAssembler(estimator)
+    assembler = SklearnSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
@@ -97,7 +99,7 @@ def test_poly_kernel():
         estimator.dual_coef_, estimator.intercept_,
         [kernel_ast(1.0), kernel_ast(2.0)])
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_cosine_kernel():
@@ -105,7 +107,7 @@ def test_cosine_kernel():
 
     estimator.fit(np.array([[1], [2]]), [1, 2])
 
-    assembler = assemblers.LightningSVMModelAssembler(estimator)
+    assembler = LightningSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
     def kernel_ast(sup_vec_value):
@@ -133,25 +135,25 @@ def test_cosine_kernel():
         estimator.coef_, estimator.intercept_,
         [kernel_ast(1.0), kernel_ast(1.0)])
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 @pytest.mark.xfail(raises=ValueError, strict=True)
 def test_unknown_kernel():
-    estimator = svm.SVC(kernel=lambda x, y: np.transpose(x) * y)
+    estimator = SVC(kernel=lambda x, y: np.transpose(x) * y)
 
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = assemblers.SklearnSVMModelAssembler(estimator)
+    assembler = SklearnSVMModelAssembler(estimator)
     assembler.assemble()
 
 
 def test_multi_class_rbf_kernel():
-    estimator = svm.SVC(kernel="rbf", random_state=1, gamma=2.0)
+    estimator = SVC(kernel="rbf", random_state=1, gamma=2.0)
 
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 
-    assembler = assemblers.SklearnSVMModelAssembler(estimator)
+    assembler = SklearnSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
     kernels = [
@@ -200,7 +202,7 @@ def test_multi_class_rbf_kernel():
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD)])
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_lightning_multi_class_rbf_kernel():
@@ -208,7 +210,7 @@ def test_lightning_multi_class_rbf_kernel():
 
     estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
 
-    assembler = assemblers.LightningSVMModelAssembler(estimator)
+    assembler = LightningSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
     kernels = [
@@ -275,7 +277,7 @@ def test_lightning_multi_class_rbf_kernel():
                 ast.BinNumOpType.MUL),
             ast.BinNumOpType.ADD)])
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def _create_expected_single_output_ast(coef, intercept, kernels_ast):

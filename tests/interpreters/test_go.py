@@ -1,6 +1,7 @@
 from m2cgen import ast
 from m2cgen.interpreters import GoInterpreter
-from tests import utils
+
+from tests.utils import assert_code_equal
 
 
 def test_if_expr():
@@ -8,8 +9,6 @@ def test_if_expr():
         ast.CompExpr(ast.NumVal(1), ast.FeatureRef(0), ast.CompOpType.EQ),
         ast.NumVal(2),
         ast.NumVal(3))
-
-    interpreter = GoInterpreter()
 
     expected_code = """
 func score(input []float64) float64 {
@@ -20,8 +19,11 @@ func score(input []float64) float64 {
         var0 = 3.0
     }
     return var0
-}"""
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+}
+"""
+
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -31,13 +33,14 @@ def test_bin_num_expr():
         ast.NumVal(2),
         ast.BinNumOpType.MUL)
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 func score(input []float64) float64 {
     return ((input[0]) / (-2.0)) * (2.0)
-}"""
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+}
+"""
+
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -50,10 +53,8 @@ def test_dependable_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
     bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
-
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
@@ -71,10 +72,11 @@ func score(input []float64) float64 {
         var0 = input[0]
     }
     return var0
-}"""
+}
+"""
 
     interpreter = GoInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -87,11 +89,8 @@ def test_nested_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     bool_test = ast.CompExpr(ast.NumVal(1), left, ast.CompOpType.EQ)
-
     expr_nested = ast.IfExpr(bool_test, ast.FeatureRef(2), ast.NumVal(2))
-
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
@@ -119,9 +118,11 @@ func score(input []float64) float64 {
         var0 = 2.0
     }
     return var0
-}"""
+}
+"""
+
     interpreter = GoInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_raw_array():
@@ -130,9 +131,11 @@ def test_raw_array():
     expected_code = """
 func score(input []float64) []float64 {
     return []float64{3.0, 4.0}
-}"""
+}
+"""
+
     interpreter = GoInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -153,9 +156,11 @@ func score(input []float64) []float64 {
         var0 = []float64{3.0, 4.0}
     }
     return var0
-}"""
+}
+"""
+
     interpreter = GoInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -163,8 +168,6 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
-
-    interpreter = GoInterpreter()
 
     expected_code = """
 func score(input []float64) []float64 {
@@ -183,8 +186,11 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
         result[i] = v1[i] * num
     }
     return result
-}"""
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+}
+"""
+
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -192,8 +198,6 @@ def test_bin_vector_num_expr():
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.NumVal(1),
         ast.BinNumOpType.MUL)
-
-    interpreter = GoInterpreter()
 
     expected_code = """
 func score(input []float64) []float64 {
@@ -212,126 +216,127 @@ func mulVectorNumber(v1 []float64, num float64) []float64 {
         result[i] = v1[i] * num
     }
     return result
-}"""
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+}
+"""
+
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_abs_expr():
     expr = ast.AbsExpr(ast.NumVal(-1.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Abs(-1.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
     expr = ast.ExpExpr(ast.NumVal(1.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Exp(1.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
     expr = ast.PowExpr(ast.NumVal(2.0), ast.NumVal(3.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Pow(2.0, 3.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sqrt_expr():
     expr = ast.SqrtExpr(ast.NumVal(2.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Sqrt(2.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
     expr = ast.TanhExpr(ast.NumVal(2.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Tanh(2.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log_expr():
     expr = ast.LogExpr(ast.NumVal(2.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Log(2.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log1p_expr():
     expr = ast.Log1pExpr(ast.NumVal(2.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Log1p(2.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_atan_expr():
     expr = ast.AtanExpr(ast.NumVal(2.0))
 
-    interpreter = GoInterpreter()
-
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     return math.Atan(2.0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_softmax_expr():
     expr = ast.SoftmaxExpr([ast.NumVal(2.0), ast.NumVal(3.0)])
-
-    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -356,15 +361,15 @@ func softmax(x []float64) []float64 {
         result[i] /= sum
     }
     return result
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sigmoid_expr():
     expr = ast.SigmoidExpr(ast.NumVal(2.0))
-
-    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -377,16 +382,16 @@ func sigmoid(x float64) float64 {
         return z / (1.0 + z)
     }
     return 1.0 / (1.0 + math.Exp(-x))
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
     expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
-
-    interpreter = GoInterpreter()
 
     expected_code = """
 import "math"
@@ -394,6 +399,8 @@ func score(input []float64) float64 {
     var var0 float64
     var0 = math.Exp(1.0)
     return (var0) / (var0)
-}"""
+}
+"""
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = GoInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)

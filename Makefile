@@ -14,10 +14,10 @@ docker-test-unit:
 docker-generate-examples:
 	$(DOCKER_RUN_ARGS) bash -c "python setup.py develop && python tools/generate_code_examples.py generated_code_examples"
 
-docker-flake8:
-	$(DOCKER_RUN_ARGS) bash -c "flake8 ."
+docker-lint:
+	$(DOCKER_RUN_ARGS) bash -c "flake8 . && isort . --check-only"
 
 docker-shell:
 	$(DOCKER_RUN_ARGS) bash
 
-docker-pre-pr: docker-flake8 docker-test-all
+docker-pre-pr: docker-lint docker-test-all

@@ -1,12 +1,13 @@
-import pytest
 import numpy as np
+import pytest
 import statsmodels.api as sm
-from statsmodels.regression.process_regression import ProcessMLE
-from lightning.regression import AdaGradRegressor
 from lightning.classification import AdaGradClassifier
+from lightning.regression import AdaGradRegressor
 from sklearn import linear_model
+from statsmodels.regression.process_regression import ProcessMLE
 
 from m2cgen import assemblers, ast
+
 from tests import utils
 
 
@@ -706,8 +707,7 @@ def test_statsmodels_glm_unknown_link_func():
 
 
 def test_sklearn_glm_identity_link_func():
-    estimator = linear_model.TweedieRegressor(
-        power=0, link="identity", max_iter=10)
+    estimator = linear_model.TweedieRegressor(power=0, link="identity", max_iter=10)
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
     assembler = assemblers.SklearnGLMModelAssembler(estimator)
@@ -725,8 +725,7 @@ def test_sklearn_glm_identity_link_func():
 
 
 def test_sklearn_glm_log_link_func():
-    estimator = linear_model.TweedieRegressor(
-        power=1, link="log", fit_intercept=False, max_iter=10)
+    estimator = linear_model.TweedieRegressor(power=1, link="log", fit_intercept=False, max_iter=10)
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
     assembler = assemblers.SklearnGLMModelAssembler(estimator)
@@ -746,8 +745,7 @@ def test_sklearn_glm_log_link_func():
 
 @pytest.mark.xfail(raises=ValueError, strict=True)
 def test_sklearn_glm_unknown_link_func():
-    estimator = linear_model.TweedieRegressor(
-        power=1, link="this_link_func_does_not_exist", max_iter=10)
+    estimator = linear_model.TweedieRegressor(power=1, link="this_link_func_does_not_exist", max_iter=10)
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
     assembler = assemblers.SklearnGLMModelAssembler(estimator)

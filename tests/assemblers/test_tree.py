@@ -1,15 +1,17 @@
-from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
-from m2cgen import assemblers, ast
-from tests import utils
+from m2cgen import ast
+from m2cgen.assemblers import TreeModelAssembler
+
+from tests.utils import cmp_exprs
 
 
 def test_single_condition():
-    estimator = tree.DecisionTreeRegressor()
+    estimator = DecisionTreeRegressor()
 
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = assemblers.TreeModelAssembler(estimator)
+    assembler = TreeModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.IfExpr(
@@ -20,15 +22,15 @@ def test_single_condition():
         ast.NumVal(1.0),
         ast.NumVal(2.0))
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_two_conditions():
-    estimator = tree.DecisionTreeRegressor()
+    estimator = DecisionTreeRegressor()
 
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 
-    assembler = assemblers.TreeModelAssembler(estimator)
+    assembler = TreeModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.IfExpr(
@@ -45,15 +47,15 @@ def test_two_conditions():
             ast.NumVal(2.0),
             ast.NumVal(3.0)))
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_multi_class():
-    estimator = tree.DecisionTreeClassifier()
+    estimator = DecisionTreeClassifier()
 
     estimator.fit([[1], [2], [3]], [0, 1, 2])
 
-    assembler = assemblers.TreeModelAssembler(estimator)
+    assembler = TreeModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.IfExpr(
@@ -79,4 +81,4 @@ def test_multi_class():
                 ast.NumVal(0.0),
                 ast.NumVal(1.0)])))
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)

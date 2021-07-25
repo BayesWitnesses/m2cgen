@@ -1,15 +1,17 @@
-from sklearn import ensemble
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
-from m2cgen import assemblers, ast
-from tests import utils
+from m2cgen import ast
+from m2cgen.assemblers import RandomForestModelAssembler
+
+from tests.utils import cmp_exprs
 
 
 def test_single_condition():
-    estimator = ensemble.RandomForestRegressor(n_estimators=2, random_state=1)
+    estimator = RandomForestRegressor(n_estimators=2, random_state=1)
 
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = assemblers.RandomForestModelAssembler(estimator)
+    assembler = RandomForestModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -26,15 +28,15 @@ def test_single_condition():
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_two_conditions():
-    estimator = ensemble.RandomForestRegressor(n_estimators=2, random_state=13)
+    estimator = RandomForestRegressor(n_estimators=2, random_state=13)
 
     estimator.fit([[1], [2], [3]], [1, 2, 3])
 
-    assembler = assemblers.RandomForestModelAssembler(estimator)
+    assembler = RandomForestModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinNumExpr(
@@ -57,16 +59,15 @@ def test_two_conditions():
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)
 
 
 def test_multi_class():
-    estimator = ensemble.RandomForestClassifier(
-        n_estimators=2, random_state=13)
+    estimator = RandomForestClassifier(n_estimators=2, random_state=13)
 
     estimator.fit([[1], [2], [3]], [1, -1, 1])
 
-    assembler = assemblers.RandomForestModelAssembler(estimator)
+    assembler = RandomForestModelAssembler(estimator)
     actual = assembler.assemble()
 
     expected = ast.BinVectorNumExpr(
@@ -97,4 +98,4 @@ def test_multi_class():
         ast.NumVal(0.5),
         ast.BinNumOpType.MUL)
 
-    assert utils.cmp_exprs(actual, expected)
+    assert cmp_exprs(actual, expected)

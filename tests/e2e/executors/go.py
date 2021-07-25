@@ -1,6 +1,8 @@
 import subprocess
 
-from m2cgen import assemblers, interpreters
+from m2cgen.assemblers import get_assembler_cls
+from m2cgen.interpreters import GoInterpreter
+
 from tests import utils
 from tests.e2e.executors.base import BaseExecutor
 
@@ -44,9 +46,9 @@ class GoExecutor(BaseExecutor):
     def __init__(self, model):
         self.model_name = "score"
         self.model = model
-        self.interpreter = interpreters.GoInterpreter()
+        self.interpreter = GoInterpreter()
 
-        assembler_cls = assemblers.get_assembler_cls(model)
+        assembler_cls = get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
         self.exec_path = None

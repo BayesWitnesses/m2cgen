@@ -1,6 +1,7 @@
 from m2cgen import ast
 from m2cgen.interpreters import CSharpInterpreter
-from tests import utils
+
+from tests.utils import assert_code_equal
 
 
 def test_if_expr():
@@ -26,7 +27,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -47,7 +48,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -60,10 +61,8 @@ def test_dependable_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
     bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
-
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
@@ -89,7 +88,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -102,11 +101,8 @@ def test_nested_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     bool_test = ast.CompExpr(ast.NumVal(1), left, ast.CompOpType.EQ)
-
     expr_nested = ast.IfExpr(bool_test, ast.FeatureRef(2), ast.NumVal(2))
-
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
@@ -142,7 +138,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_namespace():
@@ -159,7 +155,7 @@ namespace ML.Tests {
 """
 
     interpreter = CSharpInterpreter(namespace="ML.Tests")
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_class_name():
@@ -176,7 +172,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter(class_name="TestModel")
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_raw_array():
@@ -193,7 +189,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -222,7 +218,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -231,12 +227,11 @@ def test_bin_vector_expr():
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
         ast.BinNumOpType.ADD)
 
-    expected_code = ("""
+    expected_code = """
 namespace ML {
     public static class Model {
         public static double[] Score(double[] input) {
-            return AddVectors(new double[2] {1.0, 2.0},"""
-                     """ new double[2] {3.0, 4.0});
+            return AddVectors(new double[2] {1.0, 2.0}, new double[2] {3.0, 4.0});
         }
         private static double[] AddVectors(double[] v1, double[] v2) {
             double[] result = new double[v1.Length];
@@ -254,10 +249,10 @@ namespace ML {
         }
     }
 }
-""")
+"""
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -291,7 +286,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_abs_expr():
@@ -309,7 +304,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
@@ -327,7 +322,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
@@ -345,7 +340,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sqrt_expr():
@@ -363,7 +358,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
@@ -381,7 +376,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log_expr():
@@ -399,7 +394,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log1p_expr():
@@ -468,7 +463,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_atan_expr():
@@ -486,7 +481,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_softmax_expr():
@@ -521,7 +516,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sigmoid_expr():
@@ -546,7 +541,7 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():
@@ -567,4 +562,4 @@ namespace ML {
 """
 
     interpreter = CSharpInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)

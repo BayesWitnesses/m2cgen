@@ -1,4 +1,4 @@
-import contextlib
+from contextlib import contextmanager
 
 from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 
@@ -26,13 +26,13 @@ class JavaCodeGenerator(CLikeCodeGenerator):
     def add_package_name(self, package_name):
         self.add_code_line(f"package {package_name};")
 
-    @contextlib.contextmanager
+    @contextmanager
     def class_definition(self, class_name):
         self.add_class_def(class_name)
         yield
         self.add_block_termination()
 
-    @contextlib.contextmanager
+    @contextmanager
     def method_definition(self, name, args, is_vector_output,
                           modifier="public"):
         self.add_method_def(name, args, is_vector_output, modifier=modifier)

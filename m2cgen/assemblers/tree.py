@@ -1,7 +1,6 @@
 from m2cgen import ast
-from m2cgen.assemblers import utils
 from m2cgen.assemblers.base import ModelAssembler
-
+from m2cgen.assemblers.utils import lte
 
 # refer to
 # https://github.com/scikit-learn/scikit-learn/blob/fd12d5684ad224ad7760374b1dcca2821c644feb/sklearn/tree/_tree.pyx#L64
@@ -48,4 +47,4 @@ class TreeModelAssembler(ModelAssembler):
     def _assemble_cond(self, node_id):
         feature_idx = self._tree.feature[node_id]
         threshold_num_val = ast.NumVal(self._tree.threshold[node_id])
-        return utils.lte(ast.FeatureRef(feature_idx), threshold_num_val)
+        return lte(ast.FeatureRef(feature_idx), threshold_num_val)

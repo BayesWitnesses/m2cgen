@@ -1,6 +1,7 @@
 from m2cgen import ast
 from m2cgen.interpreters import RInterpreter
-from tests import utils
+
+from tests.utils import assert_code_equal
 
 
 def test_if_expr():
@@ -21,7 +22,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_num_expr():
@@ -38,7 +39,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_dependable_condition():
@@ -51,10 +52,8 @@ def test_dependable_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     right = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(2), ast.BinNumOpType.DIV)
     bool_test = ast.CompExpr(left, right, ast.CompOpType.GTE)
-
     expr = ast.IfExpr(bool_test, ast.NumVal(1), ast.FeatureRef(0))
 
     expected_code = """
@@ -74,7 +73,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_nested_condition():
@@ -87,11 +86,8 @@ def test_nested_condition():
             ast.NumVal(2)),
         ast.NumVal(2),
         ast.BinNumOpType.ADD)
-
     bool_test = ast.CompExpr(ast.NumVal(1), left, ast.CompOpType.EQ)
-
     expr_nested = ast.IfExpr(bool_test, ast.FeatureRef(2), ast.NumVal(2))
-
     expr = ast.IfExpr(bool_test, expr_nested, ast.NumVal(2))
 
     expected_code = """
@@ -120,7 +116,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_raw_array():
@@ -133,7 +129,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_multi_output():
@@ -157,7 +153,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_expr():
@@ -173,7 +169,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_bin_vector_num_expr():
@@ -189,7 +185,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 class CustomRInterpreter(RInterpreter):
@@ -201,8 +197,6 @@ def test_depth_threshold_with_bin_expr():
     for _ in range(4):
         expr = ast.BinNumExpr(ast.NumVal(1), expr, ast.BinNumOpType.ADD)
 
-    interpreter = CustomRInterpreter()
-
     expected_code = """
 score <- function(input) {
     var0 <- (1.0) + ((1.0) + (1.0))
@@ -210,7 +204,8 @@ score <- function(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = CustomRInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_depth_threshold_without_bin_expr():
@@ -221,8 +216,6 @@ def test_depth_threshold_without_bin_expr():
                 ast.NumVal(1), ast.NumVal(1), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
-
-    interpreter = CustomRInterpreter()
 
     expected_code = """
 score <- function(input) {
@@ -247,7 +240,8 @@ score <- function(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = CustomRInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_deep_mixed_exprs_not_reaching_threshold():
@@ -262,8 +256,6 @@ def test_deep_mixed_exprs_not_reaching_threshold():
                 inner, ast.NumVal(1), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
-
-    interpreter = CustomRInterpreter()
 
     expected_code = """
 score <- function(input) {
@@ -288,7 +280,8 @@ score <- function(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = CustomRInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_deep_mixed_exprs_exceeding_threshold():
@@ -303,11 +296,6 @@ def test_deep_mixed_exprs_exceeding_threshold():
                 inner, ast.NumVal(j), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
-
-    interpreter = RInterpreter()
-    interpreter.bin_depth_threshold = 1
-    interpreter.ast_size_check_frequency = 2
-    interpreter.ast_size_per_subroutine_threshold = 6
 
     expected_code = """
 score <- function(input) {
@@ -356,7 +344,11 @@ subroutine3 <- function(input) {
 }
 """
 
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    interpreter = RInterpreter()
+    interpreter.bin_depth_threshold = 1
+    interpreter.ast_size_check_frequency = 2
+    interpreter.ast_size_per_subroutine_threshold = 6
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_abs_expr():
@@ -369,7 +361,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_exp_expr():
@@ -382,7 +374,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_pow_expr():
@@ -395,7 +387,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sqrt_expr():
@@ -408,7 +400,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_tanh_expr():
@@ -421,7 +413,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log_expr():
@@ -434,7 +426,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_log1p_expr():
@@ -447,7 +439,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_atan_expr():
@@ -460,7 +452,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_softmax_expr():
@@ -479,7 +471,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_sigmoid_expr():
@@ -499,7 +491,7 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
 def test_reused_expr():
@@ -514,4 +506,4 @@ score <- function(input) {
 """
 
     interpreter = RInterpreter()
-    utils.assert_code_equal(interpreter.interpret(expr), expected_code)
+    assert_code_equal(interpreter.interpret(expr), expected_code)
