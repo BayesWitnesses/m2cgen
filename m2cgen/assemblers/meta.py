@@ -1,14 +1,11 @@
-from m2cgen.assemblers.base import ModelAssembler
+from m2cgen import assemblers
 
 
-class BaseMetaAssembler(ModelAssembler):
+class BaseMetaAssembler(assemblers.base.ModelAssembler):
 
     def assemble(self):
-        # import here to avoid circular import error
-        from m2cgen.assemblers import get_assembler_cls
-
         base_model = self._get_base_model()
-        return get_assembler_cls(base_model)(base_model).assemble()
+        return assemblers.get_assembler_cls(base_model)(base_model).assemble()
 
     def _get_base_model(self):
         raise NotImplementedError
