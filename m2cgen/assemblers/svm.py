@@ -141,8 +141,7 @@ class SklearnSVMModelAssembler(BaseSVMModelAssembler):
             )
             for i, support_element in enumerate(support_vector)
         ]
-        kernel = utils.apply_op_to_expressions(ast.BinNumOpType.ADD,
-                                               *elem_wise)
+        kernel = utils.apply_op_to_expressions(ast.BinNumOpType.ADD, *elem_wise)
         kernel = utils.mul(self._neg_gamma_expr, kernel)
         return ast.ExpExpr(kernel)
 

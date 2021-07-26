@@ -17,7 +17,7 @@ from sklearn.base import BaseEstimator, RegressorMixin, clone
 from sklearn.ensemble._forest import BaseForest, ForestClassifier
 from sklearn.linear_model._base import LinearClassifierMixin
 from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC, NuSVC
+from sklearn.svm import SVC, NuSVC, OneClassSVM
 from sklearn.svm._base import BaseLibSVM
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree._classes import BaseDecisionTree
@@ -42,14 +42,11 @@ class StatsmodelsSklearnLikeWrapper(BaseEstimator, RegressorMixin):
             X = sm.add_constant(X)
         est = self.model(y, X, **init_params)
         if "fit_regularized" in self.params:
-            self.fitted_model_ = est.fit_regularized(
-                **self.params["fit_regularized"])
+            self.fitted_model_ = est.fit_regularized(**self.params["fit_regularized"])
         elif "iterative_fit" in self.params:
-            self.fitted_model_ = est.iterative_fit(
-                **self.params["iterative_fit"])
+            self.fitted_model_ = est.iterative_fit(**self.params["iterative_fit"])
         elif "fit_constrained" in self.params:
-            self.fitted_model_ = est.fit_constrained(
-                **self.params["fit_constrained"])
+            self.fitted_model_ = est.fit_constrained(**self.params["fit_constrained"])
         else:
             self.fitted_model_ = est.fit(**self.params.get("fit", {}))
         # mock class module and name to show appropriate model name in tests
@@ -140,11 +137,24 @@ class ModelTrainer:
     def __call__(self, estimator):
         fitted_estimator = estimator.fit(self.X_train, self.y_train)
 
-        if isinstance(estimator, (LinearClassifierMixin, SVC, NuSVC, LightBaseClassifier)):
+        if isinstance(
+                estimator,
+                (
+                    LinearClassifierMixin,
+                    SVC,
+                    NuSVC,
+                    OneClassSVM,
+                    LightBaseClassifier,
+                )):
             y_pred = estimator.decision_function(self.X_test)
         elif isinstance(
                 estimator,
-                (ForestClassifier, DecisionTreeClassifier, xgb.XGBClassifier, lgb.LGBMClassifier)):
+                (
+                    ForestClassifier,
+                    DecisionTreeClassifier,
+                    xgb.XGBClassifier,
+                    lgb.LGBMClassifier,
+                )):
             y_pred = estimator.predict_proba(self.X_test)
         else:
             y_pred = estimator.predict(self.X_test)
@@ -152,9 +162,18 @@ class ModelTrainer:
         # Some models force input data to be particular type
         # during prediction phase in their native Python libraries.
         # For correct comparison of testing results we mimic the same behavior
-        if isinstance(estimator, (BaseDecisionTree, BaseForest)):
+        if isinstance(
+                estimator,
+                (
+                    BaseDecisionTree,
+                    BaseForest,
+                )):
             self.X_test = self.X_test.astype(np.float32, copy=False)
-        elif isinstance(estimator, BaseLibSVM):
+        elif isinstance(
+                estimator,
+                (
+                    BaseLibSVM,
+                )):
             self.X_test = self.X_test.astype(np.float64, copy=False)
 
         return self.X_test, y_pred, fitted_estimator
@@ -180,8 +199,7 @@ def cmp_exprs(left, right):
         return True
 
     if isinstance(left, ast.Expr) and isinstance(right, ast.Expr):
-        assert isinstance(left, type(right)), (
-            f"Expected instance of {type(right)}, received {type(left)}")
+        assert isinstance(left, type(right)), f"Expected instance of {type(right)}, received {type(left)}"
 
         # Only compare attributes which don't start with __
         attrs_to_compare = filter(lambda attr_name: not attr_name.startswith('__'), dir(left))
@@ -255,8 +273,7 @@ def predict_from_commandline(exec_args):
     result = subprocess.Popen(exec_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = result.communicate()
     if result.returncode != 0:
-        raise Exception(
-            f"Bad exit code ({result.returncode}), stderr:\n{stderr.decode('utf-8')}")
+        raise Exception(f"Bad exit code ({result.returncode}), stderr:\n{stderr.decode('utf-8')}")
 
     items = stdout.decode("utf-8").strip().split(" ")
 

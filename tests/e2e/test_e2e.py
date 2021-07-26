@@ -266,12 +266,15 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
 
         # Sklearn SVM
         regression(svm.NuSVR(kernel="rbf")),
+        regression(svm.OneClassSVM(kernel="rbf")),
         regression(svm.SVR(kernel="rbf")),
 
         classification(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
+        classification(svm.OneClassSVM(kernel="rbf")),
         classification(svm.SVC(kernel="rbf", **SVC_PARAMS)),
 
         classification_binary(svm.NuSVC(kernel="rbf", **SVC_PARAMS)),
+        classification_binary(svm.OneClassSVM(kernel="rbf")),
         classification_binary(svm.SVC(kernel="linear", **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="poly", C=1.5, degree=2, gamma=0.1, coef0=2.0, **SVC_PARAMS)),
         classification_binary(svm.SVC(kernel="rbf", **SVC_PARAMS)),
