@@ -52,6 +52,7 @@ SUPPORTED_MODELS = {
     "sklearn_LinearSVR": SklearnLinearModelAssembler,
     "sklearn_NuSVC": SklearnSVMModelAssembler,
     "sklearn_NuSVR": SklearnSVMModelAssembler,
+    "sklearn_OneClassSVM": SklearnSVMModelAssembler,
     "sklearn_SVC": SklearnSVMModelAssembler,
     "sklearn_SVR": SklearnSVMModelAssembler,
 
