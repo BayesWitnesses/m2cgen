@@ -1,8 +1,7 @@
 """CLI for m2cgen.
 
 Example usage:
-    $ m2cgen <path_to_file> --language java --class_name MyModel \
-             --package_name foo.bar.baz
+    $ m2cgen <path_to_file> --language java --class_name MyModel --package_name foo.bar.baz
     $ m2cgen --language java < <path_to_file>
 
 Model can also be piped:
@@ -44,47 +43,60 @@ parser = ArgumentParser(
     prog="m2cgen",
     description="Generate code in native language for provided model.")
 parser.add_argument(
-    "infile", type=FileType("rb"), nargs="?",
+    "infile",
+    type=FileType("rb"),
+    nargs="?",
     default=sys.stdin.buffer,
     help="File with pickle representation of the model.")
 parser.add_argument(
-    "--language", "-l", type=str,
+    "--language", "-l",
+    type=str,
     choices=LANGUAGE_TO_EXPORTER.keys(),
     help="Target language.",
     required=True)
 parser.add_argument(
-    "--function_name", "-fn", dest="function_name", type=str,
+    "--function_name", "-fn",
+    dest="function_name",
+    type=str,
     # The default value is conditional and will be set in the argument's
     # post-processing, based on the signature of the `export` function
     # that belongs to the specified target language.
     default=None,
     help="Name of the function in the generated code.")
 parser.add_argument(
-    "--class_name", "-cn", dest="class_name", type=str,
+    "--class_name", "-cn",
+    dest="class_name",
+    type=str,
     help="Name of the generated class (if supported by target language).")
 parser.add_argument(
-    "--package_name", "-pn", dest="package_name", type=str,
-    help="Package name for the generated code "
-         "(if supported by target language).")
+    "--package_name", "-pn",
+    dest="package_name",
+    type=str,
+    help="Package name for the generated code (if supported by target language).")
 parser.add_argument(
-    "--module_name", "-mn", dest="module_name", type=str,
-    help="Module name for the generated code "
-         "(if supported by target language).")
+    "--module_name", "-mn",
+    dest="module_name",
+    type=str,
+    help="Module name for the generated code (if supported by target language).")
 parser.add_argument(
-    "--namespace", "-ns", dest="namespace", type=str,
-    help="Namespace for the generated code "
-         "(if supported by target language).")
+    "--namespace", "-ns",
+    dest="namespace",
+    type=str,
+    help="Namespace for the generated code (if supported by target language).")
 parser.add_argument(
-    "--indent", "-i", dest="indent", type=int,
+    "--indent", "-i",
+    dest="indent",
+    type=int,
     default=4,
     help="Indentation for the generated code.")
 parser.add_argument(
-    "--recursion-limit", "-rl", type=int,
-    help="Sets the maximum depth of the Python interpreter stack. "
-         "No limit by default",
+    "--recursion-limit", "-rl",
+    type=int,
+    help="Sets the maximum depth of the Python interpreter stack. No limit by default",
     default=MAX_RECURSION_DEPTH)
 parser.add_argument(
-    "--version", "-v", action="version",
+    "--version", "-v",
+    action="version",
     version=f"%(prog)s {m2cgen.__version__}")
 
 
