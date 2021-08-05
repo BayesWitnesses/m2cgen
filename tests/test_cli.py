@@ -152,15 +152,15 @@ def test_namespace():
 
 def test_indent():
     infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, indent=2, language="c_sharp")
+    mock_args = _get_mock_args(infile=infile, indent=0, language="c_sharp")
 
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("""
 namespace ML {
-  public static class Model {
-    public static double Score(double[] input) {
-      return (
+public static class Model {
+public static double Score(double[] input) {
+return (
 """.strip())
 
 
