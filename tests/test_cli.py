@@ -1,14 +1,12 @@
 import io
-import pickle
 import sys
 from unittest import mock
 
 from _pytest import capture
-from sklearn.linear_model import LinearRegression
 
 from m2cgen import __version__, cli
 
-from tests.utils import get_regression_model_trainer, verify_python_model_is_expected
+from tests.utils import verify_python_model_is_expected
 
 
 def _get_mock_args(
@@ -33,17 +31,6 @@ def _get_mock_args(
         recursion_limit=cli.MAX_RECURSION_DEPTH)
 
 
-def _get_pickled_trained_model():
-    estimator = LinearRegression()
-    get_regression_model_trainer()(estimator)
-
-    infile = io.BytesIO()
-    pickle.dump(estimator, infile)
-    infile.seek(0)
-
-    return infile
-
-
 def test_file_as_input(tmp_path):
     f = tmp_path / "hello.txt"
     f.write_text("123")
@@ -52,7 +39,6 @@ def test_file_as_input(tmp_path):
     args = cli.parse_args(input_args)
 
     assert args.language == "python"
-
     assert isinstance(args.infile, io.BufferedReader)
     assert args.infile.name == str(f)
 
@@ -84,10 +70,8 @@ def test_language_is_required(mocked_exit):
     mocked_exit.assert_called_with(2)
 
 
-def test_generate_code():
-    infile = _get_pickled_trained_model()
-
-    mock_args = _get_mock_args(infile=infile, language="python")
+def test_generate_code(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="python")
     generated_code = cli.generate_code(mock_args)
 
     verify_python_model_is_expected(
@@ -96,64 +80,50 @@ def test_generate_code():
         expected_output=-44.40540274041321)
 
 
-def test_function_name():
-    infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, language="python", function_name="predict")
-
+def test_function_name(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="python", function_name="predict")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("def predict")
 
 
-def test_function_name_csharp_default():
-    infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, language="c_sharp")
-
+def test_function_name_csharp_default(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="c_sharp")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert 'public static double Score' in generated_code
 
 
-def test_class_name():
-    infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, language="java", class_name="TestClassName")
-
+def test_class_name(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="java", class_name="TestClassName")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("public class TestClassName")
 
 
-def test_package_name():
-    infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, language="java", package_name="foo.bar.baz")
-
+def test_package_name(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="java", package_name="foo.bar.baz")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("package foo.bar.baz;")
 
 
-def test_module_name():
-    infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, language="visual_basic", module_name="TestModule")
-
+def test_module_name(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="visual_basic", module_name="TestModule")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("Module TestModule")
 
 
-def test_namespace():
-    infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, language="c_sharp", namespace="Tests.ML")
-
+def test_namespace(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="c_sharp", namespace="Tests.ML")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert "namespace Tests.ML {" in generated_code
 
 
-def test_indent():
-    infile = _get_pickled_trained_model()
-    mock_args = _get_mock_args(infile=infile, indent=0, language="c_sharp")
-
+def test_indent(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, indent=0, language="c_sharp")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("""
@@ -174,10 +144,9 @@ def test_version(mocked_exit):
     assert mocked_stdout.getvalue().strip() == f"m2cgen {__version__}"
 
 
-def test_unsupported_args_are_ignored():
-    infile = _get_pickled_trained_model()
-
-    mock_args = _get_mock_args(infile=infile, language="python", class_name="TestClassName", package_name="foo.bar.baz")
+def test_unsupported_args_are_ignored(pickled_model):
+    mock_args = _get_mock_args(
+        infile=pickled_model, language="python", class_name="TestClassName", package_name="foo.bar.baz")
     generated_code = cli.generate_code(mock_args)
 
     verify_python_model_is_expected(
