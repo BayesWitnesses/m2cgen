@@ -80,7 +80,7 @@ def test_generate_code(pickled_model):
         expected_output=-44.40540274041321)
 
 
-def test_function_name(pickled_model):pickled_model
+def test_function_name(pickled_model):
     mock_args = _get_mock_args(infile=pickled_model, language="python", function_name="predict")
     generated_code = cli.generate_code(mock_args).strip()
 
