@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 
+from m2cgen.ast import CompOpType
 from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 
 
@@ -21,3 +22,11 @@ class JavascriptCodeGenerator(CLikeCodeGenerator):
 
     def _get_var_declare_type(self, is_vector):
         return "var"
+
+    def _comp_op_overwrite(self, op):
+        if op == CompOpType.EQ:
+            return "==="
+        elif op == CompOpType.NOT_EQ:
+            return "!=="
+        else:
+            return op.value
