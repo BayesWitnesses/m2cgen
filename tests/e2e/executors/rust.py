@@ -1,5 +1,3 @@
-import subprocess
-
 from m2cgen.assemblers import get_assembler_cls
 from m2cgen.interpreters import RustInterpreter
 
@@ -58,9 +56,10 @@ class RustExecutor(BaseExecutor):
         executor_file_name = self._resource_tmp_dir / f"{self.model_name}.rs"
         utils.write_content_to_file(executor_code, executor_file_name)
         self.exec_path = self._resource_tmp_dir / self.model_name
-        subprocess.call([
+        utils.execute_command([
             "rustc",
             str(executor_file_name),
             "-o",
             str(self.exec_path)
-        ])
+            ],
+            shell=False)

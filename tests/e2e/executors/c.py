@@ -1,5 +1,3 @@
-import subprocess
-
 from m2cgen.assemblers import get_assembler_cls
 from m2cgen.interpreters import CInterpreter
 
@@ -70,10 +68,11 @@ class CExecutor(BaseExecutor):
 
         self.exec_path = self._resource_tmp_dir / self.model_name
         flags = ["-std=c99", "-lm"]
-        subprocess.call([
+        utils.execute_command([
             "gcc",
             str(file_name),
             "-o",
             str(self.exec_path),
             *flags
-        ])
+            ],
+            shell=False)

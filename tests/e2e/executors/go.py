@@ -1,5 +1,3 @@
-import subprocess
-
 from m2cgen.assemblers import get_assembler_cls
 from m2cgen.interpreters import GoInterpreter
 
@@ -71,10 +69,11 @@ class GoExecutor(BaseExecutor):
         utils.write_content_to_file(executor_code, file_name)
 
         self.exec_path = self._resource_tmp_dir / self.model_name
-        subprocess.call([
+        utils.execute_command([
             "go",
             "build",
             "-o",
             str(self.exec_path),
             str(file_name)
-        ])
+            ],
+            shell=False)

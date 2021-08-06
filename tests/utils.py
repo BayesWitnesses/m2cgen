@@ -269,14 +269,16 @@ result = score({input_str})"""
     assert np.isclose(context["result"], expected_output)
 
 
-def predict_from_commandline(exec_args):
-    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+def execute_command(exec_args, shell):
+    result = subprocess.Popen(exec_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
     stdout, stderr = result.communicate()
     if result.returncode != 0:
-        raise Exception(f"Bad exit code ({result.returncode}), stderr:\n{stderr.decode('utf-8')}")
+        raise RuntimeException(f"Bad exit code ({result.returncode}), stderr:\n{stderr.decode('utf-8')}")
+    return stdout.decode("utf-8").strip()
 
-    items = stdout.decode("utf-8").strip().split(" ")
 
+def predict_from_commandline(exec_args):
+    items = execute_command(exec_args, shell=False).split(" ")
     if len(items) == 1:
         return np.float64(items[0])
     else:
