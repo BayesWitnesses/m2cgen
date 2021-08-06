@@ -74,5 +74,4 @@ class CExecutor(BaseExecutor):
             "-o",
             str(self.exec_path),
             *flags
-            ],
-            shell=False)
+        ])

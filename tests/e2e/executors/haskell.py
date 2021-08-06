@@ -62,5 +62,4 @@ class HaskellExecutor(BaseExecutor):
             f"-i{self._resource_tmp_dir}",
             "-o",
             str(self.exec_path)
-            ],
-            shell=False)
+        ])

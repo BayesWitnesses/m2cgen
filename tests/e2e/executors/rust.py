@@ -61,5 +61,4 @@ class RustExecutor(BaseExecutor):
             str(executor_file_name),
             "-o",
             str(self.exec_path)
-            ],
-            shell=False)
+        ])

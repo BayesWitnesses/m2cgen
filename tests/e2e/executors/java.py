@@ -48,5 +48,4 @@ class JavaExecutor(BaseExecutor):
             str(self._javac_bin),
             str(code_file_name),
             str(executor_path)
-            ],
-            shell=False)
+        ])

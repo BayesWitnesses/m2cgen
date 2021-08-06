@@ -53,8 +53,7 @@ class FSharpExecutor(BaseExecutor):
                 cls.project_name,
                 "--language",
                 "F#"
-                ],
-                shell=False)
+            ])
 
     def prepare(self):
         if self.model_ast.output_size > 1:
@@ -75,5 +74,4 @@ class FSharpExecutor(BaseExecutor):
             str(self._global_tmp_dir / f"{self.project_name}.fsproj"),
             "--output",
             str(self.target_exec_dir)
-            ],
-            shell=False)
+        ])

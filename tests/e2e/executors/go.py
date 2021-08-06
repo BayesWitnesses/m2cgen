@@ -75,5 +75,4 @@ class GoExecutor(BaseExecutor):
             "-o",
             str(self.exec_path),
             str(file_name)
-            ],
-            shell=False)
+        ])

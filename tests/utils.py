@@ -269,7 +269,7 @@ result = score({input_str})"""
     assert np.isclose(context["result"], expected_output)
 
 
-def execute_command(exec_args, shell):
+def execute_command(exec_args, shell=False):
     result = subprocess.Popen(exec_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
     stdout, stderr = result.communicate()
     if result.returncode != 0:

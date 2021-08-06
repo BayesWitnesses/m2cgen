@@ -67,8 +67,7 @@ class CSharpExecutor(BaseExecutor):
                 cls.project_name,
                 "--language",
                 "C#"
-                ],
-                shell=False)
+            ])
 
     def prepare(self):
         if self.model_ast.output_size > 1:
@@ -90,5 +89,4 @@ class CSharpExecutor(BaseExecutor):
             str(self._global_tmp_dir / f"{self.project_name}.csproj"),
             "--output",
             str(self.target_exec_dir)
-            ],
-            shell=False)
+        ])
