@@ -354,7 +354,6 @@ function softmax(x) {
 """
 
     interpreter = JavascriptInterpreter()
-    print(interpreter.interpret(expr))
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
