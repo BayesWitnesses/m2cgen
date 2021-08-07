@@ -635,14 +635,20 @@ End Module
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+    expr = ast.BinNumExpr(
+        ast.BinNumExpr(
+            reused_expr,
+            reused_expr,
+            ast.BinNumOpType.DIV),
+        reused_expr,
+        ast.BinNumOpType.MUL)
 
     expected_code = """
 Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     var0 = Math.Exp(1.0)
-    Score = (var0) / (var0)
+    Score = ((var0) / (var0)) * (var0)
 End Function
 End Module
 """

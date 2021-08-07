@@ -480,13 +480,19 @@ let score (input : double list) =
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+    expr = ast.BinNumExpr(
+        ast.BinNumExpr(
+            reused_expr,
+            reused_expr,
+            ast.BinNumOpType.DIV),
+        reused_expr,
+        ast.BinNumOpType.MUL)
 
     expected_code = """
 let score (input : double list) =
     let func0 =
         exp (1.0)
-    (func0) / (func0)
+    ((func0) / (func0)) * (func0)
 """
 
     interpreter = FSharpInterpreter()

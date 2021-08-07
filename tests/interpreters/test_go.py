@@ -391,14 +391,20 @@ func sigmoid(x float64) float64 {
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+    expr = ast.BinNumExpr(
+        ast.BinNumExpr(
+            reused_expr,
+            reused_expr,
+            ast.BinNumOpType.DIV),
+        reused_expr,
+        ast.BinNumOpType.MUL)
 
     expected_code = """
 import "math"
 func score(input []float64) float64 {
     var var0 float64
     var0 = math.Exp(1.0)
-    return (var0) / (var0)
+    return ((var0) / (var0)) * (var0)
 }
 """
 

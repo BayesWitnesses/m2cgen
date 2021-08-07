@@ -357,13 +357,19 @@ fn sigmoid(x: f64) -> f64 {
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+    expr = ast.BinNumExpr(
+        ast.BinNumExpr(
+            reused_expr,
+            reused_expr,
+            ast.BinNumOpType.DIV),
+        reused_expr,
+        ast.BinNumOpType.MUL)
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
     let var0: f64;
     var0 = f64::exp(1.0_f64);
-    (var0) / (var0)
+    ((var0) / (var0)) * (var0)
 }
 """
 

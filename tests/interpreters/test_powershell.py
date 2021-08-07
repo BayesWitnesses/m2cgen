@@ -433,13 +433,19 @@ function Sigmoid([double] $x) {
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+    expr = ast.BinNumExpr(
+        ast.BinNumExpr(
+            reused_expr,
+            reused_expr,
+            ast.BinNumOpType.DIV),
+        reused_expr,
+        ast.BinNumOpType.MUL)
 
     expected_code = """
 function Score([double[]] $InputVector) {
     [double]$var0 = 0.0
     $var0 = [math]::Exp(1.0)
-    return ($var0) / ($var0)
+    return (($var0) / ($var0)) * ($var0)
 }
 """
 

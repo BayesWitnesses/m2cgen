@@ -394,14 +394,20 @@ function sigmoid($x) {
 
 def test_reused_expr():
     reused_expr = ast.ExpExpr(ast.NumVal(1.0), to_reuse=True)
-    expr = ast.BinNumExpr(reused_expr, reused_expr, ast.BinNumOpType.DIV)
+    expr = ast.BinNumExpr(
+        ast.BinNumExpr(
+            reused_expr,
+            reused_expr,
+            ast.BinNumOpType.DIV),
+        reused_expr,
+        ast.BinNumOpType.MUL)
 
     expected_code = """
 <?php
 function score(array $input) {
     $var0 = null;
     $var0 = exp(1.0);
-    return ($var0) / ($var0);
+    return (($var0) / ($var0)) * ($var0);
 }
 """
 
