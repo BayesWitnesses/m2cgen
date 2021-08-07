@@ -1,7 +1,25 @@
+import pytest
+
 from m2cgen import ast
 from m2cgen.interpreters import CInterpreter, PythonInterpreter
 
 from tests.utils import assert_code_equal
+
+
+def test_required_funs_without_fallbacks():
+    expr = ast.LogExpr(
+        ast.PowExpr(
+            ast.NumVal(1.0), ast.NumVal(-2.0)))
+
+    interpreter = PythonInterpreter()
+
+    interpreter.power_function_name = NotImplemented
+    with pytest.raises(NotImplementedError, match="Power function is not provided"):
+        interpreter.interpret(expr)
+
+    interpreter.logarithm_function_name = NotImplemented
+    with pytest.raises(NotImplementedError, match="Logarithm function is not provided"):
+        interpreter.interpret(expr)
 
 
 def test_abs_fallback_expr():
