@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import numpy as np
+import pytest
 
 from m2cgen import ast
 
@@ -30,6 +31,9 @@ def test_count_exprs():
     ) == 6
 
     assert ast.count_exprs(ast.NumVal(1)) == 1
+
+    with pytest.raises(ValueError, match="Unexpected expression type 'VectorExpr'"):
+        ast.count_exprs(ast.VectorExpr())
 
 
 def test_count_exprs_exclude_list():
