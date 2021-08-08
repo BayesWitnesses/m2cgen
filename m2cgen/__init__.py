@@ -4,6 +4,7 @@ from m2cgen.exporters import (
     export_to_c,
     export_to_c_sharp,
     export_to_dart,
+    export_to_elixir,
     export_to_f_sharp,
     export_to_go,
     export_to_haskell,
@@ -34,6 +35,7 @@ __all__ = [
     export_to_ruby,
     export_to_f_sharp,
     export_to_rust,
+    export_to_elixir,
 ]
 
 __version__ = (Path(__file__).absolute().parent / "VERSION.txt").read_text(encoding="utf-8").strip()

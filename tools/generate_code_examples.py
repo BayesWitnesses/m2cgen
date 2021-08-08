@@ -46,6 +46,7 @@ EXAMPLE_LANGUAGES = [
     ("ruby", m2c.export_to_ruby, "rb"),
     ("f_sharp", m2c.export_to_f_sharp, "fs"),
     ("rust", m2c.export_to_rust, "rs"),
+    ("elixir", m2c.export_to_elixir, "ex"),
 ]
 
 EXAMPLE_MODELS = [
