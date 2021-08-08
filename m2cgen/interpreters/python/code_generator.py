@@ -29,8 +29,5 @@ class PythonCodeGenerator(ImperativeCodeGenerator):
     def vector_init(self, values):
         return f"[{', '.join(values)}]"
 
-    def add_dependency(self, dep, alias=None):
-        dep_str = f"import {dep}"
-        if alias:
-            dep_str += f" as {alias}"
-        self.prepend_code_line(dep_str)
+    def add_dependency(self, dep):
+        self.prepend_code_line(f"import {dep}")

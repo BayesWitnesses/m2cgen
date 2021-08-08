@@ -14,9 +14,14 @@ class PowershellCodeGenerator(CLikeCodeGenerator):
     scalar_type = "[double]"
     vector_type = "[double[]]"
 
-    operator_map = {CompOpType.EQ: "-eq", CompOpType.NOT_EQ: "-ne",
-                    CompOpType.GTE: "-ge", CompOpType.LTE: "-le",
-                    CompOpType.GT: "-gt", CompOpType.LT: "-lt"}
+    operator_map = {
+        CompOpType.EQ: "-eq",
+        CompOpType.NOT_EQ: "-ne",
+        CompOpType.GTE: "-ge",
+        CompOpType.LTE: "-le",
+        CompOpType.GT: "-gt",
+        CompOpType.LT: "-lt"
+    }
 
     def add_function_def(self, name, args):
         func_args = ", ".join([
