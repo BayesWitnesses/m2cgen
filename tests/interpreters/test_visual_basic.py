@@ -171,7 +171,7 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
@@ -179,7 +179,7 @@ def test_multi_output():
 Module Model
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0() As Double
-    If (1.0) = (1.0) Then
+    If (1.0) <> (1.0) Then
         Dim var1(1) As Double
         var1(0) = 1.0
         var1(1) = 2.0
