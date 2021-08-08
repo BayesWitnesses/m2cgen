@@ -13,6 +13,7 @@ from m2cgen.interpreters.r.interpreter import RInterpreter
 from m2cgen.interpreters.ruby.interpreter import RubyInterpreter
 from m2cgen.interpreters.rust.interpreter import RustInterpreter
 from m2cgen.interpreters.visual_basic.interpreter import VisualBasicInterpreter
+from m2cgen.interpreters.elixir.interpreter import ElixirInterpreter
 
 __all__ = [
     JavaInterpreter,
@@ -30,4 +31,5 @@ __all__ = [
     RubyInterpreter,
     FSharpInterpreter,
     RustInterpreter,
+    ElixirInterpreter,
 ]

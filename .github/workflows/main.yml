@@ -25,6 +25,7 @@ jobs:
           - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
           - "c_sharp or visual_basic or f_sharp"
           - "r_lang"
+          - "elixir"
           - "dart or powershell"
     steps:
       - name: Checkout repository
@@ -60,5 +61,5 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-    - name: Note that all tests succeeded
-      run: echo "🎉"
+      - name: Note that all tests succeeded
+        run: echo "🎉"

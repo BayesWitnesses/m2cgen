@@ -13,6 +13,7 @@ from tests.e2e.executors.r import RExecutor
 from tests.e2e.executors.ruby import RubyExecutor
 from tests.e2e.executors.rust import RustExecutor
 from tests.e2e.executors.visual_basic import VisualBasicExecutor
+from tests.e2e.executors.elixir import ElixirExecutor
 
 __all__ = [
     JavaExecutor,
@@ -30,4 +31,5 @@ __all__ = [
     RubyExecutor,
     FSharpExecutor,
     RustExecutor,
+    ElixirExecutor,
 ]

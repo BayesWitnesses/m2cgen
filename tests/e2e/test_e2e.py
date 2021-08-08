@@ -31,6 +31,7 @@ HASKELL = pytest.mark.haskell
 RUBY = pytest.mark.ruby
 F_SHARP = pytest.mark.f_sharp
 RUST = pytest.mark.rust
+ELIXIR = pytest.mark.elixir
 REGRESSION = pytest.mark.regr
 REGRESSION_WITH_MISSING_VALUES = pytest.mark.regr_missing_val
 CLASSIFICATION_WITH_MISSING_VALUES = pytest.mark.clf_missing_val
@@ -163,6 +164,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
         (executors.RubyExecutor, RUBY),
         (executors.FSharpExecutor, F_SHARP),
         (executors.RustExecutor, RUST),
+        (executors.ElixirExecutor, ELIXIR),
     ],
 
     # These models will be tested against each language specified in the previous list.
@@ -325,8 +327,8 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
         classification_binary(utils.StatsmodelsSklearnLikeWrapper(
             sm.GLM,
             dict(fit_constrained=dict(constraints=(np.eye(
-                     utils.get_binary_classification_model_trainer()
-                     .X_train.shape[-1])[0], [1]))))),
+                utils.get_binary_classification_model_trainer()
+                .X_train.shape[-1])[0], [1]))))),
         classification_binary(utils.StatsmodelsSklearnLikeWrapper(
             sm.GLM,
             dict(fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
@@ -399,7 +401,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
             sm.GLS,
             dict(init=dict(sigma=np.eye(
                 len(utils.get_regression_model_trainer().y_train)) + 1),
-                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+                fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.GLSAR,
             dict(init=dict(fit_intercept=True, rho=3)))),
@@ -419,19 +421,19 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
             ProcessMLE,
             dict(init=dict(exog_scale=np.ones(
                 (len(utils.get_regression_model_trainer().y_train), 2)),
-                           exog_smooth=np.ones(
+                exog_smooth=np.ones(
                 (len(utils.get_regression_model_trainer().y_train), 2)),
-                           exog_noise=np.ones(
+                exog_noise=np.ones(
                 (len(utils.get_regression_model_trainer().y_train), 2)),
-                           time=np.kron(
+                time=np.kron(
                 np.ones(
                     len(utils.get_regression_model_trainer().y_train) // 3),
                 np.arange(3)),
-                           groups=np.kron(
+                groups=np.kron(
                 np.arange(
                     len(utils.get_regression_model_trainer().y_train) // 3),
                 np.ones(3))),
-                 fit=dict(maxiter=2)))),
+                fit=dict(maxiter=2)))),
         regression(utils.StatsmodelsSklearnLikeWrapper(
             sm.QuantReg,
             dict(init=dict(fit_intercept=True)))),
@@ -443,7 +445,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
             sm.WLS,
             dict(init=dict(fit_intercept=True, weights=np.arange(
                 len(utils.get_regression_model_trainer().y_train))),
-                 fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
+                fit_regularized=STATSMODELS_LINEAR_REGULARIZED_PARAMS))),
 
         # Lightning Linear Regression
         regression(light_reg.AdaGradRegressor(random_state=RANDOM_SEED)),
@@ -517,6 +519,8 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
     [
         (R, REGRESSION_WITH_MISSING_VALUES),
         (R, CLASSIFICATION_WITH_MISSING_VALUES),
+        (ELIXIR, REGRESSION_WITH_MISSING_VALUES),
+        (ELIXIR, CLASSIFICATION_WITH_MISSING_VALUES),
     ]
 
     # Following is the list of extra tests for languages/models which are not fully supported yet.
