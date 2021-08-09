@@ -485,7 +485,7 @@ def test_reused_expr():
             reused_expr,
             reused_expr,
             ast.BinNumOpType.DIV),
-        reused_expr,
+        ast.ExpExpr(ast.NumVal(1.0)),
         ast.BinNumOpType.MUL)
 
     expected_code = """
