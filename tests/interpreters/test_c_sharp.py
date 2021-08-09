@@ -199,7 +199,7 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
@@ -208,7 +208,7 @@ namespace ML {
     public static class Model {
         public static double[] Score(double[] input) {
             double[] var0;
-            if ((1.0) == (1.0)) {
+            if ((1.0) != (1.0)) {
                 var0 = new double[2] {1.0, 2.0};
             } else {
                 var0 = new double[2] {3.0, 4.0};

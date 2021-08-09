@@ -11,9 +11,6 @@ class CodeTemplate:
     def __init__(self, template):
         self.str_template = template
 
-    def __str__(self):
-        return self.str_template
-
     def __call__(self, *args, **kwargs):
 
         def _is_float(value):
@@ -244,7 +241,3 @@ class FunctionalCodeGenerator(BaseCodeGenerator):
         self.decrease_indent()
         self.add_code_line(self.tpl_else_statement())
         self.increase_indent()
-
-    def add_block_termination(self):
-        self.decrease_indent()
-        self.add_code_line(self.tpl_block_termination())

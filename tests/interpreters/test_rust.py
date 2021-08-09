@@ -145,14 +145,14 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 fn score(input: Vec<f64>) -> Vec<f64> {
     let var0: Vec<f64>;
-    if (1.0_f64) == (1.0_f64) {
+    if (1.0_f64) != (1.0_f64) {
         var0 = vec![1.0_f64, 2.0_f64];
     } else {
         var0 = vec![3.0_f64, 4.0_f64];

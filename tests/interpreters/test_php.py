@@ -150,7 +150,7 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
@@ -158,7 +158,7 @@ def test_multi_output():
 <?php
 function score(array $input) {
     $var0 = array();
-    if ((1.0) === (1.0)) {
+    if ((1.0) !== (1.0)) {
         $var0 = array(1.0, 2.0);
     } else {
         $var0 = array(3.0, 4.0);

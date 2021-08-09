@@ -141,7 +141,7 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
@@ -152,7 +152,7 @@ score input =
     func0
     where
         func0 =
-            if (1.0) == (1.0) then
+            if (1.0) /= (1.0) then
                 [1.0, 2.0]
             else
                 [3.0, 4.0]
