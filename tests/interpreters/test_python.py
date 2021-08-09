@@ -201,6 +201,22 @@ def score(input):
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+def test_depth_threshold_with_reused_bin_expr():
+    reused_expr = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(1), ast.BinNumOpType.ADD, to_reuse=True)
+    expr = ast.BinNumExpr(ast.NumVal(1), reused_expr, ast.BinNumOpType.ADD)
+    expr = ast.BinNumExpr(expr, expr, ast.BinNumOpType.ADD)
+
+    expected_code = """
+def score(input):
+    var0 = (1.0) + (1.0)
+    var1 = var0
+    return ((1.0) + (var1)) + ((1.0) + (var0))
+"""
+
+    interpreter = CustomPythonInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
 def test_depth_threshold_without_bin_expr():
     expr = ast.NumVal(1)
     for _ in range(4):

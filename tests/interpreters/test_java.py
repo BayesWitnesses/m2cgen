@@ -275,6 +275,11 @@ public class Model {
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+class CustomJavaInterpreter(JavaInterpreter):
+    ast_size_check_frequency = 3
+    ast_size_per_subroutine_threshold = 1
+
+
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
     for _ in range(4):
@@ -291,9 +296,45 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
-    interpreter.ast_size_check_frequency = 3
-    interpreter.ast_size_per_subroutine_threshold = 1
+    interpreter = CustomJavaInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_depth_threshold_with_reused_bin_expr():
+    reused_expr = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(1), ast.BinNumOpType.ADD, to_reuse=True)
+    expr = ast.BinNumExpr(ast.NumVal(1), reused_expr, ast.BinNumOpType.ADD)
+    for _ in range(2):
+        expr = ast.BinNumExpr(expr, expr, ast.BinNumOpType.ADD)
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return ((subroutine0(input)) + (subroutine1(input))) + ((subroutine2(input)) + (subroutine3(input)));
+    }
+    public static double subroutine0(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+    public static double subroutine1(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+    public static double subroutine2(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+    public static double subroutine3(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+}
+"""
+
+    interpreter = CustomJavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -332,9 +373,8 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
+    interpreter = CustomJavaInterpreter()
     interpreter.ast_size_check_frequency = 2
-    interpreter.ast_size_per_subroutine_threshold = 1
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -376,9 +416,7 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
-    interpreter.ast_size_check_frequency = 3
-    interpreter.ast_size_per_subroutine_threshold = 1
+    interpreter = CustomJavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -432,9 +470,7 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
-    interpreter.ast_size_check_frequency = 3
-    interpreter.ast_size_per_subroutine_threshold = 1
+    interpreter = CustomJavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
