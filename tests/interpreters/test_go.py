@@ -143,14 +143,14 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 func score(input []float64) []float64 {
     var var0 []float64
-    if (1.0) == (1.0) {
+    if (1.0) != (1.0) {
         var0 = []float64{1.0, 2.0}
     } else {
         var0 = []float64{3.0, 4.0}
