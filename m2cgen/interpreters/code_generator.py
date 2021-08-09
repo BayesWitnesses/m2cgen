@@ -18,8 +18,7 @@ class CodeTemplate:
 
         return self.str_template.format(
             *[format_float(i) if _is_float(i) else i for i in args],
-            **{k: format_float(v) if _is_float(v) else v
-               for k, v in kwargs.items()})
+            **{k: format_float(v) if _is_float(v) else v for k, v in kwargs.items()})
 
 
 class BaseCodeGenerator:
@@ -54,8 +53,7 @@ class BaseCodeGenerator:
     def _write_to_code_buffer(self, text, prepend=False):
         if self._code_buf.closed:
             raise BufferError(
-                "Cannot modify code after getting generated code and "
-                "closing the underlying buffer!\n"
+                "Cannot modify code after getting generated code and closing the underlying buffer!\n"
                 "Call reset_state() to allocate new buffer.")
         if prepend:
             self._code_buf.seek(0)
@@ -75,8 +73,7 @@ class BaseCodeGenerator:
 
     def decrease_indent(self):
         self._current_indent -= self._indent
-        assert self._current_indent >= 0, (
-            f"Invalid indentation: {self._current_indent}")
+        assert self._current_indent >= 0, f"Invalid indentation: {self._current_indent}"
 
     # All code modifications should be implemented via following methods.
 
@@ -89,8 +86,7 @@ class BaseCodeGenerator:
         if isinstance(lines, str):
             lines = lines.strip().split("\n")
         indent = " " * self._current_indent
-        self._write_to_code_buffer(
-            indent + f"\n{indent}".join(lines) + "\n")
+        self._write_to_code_buffer(indent + f"\n{indent}".join(lines) + "\n")
 
     def prepend_code_line(self, line):
         if not line:
@@ -101,11 +97,9 @@ class BaseCodeGenerator:
         new_line = "\n"
         if isinstance(lines, str):
             lines = lines.strip().split(new_line)
-        self._write_to_code_buffer(
-            f"{new_line.join(lines)}{new_line}", prepend=True)
+        self._write_to_code_buffer(f"{new_line.join(lines)}{new_line}", prepend=True)
 
-    # Following methods simply compute expressions using templates without
-    # changing result.
+    # Following methods simply compute expressions using templates without changing result.
 
     def infix_expression(self, left, right, op):
         return self.tpl_infix_expression(left=left, right=right, op=op)
@@ -114,8 +108,7 @@ class BaseCodeGenerator:
         return self.tpl_num_value(value=value)
 
     def array_index_access(self, array_name, index):
-        return self.tpl_array_index_access(
-            array_name=array_name, index=index)
+        return self.tpl_array_index_access(array_name=array_name, index=index)
 
     def function_invocation(self, function_name, *args):
         return f"{function_name}({', '.join(map(str, args))})"
@@ -180,8 +173,7 @@ class ImperativeCodeGenerator(BaseCodeGenerator):
         self.add_code_line(self.tpl_block_termination())
 
     def add_var_assignment(self, var_name, value, value_size):
-        self.add_code_line(
-            self.tpl_var_assignment(var_name=var_name, value=value))
+        self.add_code_line(self.tpl_var_assignment(var_name=var_name, value=value))
 
     # Helpers
 
@@ -229,12 +221,10 @@ class FunctionalCodeGenerator(BaseCodeGenerator):
         self._func_idx += 1
         return func_name
 
-    # Following statements compute expressions using templates AND add
-    # it to the result.
+    # Following statements compute expressions using templates AND add it to the result.
 
     def add_function(self, function_name, function_body):
-        self.add_code_line(self.tpl_function_signature(
-            function_name=function_name))
+        self.add_code_line(self.tpl_function_signature(function_name=function_name))
         self.increase_indent()
         self.add_code_lines(function_body)
         self.decrease_indent()
