@@ -386,11 +386,11 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for j in range(4):
+        for _ in range(4):
             inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(j), ast.CompOpType.EQ),
+                inner, ast.NumVal(1), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -398,16 +398,16 @@ def test_deep_mixed_exprs_exceeding_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (((3.0) + ((3.0) + (subroutine0(input)))) == (3.0)) {
+        if (((3.0) + ((3.0) + (subroutine0(input)))) == (1.0)) {
             var0 = 1.0;
         } else {
-            if (((2.0) + ((2.0) + (subroutine1(input)))) == (3.0)) {
+            if (((2.0) + ((2.0) + (subroutine1(input)))) == (1.0)) {
                 var0 = 1.0;
             } else {
-                if (((1.0) + ((1.0) + (subroutine2(input)))) == (3.0)) {
+                if (((1.0) + ((1.0) + (subroutine2(input)))) == (1.0)) {
                     var0 = 1.0;
                 } else {
-                    if (((0.0) + ((0.0) + (subroutine3(input)))) == (3.0)) {
+                    if (((0.0) + ((0.0) + (subroutine3(input)))) == (1.0)) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
