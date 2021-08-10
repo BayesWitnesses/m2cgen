@@ -762,7 +762,7 @@ def test_sklearn_glm_unknown_link_func():
     class ValidIdentityLink(linear_model._glm.link.IdentityLink):
         pass
 
-    estimator = linear_model.TweedieRegressor(power=2, link=ValidIdentityLink(), max_iter=10)
+    estimator = linear_model.TweedieRegressor(power=1, link=ValidIdentityLink(), max_iter=10)
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
     assembler = assemblers.SklearnGLMModelAssembler(estimator)
