@@ -1,3 +1,5 @@
+import pytest
+
 from m2cgen import ast
 from m2cgen.interpreters import FSharpInterpreter
 
@@ -126,14 +128,14 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 let score (input : double list) =
     let func0 =
-        if (1.0) = (1.0) then
+        if (1.0) <> (1.0) then
             [1.0; 2.0]
         else
             [3.0; 4.0]
@@ -192,6 +194,22 @@ let score (input : double list) =
     let func0 =
         (1.0) + ((1.0) + (1.0))
     (1.0) + ((1.0) + (func0))
+"""
+
+    interpreter = CustomFSharpInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_depth_threshold_with_reused_bin_expr():
+    reused_expr = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(1), ast.BinNumOpType.ADD, to_reuse=True)
+    expr = ast.BinNumExpr(ast.NumVal(1), reused_expr, ast.BinNumOpType.ADD)
+    expr = ast.BinNumExpr(expr, expr, ast.BinNumOpType.ADD)
+
+    expected_code = """
+let score (input : double list) =
+    let func0 =
+        (1.0) + (1.0)
+    ((1.0) + (func0)) + ((1.0) + (func0))
 """
 
     interpreter = CustomFSharpInterpreter()
@@ -269,11 +287,11 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for j in range(4):
+        for _ in range(4):
             inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(j), ast.CompOpType.EQ),
+                inner, ast.NumVal(1), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -288,16 +306,16 @@ let score (input : double list) =
     let func3 =
         (0.0) + ((0.0) + (1.0))
     let func4 =
-        if ((3.0) + ((3.0) + (func0))) = (3.0) then
+        if ((3.0) + ((3.0) + (func0))) = (1.0) then
             1.0
         else
-            if ((2.0) + ((2.0) + (func1))) = (3.0) then
+            if ((2.0) + ((2.0) + (func1))) = (1.0) then
                 1.0
             else
-                if ((1.0) + ((1.0) + (func2))) = (3.0) then
+                if ((1.0) + ((1.0) + (func2))) = (1.0) then
                     1.0
                 else
-                    if ((0.0) + ((0.0) + (func3))) = (3.0) then
+                    if ((0.0) + ((0.0) + (func3))) = (1.0) then
                         1.0
                     else
                         1.0
@@ -491,3 +509,25 @@ let score (input : double list) =
 
     interpreter = FSharpInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_unsupported_exprs():
+    interpreter = FSharpInterpreter()
+
+    expr = ast.Expr()
+    with pytest.raises(NotImplementedError, match="No handler found for 'Expr'"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.ADD)
+    with pytest.raises(NotImplementedError, match="Op 'ADD' is unsupported"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.MUL)
+    with pytest.raises(NotImplementedError, match="Op 'MUL' is unsupported"):
+        interpreter.interpret(expr)

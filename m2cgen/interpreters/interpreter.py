@@ -55,10 +55,10 @@ class BaseInterpreter:
 
     def _select_handler(self, expr):
         handler_name = _get_handler_name(type(expr))
-        if hasattr(self, handler_name):
-            return getattr(self, handler_name)
-        raise NotImplementedError(
-            f"No handler found for '{type(expr).__name__}'")
+        handler = getattr(self, handler_name, None)
+        if handler is None:
+            raise NotImplementedError(f"No handler found for '{type(expr).__name__}'")
+        return handler
 
 
 class BaseToCodeInterpreter(BaseInterpreter):
@@ -128,86 +128,67 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
 
     def interpret_abs_expr(self, expr, **kwargs):
         if self.abs_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.abs(expr.expr), **kwargs)
+            return self._do_interpret(fallback_expressions.abs(expr.expr), **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.abs_function_name, nested_result)
+        return self._cg.function_invocation(self.abs_function_name, nested_result)
 
     def interpret_atan_expr(self, expr, **kwargs):
         if self.atan_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.atan(expr.expr), **kwargs)
+            return self._do_interpret(fallback_expressions.atan(expr.expr), **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.atan_function_name, nested_result)
+        return self._cg.function_invocation(self.atan_function_name, nested_result)
 
     def interpret_exp_expr(self, expr, **kwargs):
         if self.exponent_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.exp(expr.expr),
-                **kwargs)
+            return self._do_interpret(fallback_expressions.exp(expr.expr), **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.exponent_function_name, nested_result)
+        return self._cg.function_invocation(self.exponent_function_name, nested_result)
 
     def interpret_log_expr(self, expr, **kwargs):
         if self.logarithm_function_name is NotImplemented:
             raise NotImplementedError("Logarithm function is not provided")
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.logarithm_function_name, nested_result)
+        return self._cg.function_invocation(self.logarithm_function_name, nested_result)
 
     def interpret_log1p_expr(self, expr, **kwargs):
         if self.log1p_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.log1p(expr.expr), **kwargs)
+            return self._do_interpret(fallback_expressions.log1p(expr.expr), **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.log1p_function_name, nested_result)
+        return self._cg.function_invocation(self.log1p_function_name, nested_result)
 
     def interpret_sigmoid_expr(self, expr, **kwargs):
         if self.sigmoid_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.sigmoid(expr.expr), **kwargs)
+            return self._do_interpret(fallback_expressions.sigmoid(expr.expr), **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.sigmoid_function_name, nested_result)
+        return self._cg.function_invocation(self.sigmoid_function_name, nested_result)
 
     def interpret_softmax_expr(self, expr, **kwargs):
         if self.softmax_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.softmax(expr.exprs), **kwargs)
+            return self._do_interpret(fallback_expressions.softmax(expr.exprs), **kwargs)
         self.with_vectors = True
         self.with_math_module = True
         nested = [self._do_interpret(expr, **kwargs) for expr in expr.exprs]
-        return self._cg.function_invocation(
-            self.softmax_function_name, self._cg.vector_init(nested))
+        return self._cg.function_invocation(self.softmax_function_name, self._cg.vector_init(nested))
 
     def interpret_sqrt_expr(self, expr, **kwargs):
         if self.sqrt_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.sqrt(expr.expr),
-                **kwargs)
+            return self._do_interpret(fallback_expressions.sqrt(expr.expr), **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.sqrt_function_name, nested_result)
+        return self._cg.function_invocation(self.sqrt_function_name, nested_result)
 
     def interpret_tanh_expr(self, expr, **kwargs):
         if self.tanh_function_name is NotImplemented:
-            return self._do_interpret(
-                fallback_expressions.tanh(expr.expr), **kwargs)
+            return self._do_interpret(fallback_expressions.tanh(expr.expr), **kwargs)
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
-        return self._cg.function_invocation(
-            self.tanh_function_name, nested_result)
+        return self._cg.function_invocation(self.tanh_function_name, nested_result)
 
     def interpret_pow_expr(self, expr, **kwargs):
         if self.power_function_name is NotImplemented:
@@ -215,8 +196,7 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_math_module = True
         base_result = self._do_interpret(expr.base_expr, **kwargs)
         exp_result = self._do_interpret(expr.exp_expr, **kwargs)
-        return self._cg.function_invocation(
-            self.power_function_name, base_result, exp_result)
+        return self._cg.function_invocation(self.power_function_name, base_result, exp_result)
 
 
 class ImperativeToCodeInterpreter(ToCodeInterpreter):
@@ -242,8 +222,7 @@ class ImperativeToCodeInterpreter(ToCodeInterpreter):
                 self._do_interpret(nested, if_var_name=var_name, **kwargs)
             else:
                 nested_result = self._do_interpret(nested, **kwargs)
-                self._cg.add_var_assignment(var_name, nested_result,
-                                            nested.output_size)
+                self._cg.add_var_assignment(var_name, nested_result, nested.output_size)
 
         self._cg.add_if_statement(self._do_interpret(expr.test, **kwargs))
         handle_nested_expr(expr.body)
@@ -256,8 +235,7 @@ class ImperativeToCodeInterpreter(ToCodeInterpreter):
     def _cache_reused_expr(self, expr, expr_result):
         var_name = self._cg.add_var_declaration(expr.output_size)
         self._cg.add_var_assignment(var_name, expr_result, expr.output_size)
-        self._cached_expr_results[expr] = CachedResult(
-            var_name=var_name, expr_result=None)
+        self._cached_expr_results[expr] = CachedResult(var_name=var_name, expr_result=None)
         return var_name
 
 
@@ -281,18 +259,14 @@ class FunctionalToCodeInterpreter(ToCodeInterpreter):
             code_gen = if_code_gen
             nested = True
 
-        code_gen.add_if_statement(self._do_interpret(
-            expr.test, **kwargs))
-        code_gen.add_code_line(self._do_interpret(
-            expr.body, if_code_gen=code_gen, **kwargs))
+        code_gen.add_if_statement(self._do_interpret(expr.test, **kwargs))
+        code_gen.add_code_line(self._do_interpret(expr.body, if_code_gen=code_gen, **kwargs))
         code_gen.add_else_statement()
-        code_gen.add_code_line(self._do_interpret(
-            expr.orelse, if_code_gen=code_gen, **kwargs))
+        code_gen.add_code_line(self._do_interpret(expr.orelse, if_code_gen=code_gen, **kwargs))
         code_gen.add_if_termination()
 
         if not nested:
-            return self._cache_reused_expr(
-                expr, code_gen.finalize_and_get_generated_code())
+            return self._cache_reused_expr(expr, code_gen.finalize_and_get_generated_code())
 
     # Cached expressions become functions with no arguments, i.e. values
     # which are CAFs. Therefore, they are computed only once.
@@ -301,8 +275,7 @@ class FunctionalToCodeInterpreter(ToCodeInterpreter):
             return self._cached_expr_results[expr].var_name
         else:
             func_name = self._cg.get_func_name()
-            self._cached_expr_results[expr] = CachedResult(
-                var_name=func_name, expr_result=expr_result)
+            self._cached_expr_results[expr] = CachedResult(var_name=func_name, expr_result=expr_result)
             return func_name
 
     def create_code_generator(self):

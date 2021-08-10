@@ -9,3 +9,7 @@ coverage:
         informational: false
         only_pulls: false
 comment: false
+ignore:
+  - "m2cgen/interpreters/python/linear_algebra.py"
+  - "m2cgen/interpreters/python/sigmoid.py"
+  - "m2cgen/interpreters/python/softmax.py"

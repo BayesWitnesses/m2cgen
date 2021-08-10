@@ -1,3 +1,5 @@
+import pytest
+
 from m2cgen import ast
 from m2cgen.interpreters import HaskellInterpreter
 
@@ -139,7 +141,7 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
@@ -150,7 +152,7 @@ score input =
     func0
     where
         func0 =
-            if (1.0) == (1.0) then
+            if (1.0) /= (1.0) then
                 [1.0, 2.0]
             else
                 [3.0, 4.0]
@@ -412,3 +414,25 @@ score input =
 
     interpreter = HaskellInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_unsupported_exprs():
+    interpreter = HaskellInterpreter()
+
+    expr = ast.Expr()
+    with pytest.raises(NotImplementedError, match="No handler found for 'Expr'"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.ADD)
+    with pytest.raises(NotImplementedError, match="Op 'ADD' is unsupported"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.MUL)
+    with pytest.raises(NotImplementedError, match="Op 'MUL' is unsupported"):
+        interpreter.interpret(expr)

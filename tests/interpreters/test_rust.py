@@ -1,3 +1,5 @@
+import pytest
+
 from m2cgen import ast
 from m2cgen.interpreters import RustInterpreter
 
@@ -143,14 +145,14 @@ def test_multi_output():
         ast.CompExpr(
             ast.NumVal(1),
             ast.NumVal(1),
-            ast.CompOpType.EQ),
+            ast.CompOpType.NOT_EQ),
         ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
         ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]))
 
     expected_code = """
 fn score(input: Vec<f64>) -> Vec<f64> {
     let var0: Vec<f64>;
-    if (1.0_f64) == (1.0_f64) {
+    if (1.0_f64) != (1.0_f64) {
         var0 = vec![1.0_f64, 2.0_f64];
     } else {
         var0 = vec![3.0_f64, 4.0_f64];
@@ -369,3 +371,25 @@ fn score(input: Vec<f64>) -> f64 {
 
     interpreter = RustInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_unsupported_exprs():
+    interpreter = RustInterpreter()
+
+    expr = ast.Expr()
+    with pytest.raises(NotImplementedError, match="No handler found for 'Expr'"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.ADD)
+    with pytest.raises(NotImplementedError, match="Op 'ADD' is unsupported"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.MUL)
+    with pytest.raises(NotImplementedError, match="Op 'MUL' is unsupported"):
+        interpreter.interpret(expr)

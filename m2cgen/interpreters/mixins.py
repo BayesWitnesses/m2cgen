@@ -74,8 +74,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
             self._do_interpret(expr.right, **kwargs),
             *extra_func_args)
 
-    def interpret_bin_vector_num_expr(self, expr, extra_func_args=(),
-                                      **kwargs):
+    def interpret_bin_vector_num_expr(self, expr, extra_func_args=(), **kwargs):
         if expr.op not in self.supported_bin_vector_num_ops:
             raise NotImplementedError(f"Op '{expr.op.name}' is unsupported")
 
@@ -138,8 +137,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
     def _pre_interpret_hook(self, expr, ast_size_check_counter=0, **kwargs):
         if isinstance(expr, ast.BinExpr) and not expr.to_reuse:
             frequency = self._adjust_ast_check_frequency(expr)
-            self.ast_size_check_frequency = min(
-                frequency, self.ast_size_check_frequency)
+            self.ast_size_check_frequency = min(frequency, self.ast_size_check_frequency)
 
             ast_size_check_counter += 1
             if ast_size_check_counter >= self.ast_size_check_frequency:
@@ -148,8 +146,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
                 if ast_size > self.ast_size_per_subroutine_threshold:
                     function_name = self._get_subroutine_name()
                     self.enqueue_subroutine(function_name, expr)
-                    return self._cg.function_invocation(
-                        function_name, self._feature_array_name), kwargs
+                    return self._cg.function_invocation(function_name, self._feature_array_name), kwargs
 
             kwargs['ast_size_check_counter'] = ast_size_check_counter
 
