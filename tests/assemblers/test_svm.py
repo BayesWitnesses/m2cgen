@@ -137,7 +137,8 @@ def test_unknown_kernel():
     estimator = SVC(kernel=lambda x, y: np.transpose(x) * y)
     estimator.fit([[1], [2]], [1, 2])
 
-    with pytest.raises(ValueError, match="Unsupported kernel type '<function <lambda> at .*"):
+    with pytest.raises(ValueError,
+                       match="Unsupported kernel type '<function test_unknown_kernel.<locals>.<lambda> at .*"):
         SklearnSVMModelAssembler(estimator)
 
 
