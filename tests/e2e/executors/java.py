@@ -1,4 +1,3 @@
-import subprocess
 from os import environ
 from pathlib import Path
 from shutil import copyfile
@@ -45,7 +44,7 @@ class JavaExecutor(BaseExecutor):
         copyfile(module_path / "Executor.java", executor_path)
 
         # Compile all files together.
-        subprocess.call([
+        utils.execute_command([
             str(self._javac_bin),
             str(code_file_name),
             str(executor_path)

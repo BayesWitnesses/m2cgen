@@ -1,16 +1,13 @@
-import subprocess
 from platform import system
 
 import pytest
 
-from tests.utils import verify_python_model_is_expected
+from tests import utils
 
 
 def execute_test(exec_args):
-    result = subprocess.Popen(" ".join(exec_args), stdout=subprocess.PIPE, shell=True)
-    generated_code = result.stdout.read().decode("utf-8")
-
-    verify_python_model_is_expected(
+    generated_code = utils.execute_command(" ".join(exec_args), shell=True)
+    utils.verify_python_model_is_expected(
         generated_code,
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
         expected_output=-47.62913662138064)
