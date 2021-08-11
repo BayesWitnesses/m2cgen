@@ -1,5 +1,3 @@
-import subprocess
-
 from m2cgen.assemblers import get_assembler_cls
 from m2cgen.interpreters import HaskellInterpreter
 
@@ -58,7 +56,7 @@ class HaskellExecutor(BaseExecutor):
         utils.write_content_to_file(model_code, model_file_name)
 
         self.exec_path = self._resource_tmp_dir / self.executor_name
-        subprocess.call([
+        utils.execute_command([
             "ghc",
             str(executor_file_name),
             f"-i{self._resource_tmp_dir}",
