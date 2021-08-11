@@ -135,13 +135,10 @@ def test_norm_in_cosine_kernel():
 
 def test_unknown_kernel():
     estimator = SVC(kernel=lambda x, y: np.transpose(x) * y)
-
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = SklearnSVMModelAssembler(estimator)
-
     with pytest.raises(ValueError, match="Unsupported kernel type '<function <lambda> at .*"):
-        assembler.assemble()
+        SklearnSVMModelAssembler(estimator)
 
 
 def test_multi_class_rbf_kernel():
