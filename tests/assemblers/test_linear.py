@@ -292,10 +292,8 @@ def test_statsmodels_unknown_underlying_model():
     estimator = utils.StatsmodelsSklearnLikeWrapper(ValidGLS, {})
     _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
-
     with pytest.raises(NotImplementedError, match="Model 'ValidGLS' is not supported"):
-        assembler.assemble()
+        assemblers.StatsmodelsModelAssemblerSelector(estimator)
 
 
 def test_statsmodels_processmle():
