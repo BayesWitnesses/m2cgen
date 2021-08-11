@@ -35,5 +35,5 @@ def test_ransac_unknown_base_estimator():
 
     assembler = RANSACModelAssembler(estimator)
 
-    with pytest.raises(NotImplementedError, match="Model 'RANSACRegressor' is not supported"):
+    with pytest.raises(NotImplementedError, match="Model 'sklearn_DummyRegressor' is not supported"):
         assembler.assemble()
