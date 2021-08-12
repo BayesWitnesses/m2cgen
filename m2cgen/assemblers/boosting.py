@@ -31,18 +31,14 @@ class BaseBoostingAssembler(ModelAssembler):
     def assemble(self):
         if self._is_classification:
             if self._output_size == 1:
-                return self._assemble_bin_class_output(
-                    self._all_estimator_params)
+                return self._assemble_bin_class_output(self._all_estimator_params)
             else:
-                return self._assemble_multi_class_output(
-                    self._all_estimator_params)
+                return self._assemble_multi_class_output(self._all_estimator_params)
         else:
-            result_ast = self._assemble_single_output(
-                self._all_estimator_params, base_score=self._base_score)
+            result_ast = self._assemble_single_output(self._all_estimator_params, base_score=self._base_score)
             return self._single_convert_output(result_ast)
 
-    def _assemble_single_output(self, estimator_params,
-                                base_score=0.0, split_idx=0):
+    def _assemble_single_output(self, estimator_params, base_score=0.0, split_idx=0):
         estimators_ast = self._assemble_estimators(estimator_params, split_idx)
 
         tmp_ast = utils.apply_op_to_expressions(
@@ -83,8 +79,7 @@ class BaseBoostingAssembler(ModelAssembler):
         if self._base_score != 0.0:
             base_score = -math.log(1.0 / self._base_score - 1.0)
 
-        expr = self._assemble_single_output(
-            estimator_params, base_score=base_score)
+        expr = self._assemble_single_output(estimator_params, base_score=base_score)
 
         proba_expr = self._bin_class_convert_output(expr)
 
@@ -128,11 +123,13 @@ class BaseTreeBoostingAssembler(BaseBoostingAssembler):
 
 class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
-    classifier_names = {"XGBClassifier", "XGBRFClassifier"}
+    classifier_names = {
+        "XGBClassifier",
+        "XGBRFClassifier"
+    }
 
     def __init__(self, model):
-        self.multiclass_params_seq_len = model.get_params().get(
-            "num_parallel_tree", 1)
+        self.multiclass_params_seq_len = model.get_params().get("num_parallel_tree", 1)
         feature_names = model.get_booster().feature_names
         self._feature_name_to_idx = {
             name: idx for idx, name in enumerate(feature_names or [])
@@ -145,7 +142,8 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         # assembling (if applicable).
         best_ntree_limit = getattr(model, "best_ntree_limit", None)
 
-        super().__init__(model, trees,
+        super().__init__(model,
+                         trees,
                          base_score=model.get_params()["base_score"],
                          tree_limit=best_ntree_limit)
 
@@ -174,9 +172,10 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
             true_child_id = tree["no"]
             false_child_id = tree["yes"]
 
-        return ast.IfExpr(ast.CompExpr(feature_ref, threshold, comp_op),
-                          self._assemble_child_tree(tree, true_child_id),
-                          self._assemble_child_tree(tree, false_child_id))
+        return ast.IfExpr(
+            ast.CompExpr(feature_ref, threshold, comp_op),
+            self._assemble_child_tree(tree, true_child_id),
+            self._assemble_child_tree(tree, false_child_id))
 
     def _assemble_child_tree(self, tree, child_id):
         for child in tree["children"]:
@@ -193,8 +192,7 @@ class XGBoostLinearModelAssembler(BaseBoostingAssembler):
         model_dump = model.get_booster().get_dump(dump_format="json")
         weights = json.loads(model_dump[0])["weight"]
         self._bias = json.loads(model_dump[0])["bias"]
-        super().__init__(model, weights,
-                         base_score=model.get_params()["base_score"])
+        super().__init__(model, weights, base_score=model.get_params()["base_score"])
 
     def _assemble_estimators(self, weights, split_idx):
         coef = utils.to_1d_array(weights)
@@ -205,8 +203,7 @@ class XGBoostModelAssemblerSelector(ModelAssembler):
 
     def __init__(self, model, *args, **kwargs):
         model_dump = model.get_booster().get_dump(dump_format="json")
-        if len(model_dump) == 1 and all(i in json.loads(model_dump[0])
-                                        for i in ("weight", "bias")):
+        if len(model_dump) == 1 and all(i in json.loads(model_dump[0]) for i in ("weight", "bias")):
             self.assembler = XGBoostLinearModelAssembler(model)
         else:
             self.assembler = XGBoostTreeModelAssembler(model, *args, **kwargs)
@@ -225,8 +222,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
 
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]
         self.average_output = model_dump.get("average_output", False)
-        self.objective_config_parts = model_dump.get(
-            "objective", "custom").split(" ")
+        self.objective_config_parts = model_dump.get("objective", "custom").split(" ")
         self.objective_name = self.objective_config_parts[0]
 
         super().__init__(model, trees)
@@ -248,8 +244,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
             "custom": super()._single_convert_output,
         }
         if self.objective_name not in supported_objectives:
-            raise ValueError(
-                f"Unsupported objective function '{self.objective_name}'")
+            raise ValueError(f"Unsupported objective function '{self.objective_name}'")
         return supported_objectives[self.objective_name](exprs)
 
     def _multi_class_sigmoid_transform(self, exprs):
@@ -264,8 +259,7 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
             "custom": super()._single_convert_output,
         }
         if self.objective_name not in supported_objectives:
-            raise ValueError(
-                f"Unsupported objective function '{self.objective_name}'")
+            raise ValueError(f"Unsupported objective function '{self.objective_name}'")
         return supported_objectives[self.objective_name](expr)
 
     def _bin_class_sigmoid_transform(self, expr, to_reuse=True):
@@ -355,5 +349,4 @@ def _split_estimator_params_by_classes(values, n_classes, params_seq_len):
           for i in range(j, values_len, block_len)]
          for j in range(0, block_len, params_seq_len)]
         ).reshape(n_classes, -1)
-    return [[values[idx] for idx in class_idxs]
-            for class_idxs in indices_by_class]
+    return [[values[idx] for idx in class_idxs] for class_idxs in indices_by_class]

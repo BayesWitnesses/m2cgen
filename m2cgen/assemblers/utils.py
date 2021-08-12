@@ -48,8 +48,7 @@ def apply_bin_op(left, right, op):
     expressions depending on whether their output is scalar or vector and
     creates instance of this expression with specified operation.
     """
-    exr_class = BIN_EXPR_CLASSES.get(
-        (left.output_size > 1, right.output_size > 1))
+    exr_class = BIN_EXPR_CLASSES.get((left.output_size > 1, right.output_size > 1))
     if exr_class is None:
         # change the positions of left and right
         left, right = right, left
@@ -68,8 +67,7 @@ def apply_op_to_expressions(op, *exprs, to_reuse=False):
         if not rest_exprs:
             return current_expr
 
-        return _inner(
-            apply_bin_op(current_expr, rest_exprs[0], op), *rest_exprs[1:])
+        return _inner(apply_bin_op(current_expr, rest_exprs[0], op), *rest_exprs[1:])
 
     result = _inner(apply_bin_op(exprs[0], exprs[1], op), *exprs[2:])
     result.to_reuse = to_reuse

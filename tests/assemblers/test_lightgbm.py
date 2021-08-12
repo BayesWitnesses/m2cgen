@@ -1,5 +1,8 @@
+from unittest import mock
+
 import lightgbm as lgb
 import numpy as np
+import pytest
 
 from m2cgen import ast
 from m2cgen.assemblers import LightGBMModelAssembler
@@ -309,3 +312,13 @@ def test_multi_class_sigmoid_output_transform():
     expected = ast.VectorVal([sigmoid] * 3)
 
     assert utils.cmp_exprs(actual, expected)
+
+@mock.patch(lgb.LGBMRanker.__name__, new="lightgbm.LGBMRegressor")
+def test_multi_class_unknown_objective():
+    estimator = lgb.LGBMRanker(n_estimators=1, random_state=1)
+    estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]), group=np.array([3]))
+
+    with :
+        assembler = LightGBMModelAssembler(estimator)
+        with pytest.raises(ValueError, match="Unsupported objective function 'lambdarank'"):
+            assembler.assemble()
