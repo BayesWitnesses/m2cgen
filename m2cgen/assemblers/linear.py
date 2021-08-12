@@ -17,12 +17,10 @@ class BaseLinearModelAssembler(ModelAssembler):
         intercept = utils.to_1d_array(self._get_intercept())
 
         if coef.shape[0] == 1:
-            return self._final_transform(
-                _linear_to_ast(coef[0], intercept[0]))
+            return self._final_transform(_linear_to_ast(coef[0], intercept[0]))
 
         exprs = [
-            self._final_transform(
-                _linear_to_ast(coef[idx], intercept[idx]))
+            self._final_transform(_linear_to_ast(coef[idx], intercept[idx]))
             for idx in range(coef.shape[0])
         ]
         return ast.VectorVal(exprs)
@@ -40,8 +38,7 @@ class BaseLinearModelAssembler(ModelAssembler):
 class SklearnLinearModelAssembler(BaseLinearModelAssembler):
 
     def _get_intercept(self):
-        return getattr(self.model, "intercept_",
-                       np.zeros(self._get_coef().shape[0]))
+        return getattr(self.model, "intercept_", np.zeros(self._get_coef().shape[0]))
 
     def _get_coef(self):
         return self.model.coef_
@@ -85,8 +82,7 @@ class GLMMixin:
         link_function_lower = link_function.lower()
         supported_inversed_funs = self._get_supported_inversed_funs()
         if link_function_lower not in supported_inversed_funs:
-            raise ValueError(
-                f"Unsupported link function '{link_function}'")
+            raise ValueError(f"Unsupported link function '{link_function}'")
         fun = supported_inversed_funs[link_function_lower]
         return fun(ast_to_transform)
 
@@ -198,14 +194,15 @@ class StatsmodelsModelAssemblerSelector(ModelAssembler):
         underlying_model = type(model.model).__name__
         if underlying_model == "GLM":
             self.assembler = StatsmodelsGLMModelAssembler(model)
-        elif underlying_model in {"GLS",
-                                  "GLSAR",
-                                  "OLS",
-                                  "WLS"}:
+        elif underlying_model in {
+            "GLS",
+            "GLSAR",
+            "OLS",
+            "WLS"
+        }:
             self.assembler = StatsmodelsLinearModelAssembler(model)
         else:
-            raise NotImplementedError(
-                f"Model '{underlying_model}' is not supported")
+            raise NotImplementedError(f"Model '{underlying_model}' is not supported")
 
     def assemble(self):
         return self.assembler.assemble()

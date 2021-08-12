@@ -1,5 +1,3 @@
-import subprocess
-
 from m2cgen.assemblers import get_assembler_cls
 from m2cgen.interpreters import FSharpInterpreter
 
@@ -45,7 +43,7 @@ class FSharpExecutor(BaseExecutor):
         super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
             cls.target_exec_dir = cls._global_tmp_dir / "bin"
-            subprocess.call([
+            utils.execute_command([
                 "dotnet",
                 "new",
                 "console",
@@ -70,7 +68,7 @@ class FSharpExecutor(BaseExecutor):
         file_name = self._global_tmp_dir / "Program.fs"
         utils.write_content_to_file(code, file_name)
 
-        subprocess.call([
+        utils.execute_command([
             "dotnet",
             "build",
             str(self._global_tmp_dir / f"{self.project_name}.fsproj"),
