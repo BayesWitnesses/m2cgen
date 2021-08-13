@@ -284,7 +284,7 @@ def test_statsmodels_unknown_constant_position():
         assemblers.StatsmodelsModelAssemblerSelector(estimator)
 
 
-def test_statsmodels_unknown_underlying_model():
+def test_statsmodels_unknown_model():
 
     class ValidGLS(sm.GLS):
         pass

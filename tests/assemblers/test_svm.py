@@ -110,42 +110,36 @@ def test_cosine_kernel():
     assembler = LightningSVMModelAssembler(estimator)
     actual = assembler.assemble()
 
-    def kernel_ast(sup_vec_value):
-        feature_norm = ast.SqrtExpr(
-            ast.BinNumExpr(
-                ast.FeatureRef(0),
-                ast.FeatureRef(0),
-                ast.BinNumOpType.MUL),
-            to_reuse=True)
-        return ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(sup_vec_value),
-                ast.FeatureRef(0),
-                ast.BinNumOpType.MUL),
-            ast.IfExpr(
-                ast.CompExpr(
-                    feature_norm,
-                    ast.NumVal(0.0),
-                    ast.CompOpType.EQ),
-                ast.NumVal(1.0),
-                feature_norm),
-            ast.BinNumOpType.DIV)
-
     expected = _create_expected_single_output_ast(
         estimator.coef_, estimator.intercept_,
-        [kernel_ast(1.0), kernel_ast(1.0)])
+        [_cosine_kernel_ast(1.0), _cosine_kernel_ast(1.0)])
 
     assert cmp_exprs(actual, expected)
 
 
-@pytest.mark.xfail(raises=ValueError, strict=True)
+def test_norm_in_cosine_kernel():
+    estimator = KernelSVC(kernel="cosine", random_state=1, gamma=2.0)
+
+    estimator.fit(np.array([[0], [0]]), [1, 2])
+    np.testing.assert_array_equal(estimator.support_vectors_, [[0], [0]])
+
+    assembler = LightningSVMModelAssembler(estimator)
+    actual = assembler.assemble()
+
+    expected = _create_expected_single_output_ast(
+        estimator.coef_, estimator.intercept_,
+        [_cosine_kernel_ast(0.0), _cosine_kernel_ast(0.0)])
+
+    assert cmp_exprs(actual, expected)
+
+
 def test_unknown_kernel():
     estimator = SVC(kernel=lambda x, y: np.transpose(x) * y)
-
     estimator.fit([[1], [2]], [1, 2])
 
-    assembler = SklearnSVMModelAssembler(estimator)
-    assembler.assemble()
+    with pytest.raises(ValueError,
+                       match="Unsupported kernel type '<function test_unknown_kernel.<locals>.<lambda> at .*"):
+        SklearnSVMModelAssembler(estimator)
 
 
 def test_multi_class_rbf_kernel():
@@ -308,3 +302,25 @@ def _rbf_kernel_ast(estimator, sup_vec_value, to_reuse=False):
                 ast.NumVal(2)),
             ast.BinNumOpType.MUL),
         to_reuse=to_reuse)
+
+
+def _cosine_kernel_ast(sup_vec_value):
+    feature_norm = ast.SqrtExpr(
+        ast.BinNumExpr(
+            ast.FeatureRef(0),
+            ast.FeatureRef(0),
+            ast.BinNumOpType.MUL),
+        to_reuse=True)
+    return ast.BinNumExpr(
+        ast.BinNumExpr(
+            ast.NumVal(sup_vec_value),
+            ast.FeatureRef(0),
+            ast.BinNumOpType.MUL),
+        ast.IfExpr(
+            ast.CompExpr(
+                feature_norm,
+                ast.NumVal(0.0),
+                ast.CompOpType.EQ),
+            ast.NumVal(1.0),
+            feature_norm),
+        ast.BinNumOpType.DIV)
