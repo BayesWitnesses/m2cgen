@@ -1,5 +1,6 @@
 import lightgbm as lgb
 import numpy as np
+import pytest
 
 from m2cgen import ast
 from m2cgen.assemblers import LightGBMModelAssembler
@@ -264,6 +265,16 @@ def test_exp_output_transform():
             ast.BinNumOpType.ADD))
 
     assert utils.cmp_exprs(actual, expected)
+
+
+def test_unknown_output_transform():
+    estimator = lgb.LGBMRanker(n_estimators=1, random_state=1)
+    estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]), group=np.array([3]))
+
+    assembler = LightGBMModelAssembler(estimator)
+
+    with pytest.raises(ValueError, match="Unsupported objective function 'lambdarank'"):
+        assembler.assemble()
 
 
 def test_bin_class_sigmoid_output_transform():
