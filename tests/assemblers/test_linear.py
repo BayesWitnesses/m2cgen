@@ -274,15 +274,26 @@ def test_statsmodels_w_const():
     assert utils.cmp_exprs(actual, expected)
 
 
-@pytest.mark.xfail(raises=ValueError, strict=True)
 def test_statsmodels_unknown_constant_position():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLS,
         dict(init=dict(hasconst=True)))
     _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
-    assembler.assemble()
+    with pytest.raises(ValueError, match="Unknown constant position"):
+        assemblers.StatsmodelsModelAssemblerSelector(estimator)
+
+
+def test_statsmodels_unknown_model():
+
+    class ValidGLS(sm.GLS):
+        pass
+
+    estimator = utils.StatsmodelsSklearnLikeWrapper(ValidGLS, {})
+    _, __, estimator = utils.get_regression_model_trainer()(estimator)
+
+    with pytest.raises(NotImplementedError, match="Model 'ValidGLS' is not supported"):
+        assemblers.StatsmodelsModelAssemblerSelector(estimator)
 
 
 def test_statsmodels_processmle():
@@ -689,7 +700,6 @@ def test_statsmodels_glm_cauchy_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-@pytest.mark.xfail(raises=ValueError, strict=True)
 def test_statsmodels_glm_unknown_link_func():
 
     class ValidPowerLink(sm.families.links.Power):
@@ -703,7 +713,9 @@ def test_statsmodels_glm_unknown_link_func():
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
     assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
-    assembler.assemble()
+
+    with pytest.raises(ValueError, match="Unsupported link function 'ValidPowerLink'"):
+        assembler.assemble()
 
 
 def test_sklearn_glm_identity_link_func():
@@ -743,13 +755,18 @@ def test_sklearn_glm_log_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-@pytest.mark.xfail(raises=ValueError, strict=True)
 def test_sklearn_glm_unknown_link_func():
-    estimator = linear_model.TweedieRegressor(power=1, link="this_link_func_does_not_exist", max_iter=10)
+
+    class ValidIdentityLink(linear_model._glm.link.IdentityLink):
+        pass
+
+    estimator = linear_model.TweedieRegressor(power=1, link=ValidIdentityLink(), max_iter=10)
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
     assembler = assemblers.SklearnGLMModelAssembler(estimator)
-    assembler.assemble()
+
+    with pytest.raises(ValueError, match="Unsupported link function 'ValidIdentityLink'"):
+        assembler.assemble()
 
 
 def test_lightning_regression():
