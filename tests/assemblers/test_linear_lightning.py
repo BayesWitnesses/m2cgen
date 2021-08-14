@@ -6,7 +6,7 @@ from m2cgen import assemblers, ast
 from tests import utils
 
 
-def test_lightning_regression():
+def test_regression():
     estimator = AdaGradRegressor(random_state=1)
     utils.get_regression_model_trainer()(estimator)
 
@@ -76,7 +76,7 @@ def test_lightning_regression():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_lightning_binary_class():
+def test_binary_class():
     estimator = AdaGradClassifier(random_state=1)
     utils.get_binary_classification_model_trainer()(estimator)
 
@@ -214,7 +214,7 @@ def test_lightning_binary_class():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_lightning_multi_class():
+def test_multi_class():
     estimator = AdaGradClassifier(random_state=1)
     utils.get_classification_model_trainer()(estimator)
 
