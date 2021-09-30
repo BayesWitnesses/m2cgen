@@ -10,9 +10,9 @@ from tests.utils import cmp_exprs
 
 
 def test_ransac_custom_base_estimator():
-    base_estimator = DecisionTreeRegressor()
+    base_estimator = DecisionTreeRegressor(random_state=1, max_depth=1)
     estimator = RANSACRegressor(base_estimator=base_estimator, random_state=1)
-    estimator.fit([[1], [2], [3]], [1, 2, 3])
+    estimator.fit([[1], [2]], [1, 2])
 
     assembler = RANSACModelAssembler(estimator)
     actual = assembler.assemble()
@@ -20,10 +20,10 @@ def test_ransac_custom_base_estimator():
     expected = ast.IfExpr(
         ast.CompExpr(
             ast.FeatureRef(0),
-            ast.NumVal(2.5),
+            ast.NumVal(1.5),
             ast.CompOpType.LTE),
-        ast.NumVal(2.0),
-        ast.NumVal(3.0))
+        ast.NumVal(1.0),
+        ast.NumVal(2.0))
 
     assert cmp_exprs(actual, expected)
 
