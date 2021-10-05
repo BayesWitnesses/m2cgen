@@ -12,7 +12,7 @@ flake8==3.9.2
 isort==5.9.3
 pytest==6.2.5
 pytest-mock==3.6.1
-pytest-cov==2.12.1
+pytest-cov==3.0.0
 py-mini-racer==0.6.0
 
 # Other stuff
