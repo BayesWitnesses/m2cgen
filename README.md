@@ -128,7 +128,7 @@ $ cat <pickle_file> | m2cgen --language <language>
 ```
 
 ## FAQ
-**Q: Generation fails with `RuntimeError: maximum recursion depth exceeded` error.**
+**Q: Generation fails with `RecursionError: maximum recursion depth exceeded` error.**
 
 A: If this error occurs while generating code using an ensemble model, try to reduce the number of trained estimators within that model. Alternatively you can increase the maximum recursion depth with `sys.setrecursionlimit(<new_depth>)`.
 

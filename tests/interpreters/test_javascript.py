@@ -1,3 +1,5 @@
+import pytest
+
 from m2cgen import ast
 from m2cgen.interpreters import JavascriptInterpreter
 
@@ -174,15 +176,15 @@ function score(input) {
     return addVectors([1.0, 2.0], [3.0, 4.0]);
 }
 function addVectors(v1, v2) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
+    var result = new Array(v1.length);
+    for (var i = 0; i < v1.length; i++) {
         result[i] = v1[i] + v2[i];
     }
     return result;
 }
 function mulVectorNumber(v1, num) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
+    var result = new Array(v1.length);
+    for (var i = 0; i < v1.length; i++) {
         result[i] = v1[i] * num;
     }
     return result;
@@ -204,15 +206,15 @@ function score(input) {
     return mulVectorNumber([1.0, 2.0], 1.0);
 }
 function addVectors(v1, v2) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
+    var result = new Array(v1.length);
+    for (var i = 0; i < v1.length; i++) {
         result[i] = v1[i] + v2[i];
     }
     return result;
 }
 function mulVectorNumber(v1, num) {
-    let result = new Array(v1.length);
-    for (let i = 0; i < v1.length; i++) {
+    var result = new Array(v1.length);
+    for (var i = 0; i < v1.length; i++) {
         result[i] = v1[i] * num;
     }
     return result;
@@ -335,19 +337,19 @@ function score(input) {
     return softmax([2.0, 3.0]);
 }
 function softmax(x) {
-    let size = x.length;
-    let result = new Array(size);
-    let max = x[0];
-    for (let i = 1; i < size; ++i) {
+    var size = x.length;
+    var result = new Array(size);
+    var max = x[0];
+    for (var i = 1; i < size; ++i) {
         if (x[i] > max)
             max = x[i];
     }
-    let sum = 0.0;
-    for (let i = 0; i < size; ++i) {
+    var sum = 0.0;
+    for (var i = 0; i < size; ++i) {
         result[i] = Math.exp(x[i] - max);
         sum += result[i];
     }
-    for (let i = 0; i < size; ++i)
+    for (var i = 0; i < size; ++i)
         result[i] /= sum;
     return result;
 }
@@ -366,7 +368,7 @@ function score(input) {
 }
 function sigmoid(x) {
     if (x < 0.0) {
-        let z = Math.exp(x);
+        var z = Math.exp(x);
         return z / (1.0 + z);
     }
     return 1.0 / (1.0 + Math.exp(-x));
@@ -391,3 +393,25 @@ function score(input) {
 
     interpreter = JavascriptInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_unsupported_exprs():
+    interpreter = JavascriptInterpreter()
+
+    expr = ast.Expr()
+    with pytest.raises(NotImplementedError, match="No handler found for 'Expr'"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.ADD)
+    with pytest.raises(NotImplementedError, match="Op 'ADD' is unsupported"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.MUL)
+    with pytest.raises(NotImplementedError, match="Op 'MUL' is unsupported"):
+        interpreter.interpret(expr)

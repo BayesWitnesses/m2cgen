@@ -1,5 +1,3 @@
-import subprocess
-
 from m2cgen.assemblers import get_assembler_cls
 from m2cgen.interpreters import VisualBasicInterpreter
 
@@ -61,7 +59,7 @@ class VisualBasicExecutor(BaseExecutor):
         super().prepare_global(**kwargs)
         if cls.target_exec_dir is None:
             cls.target_exec_dir = cls._global_tmp_dir / "bin"
-            subprocess.call([
+            utils.execute_command([
                 "dotnet",
                 "new",
                 "console",
@@ -87,7 +85,7 @@ class VisualBasicExecutor(BaseExecutor):
         utils.write_content_to_file(model_code, model_file_name)
         utils.write_content_to_file(executor_code, executor_file_name)
 
-        subprocess.call([
+        utils.execute_command([
             "dotnet",
             "build",
             str(self._global_tmp_dir / f"{self.project_name}.vbproj"),

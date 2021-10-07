@@ -1,3 +1,5 @@
+import pytest
+
 from m2cgen import ast
 from m2cgen.interpreters import JavaInterpreter
 
@@ -273,6 +275,11 @@ public class Model {
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+class CustomJavaInterpreter(JavaInterpreter):
+    ast_size_check_frequency = 3
+    ast_size_per_subroutine_threshold = 1
+
+
 def test_depth_threshold_with_bin_expr():
     expr = ast.NumVal(1)
     for _ in range(4):
@@ -289,9 +296,45 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
-    interpreter.ast_size_check_frequency = 3
-    interpreter.ast_size_per_subroutine_threshold = 1
+    interpreter = CustomJavaInterpreter()
+    assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_depth_threshold_with_reused_bin_expr():
+    reused_expr = ast.BinNumExpr(ast.NumVal(1), ast.NumVal(1), ast.BinNumOpType.ADD, to_reuse=True)
+    expr = ast.BinNumExpr(ast.NumVal(1), reused_expr, ast.BinNumOpType.ADD)
+    for _ in range(2):
+        expr = ast.BinNumExpr(expr, expr, ast.BinNumOpType.ADD)
+
+    expected_code = """
+public class Model {
+    public static double score(double[] input) {
+        return ((subroutine0(input)) + (subroutine1(input))) + ((subroutine2(input)) + (subroutine3(input)));
+    }
+    public static double subroutine0(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+    public static double subroutine1(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+    public static double subroutine2(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+    public static double subroutine3(double[] input) {
+        double var0;
+        var0 = (1.0) + (1.0);
+        return (1.0) + (var0);
+    }
+}
+"""
+
+    interpreter = CustomJavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -330,9 +373,8 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
+    interpreter = CustomJavaInterpreter()
     interpreter.ast_size_check_frequency = 2
-    interpreter.ast_size_per_subroutine_threshold = 1
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -374,9 +416,7 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
-    interpreter.ast_size_check_frequency = 3
-    interpreter.ast_size_per_subroutine_threshold = 1
+    interpreter = CustomJavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -384,11 +424,11 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expr = ast.NumVal(1)
     for i in range(4):
         inner = ast.NumVal(1)
-        for j in range(4):
+        for _ in range(4):
             inner = ast.BinNumExpr(ast.NumVal(i), inner, ast.BinNumOpType.ADD)
         expr = ast.IfExpr(
             ast.CompExpr(
-                inner, ast.NumVal(j), ast.CompOpType.EQ),
+                inner, ast.NumVal(1), ast.CompOpType.EQ),
             ast.NumVal(1),
             expr)
 
@@ -396,16 +436,16 @@ def test_deep_mixed_exprs_exceeding_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (((3.0) + ((3.0) + (subroutine0(input)))) == (3.0)) {
+        if (((3.0) + ((3.0) + (subroutine0(input)))) == (1.0)) {
             var0 = 1.0;
         } else {
-            if (((2.0) + ((2.0) + (subroutine1(input)))) == (3.0)) {
+            if (((2.0) + ((2.0) + (subroutine1(input)))) == (1.0)) {
                 var0 = 1.0;
             } else {
-                if (((1.0) + ((1.0) + (subroutine2(input)))) == (3.0)) {
+                if (((1.0) + ((1.0) + (subroutine2(input)))) == (1.0)) {
                     var0 = 1.0;
                 } else {
-                    if (((0.0) + ((0.0) + (subroutine3(input)))) == (3.0)) {
+                    if (((0.0) + ((0.0) + (subroutine3(input)))) == (1.0)) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
@@ -430,9 +470,7 @@ public class Model {
 }
 """
 
-    interpreter = JavaInterpreter()
-    interpreter.ast_size_check_frequency = 3
-    interpreter.ast_size_per_subroutine_threshold = 1
+    interpreter = CustomJavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
@@ -626,3 +664,25 @@ public class Model {
 
     interpreter = JavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+def test_unsupported_exprs():
+    interpreter = JavaInterpreter()
+
+    expr = ast.Expr()
+    with pytest.raises(NotImplementedError, match="No handler found for 'Expr'"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorNumExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.NumVal(1),
+        ast.BinNumOpType.ADD)
+    with pytest.raises(NotImplementedError, match="Op 'ADD' is unsupported"):
+        interpreter.interpret(expr)
+
+    expr = ast.BinVectorExpr(
+        ast.VectorVal([ast.NumVal(1), ast.NumVal(2)]),
+        ast.VectorVal([ast.NumVal(3), ast.NumVal(4)]),
+        ast.BinNumOpType.MUL)
+    with pytest.raises(NotImplementedError, match="Op 'MUL' is unsupported"):
+        interpreter.interpret(expr)

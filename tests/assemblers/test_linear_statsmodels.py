@@ -1,9 +1,6 @@
 import numpy as np
 import pytest
 import statsmodels.api as sm
-from lightning.classification import AdaGradClassifier
-from lightning.regression import AdaGradRegressor
-from sklearn import linear_model
 from statsmodels.regression.process_regression import ProcessMLE
 
 from m2cgen import assemblers, ast
@@ -11,128 +8,7 @@ from m2cgen import assemblers, ast
 from tests import utils
 
 
-def test_single_feature():
-    estimator = linear_model.LinearRegression()
-    estimator.coef_ = np.array([1])
-    estimator.intercept_ = np.array([3])
-
-    assembler = assemblers.SklearnLinearModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.BinNumExpr(
-        ast.NumVal(3),
-        ast.BinNumExpr(
-            ast.FeatureRef(0),
-            ast.NumVal(1),
-            ast.BinNumOpType.MUL),
-        ast.BinNumOpType.ADD)
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-def test_two_features():
-    estimator = linear_model.LinearRegression()
-    estimator.coef_ = np.array([1, 2])
-    estimator.intercept_ = np.array([3])
-
-    assembler = assemblers.SklearnLinearModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.BinNumExpr(
-        ast.BinNumExpr(
-            ast.NumVal(3),
-            ast.BinNumExpr(
-                ast.FeatureRef(0),
-                ast.NumVal(1),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD),
-        ast.BinNumExpr(
-            ast.FeatureRef(1),
-            ast.NumVal(2),
-            ast.BinNumOpType.MUL),
-        ast.BinNumOpType.ADD)
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-def test_multi_class():
-    estimator = linear_model.LogisticRegression()
-    estimator.coef_ = np.array([[1, 2], [3, 4], [5, 6]])
-    estimator.intercept_ = np.array([7, 8, 9])
-
-    assembler = assemblers.SklearnLinearModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.VectorVal([
-        ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(7),
-                ast.BinNumExpr(
-                    ast.FeatureRef(0),
-                    ast.NumVal(1),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(1),
-                ast.NumVal(2),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD),
-        ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(8),
-                ast.BinNumExpr(
-                    ast.FeatureRef(0),
-                    ast.NumVal(3),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(1),
-                ast.NumVal(4),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD),
-        ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.NumVal(9),
-                ast.BinNumExpr(
-                    ast.FeatureRef(0),
-                    ast.NumVal(5),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(1),
-                ast.NumVal(6),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD)])
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-def test_binary_class():
-    estimator = linear_model.LogisticRegression()
-    estimator.coef_ = np.array([[1, 2]])
-    estimator.intercept_ = np.array([3])
-
-    assembler = assemblers.SklearnLinearModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.BinNumExpr(
-        ast.BinNumExpr(
-            ast.NumVal(3),
-            ast.BinNumExpr(
-                ast.FeatureRef(0),
-                ast.NumVal(1),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD),
-        ast.BinNumExpr(
-            ast.FeatureRef(1),
-            ast.NumVal(2),
-            ast.BinNumOpType.MUL),
-        ast.BinNumOpType.ADD)
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-def test_statsmodels_wo_const():
+def test_wo_const():
     estimator = utils.StatsmodelsSklearnLikeWrapper(sm.GLS, {})
     _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
@@ -202,7 +78,7 @@ def test_statsmodels_wo_const():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_w_const():
+def test_w_const():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLS,
         dict(init=dict(fit_intercept=True)))
@@ -274,18 +150,29 @@ def test_statsmodels_w_const():
     assert utils.cmp_exprs(actual, expected)
 
 
-@pytest.mark.xfail(raises=ValueError, strict=True)
-def test_statsmodels_unknown_constant_position():
+def test_unknown_constant_position():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLS,
         dict(init=dict(hasconst=True)))
     _, __, estimator = utils.get_regression_model_trainer()(estimator)
 
-    assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
-    assembler.assemble()
+    with pytest.raises(ValueError, match="Unknown constant position"):
+        assemblers.StatsmodelsModelAssemblerSelector(estimator)
 
 
-def test_statsmodels_processmle():
+def test_unknown_model():
+
+    class ValidGLS(sm.GLS):
+        pass
+
+    estimator = utils.StatsmodelsSklearnLikeWrapper(ValidGLS, {})
+    _, __, estimator = utils.get_regression_model_trainer()(estimator)
+
+    with pytest.raises(NotImplementedError, match="Model 'ValidGLS' is not supported"):
+        assemblers.StatsmodelsModelAssemblerSelector(estimator)
+
+
+def test_processmle():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         ProcessMLE,
         dict(init=dict(exog_scale=np.ones(
@@ -369,7 +256,7 @@ def test_statsmodels_processmle():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_logit_link_func():
+def test_glm_logit_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -393,7 +280,7 @@ def test_statsmodels_glm_logit_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_power_link_func():
+def test_glm_power_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -418,7 +305,7 @@ def test_statsmodels_glm_power_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_negative_power_link_func():
+def test_glm_negative_power_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -446,7 +333,7 @@ def test_statsmodels_glm_negative_power_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_inverse_power_link_func():
+def test_glm_inverse_power_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -472,7 +359,7 @@ def test_statsmodels_glm_inverse_power_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_inverse_squared_link_func():
+def test_glm_inverse_squared_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -499,7 +386,7 @@ def test_statsmodels_glm_inverse_squared_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_sqr_power_link_func():
+def test_glm_sqr_power_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -523,7 +410,7 @@ def test_statsmodels_glm_sqr_power_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_identity_link_func():
+def test_glm_identity_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -546,7 +433,7 @@ def test_statsmodels_glm_identity_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_sqrt_link_func():
+def test_glm_sqrt_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -571,7 +458,7 @@ def test_statsmodels_glm_sqrt_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_log_link_func():
+def test_glm_log_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -595,7 +482,7 @@ def test_statsmodels_glm_log_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_cloglog_link_func():
+def test_glm_cloglog_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -626,7 +513,7 @@ def test_statsmodels_glm_cloglog_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_negativebinomial_link_func():
+def test_glm_negativebinomial_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -659,7 +546,7 @@ def test_statsmodels_glm_negativebinomial_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-def test_statsmodels_glm_cauchy_link_func():
+def test_glm_cauchy_link_func():
     estimator = utils.StatsmodelsSklearnLikeWrapper(
         sm.GLM,
         dict(init=dict(
@@ -689,8 +576,7 @@ def test_statsmodels_glm_cauchy_link_func():
     assert utils.cmp_exprs(actual, expected)
 
 
-@pytest.mark.xfail(raises=ValueError, strict=True)
-def test_statsmodels_glm_unknown_link_func():
+def test_glm_unknown_link_func():
 
     class ValidPowerLink(sm.families.links.Power):
         pass
@@ -703,345 +589,6 @@ def test_statsmodels_glm_unknown_link_func():
     estimator = estimator.fit([[1], [2]], [0.1, 0.2])
 
     assembler = assemblers.StatsmodelsModelAssemblerSelector(estimator)
-    assembler.assemble()
 
-
-def test_sklearn_glm_identity_link_func():
-    estimator = linear_model.TweedieRegressor(power=0, link="identity", max_iter=10)
-    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
-
-    assembler = assemblers.SklearnGLMModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.BinNumExpr(
-        ast.NumVal(0.12),
-        ast.BinNumExpr(
-            ast.FeatureRef(0),
-            ast.NumVal(0.02),
-            ast.BinNumOpType.MUL),
-        ast.BinNumOpType.ADD)
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-def test_sklearn_glm_log_link_func():
-    estimator = linear_model.TweedieRegressor(power=1, link="log", fit_intercept=False, max_iter=10)
-    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
-
-    assembler = assemblers.SklearnGLMModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.ExpExpr(
-        ast.BinNumExpr(
-            ast.NumVal(0.0),
-            ast.BinNumExpr(
-                ast.FeatureRef(0),
-                ast.NumVal(-0.4619711397),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD))
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-@pytest.mark.xfail(raises=ValueError, strict=True)
-def test_sklearn_glm_unknown_link_func():
-    estimator = linear_model.TweedieRegressor(power=1, link="this_link_func_does_not_exist", max_iter=10)
-    estimator = estimator.fit([[1], [2]], [0.1, 0.2])
-
-    assembler = assemblers.SklearnGLMModelAssembler(estimator)
-    assembler.assemble()
-
-
-def test_lightning_regression():
-    estimator = AdaGradRegressor(random_state=1)
-    utils.get_regression_model_trainer()(estimator)
-
-    assembler = assemblers.SklearnLinearModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    feature_weight_mul = [
-        ast.BinNumExpr(
-            ast.FeatureRef(0),
-            ast.NumVal(-0.08558826944690746),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(1),
-            ast.NumVal(0.0803724696787377),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(2),
-            ast.NumVal(-0.03516743076774846),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(3),
-            ast.NumVal(0.26469178947134087),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(4),
-            ast.NumVal(0.15651985221012488),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(5),
-            ast.NumVal(1.5186399078028587),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(6),
-            ast.NumVal(0.10089874009193693),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(7),
-            ast.NumVal(-0.011426237067026246),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(8),
-            ast.NumVal(0.0861987777487293),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(9),
-            ast.NumVal(-0.0057791506839322574),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(10),
-            ast.NumVal(0.3357752757550913),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(11),
-            ast.NumVal(0.020189965076849486),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(12),
-            ast.NumVal(-0.7390647599317609),
-            ast.BinNumOpType.MUL),
-    ]
-
-    expected = assemblers.utils.apply_op_to_expressions(
-        ast.BinNumOpType.ADD,
-        ast.NumVal(0.0),
-        *feature_weight_mul)
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-def test_lightning_binary_class():
-    estimator = AdaGradClassifier(random_state=1)
-    utils.get_binary_classification_model_trainer()(estimator)
-
-    assembler = assemblers.SklearnLinearModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    feature_weight_mul = [
-        ast.BinNumExpr(
-            ast.FeatureRef(0),
-            ast.NumVal(0.16218889967390476),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(1),
-            ast.NumVal(0.10012761963766906),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(2),
-            ast.NumVal(0.6289276652681673),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(3),
-            ast.NumVal(0.17618420156072845),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(4),
-            ast.NumVal(0.0010492096607182045),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(5),
-            ast.NumVal(-0.0029135563693806913),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(6),
-            ast.NumVal(-0.005923882409142498),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(7),
-            ast.NumVal(-0.0023293599172479755),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(8),
-            ast.NumVal(0.0020808828960210517),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(9),
-            ast.NumVal(0.0009846430705550103),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(10),
-            ast.NumVal(0.0010399810925427265),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(11),
-            ast.NumVal(0.011203056917272093),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(12),
-            ast.NumVal(-0.007271351370867731),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(13),
-            ast.NumVal(-0.26333437096804224),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(14),
-            ast.NumVal(1.8533543368532444e-05),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(15),
-            ast.NumVal(-0.0008266341686278445),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(16),
-            ast.NumVal(-0.0011090316301215724),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(17),
-            ast.NumVal(-0.0001910857095336291),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(18),
-            ast.NumVal(0.00010735116208006556),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(19),
-            ast.NumVal(-4.076097659514017e-05),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(20),
-            ast.NumVal(0.15300712110146406),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(21),
-            ast.NumVal(0.06316277258339074),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(22),
-            ast.NumVal(0.495291178977687),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(23),
-            ast.NumVal(-0.29589136204657845),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(24),
-            ast.NumVal(0.000771932729567487),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(25),
-            ast.NumVal(-0.011877978242492428),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(26),
-            ast.NumVal(-0.01678004536869617),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(27),
-            ast.NumVal(-0.004070431062579625),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(28),
-            ast.NumVal(0.001158641497209262),
-            ast.BinNumOpType.MUL),
-        ast.BinNumExpr(
-            ast.FeatureRef(29),
-            ast.NumVal(0.00010737287732588742),
-            ast.BinNumOpType.MUL),
-    ]
-
-    expected = assemblers.utils.apply_op_to_expressions(
-        ast.BinNumOpType.ADD,
-        ast.NumVal(0.0),
-        *feature_weight_mul)
-
-    assert utils.cmp_exprs(actual, expected)
-
-
-def test_lightning_multi_class():
-    estimator = AdaGradClassifier(random_state=1)
-    utils.get_classification_model_trainer()(estimator)
-
-    assembler = assemblers.SklearnLinearModelAssembler(estimator)
-    actual = assembler.assemble()
-
-    expected = ast.VectorVal([
-        ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.BinNumExpr(
-                    ast.BinNumExpr(
-                        ast.NumVal(0.0),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.NumVal(0.09686334892116512),
-                            ast.BinNumOpType.MUL),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(1),
-                        ast.NumVal(0.32572202133211947),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(2),
-                    ast.NumVal(-0.48444233646554424),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(3),
-                ast.NumVal(-0.219719145605816),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD),
-        ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.BinNumExpr(
-                    ast.BinNumExpr(
-                        ast.NumVal(0.0),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.NumVal(-0.1089136473832088),
-                            ast.BinNumOpType.MUL),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(1),
-                        ast.NumVal(-0.16956003333433572),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(2),
-                    ast.NumVal(0.0365531256007199),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(3),
-                ast.NumVal(-0.01016100116780896),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD),
-        ast.BinNumExpr(
-            ast.BinNumExpr(
-                ast.BinNumExpr(
-                    ast.BinNumExpr(
-                        ast.NumVal(0.0),
-                        ast.BinNumExpr(
-                            ast.FeatureRef(0),
-                            ast.NumVal(-0.16690339219780817),
-                            ast.BinNumOpType.MUL),
-                        ast.BinNumOpType.ADD),
-                    ast.BinNumExpr(
-                        ast.FeatureRef(1),
-                        ast.NumVal(-0.19466284646233858),
-                        ast.BinNumOpType.MUL),
-                    ast.BinNumOpType.ADD),
-                ast.BinNumExpr(
-                    ast.FeatureRef(2),
-                    ast.NumVal(0.2953585236360389),
-                    ast.BinNumOpType.MUL),
-                ast.BinNumOpType.ADD),
-            ast.BinNumExpr(
-                ast.FeatureRef(3),
-                ast.NumVal(0.21288203082531384),
-                ast.BinNumOpType.MUL),
-            ast.BinNumOpType.ADD)])
-
-    assert utils.cmp_exprs(actual, expected)
+    with pytest.raises(ValueError, match="Unsupported link function 'ValidPowerLink'"):
+        assembler.assemble()

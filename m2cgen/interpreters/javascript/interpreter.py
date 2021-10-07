@@ -32,8 +32,7 @@ class JavascriptInterpreter(ImperativeToCodeInterpreter,
     with_sigmoid_expr = False
     with_softmax_expr = False
 
-    def __init__(self, indent=4, function_name="score",
-                 *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", *args, **kwargs):
         self.indent = indent
         self.function_name = function_name
 
