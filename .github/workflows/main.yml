@@ -3,7 +3,7 @@ name: GitHub Actions
 on:
   push:
     branches:
-      - master
+      - fix_stack_error
   pull_request:
     branches:
       - master
@@ -41,7 +41,6 @@ jobs:
             export TEST="E2E";
           fi
           docker run \
-            --ulimit stack=-1 \
             -v "$GITHUB_WORKSPACE":"/m2cgen" \
             -e TEST \
             -e LANG="${{ matrix.lang }}" \
