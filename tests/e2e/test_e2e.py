@@ -141,7 +141,7 @@ LIGHTGBM_PARAMS_RF = dict(n_estimators=10, boosting_type='rf',
                           subsample=0.7, subsample_freq=1, random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_EXTRA_TREES = dict(n_estimators=10, extra_trees=True, random_state=RANDOM_SEED)
 LIGHTGBM_PARAMS_LARGE = dict(n_estimators=100, num_leaves=100, max_depth=64, random_state=RANDOM_SEED)
-LIGHTGBM_PARAMS_HUGE = dict(n_estimators=900, num_leaves=4, random_state=RANDOM_SEED)
+LIGHTGBM_PARAMS_HUGE = dict(n_estimators=1000, num_leaves=4, random_state=RANDOM_SEED)
 SVC_PARAMS = dict(random_state=RANDOM_SEED, decision_function_shape="ovo")
 STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_wt=0.2)
 
