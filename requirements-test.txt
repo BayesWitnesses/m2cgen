@@ -3,7 +3,7 @@ scikit-learn==1.0.1; python_version > "3.6"
 scikit-learn==0.24.2; python_version <= "3.6"
 xgboost==1.4.2
 lightgbm==3.3.1
-statsmodels==0.13.0; python_version > "3.6"
+statsmodels==0.13.1; python_version > "3.6"
 statsmodels==0.12.2; python_version <= "3.6"
 sklearn-contrib-lightning==0.6.1
 
