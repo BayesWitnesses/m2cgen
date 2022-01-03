@@ -1,5 +1,5 @@
 # Supported models
-scikit-learn==1.0.1; python_version > "3.6"
+scikit-learn==1.0.2; python_version > "3.6"
 scikit-learn==0.24.2; python_version <= "3.6"
 xgboost==1.4.2
 lightgbm==3.3.1
