@@ -25,7 +25,7 @@ def test_override_input(path_to_pickled_model):
 
 def test_piped(path_to_pickled_model):
     exec_args = [
-        "type" if system() in {'Windows', 'Microsoft'} else "cat",
+        "type" if system() == "Windows" else "cat",
         str(path_to_pickled_model), "|", "m2cgen", "--language", "python"]
     execute_test(exec_args)
 
