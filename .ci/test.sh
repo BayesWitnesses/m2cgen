@@ -9,7 +9,8 @@ if [[ $TEST == "API" ]]; then
   curl -Os https://uploader.codecov.io/latest/linux/codecov
   chmod +x codecov
   ls -a
-  ./codecov --disable=gcov -Z
+  cat .coverage
+  ./codecov -Z
 fi
 
 if [[ $TEST == "E2E" ]]; then
