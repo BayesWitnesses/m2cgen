@@ -30,7 +30,7 @@ class PowershellExecutor(BaseExecutor):
         assembler_cls = get_assembler_cls(model)
         self.model_ast = assembler_cls(model).assemble()
 
-        self._powershell = "powershell" if system() in {'Windows', 'Microsoft'} else "pwsh"
+        self._powershell = "powershell" if system() == "Windows" else "pwsh"
 
         self.script_path = None
 
