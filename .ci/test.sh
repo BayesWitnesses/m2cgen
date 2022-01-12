@@ -8,8 +8,7 @@ if [[ $TEST == "API" ]]; then
   pytest -v tests/ --cov=m2cgen/ --cov-report=xml:coverage.xml --ignore=tests/e2e/
   curl -Os https://uploader.codecov.io/latest/linux/codecov
   chmod +x codecov
-  ls -a
-  ./codecov -Z
+  ./codecov -f coverage.xml -Z
 fi
 
 if [[ $TEST == "E2E" ]]; then
