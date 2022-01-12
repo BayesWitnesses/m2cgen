@@ -8,7 +8,7 @@ if [[ $TEST == "API" ]]; then
   pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
   curl -Os https://uploader.codecov.io/latest/linux/codecov
   chmod +x codecov
-  ./codecov
+  ./codecov -Z -s ./
 fi
 
 if [[ $TEST == "E2E" ]]; then
