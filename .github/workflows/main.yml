@@ -52,7 +52,6 @@ jobs:
             -e GITHUB_REF \
             -e GITHUB_HEAD_REF \
             -e GITHUB_REPOSITORY \
-            -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             m2cgen-docker \
             bash /m2cgen/.ci/test.sh
   all-successful:
