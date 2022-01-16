@@ -7,9 +7,6 @@ defmodule Model do
     defp list_to_binary(list) do
         for i <- list, into: <<>>, do: <<i::float>>
     end
-    defp binary_to_list(binary) do
-        for <<f::float <- binary>>, do: f
-    end
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
@@ -31,7 +28,6 @@ defmodule Model do
                 end
             end
         end
-        result = <<func0.()::float>>
-        binary_to_list(result)
+        func0.()
     end
 end

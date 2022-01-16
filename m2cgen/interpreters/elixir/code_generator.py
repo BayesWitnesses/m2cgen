@@ -19,9 +19,6 @@ class ElixirCodeGenerator(FunctionalCodeGenerator):
     defp list_to_binary(list) do
         for i <- list, into: <<>>, do: <<i::float>>
     end
-    defp binary_to_list(binary) do
-        for <<f::float <- binary>>, do: f
-    end
     """)
     tpl_array_index_access = CodeTemplate("read({array_name},{index})")
 
@@ -65,5 +62,4 @@ class ElixirCodeGenerator(FunctionalCodeGenerator):
         self.decrease_indent()
 
     def vector_init(self, values):
-        float_values = [f"{x}::float" for x in values]
-        return f"<<{', '.join(float_values)}>>"
+        return f"[{', '.join(values)}]"

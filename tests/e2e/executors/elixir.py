@@ -14,10 +14,16 @@ defmodule Runner do
         input = Enum.map(System.argv, fn x -> Float.parse(x) |> elem(0) end)
         res = Model.score(input)
 
-        res
-        |> Enum.map(fn x -> to_string(x) end)
-        |> Enum.join(" ")
-        |> IO.puts
+
+        if is_list(res) do
+            res
+            |> Enum.map(fn x -> to_string(x) end)
+            |> Enum.join(" ")
+            |> IO.puts
+        else
+            to_string(res)
+            |> IO.puts
+        end
     end
 end
 """

@@ -7,9 +7,6 @@ defmodule Model do
     defp list_to_binary(list) do
         for i <- list, into: <<>>, do: <<i::float>>
     end
-    defp binary_to_list(binary) do
-        for <<f::float <- binary>>, do: f
-    end
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
@@ -94,13 +91,12 @@ defmodule Model do
                 end
             end
         end
-        result = softmax(<<(func0.()) + (func1.())::float, (func2.()) + (func3.())::float, (func4.()) + (func5.())::float>>)
-        binary_to_list(result)
+        softmax([(func0.()) + (func1.()), (func2.()) + (func3.()), (func4.()) + (func5.())])
     end
 defp softmax(x) do
-    max_elem = Enum.max(for <<f::float <- x>>, do: f)
-    exps = for <<f::float <- x>>, do: :math.exp(f-max_elem)
+    max_elem = Enum.max(x)
+    exps = for f <- x, do: :math.exp(f-max_elem)
     sum_exps = Enum.sum(exps)
-    for i <- exps, into: <<>>, do: <<(i/sum_exps)::float>>
+    for i <- exps, do: i/sum_exps
 end
 end

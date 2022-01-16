@@ -57,11 +57,7 @@ class ElixirInterpreter(FunctionalToCodeInterpreter,
                 is_scalar_output=expr.output_size == 1):
             last_result = self._do_interpret(expr)
             self._dump_cache()
-            if expr.output_size == 1:
-                self._cg.add_code_line(f"result = <<{last_result}::float>>")
-            else:
-                self._cg.add_code_line(f"result = {last_result}")
-            self._cg.add_code_line("binary_to_list(result)")
+            self._cg.add_code_line(last_result)
 
         current_dir = Path(__file__).absolute().parent
 
