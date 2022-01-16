@@ -11,11 +11,10 @@ EXECUTOR_CODE_TPL = """
 
 defmodule Runner do
     def run do
-        input_array = Enum.map(System.argv, fn x -> Float.parse(x) |> elem(0) end)
-        input = for i <- input_array, into: <<>>, do: <<i::float>>
+        input = Enum.map(System.argv, fn x -> Float.parse(x) |> elem(0) end)
         res = Model.score(input)
 
-        (for <<f::float <- res>>, do: f)
+        res
         |> Enum.map(fn x -> to_string(x) end)
         |> Enum.join(" ")
         |> IO.puts

@@ -4,7 +4,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (read(input,2)) > (3.1500000000000004) ->
                 -1.1986122886681099
@@ -87,7 +94,8 @@ defmodule Model do
                 end
             end
         end
-        softmax(<<(func0.()) + (func1.())::float, (func2.()) + (func3.())::float, (func4.()) + (func5.())::float>>)
+        result = softmax(<<(func0.()) + (func1.())::float, (func2.()) + (func3.())::float, (func4.()) + (func5.())::float>>)
+        binary_to_list(result)
     end
 defp softmax(x) do
     max_elem = Enum.max(for <<f::float <- x>>, do: f)

@@ -4,7 +4,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (read(input,3)) <= (0.75) ->
                 <<1.0::float, 0.0::float, 0.0::float>>
@@ -43,7 +50,8 @@ defmodule Model do
                 end
             end
         end
-        mul_vector_number(add_vectors(func0.(), func1.()), 0.5)
+        result = mul_vector_number(add_vectors(func0.(), func1.()), 0.5)
+        binary_to_list(result)
     end
 defp add_vectors(v1, v2) do
   v1_list = for <<f::float <- v1>>, do: f

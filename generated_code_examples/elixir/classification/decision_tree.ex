@@ -4,7 +4,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (read(input,2)) <= (2.449999988079071) ->
                 <<1.0::float, 0.0::float, 0.0::float>>
@@ -24,6 +31,7 @@ defmodule Model do
                 end
             end
         end
-        func0.()
+        result = func0.()
+        binary_to_list(result)
     end
 end

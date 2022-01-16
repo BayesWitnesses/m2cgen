@@ -17,7 +17,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (1.0) == (read(input,0)) ->
                 2.0
@@ -25,7 +32,8 @@ defmodule Model do
                 3.0
             end
         end
-        <<func0.()::float>>
+        result = <<func0.()::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -48,8 +56,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<((read(input,0)) / (-2.0)) * (2.0)::float>>
+        input = list_to_binary(input)
+        result = <<((read(input,0)) / (-2.0)) * (2.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -79,7 +95,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (1.0) == (1.0) ->
                 1.0
@@ -94,7 +117,8 @@ defmodule Model do
                 read(input,0)
             end
         end
-        <<func1.()::float>>
+        result = <<func1.()::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -124,7 +148,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (1.0) == (1.0) ->
                 1.0
@@ -143,7 +174,8 @@ defmodule Model do
                 2.0
             end
         end
-        <<func1.()::float>>
+        result = <<func1.()::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -162,8 +194,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<3.0::float, 4.0::float>>
+        input = list_to_binary(input)
+        result = <<3.0::float, 4.0::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -188,7 +228,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (1.0) != (1.0) ->
                 <<1.0::float, 2.0::float>>
@@ -196,7 +243,8 @@ defmodule Model do
                 <<3.0::float, 4.0::float>>
             end
         end
-        func0.()
+        result = func0.()
+        binary_to_list(result)
     end
 end
 """
@@ -218,8 +266,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        add_vectors(<<1.0::float, 2.0::float>>, <<3.0::float, 4.0::float>>)
+        input = list_to_binary(input)
+        result = add_vectors(<<1.0::float, 2.0::float>>, <<3.0::float, 4.0::float>>)
+        binary_to_list(result)
     end
 defp add_vectors(v1, v2) do
   v1_list = for <<f::float <- v1>>, do: f
@@ -250,8 +306,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        mul_vector_number(<<1.0::float, 2.0::float>>, 1.0)
+        input = list_to_binary(input)
+        result = mul_vector_number(<<1.0::float, 2.0::float>>, 1.0)
+        binary_to_list(result)
     end
 defp add_vectors(v1, v2) do
   v1_list = for <<f::float <- v1>>, do: f
@@ -285,11 +349,19 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             (1.0) + ((1.0) + (1.0))
         end
-        <<(1.0) + ((1.0) + (func0.()))::float>>
+        result = <<(1.0) + ((1.0) + (func0.()))::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -314,7 +386,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do (1.0) == (1.0) ->
                 1.0
@@ -334,7 +413,8 @@ defmodule Model do
                 end
             end
         end
-        <<func0.()::float>>
+        result = <<func0.()::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -362,7 +442,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             cond do ((1.0) + ((1.0) + (1.0))) == (1.0) ->
                 1.0
@@ -382,7 +469,8 @@ defmodule Model do
                 end
             end
         end
-        <<func0.()::float>>
+        result = <<func0.()::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -410,7 +498,14 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             (3.0) + ((3.0) + (1.0))
         end
@@ -442,7 +537,8 @@ defmodule Model do
                 end
             end
         end
-        <<func4.()::float>>
+        result = <<func4.()::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -461,8 +557,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<abs(-1.0)::float>>
+        input = list_to_binary(input)
+        result = <<abs(-1.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -481,8 +585,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<:math.exp(1.0)::float>>
+        input = list_to_binary(input)
+        result = <<:math.exp(1.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -501,8 +613,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<:math.pow(2.0, 3.0)::float>>
+        input = list_to_binary(input)
+        result = <<:math.pow(2.0, 3.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -521,8 +641,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<:math.sqrt(2.0)::float>>
+        input = list_to_binary(input)
+        result = <<:math.sqrt(2.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -541,8 +669,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<:math.tanh(2.0)::float>>
+        input = list_to_binary(input)
+        result = <<:math.tanh(2.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -561,8 +697,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<:math.log(2.0)::float>>
+        input = list_to_binary(input)
+        result = <<:math.log(2.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -581,8 +725,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<log1p(2.0)::float>>
+        input = list_to_binary(input)
+        result = <<log1p(2.0)::float>>
+        binary_to_list(result)
     end
 defp log1p(x) do
     cond do
@@ -648,8 +800,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<:math.atan(2.0)::float>>
+        input = list_to_binary(input)
+        result = <<:math.atan(2.0)::float>>
+        binary_to_list(result)
     end
 end
 """
@@ -668,8 +828,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        softmax(<<2.0::float, 3.0::float>>)
+        input = list_to_binary(input)
+        result = softmax(<<2.0::float, 3.0::float>>)
+        binary_to_list(result)
     end
 defp softmax(x) do
     max_elem = Enum.max(for <<f::float <- x>>, do: f)
@@ -694,8 +862,16 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
-        <<sigmoid(2.0)::float>>
+        input = list_to_binary(input)
+        result = <<sigmoid(2.0)::float>>
+        binary_to_list(result)
     end
 defp sigmoid(x) do
     1.0 / (1.0 + :math.exp(-x))
@@ -718,11 +894,19 @@ defmodule Model do
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     def score(input) do
+        input = list_to_binary(input)
         func0 = fn ->
             :math.exp(1.0)
         end
-        <<(func0.()) / (func0.())::float>>
+        result = <<(func0.()) / (func0.())::float>>
+        binary_to_list(result)
     end
 end
 """

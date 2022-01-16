@@ -16,6 +16,12 @@ class ElixirCodeGenerator(FunctionalCodeGenerator):
         <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
         value
     end
+    defp list_to_binary(list) do
+        for i <- list, into: <<>>, do: <<i::float>>
+    end
+    defp binary_to_list(binary) do
+        for <<f::float <- binary>>, do: f
+    end
     """)
     tpl_array_index_access = CodeTemplate("read({array_name},{index})")
 
@@ -43,6 +49,7 @@ class ElixirCodeGenerator(FunctionalCodeGenerator):
         self.add_code_line(function_def)
 
         self.increase_indent()
+        self.add_code_line("input = list_to_binary(input)")
 
     def function_invocation(self, function_name, *args):
         function_args = ", ".join(args)
