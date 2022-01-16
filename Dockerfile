@@ -45,7 +45,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         dart \
-        dotnet-sdk-5.0 \
+        dotnet-sdk-6.0 \
         g++ \
         gcc \
         git \

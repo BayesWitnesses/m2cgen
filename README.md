@@ -18,7 +18,7 @@
 * [FAQ](#faq)
 
 ## Installation
-Supported Python version is >= **3.6**.
+Supported Python version is >= **3.7**.
 ```
 pip install m2cgen
 ```
