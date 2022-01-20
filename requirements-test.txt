@@ -1,10 +1,8 @@
 # Supported models
-scikit-learn==1.0.2; python_version > "3.6"
-scikit-learn==0.24.2; python_version <= "3.6"
+scikit-learn==1.0.2
 xgboost==1.4.2
 lightgbm==3.3.2
-statsmodels==0.13.1; python_version > "3.6"
-statsmodels==0.12.2; python_version <= "3.6"
+statsmodels==0.13.1
 sklearn-contrib-lightning==0.6.1
 
 # Testing tools
@@ -16,7 +14,6 @@ pytest-cov==3.0.0
 py-mini-racer==0.6.0
 
 # Other stuff
-numpy==1.21.5; python_version > "3.6"
-numpy==1.19.5; python_version <= "3.6"
-scipy==1.7.3; python_version > "3.6"
-scipy==1.5.4; python_version <= "3.6"
+numpy==1.22.1; python_version > "3.7"
+numpy==1.21.5; python_version <= "3.7"
+scipy==1.7.3
