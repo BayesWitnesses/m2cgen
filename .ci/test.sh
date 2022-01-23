@@ -5,8 +5,10 @@ set -e
 if [[ $TEST == "API" ]]; then
   flake8 .
   isort . --check-only
-  pytest -v tests/ --cov=m2cgen/ --ignore=tests/e2e/
-  bash <(curl -s https://codecov.io/bash)
+  pytest -v tests/ --cov=m2cgen/ --cov-report=xml:coverage.xml --ignore=tests/e2e/
+  curl -Os https://uploader.codecov.io/latest/linux/codecov
+  chmod +x codecov
+  ./codecov -f coverage.xml -Z
 fi
 
 if [[ $TEST == "E2E" ]]; then
