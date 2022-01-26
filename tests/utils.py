@@ -76,7 +76,7 @@ class ModelTrainer:
             self.name = "train_model_regression_bounded"
             self.X, self.y = datasets.load_diabetes(return_X_y=True)
             self.y = np.arctan(self.y) / np.pi + 0.5  # (0; 1)
-        elif dataset_name == "diabetes":
+        elif dataset_name == "diabetes_w_missing_values":
             self.name = "train_model_regression_w_missing_values"
             self.X, self.y = datasets.load_diabetes(return_X_y=True)
             additional_test_data = np.array([
@@ -237,7 +237,7 @@ get_classification_binary_random_data_model_trainer = partial(ModelTrainer.get_i
 get_bounded_regression_model_trainer = partial(ModelTrainer.get_instance, "diabetes_y_bounded")
 
 
-get_regression_w_missing_values_model_trainer = partial(ModelTrainer.get_instance, "diabetes")
+get_regression_w_missing_values_model_trainer = partial(ModelTrainer.get_instance, "diabetes_w_missing_values")
 
 
 get_classification_random_w_missing_values_model_trainer = partial(
