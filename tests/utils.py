@@ -69,12 +69,12 @@ class ModelTrainer:
         self.test_fraction = test_fraction
         additional_test_data = None
         np.random.seed(seed=7)
-        if dataset_name == "boston":
+        if dataset_name == "diabetes":
             self.name = "train_model_regression"
-            self.X, self.y = datasets.load_boston(return_X_y=True)
-        elif dataset_name == "boston_y_bounded":
+            self.X, self.y = datasets.load_diabetes(return_X_y=True)
+        elif dataset_name == "diabetes_y_bounded":
             self.name = "train_model_regression_bounded"
-            self.X, self.y = datasets.load_boston(return_X_y=True)
+            self.X, self.y = datasets.load_diabetes(return_X_y=True)
             self.y = np.arctan(self.y) / np.pi + 0.5  # (0; 1)
         elif dataset_name == "diabetes":
             self.name = "train_model_regression_w_missing_values"
@@ -216,7 +216,7 @@ def assert_code_equal(actual, expected):
     assert actual.strip() == expected.strip()
 
 
-get_regression_model_trainer = partial(ModelTrainer.get_instance, "boston")
+get_regression_model_trainer = partial(ModelTrainer.get_instance, "diabetes")
 
 
 get_classification_model_trainer = partial(ModelTrainer.get_instance, "iris")
@@ -234,7 +234,7 @@ get_classification_random_data_model_trainer = partial(ModelTrainer.get_instance
 get_classification_binary_random_data_model_trainer = partial(ModelTrainer.get_instance, "classification_binary_rnd")
 
 
-get_bounded_regression_model_trainer = partial(ModelTrainer.get_instance, "boston_y_bounded")
+get_bounded_regression_model_trainer = partial(ModelTrainer.get_instance, "diabetes_y_bounded")
 
 
 get_regression_w_missing_values_model_trainer = partial(ModelTrainer.get_instance, "diabetes")
