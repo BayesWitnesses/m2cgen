@@ -265,7 +265,7 @@ result = score({input_str})"""
 
     context = {}
     exec(code, context)
-
+    print(context["result"])
     assert np.isclose(context["result"], expected_output)
 
 
