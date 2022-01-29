@@ -68,7 +68,7 @@ class ModelTrainer:
         self.dataset_name = dataset_name
         self.test_fraction = test_fraction
         additional_test_data = None
-        np.random.seed(seed=7)
+        np.random.seed(seed=42)
         if dataset_name == "diabetes":
             self.name = "train_model_regression"
             self.X, self.y = datasets.load_diabetes(return_X_y=True)
