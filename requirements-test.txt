@@ -3,7 +3,7 @@ scikit-learn==1.0.2
 xgboost==1.4.2
 lightgbm==3.3.2
 statsmodels==0.13.1
-sklearn-contrib-lightning==0.6.1
+sklearn-contrib-lightning==0.6.2.post0
 
 # Testing tools
 flake8==4.0.1
