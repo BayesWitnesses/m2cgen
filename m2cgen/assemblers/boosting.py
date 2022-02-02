@@ -155,6 +155,8 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         split = tree["split"]
         if split in self._feature_name_to_idx:
             feature_idx = self._feature_name_to_idx[split]
+        elif split[0] == "f":
+            feature_idx = int(split[1:])
         else:
             feature_idx = int(split)
         feature_ref = ast.FeatureRef(feature_idx)
