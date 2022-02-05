@@ -16,9 +16,10 @@ jobs:
       fail-fast: false
       matrix:
         python:
-          - 3.7
-          - 3.8
-          - 3.9
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
         lang:
           - "API"
           - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
