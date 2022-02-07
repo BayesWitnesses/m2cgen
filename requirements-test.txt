@@ -16,4 +16,5 @@ py-mini-racer==0.6.0
 # Other stuff
 numpy==1.22.2; python_version > "3.7"
 numpy==1.21.5; python_version <= "3.7"
-scipy==1.8.0
+scipy==1.8.0; python_version > "3.7"
+scipy==1.7.3; python_version <= "3.7"
