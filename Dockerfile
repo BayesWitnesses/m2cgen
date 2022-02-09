@@ -40,8 +40,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" -y && \
     curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain stable -y && \
     apt-get update && \
-    apt-get remove -y \
-        python3-pip && \
     apt-get install --no-install-recommends -y \
         dart \
         dotnet-sdk-6.0 \
@@ -53,8 +51,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         php \
         powershell \
         python${python}-dev \
-        python3-pip \
-        python3-setuptools \
+        python${python}-distutils \
+        python${python}-setuptools \
         r-base \
         ruby-full \
         zulu-8 && \
