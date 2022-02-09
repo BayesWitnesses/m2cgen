@@ -52,7 +52,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         powershell \
         python${python}-dev \
         python${python}-distutils \
-        python${python}-setuptools \
+        python3-setuptools \
         r-base \
         ruby-full \
         zulu-8 && \
