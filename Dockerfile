@@ -51,7 +51,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         php \
         powershell \
         python${python}-dev \
-        python${python}-distutils \
+        python3-distutils \
         python3-setuptools \
         r-base \
         ruby-full \
