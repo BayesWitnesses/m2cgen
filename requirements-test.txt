@@ -2,13 +2,13 @@
 scikit-learn==1.0.2
 xgboost==1.5.2
 lightgbm==3.3.2
-statsmodels==0.13.1
+statsmodels==0.13.2
 sklearn-contrib-lightning==0.6.2.post0
 
 # Testing tools
 flake8==4.0.1
 isort==5.10.1
-pytest==6.2.5
+pytest==7.0.0
 pytest-mock==3.7.0
 pytest-cov==3.0.0
 py-mini-racer==0.6.0
@@ -16,4 +16,5 @@ py-mini-racer==0.6.0
 # Other stuff
 numpy==1.22.2; python_version > "3.7"
 numpy==1.21.5; python_version <= "3.7"
-scipy==1.7.3
+scipy==1.8.0; python_version > "3.7"
+scipy==1.7.3; python_version <= "3.7"
