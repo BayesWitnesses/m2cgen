@@ -6,7 +6,7 @@ if [[ $TEST == "API" ]]; then
   flake8 .
   isort . --check-only
   pytest -v tests/ --cov=m2cgen/ --cov-report=xml:coverage.xml --ignore=tests/e2e/
-  curl -Os https://uploader.codecov.io/latest/linux/codecov
+  wget -q https://uploader.codecov.io/latest/linux/codecov -O codecov
   chmod +x codecov
   ./codecov -f coverage.xml -Z
 fi
