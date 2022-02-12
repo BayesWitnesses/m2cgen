@@ -16,9 +16,10 @@ jobs:
       fail-fast: false
       matrix:
         python:
-          - 3.7
-          - 3.8
-          - 3.9
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
         lang:
           - "API"
           - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
@@ -52,6 +53,7 @@ jobs:
             -e GITHUB_REF \
             -e GITHUB_HEAD_REF \
             -e GITHUB_REPOSITORY \
+            -e GITHUB_SERVER_URL \
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             m2cgen-docker \
             bash /m2cgen/.ci/test.sh

@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ARG python=3.9
+ARG python=3.10
 
 ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
     PATH="/root/.cargo/bin:$PATH" \
@@ -20,7 +20,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         apt-transport-https \
-        curl \
         dirmngr \
         dpkg-dev \
         gpg-agent \
@@ -41,7 +40,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     add-apt-repository "deb http://repos.azulsystems.com/ubuntu stable main" -y && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" -y && \
-    curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain stable -y && \
+    wget -qO- https://sh.rustup.rs | sh -s -- --no-modify-path --default-toolchain stable -y && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         dart \
@@ -54,7 +53,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         php \
         powershell \
         python${python}-dev \
-        python3-pip \
+        python${python}-distutils \
         python3-setuptools \
         r-base \
         ruby-full \
@@ -68,5 +67,5 @@ WORKDIR /m2cgen
 
 COPY requirements-test.txt ./
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python${python} 1 && \
-    python -m pip install --upgrade pip && \
+    wget -qO- https://bootstrap.pypa.io/get-pip.py | python && \
     pip install --no-cache-dir -r requirements-test.txt

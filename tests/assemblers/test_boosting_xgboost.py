@@ -223,55 +223,55 @@ def test_linear_model():
     feature_weight_mul = [
         ast.BinNumExpr(
             ast.FeatureRef(0),
-            ast.NumVal(-0.154567),
+            ast.NumVal(-0.168701),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(1),
-            ast.NumVal(0.0815865),
+            ast.NumVal(0.0759076),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(2),
-            ast.NumVal(-0.0979713),
+            ast.NumVal(-0.0433617),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(3),
-            ast.NumVal(4.80472),
+            ast.NumVal(5.57671),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(4),
-            ast.NumVal(1.35478),
+            ast.NumVal(1.48913),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(5),
-            ast.NumVal(0.327222),
+            ast.NumVal(0.245112),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(6),
-            ast.NumVal(0.0610654),
+            ast.NumVal(0.00765347),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(7),
-            ast.NumVal(0.46989),
+            ast.NumVal(0.366748),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(8),
-            ast.NumVal(-0.0674318),
+            ast.NumVal(-0.037578),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(9),
-            ast.NumVal(-0.000506212),
+            ast.NumVal(-0.00171953),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(10),
-            ast.NumVal(0.0732867),
+            ast.NumVal(0.275619),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(11),
-            ast.NumVal(0.0108842),
+            ast.NumVal(0.00959933),
             ast.BinNumOpType.MUL),
         ast.BinNumExpr(
             ast.FeatureRef(12),
-            ast.NumVal(-0.140096),
+            ast.NumVal(-0.13406),
             ast.BinNumOpType.MUL),
     ]
 
@@ -279,7 +279,7 @@ def test_linear_model():
         ast.NumVal(0.5),
         apply_op_to_expressions(
             ast.BinNumOpType.ADD,
-            ast.NumVal(11.138),
+            ast.NumVal(11.5264),
             *feature_weight_mul),
         ast.BinNumOpType.ADD)
 
@@ -300,17 +300,17 @@ def test_regression_random_forest():
             ast.IfExpr(
                 ast.CompExpr(
                     ast.FeatureRef(5),
-                    ast.NumVal(6.94099998),
+                    ast.NumVal(6.940999984741211),
                     ast.CompOpType.GTE),
-                ast.NumVal(18.38124656677246),
+                ast.NumVal(18.381247),
                 ast.NumVal(9.772658348083496)),
             ast.IfExpr(
                 ast.CompExpr(
-                    ast.FeatureRef(12),
-                    ast.NumVal(9.539999961853027),
+                    ast.FeatureRef(5),
+                    ast.NumVal(6.971499919891357),
                     ast.CompOpType.GTE),
-                ast.NumVal(8.342499732971191),
-                ast.NumVal(15.027499198913574)),
+                ast.NumVal(18.84648895263672),
+                ast.NumVal(9.71530532836914)),
             ast.BinNumOpType.ADD),
         ast.BinNumOpType.ADD)
 

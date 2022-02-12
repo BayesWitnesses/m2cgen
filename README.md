@@ -87,12 +87,11 @@ The output is consistent with the output of the `predict_proba` method of `Decis
 
 Here's a simple example of how a linear model trained in Python environment can be represented in Java code:
 ```python
-from sklearn.datasets import load_boston
+from sklearn.datasets import load_diabetes
 from sklearn import linear_model
 import m2cgen as m2c
 
-boston = load_boston()
-X, y = boston.data, boston.target
+X, y = load_diabetes(return_X_y=True)
 
 estimator = linear_model.LinearRegression()
 estimator.fit(X, y)
@@ -103,9 +102,8 @@ code = m2c.export_to_java(estimator)
 Generated Java code:
 ```java
 public class Model {
-
     public static double score(double[] input) {
-        return (((((((((((((36.45948838508965) + ((input[0]) * (-0.10801135783679647))) + ((input[1]) * (0.04642045836688297))) + ((input[2]) * (0.020558626367073608))) + ((input[3]) * (2.6867338193449406))) + ((input[4]) * (-17.76661122830004))) + ((input[5]) * (3.8098652068092163))) + ((input[6]) * (0.0006922246403454562))) + ((input[7]) * (-1.475566845600257))) + ((input[8]) * (0.30604947898516943))) + ((input[9]) * (-0.012334593916574394))) + ((input[10]) * (-0.9527472317072884))) + ((input[11]) * (0.009311683273794044))) + ((input[12]) * (-0.5247583778554867));
+        return ((((((((((152.1334841628965) + ((input[0]) * (-10.012197817470472))) + ((input[1]) * (-239.81908936565458))) + ((input[2]) * (519.8397867901342))) + ((input[3]) * (324.39042768937657))) + ((input[4]) * (-792.1841616283054))) + ((input[5]) * (476.74583782366153))) + ((input[6]) * (101.04457032134408))) + ((input[7]) * (177.06417623225025))) + ((input[8]) * (751.2793210873945))) + ((input[9]) * (67.62538639104406));
     }
 }
 ```
