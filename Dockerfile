@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ARG python=3.9
+ARG python=3.10
 
 ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
     PATH="/root/.cargo/bin:$PATH" \
@@ -51,7 +51,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         php \
         powershell \
         python${python}-dev \
-        python3-pip \
+        python${python}-distutils \
         python3-setuptools \
         r-base \
         ruby-full \
@@ -62,5 +62,5 @@ WORKDIR /m2cgen
 
 COPY requirements-test.txt ./
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python${python} 1 && \
-    python -m pip install --upgrade pip && \
+    wget -qO- https://bootstrap.pypa.io/get-pip.py | python && \
     pip install --no-cache-dir -r requirements-test.txt
