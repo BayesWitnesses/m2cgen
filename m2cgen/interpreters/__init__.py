@@ -1,6 +1,7 @@
 from m2cgen.interpreters.c.interpreter import CInterpreter
 from m2cgen.interpreters.c_sharp.interpreter import CSharpInterpreter
 from m2cgen.interpreters.dart.interpreter import DartInterpreter
+from m2cgen.interpreters.elixir.interpreter import ElixirInterpreter
 from m2cgen.interpreters.f_sharp.interpreter import FSharpInterpreter
 from m2cgen.interpreters.go.interpreter import GoInterpreter
 from m2cgen.interpreters.haskell.interpreter import HaskellInterpreter
@@ -30,4 +31,5 @@ __all__ = [
     RubyInterpreter,
     FSharpInterpreter,
     RustInterpreter,
+    ElixirInterpreter,
 ]

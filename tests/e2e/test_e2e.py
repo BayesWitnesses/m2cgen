@@ -31,6 +31,7 @@ HASKELL = pytest.mark.haskell
 RUBY = pytest.mark.ruby
 F_SHARP = pytest.mark.f_sharp
 RUST = pytest.mark.rust
+ELIXIR = pytest.mark.elixir
 REGRESSION = pytest.mark.regr
 REGRESSION_WITH_MISSING_VALUES = pytest.mark.regr_missing_val
 CLASSIFICATION_WITH_MISSING_VALUES = pytest.mark.clf_missing_val
@@ -163,6 +164,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
         (executors.RubyExecutor, RUBY),
         (executors.FSharpExecutor, F_SHARP),
         (executors.RustExecutor, RUST),
+        (executors.ElixirExecutor, ELIXIR),
     ],
 
     # These models will be tested against each language specified in the previous list.
@@ -517,6 +519,8 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
     [
         (R, REGRESSION_WITH_MISSING_VALUES),
         (R, CLASSIFICATION_WITH_MISSING_VALUES),
+        (ELIXIR, REGRESSION_WITH_MISSING_VALUES),
+        (ELIXIR, CLASSIFICATION_WITH_MISSING_VALUES),
     ]
 
     # Following is the list of extra tests for languages/models which are not fully supported yet.

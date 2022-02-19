@@ -1,6 +1,7 @@
 from tests.e2e.executors.c import CExecutor
 from tests.e2e.executors.c_sharp import CSharpExecutor
 from tests.e2e.executors.dart import DartExecutor
+from tests.e2e.executors.elixir import ElixirExecutor
 from tests.e2e.executors.f_sharp import FSharpExecutor
 from tests.e2e.executors.go import GoExecutor
 from tests.e2e.executors.haskell import HaskellExecutor
@@ -30,4 +31,5 @@ __all__ = [
     RubyExecutor,
     FSharpExecutor,
     RustExecutor,
+    ElixirExecutor,
 ]
