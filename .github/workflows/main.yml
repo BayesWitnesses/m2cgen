@@ -3,7 +3,7 @@ name: GitHub Actions
 on:
   push:
     branches:
-      - master
+      - elixir_fixes
   pull_request:
     branches:
       - master
@@ -17,15 +17,15 @@ jobs:
       matrix:
         python:
           - "3.7"
-          - "3.8"
-          - "3.9"
-          - "3.10"
+#          - "3.8"
+#          - "3.9"
+#          - "3.10"
         lang:
           - "API"
-          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust or elixir"
-          - "c_sharp or visual_basic or f_sharp"
-          - "r_lang"
-          - "dart or powershell"
+#          - "elixir"
+#          - "c_sharp or visual_basic or f_sharp"
+#          - "r_lang"
+#          - "dart or powershell"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
