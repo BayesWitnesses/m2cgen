@@ -22,10 +22,9 @@ jobs:
           - "3.10"
         lang:
           - "API"
-          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
+          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust or elixir"
           - "c_sharp or visual_basic or f_sharp"
           - "r_lang"
-          - "elixir"
           - "dart or powershell"
     steps:
       - name: Checkout repository
