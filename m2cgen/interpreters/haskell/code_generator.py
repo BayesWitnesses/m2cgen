@@ -9,7 +9,7 @@ class HaskellCodeGenerator(FunctionalCodeGenerator):
     tpl_if_statement = CodeTemplate("if {if_def} then")
     tpl_else_statement = CodeTemplate("else")
     tpl_num_value = CodeTemplate("{value}")
-    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_module_definition = CodeTemplate("module {module_name} where")
 
     def array_index_access(self, array_name, index):

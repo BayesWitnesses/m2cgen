@@ -9,7 +9,7 @@ class ElixirCodeGenerator(FunctionalCodeGenerator):
     tpl_else_statement = CodeTemplate("true ->")
     tpl_num_value = CodeTemplate("{value}")
     tpl_block_termination = CodeTemplate("end")
-    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_module_definition = CodeTemplate("""defmodule {module_name} do
     @compile {{:inline, read: 2}}
     defp read(bin, pos) do

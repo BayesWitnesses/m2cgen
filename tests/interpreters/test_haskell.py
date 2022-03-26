@@ -19,7 +19,7 @@ score input =
     func0
     where
         func0 =
-            if (1.0) == ((input) !! (0)) then
+            if 1.0 == input !! 0 then
                 2.0
             else
                 3.0
@@ -40,7 +40,7 @@ def test_bin_num_expr():
 module Model where
 score :: [Double] -> Double
 score input =
-    (((input) !! (0)) / (-2.0)) * (2.0)
+    input !! 0 / -2.0 * 2.0
 """
 
     interpreter = HaskellInterpreter()
@@ -68,15 +68,15 @@ score input =
     func1
     where
         func0 =
-            if (1.0) == (1.0) then
+            if 1.0 == 1.0 then
                 1.0
             else
                 2.0
         func1 =
-            if ((func0) + (2.0)) >= ((1.0) / (2.0)) then
+            if func0 + 2.0 >= 1.0 / 2.0 then
                 1.0
             else
-                (input) !! (0)
+                input !! 0
 """
 
     interpreter = HaskellInterpreter()
@@ -104,14 +104,14 @@ score input =
     func1
     where
         func0 =
-            if (1.0) == (1.0) then
+            if 1.0 == 1.0 then
                 1.0
             else
                 2.0
         func1 =
-            if (1.0) == ((func0) + (2.0)) then
-                if (1.0) == ((func0) + (2.0)) then
-                    (input) !! (2)
+            if 1.0 == func0 + 2.0 then
+                if 1.0 == func0 + 2.0 then
+                    input !! 2
                 else
                     2.0
             else
@@ -152,7 +152,7 @@ score input =
     func0
     where
         func0 =
-            if (1.0) /= (1.0) then
+            if 1.0 /= 1.0 then
                 [1.0, 2.0]
             else
                 [3.0, 4.0]
@@ -239,7 +239,7 @@ def test_pow_expr():
 module Model where
 score :: [Double] -> Double
 score input =
-    (2.0) ** (3.0)
+    2.0 ** 3.0
 """
 
     interpreter = HaskellInterpreter()
@@ -406,7 +406,7 @@ def test_reused_expr():
 module Model where
 score :: [Double] -> Double
 score input =
-    (func0) / (func0)
+    func0 / func0
     where
         func0 =
             exp (1.0)

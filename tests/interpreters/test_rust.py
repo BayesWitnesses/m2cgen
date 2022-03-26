@@ -15,7 +15,7 @@ def test_if_expr():
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
     let var0: f64;
-    if (1.0_f64) == (input[0]) {
+    if 1.0_f64 == input[0] {
         var0 = 2.0_f64;
     } else {
         var0 = 3.0_f64;
@@ -37,7 +37,7 @@ def test_bin_num_expr():
 
     expected_code = """
 fn score(input: Vec<f64>) -> f64 {
-    ((input[0]) / (-2.0_f64)) * (2.0_f64)
+    input[0] / -2.0_f64 * 2.0_f64
 }
 """
 
@@ -63,12 +63,12 @@ def test_dependable_condition():
 fn score(input: Vec<f64>) -> f64 {
     let var0: f64;
     let var1: f64;
-    if (1.0_f64) == (1.0_f64) {
+    if 1.0_f64 == 1.0_f64 {
         var1 = 1.0_f64;
     } else {
         var1 = 2.0_f64;
     }
-    if ((var1) + (2.0_f64)) >= ((1.0_f64) / (2.0_f64)) {
+    if var1 + 2.0_f64 >= 1.0_f64 / 2.0_f64 {
         var0 = 1.0_f64;
     } else {
         var0 = input[0];
@@ -99,19 +99,19 @@ def test_nested_condition():
 fn score(input: Vec<f64>) -> f64 {
     let var0: f64;
     let var1: f64;
-    if (1.0_f64) == (1.0_f64) {
+    if 1.0_f64 == 1.0_f64 {
         var1 = 1.0_f64;
     } else {
         var1 = 2.0_f64;
     }
-    if (1.0_f64) == ((var1) + (2.0_f64)) {
+    if 1.0_f64 == var1 + 2.0_f64 {
         let var2: f64;
-        if (1.0_f64) == (1.0_f64) {
+        if 1.0_f64 == 1.0_f64 {
             var2 = 1.0_f64;
         } else {
             var2 = 2.0_f64;
         }
-        if (1.0_f64) == ((var2) + (2.0_f64)) {
+        if 1.0_f64 == var2 + 2.0_f64 {
             var0 = input[2];
         } else {
             var0 = 2.0_f64;
@@ -152,7 +152,7 @@ def test_multi_output():
     expected_code = """
 fn score(input: Vec<f64>) -> Vec<f64> {
     let var0: Vec<f64>;
-    if (1.0_f64) != (1.0_f64) {
+    if 1.0_f64 != 1.0_f64 {
         var0 = vec![1.0_f64, 2.0_f64];
     } else {
         var0 = vec![3.0_f64, 4.0_f64];
@@ -365,7 +365,7 @@ def test_reused_expr():
 fn score(input: Vec<f64>) -> f64 {
     let var0: f64;
     var0 = f64::exp(1.0_f64);
-    (var0) / (var0)
+    var0 / var0
 }
 """
 

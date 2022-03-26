@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from m2cgen.ast import PowExpr
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, SubroutinesMixin
 from m2cgen.interpreters.r.code_generator import RCodeGenerator
@@ -10,6 +11,8 @@ class RInterpreter(ImperativeToCodeInterpreter,
                    LinearAlgebraMixin,
                    BinExpressionDepthTrackingMixin,
                    SubroutinesMixin):
+
+    infix_expressions = [*ImperativeToCodeInterpreter.infix_expressions, PowExpr]
 
     # R doesn't allow to have more than 50 nested if, [, [[, {, ( calls.
     # It raises contextstack overflow error not only for explicitly nested
@@ -65,11 +68,15 @@ class RInterpreter(ImperativeToCodeInterpreter,
     def create_code_generator(self):
         return RCodeGenerator(indent=self.indent)
 
-    def interpret_pow_expr(self, expr, **kwargs):
-        base_result = self._do_interpret(expr.base_expr, **kwargs)
-        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
+    def interpret_pow_expr(self, expr, left_precedence=None,
+                           right_precedence=None, **kwargs):
+        base_result = self._do_interpret(
+            expr.base_expr, left_precedence=expr.precedence, **kwargs)
+        exp_result = self._do_interpret(
+            expr.exp_expr, right_precedence=expr.precedence, **kwargs)
         return self._cg.infix_expression(
-            left=base_result, right=exp_result, op="^")
+            left=base_result, right=exp_result, op="^",
+            wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence))
 
     def interpret_softmax_expr(self, expr, **kwargs):
         self.with_softmax_expr = True

@@ -16,7 +16,7 @@ def test_if_expr():
 <?php
 function score(array $input) {
     $var0 = null;
-    if ((1.0) === ($input[0])) {
+    if (1.0 === $input[0]) {
         $var0 = 2.0;
     } else {
         $var0 = 3.0;
@@ -39,7 +39,7 @@ def test_bin_num_expr():
     expected_code = """
 <?php
 function score(array $input) {
-    return (($input[0]) / (-2.0)) * (2.0);
+    return $input[0] / -2.0 * 2.0;
 }
 """
 
@@ -66,12 +66,12 @@ def test_dependable_condition():
 function score(array $input) {
     $var0 = null;
     $var1 = null;
-    if ((1.0) === (1.0)) {
+    if (1.0 === 1.0) {
         $var1 = 1.0;
     } else {
         $var1 = 2.0;
     }
-    if ((($var1) + (2.0)) >= ((1.0) / (2.0))) {
+    if ($var1 + 2.0 >= 1.0 / 2.0) {
         $var0 = 1.0;
     } else {
         $var0 = $input[0];
@@ -103,19 +103,19 @@ def test_nested_condition():
 function score(array $input) {
     $var0 = null;
     $var1 = null;
-    if ((1.0) === (1.0)) {
+    if (1.0 === 1.0) {
         $var1 = 1.0;
     } else {
         $var1 = 2.0;
     }
-    if ((1.0) === (($var1) + (2.0))) {
+    if (1.0 === $var1 + 2.0) {
         $var2 = null;
-        if ((1.0) === (1.0)) {
+        if (1.0 === 1.0) {
             $var2 = 1.0;
         } else {
             $var2 = 2.0;
         }
-        if ((1.0) === (($var2) + (2.0))) {
+        if (1.0 === $var2 + 2.0) {
             $var0 = $input[2];
         } else {
             $var0 = 2.0;
@@ -158,7 +158,7 @@ def test_multi_output():
 <?php
 function score(array $input) {
     $var0 = array();
-    if ((1.0) !== (1.0)) {
+    if (1.0 !== 1.0) {
         $var0 = array(1.0, 2.0);
     } else {
         $var0 = array(3.0, 4.0);
@@ -403,7 +403,7 @@ def test_reused_expr():
 function score(array $input) {
     $var0 = null;
     $var0 = exp(1.0);
-    return ($var0) / ($var0);
+    return $var0 / $var0;
 }
 """
 
