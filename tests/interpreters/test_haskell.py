@@ -40,7 +40,7 @@ def test_bin_num_expr():
 module Model where
 score :: [Double] -> Double
 score input =
-    input !! 0 / -2.0 * 2.0
+    input !! 0 / (-2.0) * 2.0
 """
 
     interpreter = HaskellInterpreter()
@@ -211,7 +211,7 @@ def test_abs_expr():
 module Model where
 score :: [Double] -> Double
 score input =
-    abs (-1.0)
+    abs ((-1.0))
 """
 
     interpreter = HaskellInterpreter()

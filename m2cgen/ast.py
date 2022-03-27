@@ -7,7 +7,10 @@ import numpy as np
 
 class Expr:
     output_size = 1
+
+    # The precedence of this expression. Higher value means higher precedence.
     precedence = None
+
     # Setting this value to true serves as an indication that the result
     # of evaluation of this expression is being used in other expressions
     # and it's recommended to persist or cache it in some way.

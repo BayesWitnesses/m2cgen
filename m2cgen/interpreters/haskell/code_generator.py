@@ -12,6 +12,10 @@ class HaskellCodeGenerator(FunctionalCodeGenerator):
     tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_module_definition = CodeTemplate("module {module_name} where")
 
+    def num_value(self, value):
+        result = super().num_value(value)
+        return f"({result})" if value < 0 else result
+
     def array_index_access(self, array_name, index):
         return self.tpl_infix_expression(
             left=array_name, op="!!", right=index)
