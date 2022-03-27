@@ -1,5 +1,5 @@
 from m2cgen.assemblers import fallback_expressions
-from m2cgen.ast import IfExpr, BinNumExpr, CompExpr
+from m2cgen.ast import BinNumExpr, CompExpr, IfExpr
 from m2cgen.interpreters.utils import CachedResult, _get_handler_name
 
 
