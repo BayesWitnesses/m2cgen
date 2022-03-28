@@ -1,16 +1,15 @@
 from pathlib import Path
 
-from m2cgen.ast import BinNumOpType, PowExpr
+from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.mixins import InfixPowExprMixin, LinearAlgebraMixin
 from m2cgen.interpreters.ruby.code_generator import RubyCodeGenerator
 from m2cgen.interpreters.utils import get_file_content
 
 
 class RubyInterpreter(ImperativeToCodeInterpreter,
+                      InfixPowExprMixin,
                       LinearAlgebraMixin):
-
-    infix_expressions = [*ImperativeToCodeInterpreter.infix_expressions, PowExpr]
 
     supported_bin_vector_ops = {
         BinNumOpType.ADD: "add_vectors",
@@ -85,16 +84,6 @@ class RubyInterpreter(ImperativeToCodeInterpreter,
             method_name=self.abs_function_name,
             obj=self._do_interpret(expr.expr, **kwargs),
             args=[])
-
-    def interpret_pow_expr(self, expr, left_precedence=None,
-                           right_precedence=None, **kwargs):
-        base_result = self._do_interpret(
-            expr.base_expr, left_precedence=expr.precedence, **kwargs)
-        exp_result = self._do_interpret(
-            expr.exp_expr, right_precedence=expr.precedence, **kwargs)
-        return self._cg.infix_expression(
-            left=base_result, right=exp_result, op="**",
-            wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence))
 
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True

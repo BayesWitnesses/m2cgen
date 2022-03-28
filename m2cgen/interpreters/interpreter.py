@@ -97,7 +97,6 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     exponent_function_name = NotImplemented
     logarithm_function_name = NotImplemented
     log1p_function_name = NotImplemented
-    power_function_name = NotImplemented
     sigmoid_function_name = NotImplemented
     softmax_function_name = NotImplemented
     sqrt_function_name = NotImplemented
@@ -201,14 +200,6 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         self.with_math_module = True
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(self.tanh_function_name, nested_result)
-
-    def interpret_pow_expr(self, expr, **kwargs):
-        if self.power_function_name is NotImplemented:
-            raise NotImplementedError("Power function is not provided")
-        self.with_math_module = True
-        base_result = self._do_interpret(expr.base_expr, **kwargs)
-        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
-        return self._cg.function_invocation(self.power_function_name, base_result, exp_result)
 
     def _wrap_infix_expr(self, expr, left_precedence, right_precedence):
         wrap = left_precedence is not None and left_precedence > expr.precedence

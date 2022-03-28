@@ -3,11 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.go.code_generator import GoCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.mixins import FunctionPowExprMixin, LinearAlgebraMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class GoInterpreter(ImperativeToCodeInterpreter,
+                    FunctionPowExprMixin,
                     LinearAlgebraMixin):
     supported_bin_vector_ops = {
         BinNumOpType.ADD: "addVectors",

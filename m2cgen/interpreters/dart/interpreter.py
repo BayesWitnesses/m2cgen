@@ -3,11 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.dart.code_generator import DartCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, FunctionPowExprMixin, LinearAlgebraMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class DartInterpreter(ImperativeToCodeInterpreter,
+                      FunctionPowExprMixin,
                       LinearAlgebraMixin,
                       BinExpressionDepthTrackingMixin):
 
