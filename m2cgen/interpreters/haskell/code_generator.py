@@ -14,7 +14,7 @@ class HaskellCodeGenerator(FunctionalCodeGenerator):
 
     def num_value(self, value):
         result = super().num_value(value)
-        return f"({result})" if result.startswith("-") else result
+        return f"({result})" if result[:1] == "-" else result
 
     def array_index_access(self, array_name, index):
         return self.tpl_infix_expression(

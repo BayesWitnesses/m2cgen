@@ -3,12 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.haskell.code_generator import HaskellCodeGenerator
 from m2cgen.interpreters.interpreter import FunctionalToCodeInterpreter
-from m2cgen.interpreters.mixins import InfixPowExprMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import LinearAlgebraMixin, PowExprInfixMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class HaskellInterpreter(FunctionalToCodeInterpreter,
-                         InfixPowExprMixin,
+                         PowExprInfixMixin,
                          LinearAlgebraMixin):
 
     supported_bin_vector_ops = {

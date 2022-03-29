@@ -3,12 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.c.code_generator import CCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import FunctionPowExprMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import LinearAlgebraMixin, PowExprFunctionMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class CInterpreter(ImperativeToCodeInterpreter,
-                   FunctionPowExprMixin,
+                   PowExprFunctionMixin,
                    LinearAlgebraMixin):
 
     supported_bin_vector_ops = {

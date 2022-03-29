@@ -3,8 +3,8 @@ from pathlib import Path
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.mixins import (
     BinExpressionDepthTrackingMixin,
-    InfixPowExprMixin,
     LinearAlgebraMixin,
+    PowExprInfixMixin,
     SubroutinesMixin
 )
 from m2cgen.interpreters.r.code_generator import RCodeGenerator
@@ -12,7 +12,7 @@ from m2cgen.interpreters.utils import get_file_content
 
 
 class RInterpreter(ImperativeToCodeInterpreter,
-                   InfixPowExprMixin,
+                   PowExprInfixMixin,
                    LinearAlgebraMixin,
                    BinExpressionDepthTrackingMixin,
                    SubroutinesMixin):

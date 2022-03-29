@@ -5,7 +5,7 @@ from m2cgen.interpreters.utils import CachedResult, _get_handler_name
 
 class BaseInterpreter:
 
-    infix_expressions = [BinNumExpr, CompExpr]
+    infix_expressions = (BinNumExpr, CompExpr)
 
     """
     Base class of AST interpreter. Provides single public method .interpret()
@@ -38,13 +38,15 @@ class BaseInterpreter:
         handler = self._select_handler(expr)
 
         # Reset precedence on non-infix expressions.
-        if not isinstance(expr, tuple(self.infix_expressions)):
+        if not isinstance(expr, self.infix_expressions):
             left_precedence = None
             right_precedence = None
 
         result = handler(
-            expr, left_precedence=left_precedence,
-            right_precedence=right_precedence, **kwargs)
+            expr,
+            left_precedence=left_precedence,
+            right_precedence=right_precedence,
+            **kwargs)
 
         # Note that the reuse flag passed in the arguments has a higher
         # precedence than one specified in the expression. One use case for

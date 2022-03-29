@@ -3,12 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.f_sharp.code_generator import FSharpCodeGenerator
 from m2cgen.interpreters.interpreter import FunctionalToCodeInterpreter
-from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, InfixPowExprMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, PowExprInfixMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class FSharpInterpreter(FunctionalToCodeInterpreter,
-                        InfixPowExprMixin,
+                        PowExprInfixMixin,
                         LinearAlgebraMixin,
                         BinExpressionDepthTrackingMixin):
 

@@ -249,7 +249,7 @@ class BinNumExpr(NumExpr, BinExpr):
         self.right = right
         self.op = op
         self.to_reuse = to_reuse
-        self.precedence = 3 if op in (BinNumOpType.MUL, BinNumOpType.DIV) else 2
+        self.precedence = 3 if op in {BinNumOpType.MUL, BinNumOpType.DIV} else 2
 
     def __str__(self):
         return (f"BinNumExpr({self.left},{self.right},{self.op.name},"

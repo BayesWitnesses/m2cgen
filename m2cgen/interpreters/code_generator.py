@@ -99,11 +99,11 @@ class BaseCodeGenerator:
             lines = lines.strip().split(new_line)
         self._write_to_code_buffer(f"{new_line.join(lines)}{new_line}", prepend=True)
 
+    # Following methods simply compute expressions using templates without changing result.
+
     def infix_expression(self, left, right, op, wrap=False):
         result = self.tpl_infix_expression(left=left, right=right, op=op)
         return result if not wrap else f"({result})"
-
-    # Following methods simply compute expressions using templates without changing result.
 
     def num_value(self, value):
         return self.tpl_num_value(value=value)

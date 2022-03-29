@@ -197,7 +197,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
         raise NotImplementedError
 
 
-class InfixPowExprMixin(BaseToCodeInterpreter):
+class PowExprInfixMixin(BaseToCodeInterpreter):
     """
     This mixin is used for languages that provide the exponentiation operation in a form
     of an infix operator. Such languages inlcude Haskell, F#, R and others.
@@ -208,7 +208,7 @@ class InfixPowExprMixin(BaseToCodeInterpreter):
 
     pow_operator = "**"
 
-    infix_expressions = [*BaseToCodeInterpreter.infix_expressions, ast.PowExpr]
+    infix_expressions = (*BaseToCodeInterpreter.infix_expressions, ast.PowExpr)
 
     def interpret_pow_expr(self, expr, left_precedence=None,
                            right_precedence=None, **kwargs):
@@ -217,11 +217,13 @@ class InfixPowExprMixin(BaseToCodeInterpreter):
         exp_result = self._do_interpret(
             expr.exp_expr, right_precedence=expr.precedence, **kwargs)
         return self._cg.infix_expression(
-            left=base_result, right=exp_result, op=self.pow_operator,
+            left=base_result,
+            right=exp_result,
+            op=self.pow_operator,
             wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence))
 
 
-class FunctionPowExprMixin(BaseToCodeInterpreter):
+class PowExprFunctionMixin(BaseToCodeInterpreter):
     """
     This mixin is used for languages that provide the exponentiation operation as a function.
     Such languages inlcude C, Java, Python and others.

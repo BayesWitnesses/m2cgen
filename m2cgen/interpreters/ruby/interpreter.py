@@ -2,13 +2,13 @@ from pathlib import Path
 
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import InfixPowExprMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import LinearAlgebraMixin, PowExprInfixMixin
 from m2cgen.interpreters.ruby.code_generator import RubyCodeGenerator
 from m2cgen.interpreters.utils import get_file_content
 
 
 class RubyInterpreter(ImperativeToCodeInterpreter,
-                      InfixPowExprMixin,
+                      PowExprInfixMixin,
                       LinearAlgebraMixin):
 
     supported_bin_vector_ops = {
