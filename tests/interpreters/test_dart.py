@@ -15,7 +15,7 @@ def test_if_expr():
     expected_code = """
 double score(List<double> input) {
     double var0;
-    if ((1.0) == (input[0])) {
+    if (1.0 == input[0]) {
         var0 = 2.0;
     } else {
         var0 = 3.0;
@@ -37,7 +37,7 @@ def test_bin_num_expr():
 
     expected_code = """
 double score(List<double> input) {
-    return ((input[0]) / (-2.0)) * (2.0);
+    return input[0] / -2.0 * 2.0;
 }
 """
 
@@ -63,12 +63,12 @@ def test_dependable_condition():
 double score(List<double> input) {
     double var0;
     double var1;
-    if ((1.0) == (1.0)) {
+    if (1.0 == 1.0) {
         var1 = 1.0;
     } else {
         var1 = 2.0;
     }
-    if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+    if (var1 + 2.0 >= 1.0 / 2.0) {
         var0 = 1.0;
     } else {
         var0 = input[0];
@@ -99,19 +99,19 @@ def test_nested_condition():
 double score(List<double> input) {
     double var0;
     double var1;
-    if ((1.0) == (1.0)) {
+    if (1.0 == 1.0) {
         var1 = 1.0;
     } else {
         var1 = 2.0;
     }
-    if ((1.0) == ((var1) + (2.0))) {
+    if (1.0 == var1 + 2.0) {
         double var2;
-        if ((1.0) == (1.0)) {
+        if (1.0 == 1.0) {
             var2 = 1.0;
         } else {
             var2 = 2.0;
         }
-        if ((1.0) == ((var2) + (2.0))) {
+        if (1.0 == var2 + 2.0) {
             var0 = input[2];
         } else {
             var0 = 2.0;
@@ -152,7 +152,7 @@ def test_multi_output():
     expected_code = """
 List<double> score(List<double> input) {
     List<double> var0;
-    if ((1.0) != (1.0)) {
+    if (1.0 != 1.0) {
         var0 = [1.0, 2.0];
     } else {
         var0 = [3.0, 4.0];
@@ -237,8 +237,8 @@ def test_depth_threshold_with_bin_expr():
     expected_code = """
 double score(List<double> input) {
     double var0;
-    var0 = (1.0) + ((1.0) + (1.0));
-    return (1.0) + ((1.0) + (var0));
+    var0 = 1.0 + (1.0 + 1.0);
+    return 1.0 + (1.0 + var0);
 }
 """
 
@@ -254,10 +254,10 @@ def test_depth_threshold_with_reused_bin_expr():
     expected_code = """
 double score(List<double> input) {
     double var0;
-    var0 = (1.0) + (1.0);
+    var0 = 1.0 + 1.0;
     double var1;
     var1 = var0;
-    return ((1.0) + (var1)) + ((1.0) + (var0));
+    return 1.0 + var1 + (1.0 + var0);
 }
 """
 
@@ -277,16 +277,16 @@ def test_depth_threshold_without_bin_expr():
     expected_code = """
 double score(List<double> input) {
     double var0;
-    if ((1.0) == (1.0)) {
+    if (1.0 == 1.0) {
         var0 = 1.0;
     } else {
-        if ((1.0) == (1.0)) {
+        if (1.0 == 1.0) {
             var0 = 1.0;
         } else {
-            if ((1.0) == (1.0)) {
+            if (1.0 == 1.0) {
                 var0 = 1.0;
             } else {
-                if ((1.0) == (1.0)) {
+                if (1.0 == 1.0) {
                     var0 = 1.0;
                 } else {
                     var0 = 1.0;
@@ -317,16 +317,16 @@ def test_deep_mixed_exprs_not_reaching_threshold():
     expected_code = """
 double score(List<double> input) {
     double var0;
-    if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+    if (1.0 + (1.0 + 1.0) == 1.0) {
         var0 = 1.0;
     } else {
-        if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+        if (1.0 + (1.0 + 1.0) == 1.0) {
             var0 = 1.0;
         } else {
-            if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+            if (1.0 + (1.0 + 1.0) == 1.0) {
                 var0 = 1.0;
             } else {
-                if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                if (1.0 + (1.0 + 1.0) == 1.0) {
                     var0 = 1.0;
                 } else {
                     var0 = 1.0;
@@ -358,23 +358,23 @@ def test_deep_mixed_exprs_exceeding_threshold():
 double score(List<double> input) {
     double var0;
     double var1;
-    var1 = (3.0) + ((3.0) + (1.0));
-    if (((3.0) + ((3.0) + (var1))) == (1.0)) {
+    var1 = 3.0 + (3.0 + 1.0);
+    if (3.0 + (3.0 + var1) == 1.0) {
         var0 = 1.0;
     } else {
         double var2;
-        var2 = (2.0) + ((2.0) + (1.0));
-        if (((2.0) + ((2.0) + (var2))) == (1.0)) {
+        var2 = 2.0 + (2.0 + 1.0);
+        if (2.0 + (2.0 + var2) == 1.0) {
             var0 = 1.0;
         } else {
             double var3;
-            var3 = (1.0) + ((1.0) + (1.0));
-            if (((1.0) + ((1.0) + (var3))) == (1.0)) {
+            var3 = 1.0 + (1.0 + 1.0);
+            if (1.0 + (1.0 + var3) == 1.0) {
                 var0 = 1.0;
             } else {
                 double var4;
-                var4 = (0.0) + ((0.0) + (1.0));
-                if (((0.0) + ((0.0) + (var4))) == (1.0)) {
+                var4 = 0.0 + (0.0 + 1.0);
+                if (0.0 + (0.0 + var4) == 1.0) {
                     var0 = 1.0;
                 } else {
                     var0 = 1.0;
@@ -638,7 +638,7 @@ import 'dart:math';
 double score(List<double> input) {
     double var0;
     var0 = exp(1.0);
-    return (var0) / (var0);
+    return var0 / var0;
 }
 """
 

@@ -2,13 +2,15 @@ from pathlib import Path
 
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.mixins import LinearAlgebraMixin, PowExprInfixMixin
 from m2cgen.interpreters.utils import get_file_content
 from m2cgen.interpreters.visual_basic.code_generator import VisualBasicCodeGenerator
 
 
 class VisualBasicInterpreter(ImperativeToCodeInterpreter,
+                             PowExprInfixMixin,
                              LinearAlgebraMixin):
+
     supported_bin_vector_ops = {
         BinNumOpType.ADD: "AddVectors",
     }
@@ -25,6 +27,8 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
     sigmoid_function_name = "Sigmoid"
     softmax_function_name = "Softmax"
     tanh_function_name = "Tanh"
+
+    pow_operator = "^"
 
     with_atan_expr = False
     with_log1p_expr = False
@@ -87,12 +91,6 @@ class VisualBasicInterpreter(ImperativeToCodeInterpreter,
             block_name="Module"))
 
         return self._cg.finalize_and_get_generated_code()
-
-    def interpret_pow_expr(self, expr, **kwargs):
-        base_result = self._do_interpret(expr.base_expr, **kwargs)
-        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
-        return self._cg.infix_expression(
-            left=base_result, right=exp_result, op="^")
 
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True

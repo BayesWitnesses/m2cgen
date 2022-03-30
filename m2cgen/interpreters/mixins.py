@@ -195,3 +195,48 @@ class SubroutinesMixin(BaseToCodeInterpreter):
 
     def create_code_generator(self):
         raise NotImplementedError
+
+
+class PowExprInfixMixin(BaseToCodeInterpreter):
+    """
+    This mixin is used for languages that provide the exponentiation operation in a form
+    of an infix operator. Such languages inlcude Haskell, F#, R and others.
+
+    The operator used by default is "**", but it can be overriden by setting an appropriate
+    value in `pow_operator`.
+    """
+
+    pow_operator = "**"
+
+    infix_expressions = (*BaseToCodeInterpreter.infix_expressions, ast.PowExpr)
+
+    def interpret_pow_expr(self, expr, left_precedence=None,
+                           right_precedence=None, **kwargs):
+        base_result = self._do_interpret(
+            expr.base_expr, left_precedence=expr.precedence, **kwargs)
+        exp_result = self._do_interpret(
+            expr.exp_expr, right_precedence=expr.precedence, **kwargs)
+        return self._cg.infix_expression(
+            left=base_result,
+            right=exp_result,
+            op=self.pow_operator,
+            wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence))
+
+
+class PowExprFunctionMixin(BaseToCodeInterpreter):
+    """
+    This mixin is used for languages that provide the exponentiation operation as a function.
+    Such languages inlcude C, Java, Python and others.
+
+    The name of the function must be set in `power_function_name` by implementing subclasses.
+    """
+
+    power_function_name = NotImplemented
+
+    def interpret_pow_expr(self, expr, **kwargs):
+        if self.power_function_name is NotImplemented:
+            raise NotImplementedError("Power function is not provided")
+        self.with_math_module = True
+        base_result = self._do_interpret(expr.base_expr, **kwargs)
+        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
+        return self._cg.function_invocation(self.power_function_name, base_result, exp_result)

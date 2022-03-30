@@ -15,7 +15,7 @@ def test_if_expr():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        if (1.0) = (input.[0]) then
+        if 1.0 = input.[0] then
             2.0
         else
             3.0
@@ -35,7 +35,7 @@ def test_bin_num_expr():
 
     expected_code = """
 let score (input : double list) =
-    ((input.[0]) / (-2.0)) * (2.0)
+    input.[0] / -2.0 * 2.0
 """
 
     interpreter = FSharpInterpreter()
@@ -59,12 +59,12 @@ def test_dependable_condition():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        if (1.0) = (1.0) then
+        if 1.0 = 1.0 then
             1.0
         else
             2.0
     let func1 =
-        if ((func0) + (2.0)) >= ((1.0) / (2.0)) then
+        if func0 + 2.0 >= 1.0 / 2.0 then
             1.0
         else
             input.[0]
@@ -92,13 +92,13 @@ def test_nested_condition():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        if (1.0) = (1.0) then
+        if 1.0 = 1.0 then
             1.0
         else
             2.0
     let func1 =
-        if (1.0) = ((func0) + (2.0)) then
-            if (1.0) = ((func0) + (2.0)) then
+        if 1.0 = func0 + 2.0 then
+            if 1.0 = func0 + 2.0 then
                 input.[2]
             else
                 2.0
@@ -135,7 +135,7 @@ def test_multi_output():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        if (1.0) <> (1.0) then
+        if 1.0 <> 1.0 then
             [1.0; 2.0]
         else
             [3.0; 4.0]
@@ -192,8 +192,8 @@ def test_depth_threshold_with_bin_expr():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        (1.0) + ((1.0) + (1.0))
-    (1.0) + ((1.0) + (func0))
+        1.0 + (1.0 + 1.0)
+    1.0 + (1.0 + func0)
 """
 
     interpreter = CustomFSharpInterpreter()
@@ -208,8 +208,8 @@ def test_depth_threshold_with_reused_bin_expr():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        (1.0) + (1.0)
-    ((1.0) + (func0)) + ((1.0) + (func0))
+        1.0 + 1.0
+    1.0 + func0 + (1.0 + func0)
 """
 
     interpreter = CustomFSharpInterpreter()
@@ -228,16 +228,16 @@ def test_depth_threshold_without_bin_expr():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        if (1.0) = (1.0) then
+        if 1.0 = 1.0 then
             1.0
         else
-            if (1.0) = (1.0) then
+            if 1.0 = 1.0 then
                 1.0
             else
-                if (1.0) = (1.0) then
+                if 1.0 = 1.0 then
                     1.0
                 else
-                    if (1.0) = (1.0) then
+                    if 1.0 = 1.0 then
                         1.0
                     else
                         1.0
@@ -263,16 +263,16 @@ def test_deep_mixed_exprs_not_reaching_threshold():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        if ((1.0) + ((1.0) + (1.0))) = (1.0) then
+        if 1.0 + (1.0 + 1.0) = 1.0 then
             1.0
         else
-            if ((1.0) + ((1.0) + (1.0))) = (1.0) then
+            if 1.0 + (1.0 + 1.0) = 1.0 then
                 1.0
             else
-                if ((1.0) + ((1.0) + (1.0))) = (1.0) then
+                if 1.0 + (1.0 + 1.0) = 1.0 then
                     1.0
                 else
-                    if ((1.0) + ((1.0) + (1.0))) = (1.0) then
+                    if 1.0 + (1.0 + 1.0) = 1.0 then
                         1.0
                     else
                         1.0
@@ -298,24 +298,24 @@ def test_deep_mixed_exprs_exceeding_threshold():
     expected_code = """
 let score (input : double list) =
     let func0 =
-        (3.0) + ((3.0) + (1.0))
+        3.0 + (3.0 + 1.0)
     let func1 =
-        (2.0) + ((2.0) + (1.0))
+        2.0 + (2.0 + 1.0)
     let func2 =
-        (1.0) + ((1.0) + (1.0))
+        1.0 + (1.0 + 1.0)
     let func3 =
-        (0.0) + ((0.0) + (1.0))
+        0.0 + (0.0 + 1.0)
     let func4 =
-        if ((3.0) + ((3.0) + (func0))) = (1.0) then
+        if 3.0 + (3.0 + func0) = 1.0 then
             1.0
         else
-            if ((2.0) + ((2.0) + (func1))) = (1.0) then
+            if 2.0 + (2.0 + func1) = 1.0 then
                 1.0
             else
-                if ((1.0) + ((1.0) + (func2))) = (1.0) then
+                if 1.0 + (1.0 + func2) = 1.0 then
                     1.0
                 else
-                    if ((0.0) + ((0.0) + (func3))) = (1.0) then
+                    if 0.0 + (0.0 + func3) = 1.0 then
                         1.0
                     else
                         1.0
@@ -355,7 +355,7 @@ def test_pow_expr():
 
     expected_code = """
 let score (input : double list) =
-    (2.0) ** (3.0)
+    2.0 ** 3.0
 """
 
     interpreter = FSharpInterpreter()
@@ -504,7 +504,7 @@ def test_reused_expr():
 let score (input : double list) =
     let func0 =
         exp (1.0)
-    (func0) / (func0)
+    func0 / func0
 """
 
     interpreter = FSharpInterpreter()

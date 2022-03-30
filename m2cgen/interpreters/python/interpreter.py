@@ -2,12 +2,13 @@ from pathlib import Path
 
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, PowExprFunctionMixin
 from m2cgen.interpreters.python.code_generator import PythonCodeGenerator
 from m2cgen.interpreters.utils import get_file_content
 
 
 class PythonInterpreter(ImperativeToCodeInterpreter,
+                        PowExprFunctionMixin,
                         BinExpressionDepthTrackingMixin,
                         LinearAlgebraMixin):
 

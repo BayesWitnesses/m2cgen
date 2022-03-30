@@ -14,7 +14,7 @@ def test_if_expr():
 
     expected_code = """
 def score(input)
-    if (1.0) == (input[0])
+    if 1.0 == input[0]
         var0 = 2.0
     else
         var0 = 3.0
@@ -36,7 +36,7 @@ def test_bin_num_expr():
 
     expected_code = """
 def score(input)
-    ((input[0]).fdiv(-2.0)) * (2.0)
+    (input[0]).fdiv(-2.0) * 2.0
 end
 """
 
@@ -60,12 +60,12 @@ def test_dependable_condition():
 
     expected_code = """
 def score(input)
-    if (1.0) == (1.0)
+    if 1.0 == 1.0
         var1 = 1.0
     else
         var1 = 2.0
     end
-    if ((var1) + (2.0)) >= ((1.0).fdiv(2.0))
+    if var1 + 2.0 >= (1.0).fdiv(2.0)
         var0 = 1.0
     else
         var0 = input[0]
@@ -94,18 +94,18 @@ def test_nested_condition():
 
     expected_code = """
 def score(input)
-    if (1.0) == (1.0)
+    if 1.0 == 1.0
         var1 = 1.0
     else
         var1 = 2.0
     end
-    if (1.0) == ((var1) + (2.0))
-        if (1.0) == (1.0)
+    if 1.0 == var1 + 2.0
+        if 1.0 == 1.0
             var2 = 1.0
         else
             var2 = 2.0
         end
-        if (1.0) == ((var2) + (2.0))
+        if 1.0 == var2 + 2.0
             var0 = input[2]
         else
             var0 = 2.0
@@ -145,7 +145,7 @@ def test_multi_output():
 
     expected_code = """
 def score(input)
-    if (1.0) != (1.0)
+    if 1.0 != 1.0
         var0 = [1.0, 2.0]
     else
         var0 = [3.0, 4.0]
@@ -233,7 +233,7 @@ def test_pow_expr():
 
     expected_code = """
 def score(input)
-    (2.0) ** (3.0)
+    2.0 ** 3.0
 end
 """
 

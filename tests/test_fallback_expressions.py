@@ -33,8 +33,8 @@ double score(double * input) {
     double var0;
     double var1;
     var1 = -2.0;
-    if ((var1) < (0.0)) {
-        var0 = (0.0) - (var1);
+    if (var1 < 0.0) {
+        var0 = 0.0 - var1;
     } else {
         var0 = var1;
     }
@@ -55,13 +55,13 @@ def test_tanh_fallback_expr():
 import math
 def score(input):
     var1 = 2.0
-    if (var1) > (44.0):
+    if var1 > 44.0:
         var0 = 1.0
     else:
-        if (var1) < (-44.0):
+        if var1 < -44.0:
             var0 = -1.0
         else:
-            var0 = (1.0) - ((2.0) / ((math.exp((2.0) * (var1))) + (1.0)))
+            var0 = 1.0 - 2.0 / (math.exp(2.0 * var1) + 1.0)
     return var0
 """
 
@@ -108,12 +108,12 @@ def test_log1p_fallback_expr():
 import math
 def score(input):
     var1 = 2.0
-    var2 = (1.0) + (var1)
-    var3 = (var2) - (1.0)
-    if (var3) == (0.0):
+    var2 = 1.0 + var1
+    var3 = var2 - 1.0
+    if var3 == 0.0:
         var0 = var1
     else:
-        var0 = ((var1) * (math.log(var2))) / (var3)
+        var0 = var1 * math.log(var2) / var3
     return var0
 """
 
@@ -126,43 +126,36 @@ def test_atan_fallback_expr():
     interpreter = PythonInterpreter()
     interpreter.atan_function_name = NotImplemented
 
-    expected_code = (
-        """
-def score(input):
+    expected_code = """
+ def score(input):
     var1 = 2.0
     var2 = abs(var1)
-    if (var2) > (2.414213562373095):
-        var0 = (1.0) / (var2)
+    if var2 > 2.414213562373095:
+        var0 = 1.0 / var2
     else:
-        if (var2) > (0.66):
-            var0 = ((var2) - (1.0)) / ((var2) + (1.0))
+        if var2 > 0.66:
+            var0 = (var2 - 1.0) / (var2 + 1.0)
         else:
             var0 = var2
     var3 = var0
-    var4 = (var3) * (var3)
-    if (var2) > (2.414213562373095):
+    var4 = var3 * var3
+    if var2 > 2.414213562373095:
         var5 = -1.0
     else:
         var5 = 1.0
-    if (var2) <= (0.66):
+    if var2 <= 0.66:
         var6 = 0.0
     else:
-        if (var2) > (2.414213562373095):
+        if var2 > 2.414213562373095:
             var6 = 1.5707963267948968
         else:
             var6 = 0.7853981633974484
-    if (var1) < (0.0):
+    if var1 < 0.0:
         var7 = -1.0
     else:
         var7 = 1.0
-    return (((((var3) * ((var4) * ((((var4) * (((var4) * (((var4) * """
-        """(((var4) * (-0.8750608600031904)) - (16.157537187333652))) - """
-        """(75.00855792314705))) - (122.88666844901361))) - """
-        """(64.85021904942025)) / ((194.5506571482614) + ((var4) * """
-        """((485.3903996359137) + ((var4) * ((432.88106049129027) + """
-        """((var4) * ((165.02700983169885) + ((var4) * """
-        """((24.858464901423062) + (var4))))))))))))) + (var3)) * """
-        """(var5)) + (var6)) * (var7)""")
+    return ((var3 * (var4 * ((var4 * (var4 * (var4 * (var4 * -0.8750608600031904 - 16.157537187333652) - 75.00855792314705) - 122.88666844901361) - 64.85021904942025) / (194.5506571482614 + var4 * (485.3903996359137 + var4 * (432.88106049129027 + var4 * (165.02700983169885 + var4 * (24.858464901423062 + var4))))))) + var3) * var5 + var6) * var7
+"""  # noqa: E501
 
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
@@ -184,8 +177,8 @@ import math
 def score(input):
     var0 = math.exp(2.0)
     var1 = math.exp(3.0)
-    var2 = (var0) + (var1)
-    return [(var0) / (var2), (var1) / (var2)]
+    var2 = (var0 + var1)
+    return [var0 / var2, var1 / var2]
 """
 
     assert_code_equal(interpreter.interpret(expr), expected_code)
@@ -206,7 +199,7 @@ def test_sigmoid_fallback_expr():
     expected_code = """
 import math
 def score(input):
-    return (1.0) / ((1.0) + (math.exp((0.0) - (2.0))))
+    return 1.0 / (1.0 + math.exp(0.0 - 2.0))
 """
 
     assert_code_equal(interpreter.interpret(expr), expected_code)

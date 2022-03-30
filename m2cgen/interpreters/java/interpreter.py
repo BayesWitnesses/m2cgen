@@ -3,11 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.java.code_generator import JavaCodeGenerator
-from m2cgen.interpreters.mixins import LinearAlgebraMixin, SubroutinesMixin
+from m2cgen.interpreters.mixins import LinearAlgebraMixin, PowExprFunctionMixin, SubroutinesMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class JavaInterpreter(ImperativeToCodeInterpreter,
+                      PowExprFunctionMixin,
                       LinearAlgebraMixin,
                       SubroutinesMixin):
 

@@ -101,8 +101,9 @@ class BaseCodeGenerator:
 
     # Following methods simply compute expressions using templates without changing result.
 
-    def infix_expression(self, left, right, op):
-        return self.tpl_infix_expression(left=left, right=right, op=op)
+    def infix_expression(self, left, right, op, wrap=False):
+        result = self.tpl_infix_expression(left=left, right=right, op=op)
+        return result if not wrap else f"({result})"
 
     def num_value(self, value):
         return self.tpl_num_value(value=value)
@@ -188,7 +189,7 @@ class CLikeCodeGenerator(ImperativeCodeGenerator):
     """
 
     tpl_num_value = CodeTemplate("{value}")
-    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_var_declaration = CodeTemplate("{var_type} {var_name};")
     tpl_return_statement = CodeTemplate("return {value};")
     tpl_array_index_access = CodeTemplate("{array_name}[{index}]")

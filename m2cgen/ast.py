@@ -7,6 +7,10 @@ import numpy as np
 
 class Expr:
     output_size = 1
+
+    # The precedence of this expression. Higher value means higher precedence.
+    precedence = None
+
     # Setting this value to true serves as an indication that the result
     # of evaluation of this expression is being used in other expressions
     # and it's recommended to persist or cache it in some way.
@@ -206,6 +210,8 @@ class TanhExpr(NumExpr):
 
 
 class PowExpr(NumExpr):
+    precedence = 4
+
     def __init__(self, base_expr, exp_expr, to_reuse=False):
         assert base_expr.output_size == 1, "Only scalars are supported"
         assert exp_expr.output_size == 1, "Only scalars are supported"
@@ -243,6 +249,7 @@ class BinNumExpr(NumExpr, BinExpr):
         self.right = right
         self.op = op
         self.to_reuse = to_reuse
+        self.precedence = 3 if op in {BinNumOpType.MUL, BinNumOpType.DIV} else 2
 
     def __str__(self):
         return (f"BinNumExpr({self.left},{self.right},{self.op.name},"
@@ -372,6 +379,8 @@ COMP_OP_TYPE_MAPPING = {e.value: e for e in CompOpType}
 
 
 class CompExpr(BoolExpr):
+    precedence = 1
+
     def __init__(self, left, right, op):
         assert left.output_size == 1, "Only scalars are supported"
         assert right.output_size == 1, "Only scalars are supported"

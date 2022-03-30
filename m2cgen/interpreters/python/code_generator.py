@@ -6,7 +6,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGener
 class PythonCodeGenerator(ImperativeCodeGenerator):
 
     tpl_num_value = CodeTemplate("{value}")
-    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_return_statement = CodeTemplate("return {value}")
     tpl_array_index_access = CodeTemplate("{array_name}[{index}]")
     tpl_if_statement = CodeTemplate("if {if_def}:")

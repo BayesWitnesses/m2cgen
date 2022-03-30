@@ -17,7 +17,7 @@ namespace ML {
     public static class Model {
         public static double Score(double[] input) {
             double var0;
-            if ((1.0) == (input[0])) {
+            if (1.0 == input[0]) {
                 var0 = 2.0;
             } else {
                 var0 = 3.0;
@@ -43,7 +43,7 @@ def test_bin_num_expr():
 namespace ML {
     public static class Model {
         public static double Score(double[] input) {
-            return ((input[0]) / (-2.0)) * (2.0);
+            return input[0] / -2.0 * 2.0;
         }
     }
 }
@@ -73,12 +73,12 @@ namespace ML {
         public static double Score(double[] input) {
             double var0;
             double var1;
-            if ((1.0) == (1.0)) {
+            if (1.0 == 1.0) {
                 var1 = 1.0;
             } else {
                 var1 = 2.0;
             }
-            if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+            if (var1 + 2.0 >= 1.0 / 2.0) {
                 var0 = 1.0;
             } else {
                 var0 = input[0];
@@ -113,19 +113,19 @@ namespace ML {
         public static double Score(double[] input) {
             double var0;
             double var1;
-            if ((1.0) == (1.0)) {
+            if (1.0 == 1.0) {
                 var1 = 1.0;
             } else {
                 var1 = 2.0;
             }
-            if ((1.0) == ((var1) + (2.0))) {
+            if (1.0 == var1 + 2.0) {
                 double var2;
-                if ((1.0) == (1.0)) {
+                if (1.0 == 1.0) {
                     var2 = 1.0;
                 } else {
                     var2 = 2.0;
                 }
-                if ((1.0) == ((var2) + (2.0))) {
+                if (1.0 == var2 + 2.0) {
                     var0 = input[2];
                 } else {
                     var0 = 2.0;
@@ -208,7 +208,7 @@ namespace ML {
     public static class Model {
         public static double[] Score(double[] input) {
             double[] var0;
-            if ((1.0) != (1.0)) {
+            if (1.0 != 1.0) {
                 var0 = new double[2] {1.0, 2.0};
             } else {
                 var0 = new double[2] {3.0, 4.0};
@@ -557,7 +557,7 @@ namespace ML {
         public static double Score(double[] input) {
             double var0;
             var0 = Exp(1.0);
-            return (var0) / (var0);
+            return var0 / var0;
         }
     }
 }

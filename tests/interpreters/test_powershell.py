@@ -15,7 +15,7 @@ def test_if_expr():
     expected_code = """
 function Score([double[]] $InputVector) {
     [double]$var0 = 0.0
-    if ((1.0) -eq ($InputVector[0])) {
+    if (1.0 -eq $InputVector[0]) {
         $var0 = 2.0
     } else {
         $var0 = 3.0
@@ -37,7 +37,7 @@ def test_bin_num_expr():
 
     expected_code = """
 function Score([double[]] $InputVector) {
-    return (($InputVector[0]) / (-2.0)) * (2.0)
+    return $InputVector[0] / -2.0 * 2.0
 }
 """
 
@@ -63,12 +63,12 @@ def test_dependable_condition():
 function Score([double[]] $InputVector) {
     [double]$var0 = 0.0
     [double]$var1 = 0.0
-    if ((1.0) -eq (1.0)) {
+    if (1.0 -eq 1.0) {
         $var1 = 1.0
     } else {
         $var1 = 2.0
     }
-    if ((($var1) + (2.0)) -ge ((1.0) / (2.0))) {
+    if ($var1 + 2.0 -ge 1.0 / 2.0) {
         $var0 = 1.0
     } else {
         $var0 = $InputVector[0]
@@ -99,19 +99,19 @@ def test_nested_condition():
 function Score([double[]] $InputVector) {
     [double]$var0 = 0.0
     [double]$var1 = 0.0
-    if ((1.0) -eq (1.0)) {
+    if (1.0 -eq 1.0) {
         $var1 = 1.0
     } else {
         $var1 = 2.0
     }
-    if ((1.0) -eq (($var1) + (2.0))) {
+    if (1.0 -eq $var1 + 2.0) {
         [double]$var2 = 0.0
-        if ((1.0) -eq (1.0)) {
+        if (1.0 -eq 1.0) {
             $var2 = 1.0
         } else {
             $var2 = 2.0
         }
-        if ((1.0) -eq (($var2) + (2.0))) {
+        if (1.0 -eq $var2 + 2.0) {
             $var0 = $InputVector[2]
         } else {
             $var0 = 2.0
@@ -152,7 +152,7 @@ def test_multi_output():
     expected_code = """
 function Score([double[]] $InputVector) {
     [double[]]$var0 = @(0.0)
-    if ((1.0) -ne (1.0)) {
+    if (1.0 -ne 1.0) {
         $var0 = @($(1.0), $(2.0))
     } else {
         $var0 = @($(3.0), $(4.0))
@@ -441,7 +441,7 @@ def test_reused_expr():
 function Score([double[]] $InputVector) {
     [double]$var0 = 0.0
     $var0 = [math]::Exp(1.0)
-    return ($var0) / ($var0)
+    return $var0 / $var0
 }
 """
 

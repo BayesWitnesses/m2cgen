@@ -15,7 +15,7 @@ def test_if_expr():
     expected_code = """
 double score(double * input) {
     double var0;
-    if ((1.0) == (input[0])) {
+    if (1.0 == input[0]) {
         var0 = 2.0;
     } else {
         var0 = 3.0;
@@ -37,7 +37,7 @@ def test_bin_num_expr():
 
     expected_code = """
 double score(double * input) {
-    return ((input[0]) / (-2.0)) * (2.0);
+    return input[0] / -2.0 * 2.0;
 }
 """
 
@@ -63,12 +63,12 @@ def test_dependable_condition():
 double score(double * input) {
     double var0;
     double var1;
-    if ((1.0) == (1.0)) {
+    if (1.0 == 1.0) {
         var1 = 1.0;
     } else {
         var1 = 2.0;
     }
-    if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+    if (var1 + 2.0 >= 1.0 / 2.0) {
         var0 = 1.0;
     } else {
         var0 = input[0];
@@ -99,19 +99,19 @@ def test_nested_condition():
 double score(double * input) {
     double var0;
     double var1;
-    if ((1.0) == (1.0)) {
+    if (1.0 == 1.0) {
         var1 = 1.0;
     } else {
         var1 = 2.0;
     }
-    if ((1.0) == ((var1) + (2.0))) {
+    if (1.0 == var1 + 2.0) {
         double var2;
-        if ((1.0) == (1.0)) {
+        if (1.0 == 1.0) {
             var2 = 1.0;
         } else {
             var2 = 2.0;
         }
-        if ((1.0) == ((var2) + (2.0))) {
+        if (1.0 == var2 + 2.0) {
             var0 = input[2];
         } else {
             var0 = 2.0;
@@ -154,7 +154,7 @@ def test_multi_output():
 #include <string.h>
 void score(double * input, double * output) {
     double var0[2];
-    if ((1.0) != (1.0)) {
+    if (1.0 != 1.0) {
         memcpy(var0, (double[]){1.0, 2.0}, 2 * sizeof(double));
     } else {
         memcpy(var0, (double[]){3.0, 4.0}, 2 * sizeof(double));
@@ -393,7 +393,7 @@ def test_reused_expr():
 double score(double * input) {
     double var0;
     var0 = exp(1.0);
-    return (var0) / (var0);
+    return var0 / var0;
 }
 """
 

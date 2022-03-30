@@ -9,7 +9,7 @@ class FSharpCodeGenerator(FunctionalCodeGenerator):
     tpl_if_statement = CodeTemplate("if {if_def} then")
     tpl_else_statement = CodeTemplate("else")
     tpl_num_value = CodeTemplate("{value}")
-    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_array_index_access = CodeTemplate("{array_name}.[{index}]")
 
     def add_if_termination(self):
