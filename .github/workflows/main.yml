@@ -17,16 +17,16 @@ jobs:
       matrix:
         python:
           - "3.7"
-          - "3.8"
-          - "3.9"
+#          - "3.8"
+#          - "3.9"
           - "3.10"
         lang:
           - "API"
-          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
-          - "c_sharp or visual_basic or f_sharp"
-          - "r_lang"
-          - "elixir"
-          - "dart or powershell"
+#          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
+#          - "c_sharp or visual_basic or f_sharp"
+#          - "r_lang"
+#          - "elixir"
+#          - "dart or powershell"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -57,6 +57,12 @@ jobs:
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             m2cgen-docker \
             bash /m2cgen/.ci/test.sh
+      - name: Generate artifact with code examples
+        if: matrix.python == '3.10' && matrix.lang == 'API'
+        uses: actions/upload-artifact@v3
+        with:
+          name: code_examples
+          path: $GITHUB_WORKSPACE/generated_code_examples/
   all-successful:
     # https://github.community/t/is-it-possible-to-require-all-github-actions-tasks-to-pass-without-enumerating-them/117957/4?u=graingert
     runs-on: ubuntu-latest
