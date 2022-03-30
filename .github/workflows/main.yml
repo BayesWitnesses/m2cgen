@@ -17,16 +17,16 @@ jobs:
       matrix:
         python:
           - "3.7"
-#          - "3.8"
-#          - "3.9"
+          - "3.8"
+          - "3.9"
           - "3.10"
         lang:
           - "API"
-#          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
-#          - "c_sharp or visual_basic or f_sharp"
-#          - "r_lang"
-#          - "elixir"
-#          - "dart or powershell"
+          - "c_lang or python or java or go_lang or javascript or php or haskell or ruby or rust"
+          - "c_sharp or visual_basic or f_sharp"
+          - "r_lang"
+          - "elixir"
+          - "dart or powershell"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -63,6 +63,7 @@ jobs:
         with:
           name: code_examples
           path: ${{ github.workspace }}/generated_code_examples/
+          if-no-files-found: error
   all-successful:
     # https://github.community/t/is-it-possible-to-require-all-github-actions-tasks-to-pass-without-enumerating-them/117957/4?u=graingert
     runs-on: ubuntu-latest
