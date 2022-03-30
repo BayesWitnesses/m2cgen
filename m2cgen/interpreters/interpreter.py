@@ -1,9 +1,12 @@
 from m2cgen.assemblers import fallback_expressions
-from m2cgen.ast import IfExpr
+from m2cgen.ast import BinNumExpr, CompExpr, IfExpr
 from m2cgen.interpreters.utils import CachedResult, _get_handler_name
 
 
 class BaseInterpreter:
+
+    infix_expressions = (BinNumExpr, CompExpr)
+
     """
     Base class of AST interpreter. Provides single public method .interpret()
     which takes instance of AST expression and recursively applies method
@@ -21,7 +24,7 @@ class BaseInterpreter:
     def _pre_interpret_hook(self, expr, **kwargs):
         return None, kwargs
 
-    def _do_interpret(self, expr, to_reuse=None, **kwargs):
+    def _do_interpret(self, expr, to_reuse=None, left_precedence=None, right_precedence=None, **kwargs):
         # Hook which allows to override kwargs and to return custom result.
         result, kwargs = self._pre_interpret_hook(expr, **kwargs)
 
@@ -34,6 +37,17 @@ class BaseInterpreter:
 
         handler = self._select_handler(expr)
 
+        # Reset precedence on non-infix expressions.
+        if not isinstance(expr, self.infix_expressions):
+            left_precedence = None
+            right_precedence = None
+
+        result = handler(
+            expr,
+            left_precedence=left_precedence,
+            right_precedence=right_precedence,
+            **kwargs)
+
         # Note that the reuse flag passed in the arguments has a higher
         # precedence than one specified in the expression. One use case for
         # this behavior is to override the original to_reuse flag for
@@ -41,9 +55,8 @@ class BaseInterpreter:
         # subroutines are not supported by specific interpreter implementation.
         expr_to_reuse = to_reuse if to_reuse is not None else expr.to_reuse
         if not expr_to_reuse:
-            return handler(expr, **kwargs)
+            return result
 
-        result = handler(expr, **kwargs)
         return self._cache_reused_expr(expr, result)
 
     def _cache_reused_expr(self, expr, expr_result):
@@ -86,7 +99,6 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     exponent_function_name = NotImplemented
     logarithm_function_name = NotImplemented
     log1p_function_name = NotImplemented
-    power_function_name = NotImplemented
     sigmoid_function_name = NotImplemented
     softmax_function_name = NotImplemented
     sqrt_function_name = NotImplemented
@@ -107,11 +119,12 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
             op=op,
             right=self._do_interpret(expr.right, **kwargs))
 
-    def interpret_bin_num_expr(self, expr, **kwargs):
+    def interpret_bin_num_expr(self, expr, left_precedence=None, right_precedence=None, **kwargs):
         return self._cg.infix_expression(
-            left=self._do_interpret(expr.left, **kwargs),
+            left=self._do_interpret(expr.left, left_precedence=expr.precedence, **kwargs),
             op=expr.op.value,
-            right=self._do_interpret(expr.right, **kwargs))
+            right=self._do_interpret(expr.right, right_precedence=expr.precedence, **kwargs),
+            wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence))
 
     def interpret_num_val(self, expr, **kwargs):
         return self._cg.num_value(value=expr.value)
@@ -190,13 +203,10 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(self.tanh_function_name, nested_result)
 
-    def interpret_pow_expr(self, expr, **kwargs):
-        if self.power_function_name is NotImplemented:
-            raise NotImplementedError("Power function is not provided")
-        self.with_math_module = True
-        base_result = self._do_interpret(expr.base_expr, **kwargs)
-        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
-        return self._cg.function_invocation(self.power_function_name, base_result, exp_result)
+    def _wrap_infix_expr(self, expr, left_precedence, right_precedence):
+        wrap = left_precedence is not None and left_precedence > expr.precedence
+        wrap |= right_precedence is not None and right_precedence >= expr.precedence
+        return wrap
 
 
 class ImperativeToCodeInterpreter(ToCodeInterpreter):

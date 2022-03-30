@@ -130,7 +130,7 @@ def test_indent(pickled_model):
 namespace ML {
 public static class Model {
 public static double Score(double[] input) {
-return (
+return
 """.strip())
 
 

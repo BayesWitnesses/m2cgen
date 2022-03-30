@@ -16,7 +16,7 @@ def test_if_expr():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if ((1.0) == (input[0])) {
+        if (1.0 == input[0]) {
             var0 = 2.0;
         } else {
             var0 = 3.0;
@@ -40,7 +40,7 @@ def test_bin_num_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return ((input[0]) / (-2.0)) * (2.0);
+        return input[0] / -2.0 * 2.0;
     }
 }
 """
@@ -68,12 +68,12 @@ public class Model {
     public static double score(double[] input) {
         double var0;
         double var1;
-        if ((1.0) == (1.0)) {
+        if (1.0 == 1.0) {
             var1 = 1.0;
         } else {
             var1 = 2.0;
         }
-        if (((var1) + (2.0)) >= ((1.0) / (2.0))) {
+        if (var1 + 2.0 >= 1.0 / 2.0) {
             var0 = 1.0;
         } else {
             var0 = input[0];
@@ -106,19 +106,19 @@ public class Model {
     public static double score(double[] input) {
         double var0;
         double var1;
-        if ((1.0) == (1.0)) {
+        if (1.0 == 1.0) {
             var1 = 1.0;
         } else {
             var1 = 2.0;
         }
-        if ((1.0) == ((var1) + (2.0))) {
+        if (1.0 == var1 + 2.0) {
             double var2;
-            if ((1.0) == (1.0)) {
+            if (1.0 == 1.0) {
                 var2 = 1.0;
             } else {
                 var2 = 2.0;
             }
-            if ((1.0) == ((var2) + (2.0))) {
+            if (1.0 == var2 + 2.0) {
                 var0 = input[2];
             } else {
                 var0 = 2.0;
@@ -160,7 +160,7 @@ def test_ignores_subroutine_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return (input[0]) * ((1.0) + (2.0));
+        return input[0] * (1.0 + 2.0);
     }
 }
 """
@@ -197,7 +197,7 @@ def test_multi_output():
 public class Model {
     public static double[] score(double[] input) {
         double[] var0;
-        if ((1.0) != (1.0)) {
+        if (1.0 != 1.0) {
             var0 = new double[] {1.0, 2.0};
         } else {
             var0 = new double[] {3.0, 4.0};
@@ -288,10 +288,10 @@ def test_depth_threshold_with_bin_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return (1.0) + ((1.0) + (subroutine0(input)));
+        return 1.0 + (1.0 + subroutine0(input));
     }
     public static double subroutine0(double[] input) {
-        return (1.0) + ((1.0) + (1.0));
+        return 1.0 + (1.0 + 1.0);
     }
 }
 """
@@ -309,27 +309,27 @@ def test_depth_threshold_with_reused_bin_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return ((subroutine0(input)) + (subroutine1(input))) + ((subroutine2(input)) + (subroutine3(input)));
+        return subroutine0(input) + subroutine1(input) + (subroutine2(input) + subroutine3(input));
     }
     public static double subroutine0(double[] input) {
         double var0;
-        var0 = (1.0) + (1.0);
-        return (1.0) + (var0);
+        var0 = (1.0 + 1.0);
+        return 1.0 + var0;
     }
     public static double subroutine1(double[] input) {
         double var0;
-        var0 = (1.0) + (1.0);
-        return (1.0) + (var0);
+        var0 = (1.0 + 1.0);
+        return 1.0 + var0;
     }
     public static double subroutine2(double[] input) {
         double var0;
-        var0 = (1.0) + (1.0);
-        return (1.0) + (var0);
+        var0 = (1.0 + 1.0);
+        return 1.0 + var0;
     }
     public static double subroutine3(double[] input) {
         double var0;
-        var0 = (1.0) + (1.0);
-        return (1.0) + (var0);
+        var0 = (1.0 + 1.0);
+        return 1.0 + var0;
     }
 }
 """
@@ -351,16 +351,16 @@ def test_depth_threshold_without_bin_expr():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if ((1.0) == (1.0)) {
+        if (1.0 == 1.0) {
             var0 = 1.0;
         } else {
-            if ((1.0) == (1.0)) {
+            if (1.0 == 1.0) {
                 var0 = 1.0;
             } else {
-                if ((1.0) == (1.0)) {
+                if (1.0 == 1.0) {
                     var0 = 1.0;
                 } else {
-                    if ((1.0) == (1.0)) {
+                    if (1.0 == 1.0) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
@@ -394,16 +394,16 @@ def test_deep_mixed_exprs_not_reaching_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+        if (1.0 + (1.0 + 1.0) == 1.0) {
             var0 = 1.0;
         } else {
-            if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+            if (1.0 + (1.0 + 1.0) == 1.0) {
                 var0 = 1.0;
             } else {
-                if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                if (1.0 + (1.0 + 1.0) == 1.0) {
                     var0 = 1.0;
                 } else {
-                    if (((1.0) + ((1.0) + (1.0))) == (1.0)) {
+                    if (1.0 + (1.0 + 1.0) == 1.0) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
@@ -436,16 +436,16 @@ def test_deep_mixed_exprs_exceeding_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (((3.0) + ((3.0) + (subroutine0(input)))) == (1.0)) {
+        if (3.0 + (3.0 + subroutine0(input)) == 1.0) {
             var0 = 1.0;
         } else {
-            if (((2.0) + ((2.0) + (subroutine1(input)))) == (1.0)) {
+            if (2.0 + (2.0 + subroutine1(input)) == 1.0) {
                 var0 = 1.0;
             } else {
-                if (((1.0) + ((1.0) + (subroutine2(input)))) == (1.0)) {
+                if (1.0 + (1.0 + subroutine2(input)) == 1.0) {
                     var0 = 1.0;
                 } else {
-                    if (((0.0) + ((0.0) + (subroutine3(input)))) == (1.0)) {
+                    if (0.0 + (0.0 + subroutine3(input)) == 1.0) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
@@ -456,16 +456,16 @@ public class Model {
         return var0;
     }
     public static double subroutine0(double[] input) {
-        return (3.0) + ((3.0) + (1.0));
+        return 3.0 + (3.0 + 1.0);
     }
     public static double subroutine1(double[] input) {
-        return (2.0) + ((2.0) + (1.0));
+        return 2.0 + (2.0 + 1.0);
     }
     public static double subroutine2(double[] input) {
-        return (1.0) + ((1.0) + (1.0));
+        return 1.0 + (1.0 + 1.0);
     }
     public static double subroutine3(double[] input) {
-        return (0.0) + ((0.0) + (1.0));
+        return 0.0 + (0.0 + 1.0);
     }
 }
 """
@@ -657,7 +657,7 @@ public class Model {
     public static double score(double[] input) {
         double var0;
         var0 = Math.exp(1.0);
-        return (var0) / (var0);
+        return var0 / var0;
     }
 }
 """

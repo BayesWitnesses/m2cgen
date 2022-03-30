@@ -1,12 +1,18 @@
 from pathlib import Path
 
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, SubroutinesMixin
+from m2cgen.interpreters.mixins import (
+    BinExpressionDepthTrackingMixin,
+    LinearAlgebraMixin,
+    PowExprInfixMixin,
+    SubroutinesMixin
+)
 from m2cgen.interpreters.r.code_generator import RCodeGenerator
 from m2cgen.interpreters.utils import get_file_content
 
 
 class RInterpreter(ImperativeToCodeInterpreter,
+                   PowExprInfixMixin,
                    LinearAlgebraMixin,
                    BinExpressionDepthTrackingMixin,
                    SubroutinesMixin):
@@ -34,6 +40,8 @@ class RInterpreter(ImperativeToCodeInterpreter,
     softmax_function_name = "softmax"
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
+
+    pow_operator = "^"
 
     with_sigmoid_expr = False
     with_softmax_expr = False
@@ -64,12 +72,6 @@ class RInterpreter(ImperativeToCodeInterpreter,
 
     def create_code_generator(self):
         return RCodeGenerator(indent=self.indent)
-
-    def interpret_pow_expr(self, expr, **kwargs):
-        base_result = self._do_interpret(expr.base_expr, **kwargs)
-        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
-        return self._cg.infix_expression(
-            left=base_result, right=exp_result, op="^")
 
     def interpret_softmax_expr(self, expr, **kwargs):
         self.with_softmax_expr = True

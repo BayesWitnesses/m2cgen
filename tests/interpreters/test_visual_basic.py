@@ -16,7 +16,7 @@ def test_if_expr():
 Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
-    If (1.0) = (inputVector(0)) Then
+    If 1.0 = inputVector(0) Then
         var0 = 2.0
     Else
         var0 = 3.0
@@ -40,7 +40,7 @@ def test_bin_num_expr():
     expected_code = """
 Module Model
 Function Score(ByRef inputVector() As Double) As Double
-    Score = ((inputVector(0)) / (-2.0)) * (2.0)
+    Score = inputVector(0) / -2.0 * 2.0
 End Function
 End Module
 """
@@ -68,12 +68,12 @@ Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
-    If (1.0) = (1.0) Then
+    If 1.0 = 1.0 Then
         var1 = 1.0
     Else
         var1 = 2.0
     End If
-    If ((var1) + (2.0)) >= ((1.0) / (2.0)) Then
+    If var1 + 2.0 >= 1.0 / 2.0 Then
         var0 = 1.0
     Else
         var0 = inputVector(0)
@@ -106,19 +106,19 @@ Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     Dim var1 As Double
-    If (1.0) = (1.0) Then
+    If 1.0 = 1.0 Then
         var1 = 1.0
     Else
         var1 = 2.0
     End If
-    If (1.0) = ((var1) + (2.0)) Then
+    If 1.0 = var1 + 2.0 Then
         Dim var2 As Double
-        If (1.0) = (1.0) Then
+        If 1.0 = 1.0 Then
             var2 = 1.0
         Else
             var2 = 2.0
         End If
-        If (1.0) = ((var2) + (2.0)) Then
+        If 1.0 = var2 + 2.0 Then
             var0 = inputVector(2)
         Else
             var0 = 2.0
@@ -181,7 +181,7 @@ def test_multi_output():
 Module Model
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0() As Double
-    If (1.0) <> (1.0) Then
+    If 1.0 <> 1.0 Then
         Dim var1(1) As Double
         var1(0) = 1.0
         var1(1) = 2.0
@@ -334,7 +334,7 @@ def test_pow_expr():
     expected_code = """
 Module Model
 Function Score(ByRef inputVector() As Double) As Double
-    Score = (2.0) ^ (3.0)
+    Score = 2.0 ^ 3.0
 End Function
 End Module
 """
@@ -349,7 +349,7 @@ def test_sqrt_expr():
     expected_code = """
 Module Model
 Function Score(ByRef inputVector() As Double) As Double
-    Score = (2.0) ^ (0.5)
+    Score = 2.0 ^ 0.5
 End Function
 End Module
 """
@@ -644,7 +644,7 @@ Module Model
 Function Score(ByRef inputVector() As Double) As Double
     Dim var0 As Double
     var0 = Math.Exp(1.0)
-    Score = (var0) / (var0)
+    Score = var0 / var0
 End Function
 End Module
 """

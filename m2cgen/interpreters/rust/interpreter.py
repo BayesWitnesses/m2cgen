@@ -2,12 +2,13 @@ from pathlib import Path
 
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import LinearAlgebraMixin
+from m2cgen.interpreters.mixins import LinearAlgebraMixin, PowExprFunctionMixin
 from m2cgen.interpreters.rust.code_generator import RustCodeGenerator
 from m2cgen.interpreters.utils import get_file_content
 
 
 class RustInterpreter(ImperativeToCodeInterpreter,
+                      PowExprFunctionMixin,
                       LinearAlgebraMixin):
 
     supported_bin_vector_ops = {

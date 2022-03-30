@@ -5,7 +5,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGener
 
 class GoCodeGenerator(ImperativeCodeGenerator):
     tpl_num_value = CodeTemplate("{value}")
-    tpl_infix_expression = CodeTemplate("({left}) {op} ({right})")
+    tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_array_index_access = CodeTemplate("{array_name}[{index}]")
     tpl_else_statement = CodeTemplate("}} else {{")
     tpl_block_termination = CodeTemplate("}}")

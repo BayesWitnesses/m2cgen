@@ -3,11 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.f_sharp.code_generator import FSharpCodeGenerator
 from m2cgen.interpreters.interpreter import FunctionalToCodeInterpreter
-from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, PowExprInfixMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class FSharpInterpreter(FunctionalToCodeInterpreter,
+                        PowExprInfixMixin,
                         LinearAlgebraMixin,
                         BinExpressionDepthTrackingMixin):
 
@@ -80,12 +81,6 @@ class FSharpInterpreter(FunctionalToCodeInterpreter,
 
     def create_code_generator(self):
         return FSharpCodeGenerator(indent=self.indent)
-
-    def interpret_pow_expr(self, expr, **kwargs):
-        base_result = self._do_interpret(expr.base_expr, **kwargs)
-        exp_result = self._do_interpret(expr.exp_expr, **kwargs)
-        return self._cg.infix_expression(
-            left=base_result, right=exp_result, op="**")
 
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True

@@ -3,11 +3,12 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.elixir.code_generator import ElixirCodeGenerator
 from m2cgen.interpreters.interpreter import FunctionalToCodeInterpreter
-from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin
+from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, PowExprFunctionMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class ElixirInterpreter(FunctionalToCodeInterpreter,
+                        PowExprFunctionMixin,
                         LinearAlgebraMixin,
                         BinExpressionDepthTrackingMixin):
 

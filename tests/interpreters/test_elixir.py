@@ -23,7 +23,7 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            cond do (1.0) == (read(input,0)) ->
+            cond do 1.0 == read(input,0) ->
                 2.0
             true ->
                 3.0
@@ -57,7 +57,7 @@ defmodule Model do
     end
     def score(input) do
         input = list_to_binary(input)
-        ((read(input,0)) / (-2.0)) * (2.0)
+        read(input,0) / -2.0 * 2.0
     end
 end
 """
@@ -93,14 +93,14 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            cond do (1.0) == (1.0) ->
+            cond do 1.0 == 1.0 ->
                 1.0
             true ->
                 2.0
             end
         end
         func1 = fn ->
-            cond do ((func0.()) + (2.0)) >= ((1.0) / (2.0)) ->
+            cond do func0.() + 2.0 >= 1.0 / 2.0 ->
                 1.0
             true ->
                 read(input,0)
@@ -142,15 +142,15 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            cond do (1.0) == (1.0) ->
+            cond do 1.0 == 1.0 ->
                 1.0
             true ->
                 2.0
             end
         end
         func1 = fn ->
-            cond do (1.0) == ((func0.()) + (2.0)) ->
-                cond do (1.0) == ((func0.()) + (2.0)) ->
+            cond do 1.0 == func0.() + 2.0 ->
+                cond do 1.0 == func0.() + 2.0 ->
                     read(input,2)
                 true ->
                     2.0
@@ -214,7 +214,7 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            cond do (1.0) != (1.0) ->
+            cond do 1.0 != 1.0 ->
                 [1.0, 2.0]
             true ->
                 [3.0, 4.0]
@@ -319,9 +319,9 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            (1.0) + ((1.0) + (1.0))
+            1.0 + (1.0 + 1.0)
         end
-        (1.0) + ((1.0) + (func0.()))
+        1.0 + (1.0 + func0.())
     end
 end
 """
@@ -352,16 +352,16 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            cond do (1.0) == (1.0) ->
+            cond do 1.0 == 1.0 ->
                 1.0
             true ->
-                cond do (1.0) == (1.0) ->
+                cond do 1.0 == 1.0 ->
                     1.0
                 true ->
-                    cond do (1.0) == (1.0) ->
+                    cond do 1.0 == 1.0 ->
                         1.0
                     true ->
-                        cond do (1.0) == (1.0) ->
+                        cond do 1.0 == 1.0 ->
                             1.0
                         true ->
                             1.0
@@ -404,16 +404,16 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            cond do ((1.0) + ((1.0) + (1.0))) == (1.0) ->
+            cond do 1.0 + (1.0 + 1.0) == 1.0 ->
                 1.0
             true ->
-                cond do ((1.0) + ((1.0) + (1.0))) == (1.0) ->
+                cond do 1.0 + (1.0 + 1.0) == 1.0 ->
                     1.0
                 true ->
-                    cond do ((1.0) + ((1.0) + (1.0))) == (1.0) ->
+                    cond do 1.0 + (1.0 + 1.0) == 1.0 ->
                         1.0
                     true ->
-                        cond do ((1.0) + ((1.0) + (1.0))) == (1.0) ->
+                        cond do 1.0 + (1.0 + 1.0) == 1.0 ->
                             1.0
                         true ->
                             1.0
@@ -456,28 +456,28 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            (3.0) + ((3.0) + (1.0))
+            3.0 + (3.0 + 1.0)
         end
         func1 = fn ->
-            (2.0) + ((2.0) + (1.0))
+            2.0 + (2.0 + 1.0)
         end
         func2 = fn ->
-            (1.0) + ((1.0) + (1.0))
+            1.0 + (1.0 + 1.0)
         end
         func3 = fn ->
-            (0.0) + ((0.0) + (1.0))
+            0.0 + (0.0 + 1.0)
         end
         func4 = fn ->
-            cond do ((3.0) + ((3.0) + (func0.()))) == (3.0) ->
+            cond do 3.0 + (3.0 + func0.()) == 3.0 ->
                 1.0
             true ->
-                cond do ((2.0) + ((2.0) + (func1.()))) == (3.0) ->
+                cond do 2.0 + (2.0 + func1.()) == 3.0 ->
                     1.0
                 true ->
-                    cond do ((1.0) + ((1.0) + (func2.()))) == (3.0) ->
+                    cond do 1.0 + (1.0 + func2.()) == 3.0 ->
                         1.0
                     true ->
-                        cond do ((0.0) + ((0.0) + (func3.()))) == (3.0) ->
+                        cond do 0.0 + (0.0 + func3.()) == 3.0 ->
                             1.0
                         true ->
                             1.0
@@ -810,7 +810,7 @@ defmodule Model do
         func0 = fn ->
             :math.exp(1.0)
         end
-        (func0.()) / (func0.())
+        func0.() / func0.()
     end
 end
 """
