@@ -9,6 +9,7 @@ if [[ $TEST == "API" ]]; then
   wget -q https://uploader.codecov.io/latest/linux/codecov -O codecov
   chmod +x codecov
   ./codecov -f coverage.xml -Z
+  python tools/generate_code_examples.py ./generated_code_examples
 fi
 
 if [[ $TEST == "E2E" ]]; then
