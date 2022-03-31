@@ -7,12 +7,13 @@ ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
     LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     TZ=Etc/UTC \
+    BLIS_NUM_THREADS=2 \
     MKL_NUM_THREADS=2 \
+    NUMBA_NUM_THREADS=2 \
     NUMEXPR_NUM_THREADS=2 \
     OMP_NUM_THREADS=2 \
     OPENBLAS_NUM_THREADS=2 \
-    VECLIB_MAXIMUM_THREADS=2 \
-    BLIS_NUM_THREADS=2
+    VECLIB_MAXIMUM_THREADS=2
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
