@@ -10,12 +10,12 @@ defmodule Model do
     def score(input) do
         input = list_to_binary(input)
         func0 = fn ->
-            cond do (read(input,2)) <= (2.449999988079071) ->
+            cond do read(input,2) <= 2.449999988079071 ->
                 [1.0, 0.0, 0.0]
             true ->
-                cond do (read(input,3)) <= (1.75) ->
-                    cond do (read(input,2)) <= (4.950000047683716) ->
-                        cond do (read(input,3)) <= (1.6500000357627869) ->
+                cond do read(input,3) <= 1.75 ->
+                    cond do read(input,2) <= 4.950000047683716 ->
+                        cond do read(input,3) <= 1.6500000357627869 ->
                             [0.0, 1.0, 0.0]
                         true ->
                             [0.0, 0.0, 1.0]

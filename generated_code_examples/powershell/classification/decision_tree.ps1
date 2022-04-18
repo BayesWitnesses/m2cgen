@@ -1,11 +1,11 @@
 function Score([double[]] $InputVector) {
     [double[]]$var0 = @(0.0)
-    if (($InputVector[2]) -le (2.449999988079071)) {
+    if ($InputVector[2] -le 2.449999988079071) {
         $var0 = @($(1.0), $(0.0), $(0.0))
     } else {
-        if (($InputVector[3]) -le (1.75)) {
-            if (($InputVector[2]) -le (4.950000047683716)) {
-                if (($InputVector[3]) -le (1.6500000357627869)) {
+        if ($InputVector[3] -le 1.75) {
+            if ($InputVector[2] -le 4.950000047683716) {
+                if ($InputVector[3] -le 1.6500000357627869) {
                     $var0 = @($(0.0), $(1.0), $(0.0))
                 } else {
                     $var0 = @($(0.0), $(0.0), $(1.0))
