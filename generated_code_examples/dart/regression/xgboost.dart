@@ -1,31 +1,31 @@
 double score(List<double> input) {
     double var0;
-    if ((input[12]) >= (9.725)) {
-        if ((input[12]) >= (19.23)) {
+    if (input[12] >= 9.725) {
+        if (input[12] >= 19.23) {
             var0 = 3.5343752;
         } else {
             var0 = 5.5722494;
         }
     } else {
-        if ((input[5]) >= (6.941)) {
+        if (input[5] >= 6.941) {
             var0 = 11.1947155;
         } else {
             var0 = 7.4582143;
         }
     }
     double var1;
-    if ((input[12]) >= (5.1549997)) {
-        if ((input[12]) >= (15.0)) {
+    if (input[12] >= 5.1549997) {
+        if (input[12] >= 15.0) {
             var1 = 2.8350503;
         } else {
             var1 = 4.8024607;
         }
     } else {
-        if ((input[5]) >= (7.406)) {
+        if (input[5] >= 7.406) {
             var1 = 10.0011215;
         } else {
             var1 = 6.787523;
         }
     }
-    return (0.5) + ((var0) + (var1));
+    return 0.5 + (var0 + var1);
 }
