@@ -11,6 +11,9 @@ class Expr:
     # The precedence of this expression. Higher value means higher precedence.
     precedence = None
 
+    # The left to right associativity of this expression.
+    is_associative = None
+
     # Setting this value to true serves as an indication that the result
     # of evaluation of this expression is being used in other expressions
     # and it's recommended to persist or cache it in some way.
@@ -211,6 +214,7 @@ class TanhExpr(NumExpr):
 
 class PowExpr(NumExpr):
     precedence = 4
+    is_associative = False
 
     def __init__(self, base_expr, exp_expr, to_reuse=False):
         assert base_expr.output_size == 1, "Only scalars are supported"
@@ -250,6 +254,7 @@ class BinNumExpr(NumExpr, BinExpr):
         self.op = op
         self.to_reuse = to_reuse
         self.precedence = 3 if op in {BinNumOpType.MUL, BinNumOpType.DIV} else 2
+        self.is_associative = op in {BinNumOpType.ADD, BinNumOpType.MUL}
 
     def __str__(self):
         return (f"BinNumExpr({self.left},{self.right},{self.op.name},"
@@ -380,6 +385,7 @@ COMP_OP_TYPE_MAPPING = {e.value: e for e in CompOpType}
 
 class CompExpr(BoolExpr):
     precedence = 1
+    is_associative = False
 
     def __init__(self, left, right, op):
         assert left.output_size == 1, "Only scalars are supported"

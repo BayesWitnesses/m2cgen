@@ -41,6 +41,57 @@ def score(input):
     assert_code_equal(interpreter.interpret(expr), expected_code)
 
 
+@pytest.mark.parametrize("op1, op2", [
+    (ast.BinNumOpType.ADD, ast.BinNumOpType.ADD),
+    (ast.BinNumOpType.ADD, ast.BinNumOpType.SUB),
+    (ast.BinNumOpType.SUB, ast.BinNumOpType.ADD),
+    (ast.BinNumOpType.SUB, ast.BinNumOpType.SUB),
+
+    (ast.BinNumOpType.MUL, ast.BinNumOpType.MUL),
+    (ast.BinNumOpType.MUL, ast.BinNumOpType.DIV),
+    (ast.BinNumOpType.DIV, ast.BinNumOpType.MUL),
+    (ast.BinNumOpType.DIV, ast.BinNumOpType.DIV)
+])
+def test_associativity_in_bin_num_expr(op1, op2):
+    expr1 = ast.BinNumExpr(
+        left=ast.NumVal(1.0),
+        right=ast.BinNumExpr(
+            left=ast.NumVal(1.0),
+            right=ast.NumVal(1.0),
+            op=op2
+        ),
+        op=op1
+    )
+    if op1 in {ast.BinNumOpType.ADD, ast.BinNumOpType.MUL}:
+        expected_code1 = f"""
+def score(input):
+    return 1.0 {op1.value} 1.0 {op2.value} 1.0
+"""
+    else:
+        expected_code1 = f"""
+def score(input):
+    return 1.0 {op1.value} (1.0 {op2.value} 1.0)
+"""
+
+    expr2 = ast.BinNumExpr(
+        left=ast.BinNumExpr(
+            left=ast.NumVal(1.0),
+            right=ast.NumVal(1.0),
+            op=op1
+        ),
+        right=ast.NumVal(1.0),
+        op=op2
+    )
+    expected_code2 = f"""
+def score(input):
+    return 1.0 {op1.value} 1.0 {op2.value} 1.0
+"""
+
+    interpreter = PythonInterpreter()
+    assert_code_equal(interpreter.interpret(expr1), expected_code1)
+    assert_code_equal(interpreter.interpret(expr2), expected_code2)
+
+
 def test_dependable_condition():
     left = ast.BinNumExpr(
         ast.IfExpr(
@@ -193,8 +244,8 @@ def test_depth_threshold_with_bin_expr():
 
     expected_code = """
 def score(input):
-    var0 = 1.0 + (1.0 + 1.0)
-    return 1.0 + (1.0 + var0)
+    var0 = 1.0 + 1.0 + 1.0
+    return 1.0 + 1.0 + var0
 """
 
     interpreter = CustomPythonInterpreter()
@@ -210,7 +261,7 @@ def test_depth_threshold_with_reused_bin_expr():
 def score(input):
     var0 = 1.0 + 1.0
     var1 = var0
-    return 1.0 + var1 + (1.0 + var0)
+    return 1.0 + var1 + 1.0 + var0
 """
 
     interpreter = CustomPythonInterpreter()
@@ -262,16 +313,16 @@ def test_deep_mixed_exprs_not_reaching_threshold():
 
     expected_code = """
 def score(input):
-    if 1.0 + (1.0 + 1.0) == 1.0:
+    if 1.0 + 1.0 + 1.0 == 1.0:
         var0 = 1.0
     else:
-        if 1.0 + (1.0 + 1.0) == 1.0:
+        if 1.0 + 1.0 + 1.0 == 1.0:
             var0 = 1.0
         else:
-            if 1.0 + (1.0 + 1.0) == 1.0:
+            if 1.0 + 1.0 + 1.0 == 1.0:
                 var0 = 1.0
             else:
-                if 1.0 + (1.0 + 1.0) == 1.0:
+                if 1.0 + 1.0 + 1.0 == 1.0:
                     var0 = 1.0
                 else:
                     var0 = 1.0
@@ -296,20 +347,20 @@ def test_deep_mixed_exprs_exceeding_threshold():
 
     expected_code = """
 def score(input):
-    var1 = 3.0 + (3.0 + 1.0)
-    if 3.0 + (3.0 + var1) == 1.0:
+    var1 = 3.0 + 3.0 + 1.0
+    if 3.0 + 3.0 + var1 == 1.0:
         var0 = 1.0
     else:
-        var2 = 2.0 + (2.0 + 1.0)
-        if 2.0 + (2.0 + var2) == 1.0:
+        var2 = 2.0 + 2.0 + 1.0
+        if 2.0 + 2.0 + var2 == 1.0:
             var0 = 1.0
         else:
-            var3 = 1.0 + (1.0 + 1.0)
-            if 1.0 + (1.0 + var3) == 1.0:
+            var3 = 1.0 + 1.0 + 1.0
+            if 1.0 + 1.0 + var3 == 1.0:
                 var0 = 1.0
             else:
-                var4 = 0.0 + (0.0 + 1.0)
-                if 0.0 + (0.0 + var4) == 1.0:
+                var4 = 0.0 + 0.0 + 1.0
+                if 0.0 + 0.0 + var4 == 1.0:
                     var0 = 1.0
                 else:
                     var0 = 1.0
