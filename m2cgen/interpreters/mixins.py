@@ -210,17 +210,23 @@ class PowExprInfixMixin(BaseToCodeInterpreter):
 
     infix_expressions = (*BaseToCodeInterpreter.infix_expressions, ast.PowExpr)
 
-    def interpret_pow_expr(self, expr, left_precedence=None,
-                           right_precedence=None, **kwargs):
+    def interpret_pow_expr(
+        self,
+        expr,
+        left_precedence=None,
+        right_precedence=None,
+        right_is_associative=None,
+        **kwargs
+    ):
         base_result = self._do_interpret(
             expr.base_expr, left_precedence=expr.precedence, **kwargs)
         exp_result = self._do_interpret(
-            expr.exp_expr, right_precedence=expr.precedence, **kwargs)
+            expr.exp_expr, right_precedence=expr.precedence, right_is_associative=expr.is_associative, **kwargs)
         return self._cg.infix_expression(
             left=base_result,
             right=exp_result,
             op=self.pow_operator,
-            wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence))
+            wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence, right_is_associative))
 
 
 class PowExprFunctionMixin(BaseToCodeInterpreter):
