@@ -1,3 +1,5 @@
+from itertools import product
+
 import pytest
 
 from m2cgen import ast
@@ -47,6 +49,54 @@ public class Model {
 
     interpreter = JavaInterpreter()
     assert_code_equal(interpreter.interpret(expr), expected_code)
+
+
+@pytest.mark.parametrize("op1, op2", [
+    *product((ast.BinNumOpType.ADD, ast.BinNumOpType.SUB), repeat=2),
+    *product((ast.BinNumOpType.MUL, ast.BinNumOpType.DIV), repeat=2)
+])
+def test_associativity_in_bin_num_expr(op1, op2):
+    expr1 = ast.BinNumExpr(
+        left=ast.NumVal(1.0),
+        right=ast.BinNumExpr(
+            left=ast.NumVal(1.0),
+            right=ast.NumVal(1.0),
+            op=op2
+        ),
+        op=op1
+    )
+    if op1 in {ast.BinNumOpType.ADD, ast.BinNumOpType.MUL}:
+        op_code_line = f"1.0 {op1.value} 1.0 {op2.value} 1.0"
+    else:
+        op_code_line = f"1.0 {op1.value} (1.0 {op2.value} 1.0)"
+    expected_code1 = f"""
+public class Model {{
+    public static double score(double[] input) {{
+        return {op_code_line};
+    }}
+}}
+"""
+
+    expr2 = ast.BinNumExpr(
+        left=ast.BinNumExpr(
+            left=ast.NumVal(1.0),
+            right=ast.NumVal(1.0),
+            op=op1
+        ),
+        right=ast.NumVal(1.0),
+        op=op2
+    )
+    expected_code2 = f"""
+public class Model {{
+    public static double score(double[] input) {{
+        return 1.0 {op1.value} 1.0 {op2.value} 1.0;
+    }}
+}}
+"""
+
+    interpreter = JavaInterpreter()
+    assert_code_equal(interpreter.interpret(expr1), expected_code1)
+    assert_code_equal(interpreter.interpret(expr2), expected_code2)
 
 
 def test_dependable_condition():
@@ -288,10 +338,10 @@ def test_depth_threshold_with_bin_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return 1.0 + (1.0 + subroutine0(input));
+        return 1.0 + 1.0 + subroutine0(input);
     }
     public static double subroutine0(double[] input) {
-        return 1.0 + (1.0 + 1.0);
+        return 1.0 + 1.0 + 1.0;
     }
 }
 """
@@ -309,26 +359,26 @@ def test_depth_threshold_with_reused_bin_expr():
     expected_code = """
 public class Model {
     public static double score(double[] input) {
-        return subroutine0(input) + subroutine1(input) + (subroutine2(input) + subroutine3(input));
+        return subroutine0(input) + subroutine1(input) + subroutine2(input) + subroutine3(input);
     }
     public static double subroutine0(double[] input) {
         double var0;
-        var0 = (1.0 + 1.0);
+        var0 = 1.0 + 1.0;
         return 1.0 + var0;
     }
     public static double subroutine1(double[] input) {
         double var0;
-        var0 = (1.0 + 1.0);
+        var0 = 1.0 + 1.0;
         return 1.0 + var0;
     }
     public static double subroutine2(double[] input) {
         double var0;
-        var0 = (1.0 + 1.0);
+        var0 = 1.0 + 1.0;
         return 1.0 + var0;
     }
     public static double subroutine3(double[] input) {
         double var0;
-        var0 = (1.0 + 1.0);
+        var0 = 1.0 + 1.0;
         return 1.0 + var0;
     }
 }
@@ -394,16 +444,16 @@ def test_deep_mixed_exprs_not_reaching_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (1.0 + (1.0 + 1.0) == 1.0) {
+        if (1.0 + 1.0 + 1.0 == 1.0) {
             var0 = 1.0;
         } else {
-            if (1.0 + (1.0 + 1.0) == 1.0) {
+            if (1.0 + 1.0 + 1.0 == 1.0) {
                 var0 = 1.0;
             } else {
-                if (1.0 + (1.0 + 1.0) == 1.0) {
+                if (1.0 + 1.0 + 1.0 == 1.0) {
                     var0 = 1.0;
                 } else {
-                    if (1.0 + (1.0 + 1.0) == 1.0) {
+                    if (1.0 + 1.0 + 1.0 == 1.0) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
@@ -436,16 +486,16 @@ def test_deep_mixed_exprs_exceeding_threshold():
 public class Model {
     public static double score(double[] input) {
         double var0;
-        if (3.0 + (3.0 + subroutine0(input)) == 1.0) {
+        if (3.0 + 3.0 + subroutine0(input) == 1.0) {
             var0 = 1.0;
         } else {
-            if (2.0 + (2.0 + subroutine1(input)) == 1.0) {
+            if (2.0 + 2.0 + subroutine1(input) == 1.0) {
                 var0 = 1.0;
             } else {
-                if (1.0 + (1.0 + subroutine2(input)) == 1.0) {
+                if (1.0 + 1.0 + subroutine2(input) == 1.0) {
                     var0 = 1.0;
                 } else {
-                    if (0.0 + (0.0 + subroutine3(input)) == 1.0) {
+                    if (0.0 + 0.0 + subroutine3(input) == 1.0) {
                         var0 = 1.0;
                     } else {
                         var0 = 1.0;
@@ -456,16 +506,16 @@ public class Model {
         return var0;
     }
     public static double subroutine0(double[] input) {
-        return 3.0 + (3.0 + 1.0);
+        return 3.0 + 3.0 + 1.0;
     }
     public static double subroutine1(double[] input) {
-        return 2.0 + (2.0 + 1.0);
+        return 2.0 + 2.0 + 1.0;
     }
     public static double subroutine2(double[] input) {
-        return 1.0 + (1.0 + 1.0);
+        return 1.0 + 1.0 + 1.0;
     }
     public static double subroutine3(double[] input) {
-        return 0.0 + (0.0 + 1.0);
+        return 0.0 + 0.0 + 1.0;
     }
 }
 """

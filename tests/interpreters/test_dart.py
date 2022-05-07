@@ -1,3 +1,5 @@
+from itertools import product
+
 import pytest
 
 from m2cgen import ast
@@ -46,15 +48,8 @@ double score(List<double> input) {
 
 
 @pytest.mark.parametrize("op1, op2", [
-    (ast.BinNumOpType.ADD, ast.BinNumOpType.ADD),
-    (ast.BinNumOpType.ADD, ast.BinNumOpType.SUB),
-    (ast.BinNumOpType.SUB, ast.BinNumOpType.ADD),
-    (ast.BinNumOpType.SUB, ast.BinNumOpType.SUB),
-
-    (ast.BinNumOpType.MUL, ast.BinNumOpType.MUL),
-    (ast.BinNumOpType.MUL, ast.BinNumOpType.DIV),
-    (ast.BinNumOpType.DIV, ast.BinNumOpType.MUL),
-    (ast.BinNumOpType.DIV, ast.BinNumOpType.DIV)
+    *product((ast.BinNumOpType.ADD, ast.BinNumOpType.SUB), repeat=2),
+    *product((ast.BinNumOpType.MUL, ast.BinNumOpType.DIV), repeat=2)
 ])
 def test_associativity_in_bin_num_expr(op1, op2):
     expr1 = ast.BinNumExpr(
@@ -67,15 +62,12 @@ def test_associativity_in_bin_num_expr(op1, op2):
         op=op1
     )
     if op1 in {ast.BinNumOpType.ADD, ast.BinNumOpType.MUL}:
-        expected_code1 = f"""
-double score(List<double> input) {{
-    return 1.0 {op1.value} 1.0 {op2.value} 1.0;
-}}
-"""
+        op_code_line = f"1.0 {op1.value} 1.0 {op2.value} 1.0"
     else:
-        expected_code1 = f"""
+        op_code_line = f"1.0 {op1.value} (1.0 {op2.value} 1.0)"
+    expected_code1 = f"""
 double score(List<double> input) {{
-    return 1.0 {op1.value} (1.0 {op2.value} 1.0);
+    return {op_code_line};
 }}
 """
 

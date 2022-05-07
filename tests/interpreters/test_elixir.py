@@ -1,3 +1,5 @@
+from itertools import product
+
 import pytest
 
 from m2cgen import ast
@@ -69,15 +71,8 @@ end
 
 
 @pytest.mark.parametrize("op1, op2", [
-    (ast.BinNumOpType.ADD, ast.BinNumOpType.ADD),
-    (ast.BinNumOpType.ADD, ast.BinNumOpType.SUB),
-    (ast.BinNumOpType.SUB, ast.BinNumOpType.ADD),
-    (ast.BinNumOpType.SUB, ast.BinNumOpType.SUB),
-
-    (ast.BinNumOpType.MUL, ast.BinNumOpType.MUL),
-    (ast.BinNumOpType.MUL, ast.BinNumOpType.DIV),
-    (ast.BinNumOpType.DIV, ast.BinNumOpType.MUL),
-    (ast.BinNumOpType.DIV, ast.BinNumOpType.DIV)
+    *product((ast.BinNumOpType.ADD, ast.BinNumOpType.SUB), repeat=2),
+    *product((ast.BinNumOpType.MUL, ast.BinNumOpType.DIV), repeat=2)
 ])
 def test_associativity_in_bin_num_expr(op1, op2):
     expr1 = ast.BinNumExpr(
@@ -90,24 +85,10 @@ def test_associativity_in_bin_num_expr(op1, op2):
         op=op1
     )
     if op1 in {ast.BinNumOpType.ADD, ast.BinNumOpType.MUL}:
-        expected_code1 = f"""
-defmodule Model do
-    @compile {{:inline, read: 2}}
-    defp read(bin, pos) do
-        <<_::size(pos)-unit(64)-binary, value::float, _::binary>> = bin
-        value
-    end
-    defp list_to_binary(list) do
-        for i <- list, into: <<>>, do: <<i::float>>
-    end
-    def score(input) do
-        input = list_to_binary(input)
-        1.0 {op1.value} 1.0 {op2.value} 1.0
-    end
-end
-"""
+        op_code_line = f"1.0 {op1.value} 1.0 {op2.value} 1.0"
     else:
-        expected_code1 = f"""
+        op_code_line = f"1.0 {op1.value} (1.0 {op2.value} 1.0)"
+    expected_code1 = f"""
 defmodule Model do
     @compile {{:inline, read: 2}}
     defp read(bin, pos) do
@@ -119,7 +100,7 @@ defmodule Model do
     end
     def score(input) do
         input = list_to_binary(input)
-        1.0 {op1.value} (1.0 {op2.value} 1.0)
+        {op_code_line}
     end
 end
 """
