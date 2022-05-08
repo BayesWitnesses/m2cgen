@@ -43,7 +43,7 @@ def test_binary_classification():
 
 def test_multi_class():
     estimator = xgb.XGBClassifier(n_estimators=1, random_state=1, max_depth=1)
-    estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
+    estimator.fit(np.array([[1], [2], [3]]), np.array([0, 1, 2]))
 
     assembler = XGBoostModelAssemblerSelector(estimator)
     actual = assembler.assemble()
