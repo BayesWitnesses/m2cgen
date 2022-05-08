@@ -1,22 +1,22 @@
 Module Model
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0() As Double
-    If (inputVector(3)) <= (0.75) Then
+    If inputVector(3) <= 0.75 Then
         Dim var1(2) As Double
         var1(0) = 1.0
         var1(1) = 0.0
         var1(2) = 0.0
         var0 = var1
     Else
-        If (inputVector(2)) <= (4.75) Then
+        If inputVector(2) <= 4.75 Then
             Dim var2(2) As Double
             var2(0) = 0.0
             var2(1) = 1.0
             var2(2) = 0.0
             var0 = var2
         Else
-            If (inputVector(2)) <= (5.049999952316284) Then
-                If (inputVector(3)) <= (1.75) Then
+            If inputVector(2) <= 5.049999952316284 Then
+                If inputVector(3) <= 1.75 Then
                     Dim var3(2) As Double
                     var3(0) = 0.0
                     var3(1) = 0.8333333333333334
@@ -39,15 +39,15 @@ Function Score(ByRef inputVector() As Double) As Double()
         End If
     End If
     Dim var6() As Double
-    If (inputVector(3)) <= (0.800000011920929) Then
+    If inputVector(3) <= 0.800000011920929 Then
         Dim var7(2) As Double
         var7(0) = 1.0
         var7(1) = 0.0
         var7(2) = 0.0
         var6 = var7
     Else
-        If (inputVector(0)) <= (6.25) Then
-            If (inputVector(2)) <= (4.8500001430511475) Then
+        If inputVector(0) <= 6.25 Then
+            If inputVector(2) <= 4.8500001430511475 Then
                 Dim var8(2) As Double
                 var8(0) = 0.0
                 var8(1) = 0.9487179487179487
@@ -61,7 +61,7 @@ Function Score(ByRef inputVector() As Double) As Double()
                 var6 = var9
             End If
         Else
-            If (inputVector(3)) <= (1.550000011920929) Then
+            If inputVector(3) <= 1.550000011920929 Then
                 Dim var10(2) As Double
                 var10(0) = 0.0
                 var10(1) = 0.8333333333333334

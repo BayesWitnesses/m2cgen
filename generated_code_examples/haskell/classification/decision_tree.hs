@@ -4,12 +4,12 @@ score input =
     func0
     where
         func0 =
-            if ((input) !! (2)) <= (2.449999988079071) then
+            if input !! 2 <= 2.449999988079071 then
                 [1.0, 0.0, 0.0]
             else
-                if ((input) !! (3)) <= (1.75) then
-                    if ((input) !! (2)) <= (4.950000047683716) then
-                        if ((input) !! (3)) <= (1.6500000357627869) then
+                if input !! 3 <= 1.75 then
+                    if input !! 2 <= 4.950000047683716 then
+                        if input !! 3 <= 1.6500000357627869 then
                             [0.0, 1.0, 0.0]
                         else
                             [0.0, 0.0, 1.0]

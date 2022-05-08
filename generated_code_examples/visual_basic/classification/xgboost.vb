@@ -1,20 +1,20 @@
 Module Model
 Function Score(ByRef inputVector() As Double) As Double()
     Dim var0 As Double
-    If (inputVector(2)) >= (2.45) Then
+    If inputVector(2) >= 2.45 Then
         var0 = -0.21995015
     Else
         var0 = 0.4302439
     End If
     Dim var1 As Double
-    If (inputVector(2)) >= (2.45) Then
+    If inputVector(2) >= 2.45 Then
         var1 = -0.19691855
     Else
         var1 = 0.29493433
     End If
     Dim var2 As Double
-    If (inputVector(2)) >= (2.45) Then
-        If (inputVector(3)) >= (1.75) Then
+    If inputVector(2) >= 2.45 Then
+        If inputVector(3) >= 1.75 Then
             var2 = -0.20051816
         Else
             var2 = 0.36912444
@@ -23,8 +23,8 @@ Function Score(ByRef inputVector() As Double) As Double()
         var2 = -0.21512198
     End If
     Dim var3 As Double
-    If (inputVector(2)) >= (2.45) Then
-        If (inputVector(2)) >= (4.8500004) Then
+    If inputVector(2) >= 2.45 Then
+        If inputVector(2) >= 4.8500004 Then
             var3 = -0.14888482
         Else
             var3 = 0.2796613
@@ -33,33 +33,33 @@ Function Score(ByRef inputVector() As Double) As Double()
         var3 = -0.19143805
     End If
     Dim var4 As Double
-    If (inputVector(3)) >= (1.6500001) Then
+    If inputVector(3) >= 1.6500001 Then
         var4 = 0.40298507
     Else
-        If (inputVector(2)) >= (4.95) Then
+        If inputVector(2) >= 4.95 Then
             var4 = 0.21724138
         Else
             var4 = -0.21974029
         End If
     End If
     Dim var5 As Double
-    If (inputVector(2)) >= (4.75) Then
-        If (inputVector(3)) >= (1.75) Then
+    If inputVector(2) >= 4.75 Then
+        If inputVector(3) >= 1.75 Then
             var5 = 0.28692952
         Else
             var5 = 0.06272897
         End If
     Else
-        If (inputVector(3)) >= (1.55) Then
+        If inputVector(3) >= 1.55 Then
             var5 = 0.009899145
         Else
             var5 = -0.19659369
         End If
     End If
     Dim var6(2) As Double
-    var6(0) = (0.5) + ((var0) + (var1))
-    var6(1) = (0.5) + ((var2) + (var3))
-    var6(2) = (0.5) + ((var4) + (var5))
+    var6(0) = 0.5 + (var0 + var1)
+    var6(1) = 0.5 + (var2 + var3)
+    var6(2) = 0.5 + (var4 + var5)
     Score = Softmax(var6)
 End Function
 Function Softmax(ByRef x() As Double) As Double()
