@@ -28,9 +28,9 @@ class BaseInterpreter:
         self,
         expr,
         to_reuse=None,
-        left_precedence=None,
-        right_precedence=None,
-        right_is_associative=None,
+        is_left_from_parent=None,
+        parent_precedence=None,
+        is_parent_associative=None,
         **kwargs
     ):
         # Hook which allows to override kwargs and to return custom result.
@@ -47,15 +47,15 @@ class BaseInterpreter:
 
         # Reset precedence on non-infix expressions.
         if not isinstance(expr, self.infix_expressions):
-            left_precedence = None
-            right_precedence = None
-            right_is_associative = None
+            is_left_from_parent = None
+            parent_precedence = None
+            is_parent_associative = None
 
         result = handler(
             expr,
-            left_precedence=left_precedence,
-            right_precedence=right_precedence,
-            right_is_associative=right_is_associative,
+            is_left_from_parent=is_left_from_parent,
+            parent_precedence=parent_precedence,
+            is_parent_associative=is_parent_associative,
             **kwargs)
 
         # Note that the reuse flag passed in the arguments has a higher
@@ -132,24 +132,31 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
     def interpret_bin_num_expr(
         self,
         expr,
-        left_precedence=None,
-        right_precedence=None,
-        right_is_associative=None,
+        is_left_from_parent=None,
+        parent_precedence=None,
+        is_parent_associative=None,
         **kwargs
     ):
         return self._cg.infix_expression(
-            left=self._do_interpret(expr.left, left_precedence=expr.precedence, **kwargs),
+            left=self._do_interpret(
+                expr.left,
+                is_left_from_parent=True,
+                parent_precedence=expr.precedence,
+                **kwargs
+            ),
             op=expr.op.value,
             right=self._do_interpret(
                 expr.right,
-                right_precedence=expr.precedence,
-                right_is_associative=expr.is_associative,
-                **kwargs),
+                is_left_from_parent=False,
+                parent_precedence=expr.precedence,
+                is_parent_associative=expr.is_associative,
+                **kwargs
+            ),
             wrap=self._wrap_infix_expr(
                 expr,
-                left_precedence,
-                right_precedence,
-                right_is_associative
+                is_left_from_parent=is_left_from_parent,
+                parent_precedence=parent_precedence,
+                is_parent_associative=is_parent_associative
             )
         )
 
@@ -230,16 +237,16 @@ class ToCodeInterpreter(BaseToCodeInterpreter):
         nested_result = self._do_interpret(expr.expr, **kwargs)
         return self._cg.function_invocation(self.tanh_function_name, nested_result)
 
-    def _wrap_infix_expr(self, expr, left_precedence, right_precedence, right_is_associative):
-        wrap = left_precedence is not None and left_precedence > expr.precedence
-        wrap |= (
-            right_precedence is not None
-            and (right_precedence > expr.precedence
-                 or (right_precedence == expr.precedence
-                     and right_is_associative is not None
-                     and not right_is_associative))
-        )
-        return wrap
+    def _wrap_infix_expr(self, expr, is_left_from_parent, parent_precedence, is_parent_associative):
+        if parent_precedence is not None:
+            if is_left_from_parent is True:
+                return parent_precedence > expr.precedence
+            elif is_left_from_parent is False:
+                return (
+                    parent_precedence > expr.precedence
+                    or (parent_precedence == expr.precedence and is_parent_associative is False)
+                )
+        return False
 
 
 class ImperativeToCodeInterpreter(ToCodeInterpreter):

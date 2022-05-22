@@ -213,20 +213,35 @@ class PowExprInfixMixin(BaseToCodeInterpreter):
     def interpret_pow_expr(
         self,
         expr,
-        left_precedence=None,
-        right_precedence=None,
-        right_is_associative=None,
+        is_left_from_parent=None,
+        parent_precedence=None,
+        is_parent_associative=None,
         **kwargs
     ):
         base_result = self._do_interpret(
-            expr.base_expr, left_precedence=expr.precedence, **kwargs)
+            expr.base_expr,
+            is_left_from_parent=True,
+            parent_precedence=expr.precedence,
+            **kwargs
+        )
         exp_result = self._do_interpret(
-            expr.exp_expr, right_precedence=expr.precedence, right_is_associative=expr.is_associative, **kwargs)
+            expr.exp_expr,
+            is_left_from_parent=False,
+            parent_precedence=expr.precedence,
+            is_parent_associative=expr.is_associative,
+            **kwargs
+        )
         return self._cg.infix_expression(
             left=base_result,
             right=exp_result,
             op=self.pow_operator,
-            wrap=self._wrap_infix_expr(expr, left_precedence, right_precedence, right_is_associative))
+            wrap=self._wrap_infix_expr(
+                expr,
+                is_left_from_parent=is_left_from_parent,
+                parent_precedence=parent_precedence,
+                is_parent_associative=is_parent_associative
+            )
+        )
 
 
 class PowExprFunctionMixin(BaseToCodeInterpreter):
