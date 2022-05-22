@@ -1,6 +1,6 @@
 # Supported models
 scikit-learn==1.0.2
-xgboost==1.6.0
+xgboost==1.6.1
 lightgbm==3.3.2
 statsmodels==0.13.2
 sklearn-contrib-lightning==0.6.2.post0
@@ -16,5 +16,5 @@ py-mini-racer==0.6.0
 # Other stuff
 numpy==1.22.3; python_version > "3.7"
 numpy==1.21.5; python_version <= "3.7"
-scipy==1.8.0; python_version > "3.7"
+scipy==1.8.1; python_version > "3.7"
 scipy==1.7.3; python_version <= "3.7"
