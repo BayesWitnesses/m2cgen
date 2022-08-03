@@ -14,7 +14,7 @@ pytest-cov==3.0.0
 py-mini-racer==0.6.0
 
 # Other stuff
-numpy==1.23.0; python_version > "3.7"
+numpy==1.23.1; python_version > "3.7"
 numpy==1.21.5; python_version <= "3.7"
 scipy==1.8.1; python_version > "3.7"
 scipy==1.7.3; python_version <= "3.7"
