@@ -17,7 +17,8 @@ def _get_mock_args(
     package_name=None,
     class_name=None,
     infile=None,
-    language=None
+    language=None,
+    lib="pickle"
 ):
     return mock.MagicMock(
         indent=indent,
@@ -28,7 +29,8 @@ def _get_mock_args(
         class_name=class_name,
         infile=infile,
         language=language,
-        recursion_limit=cli.MAX_RECURSION_DEPTH)
+        recursion_limit=cli.MAX_RECURSION_DEPTH,
+        lib=lib)
 
 
 def test_file_as_input(tmp_path):
@@ -121,6 +123,11 @@ def test_namespace(pickled_model):
 
     assert "namespace Tests.ML {" in generated_code
 
+def test_joblib_loading(pickled_model):
+    mock_args = _get_mock_args(infile=pickled_model, language="go", lib="joblib")
+    generated_code = cli.generate_code(mock_args).strip()
+
+    assert generated_code.startswith("func score(input []float64) float64 {\n")
 
 def test_indent(pickled_model):
     mock_args = _get_mock_args(infile=pickled_model, indent=0, language="c_sharp")
