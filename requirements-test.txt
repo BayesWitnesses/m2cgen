@@ -1,3 +1,12 @@
+# Other stuff
+numpy==1.23.3; python_version > "3.7"
+numpy==1.21.5; python_version <= "3.7"
+scipy==1.9.1; python_version > "3.7"
+scipy==1.7.3; python_version <= "3.7"
+
+# Cython
+Cython==0.29.32; sys_platform == 'darwin' and platform_machine == 'arm64'
+
 # Supported models
 scikit-learn==1.0.2
 xgboost==1.6.2
@@ -13,8 +22,5 @@ pytest-mock==3.8.2
 pytest-cov==3.0.0
 py-mini-racer==0.6.0
 
-# Other stuff
-numpy==1.23.3; python_version > "3.7"
-numpy==1.21.5; python_version <= "3.7"
-scipy==1.9.1; python_version > "3.7"
-scipy==1.7.3; python_version <= "3.7"
+# Publishing
+twine

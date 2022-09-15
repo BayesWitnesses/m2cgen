@@ -10,6 +10,7 @@
 **m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#, PowerShell, R, PHP, Dart, Haskell, Ruby, F#, Rust, Elixir).
 
 * [Installation](#installation)
+* [Development](#development)
 * [Supported Languages](#supported-languages)
 * [Supported Models](#supported-models)
 * [Classification Output](#classification-output)
@@ -23,6 +24,15 @@ Supported Python version is >= **3.7**.
 pip install m2cgen
 ```
 
+## Development
+Make sure the following command runs successfully before submitting a PR:
+```
+make pre-pr
+```
+Alternatively you can run the Docker version of the same command:
+```
+make docker-build docker-pre-pr
+```
 
 ## Supported Languages
 
