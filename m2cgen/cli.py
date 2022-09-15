@@ -7,7 +7,6 @@ Example usage:
 Model can also be piped:
     # cat <path_to_file> | m2cgen --language java
 """
-import pickle
 import sys
 from argparse import ArgumentParser, FileType
 from inspect import signature
@@ -99,6 +98,13 @@ parser.add_argument(
     "--version", "-v",
     action="version",
     version=f"%(prog)s {m2cgen.__version__}")
+parser.add_argument(
+    "--pickle-lib", "-pl",
+    type=str,
+    dest="lib",
+    help="Sets the lib used to save the model",
+    choices=["pickle", "joblib"],
+    default="pickle")
 
 
 def parse_args(args):
@@ -109,7 +115,8 @@ def generate_code(args):
     sys.setrecursionlimit(args.recursion_limit)
 
     with args.infile as f:
-        model = pickle.load(f)
+        pickle_lib = __import__(args.lib)
+        model = pickle_lib.load(f)
 
     exporter, supported_args = LANGUAGE_TO_EXPORTER[args.language]
 
