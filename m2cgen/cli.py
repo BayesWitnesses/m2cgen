@@ -103,7 +103,7 @@ parser.add_argument(
     type=str,
     dest="lib",
     help="Sets the lib used to save the model",
-    choices=["pickle","joblib"],
+    choices=["pickle", "joblib"],
     default="pickle")
 
 

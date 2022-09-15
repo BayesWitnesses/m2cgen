@@ -123,11 +123,13 @@ def test_namespace(pickled_model):
 
     assert "namespace Tests.ML {" in generated_code
 
+
 def test_joblib_loading(pickled_model):
     mock_args = _get_mock_args(infile=pickled_model, language="go", lib="joblib")
     generated_code = cli.generate_code(mock_args).strip()
 
     assert generated_code.startswith("func score(input []float64) float64 {\n")
+
 
 def test_indent(pickled_model):
     mock_args = _get_mock_args(infile=pickled_model, indent=0, language="c_sharp")
