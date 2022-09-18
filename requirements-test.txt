@@ -18,3 +18,4 @@ numpy==1.23.3; python_version > "3.7"
 numpy==1.21.5; python_version <= "3.7"
 scipy==1.9.1; python_version > "3.7"
 scipy==1.7.3; python_version <= "3.7"
+joblib==1.2.0
