@@ -32,6 +32,7 @@ LANGUAGE_TO_EXPORTER = {
     "f_sharp": (m2cgen.export_to_f_sharp, ["indent", "function_name"]),
     "rust": (m2cgen.export_to_rust, ["indent", "function_name"]),
     "elixir": (m2cgen.export_to_elixir, ["module_name", "indent", "function_name"]),
+    "lua": (m2cgen.export_to_lua, ["indent", "function_name"]),
 }
 
 

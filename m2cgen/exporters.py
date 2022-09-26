@@ -454,6 +454,30 @@ def export_to_elixir(model, module_name="Model", indent=4,
     return _export(model, interpreter)
 
 
+def export_to_lua(model, indent=4, function_name="score"):
+    """
+    Generates a Lua code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    indent : int, optional
+        The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.LuaInterpreter(
+        indent=indent,
+        function_name=function_name,
+    )
+    return _export(model, interpreter)
+
+
 def _export(model, interpreter):
     assembler_cls = get_assembler_cls(model)
     model_ast = assembler_cls(model).assemble()

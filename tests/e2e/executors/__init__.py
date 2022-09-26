@@ -7,6 +7,7 @@ from tests.e2e.executors.go import GoExecutor
 from tests.e2e.executors.haskell import HaskellExecutor
 from tests.e2e.executors.java import JavaExecutor
 from tests.e2e.executors.javascript import JavascriptExecutor
+from tests.e2e.executors.lua import LuaExecutor
 from tests.e2e.executors.php import PhpExecutor
 from tests.e2e.executors.powershell import PowershellExecutor
 from tests.e2e.executors.python import PythonExecutor
@@ -32,4 +33,5 @@ __all__ = [
     FSharpExecutor,
     RustExecutor,
     ElixirExecutor,
+    LuaExecutor,
 ]

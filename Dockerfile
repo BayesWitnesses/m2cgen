@@ -61,7 +61,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         zulu-8 \
         erlang-solutions \
         esl-erlang \
-        elixir && \
+        elixir \
+	lua5.1 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen
