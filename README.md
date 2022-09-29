@@ -29,11 +29,13 @@ pip install m2cgen
 - C
 - C#
 - Dart
+- Elixir
 - F#
 - Go
 - Haskell
 - Java
 - JavaScript
+- Lua
 - PHP
 - PowerShell
 - Python
@@ -41,8 +43,6 @@ pip install m2cgen
 - Ruby
 - Rust
 - Visual Basic (VBA-compatible)
-- Elixir
-- Lua
 
 ## Supported Models
 
