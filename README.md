@@ -7,7 +7,7 @@
 [![PyPI Version](https://img.shields.io/pypi/v/m2cgen.svg?logo=pypi&logoColor=white)](https://pypi.org/project/m2cgen)
 [![Downloads](https://pepy.tech/badge/m2cgen)](https://pepy.tech/project/m2cgen)
 
-**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#, PowerShell, R, PHP, Dart, Haskell, Ruby, F#, Rust, Elixir).
+**m2cgen** (Model 2 Code Generator) - is a lightweight library which provides an easy way to transpile trained statistical models into a native code (Python, C, Java, Go, JavaScript, Visual Basic, C#, PowerShell, R, PHP, Dart, Haskell, Ruby, F#, Rust, Elixir, Lua).
 
 * [Installation](#installation)
 * [Development](#development)
@@ -39,11 +39,13 @@ make docker-build docker-pre-pr
 - C
 - C#
 - Dart
+- Elixir
 - F#
 - Go
 - Haskell
 - Java
 - JavaScript
+- Lua
 - PHP
 - PowerShell
 - Python
@@ -51,7 +53,6 @@ make docker-build docker-pre-pr
 - Ruby
 - Rust
 - Visual Basic (VBA-compatible)
-- Elixir
 
 ## Supported Models
 
@@ -126,7 +127,7 @@ public class Model {
 ```
 $ m2cgen <pickle_file> --language <language> [--indent <indent>] [--function_name <function_name>]
          [--class_name <class_name>] [--module_name <module_name>] [--package_name <package_name>]
-         [--namespace <namespace>] [--recursion-limit <recursion_limit>]
+         [--namespace <namespace>] [--recursion-limit <recursion_limit>] [--table_name <table_name>]
 ```
 Don't forget that for unpickling serialized model objects their classes must be defined in the top level of an importable module in the unpickling environment.
 

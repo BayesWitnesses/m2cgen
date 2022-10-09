@@ -7,6 +7,7 @@ from m2cgen.interpreters.go.interpreter import GoInterpreter
 from m2cgen.interpreters.haskell.interpreter import HaskellInterpreter
 from m2cgen.interpreters.java.interpreter import JavaInterpreter
 from m2cgen.interpreters.javascript.interpreter import JavascriptInterpreter
+from m2cgen.interpreters.lua.interpreter import LuaInterpreter
 from m2cgen.interpreters.php.interpreter import PhpInterpreter
 from m2cgen.interpreters.powershell.interpreter import PowershellInterpreter
 from m2cgen.interpreters.python.interpreter import PythonInterpreter
@@ -32,4 +33,5 @@ __all__ = [
     FSharpInterpreter,
     RustInterpreter,
     ElixirInterpreter,
+    LuaInterpreter,
 ]

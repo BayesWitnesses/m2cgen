@@ -5,6 +5,7 @@ ARG python=3.10
 ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64 \
     PATH="/root/.cargo/bin:$PATH" \
     LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     TZ=Etc/UTC \
     BLIS_NUM_THREADS=2 \
@@ -61,7 +62,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         zulu-8 \
         erlang-solutions \
         esl-erlang \
-        elixir && \
+        elixir \
+	lua5.1 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /m2cgen

@@ -32,6 +32,7 @@ LANGUAGE_TO_EXPORTER = {
     "f_sharp": (m2cgen.export_to_f_sharp, ["indent", "function_name"]),
     "rust": (m2cgen.export_to_rust, ["indent", "function_name"]),
     "elixir": (m2cgen.export_to_elixir, ["module_name", "indent", "function_name"]),
+    "lua": (m2cgen.export_to_lua, ["indent", "function_name", "table_name"]),
 }
 
 
@@ -73,6 +74,11 @@ parser.add_argument(
     dest="package_name",
     type=str,
     help="Package name for the generated code (if supported by target language).")
+parser.add_argument(
+    "--table_name", "-tn",
+    dest="table_name",
+    type=str,
+    help="Table name for the generated code (if supported by target language).")
 parser.add_argument(
     "--module_name", "-mn",
     dest="module_name",
