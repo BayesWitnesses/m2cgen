@@ -6,7 +6,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGener
 
 class LuaCodeGenerator(ImperativeCodeGenerator):
 
-    # can't use "local" due to threshold in most lua(jit) compilers
+    # can't use "local" due to threshold in most lua compilers, can't use global because it causes performance issues
     tpl_var_declaration = CodeTemplate("")
     tpl_var_assignment = CodeTemplate("{var_name} = {value}")
     tpl_num_value = CodeTemplate("{value}")
@@ -16,6 +16,14 @@ class LuaCodeGenerator(ImperativeCodeGenerator):
     tpl_if_statement = CodeTemplate("if {if_def} then")
     tpl_else_statement = CodeTemplate("else")
     tpl_block_termination = CodeTemplate("end")
+
+    def add_table_def(self, table_name):
+        self.table_name = table_name
+        table_def = f"local {table_name} = {{}}"
+        self.add_code_line(table_def)
+
+    def add_var_declaration(self, size):
+        return f"{self.table_name}.{self.get_var_name()}"
 
     def add_function_def(self, name, args):
         func_def = f"function {name}({', '.join(args)})"

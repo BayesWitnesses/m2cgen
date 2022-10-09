@@ -454,7 +454,7 @@ def export_to_elixir(model, module_name="Model", indent=4,
     return _export(model, interpreter)
 
 
-def export_to_lua(model, indent=4, function_name="score"):
+def export_to_lua(model, indent=4, function_name="score", table_name="ml"):
     """
     Generates a Lua code representation of the given model.
 
@@ -466,6 +466,8 @@ def export_to_lua(model, indent=4, function_name="score"):
         The size of indents in the generated code.
     function_name : string, optional
         Name of the function in the generated code.
+    table_name : string, optional
+        Name of the internal table in generated code
 
     Returns
     -------
@@ -474,6 +476,7 @@ def export_to_lua(model, indent=4, function_name="score"):
     interpreter = interpreters.LuaInterpreter(
         indent=indent,
         function_name=function_name,
+        table_name=table_name
     )
     return _export(model, interpreter)
 

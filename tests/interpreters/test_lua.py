@@ -16,12 +16,13 @@ def test_if_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     if 1.0 == input[1] then
-        var0 = 2.0
+        ml.var0 = 2.0
     else
-        var0 = 3.0
+        ml.var0 = 3.0
     end
-    return var0
+    return ml.var0
 end
 """
 
@@ -38,6 +39,7 @@ def test_bin_num_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return input[1] / -2.0 * 2.0
 end
 """
@@ -66,6 +68,7 @@ def test_associativity_in_bin_num_expr(op1, op2):
         op_code_line = f"1.0 {op1.value} (1.0 {op2.value} 1.0)"
     expected_code1 = f"""
 function score(input)
+    local ml = {{}}
     return {op_code_line}
 end
 """
@@ -81,6 +84,7 @@ end
     )
     expected_code2 = f"""
 function score(input)
+    local ml = {{}}
     return 1.0 {op1.value} 1.0 {op2.value} 1.0
 end
 """
@@ -106,17 +110,18 @@ def test_dependable_condition():
 
     expected_code = """
 function score(input)
+    local ml = {}
     if 1.0 == 1.0 then
-        var1 = 1.0
+        ml.var1 = 1.0
     else
-        var1 = 2.0
+        ml.var1 = 2.0
     end
-    if var1 + 2.0 >= 1.0 / 2.0 then
-        var0 = 1.0
+    if ml.var1 + 2.0 >= 1.0 / 2.0 then
+        ml.var0 = 1.0
     else
-        var0 = input[1]
+        ml.var0 = input[1]
     end
-    return var0
+    return ml.var0
 end
 """
 
@@ -140,26 +145,27 @@ def test_nested_condition():
 
     expected_code = """
 function score(input)
+    local ml = {}
     if 1.0 == 1.0 then
-        var1 = 1.0
+        ml.var1 = 1.0
     else
-        var1 = 2.0
+        ml.var1 = 2.0
     end
-    if 1.0 == var1 + 2.0 then
+    if 1.0 == ml.var1 + 2.0 then
         if 1.0 == 1.0 then
-            var2 = 1.0
+            ml.var2 = 1.0
         else
-            var2 = 2.0
+            ml.var2 = 2.0
         end
-        if 1.0 == var2 + 2.0 then
-            var0 = input[3]
+        if 1.0 == ml.var2 + 2.0 then
+            ml.var0 = input[3]
         else
-            var0 = 2.0
+            ml.var0 = 2.0
         end
     else
-        var0 = 2.0
+        ml.var0 = 2.0
     end
-    return var0
+    return ml.var0
 end
 """
 
@@ -172,6 +178,7 @@ def test_raw_array():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return {3.0, 4.0}
 end
 """
@@ -191,12 +198,13 @@ def test_multi_output():
 
     expected_code = """
 function score(input)
+    local ml = {}
     if 1.0 ~= 1.0 then
-        var0 = {1.0, 2.0}
+        ml.var0 = {1.0, 2.0}
     else
-        var0 = {3.0, 4.0}
+        ml.var0 = {3.0, 4.0}
     end
-    return var0
+    return ml.var0
 end
 """
 
@@ -212,6 +220,7 @@ def test_bin_vector_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return add_vectors({1.0, 2.0}, {3.0, 4.0})
 end
 function add_vectors(v1, v2)
@@ -242,6 +251,7 @@ def test_bin_vector_num_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return mul_vector_number({1.0, 2.0}, 1.0)
 end
 function add_vectors(v1, v2)
@@ -269,6 +279,7 @@ def test_abs_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return math.abs(-1.0)
 end
 """
@@ -282,6 +293,7 @@ def test_exp_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return math.exp(1.0)
 end
 """
@@ -295,6 +307,7 @@ def test_pow_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return 2.0 ^ 3.0
 end
 """
@@ -308,6 +321,7 @@ def test_sqrt_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return math.sqrt(2.0)
 end
 """
@@ -321,6 +335,7 @@ def test_tanh_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return math.tanh(2.0)
 end
 """
@@ -334,6 +349,7 @@ def test_log_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return math.log(2.0)
 end
 """
@@ -347,6 +363,7 @@ def test_log1p_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return log1p(2.0)
 end
 function log1p(x)
@@ -418,6 +435,7 @@ def test_atan_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return math.atan(2.0)
 end
 """
@@ -431,6 +449,7 @@ def test_softmax_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return softmax({2.0, 3.0})
 end
 function softmax(x)
@@ -463,6 +482,7 @@ def test_sigmoid_expr():
 
     expected_code = """
 function score(input)
+    local ml = {}
     return sigmoid(2.0)
 end
 function sigmoid(x)
@@ -484,8 +504,9 @@ def test_reused_expr():
 
     expected_code = """
 function score(input)
-    var0 = math.exp(1.0)
-    return var0 / var0
+    local ml = {}
+    ml.var0 = math.exp(1.0)
+    return ml.var0 / ml.var0
 end
 """
 

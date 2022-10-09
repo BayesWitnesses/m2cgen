@@ -128,4 +128,5 @@ def test_export_to_lua(trained_model):
     generated_code = exporters.export_to_lua(trained_model).strip()
     assert generated_code.startswith("""
 function score(input)
+    local ml = {}
 """.strip())

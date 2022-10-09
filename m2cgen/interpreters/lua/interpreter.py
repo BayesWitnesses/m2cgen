@@ -35,8 +35,9 @@ class LuaInterpreter(ImperativeToCodeInterpreter,
     with_sigmoid_expr = False
     with_softmax_expr = False
 
-    def __init__(self, indent=4, function_name="score", *args, **kwargs):
+    def __init__(self, indent=4, table_name="ml", function_name="score", *args, **kwargs):
         self.function_name = function_name
+        self.table_name = table_name
 
         cg = LuaCodeGenerator(indent=indent)
         super().__init__(cg, *args, **kwargs)
@@ -48,6 +49,7 @@ class LuaInterpreter(ImperativeToCodeInterpreter,
         with self._cg.function_definition(
                 name=self.function_name,
                 args=[self._feature_array_name]):
+            self._cg.add_table_def(self.table_name)
             last_result = self._do_interpret(expr)
             self._cg.add_return_statement(last_result)
 
