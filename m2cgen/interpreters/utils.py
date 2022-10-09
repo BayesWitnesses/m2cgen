@@ -25,3 +25,8 @@ def _normalize_expr_name(name):
 
 def format_float(value):
     return np.format_float_positional(value, unique=True, trim="0")
+
+
+def chunks(arr, n):
+    for i in range(0, len(arr), n):
+        yield arr[i:i + n]

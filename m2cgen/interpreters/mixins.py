@@ -4,6 +4,7 @@ from collections import namedtuple
 
 from m2cgen import ast
 from m2cgen.interpreters.interpreter import BaseToCodeInterpreter
+from m2cgen.interpreters.utils import chunks
 
 
 class BinExpressionDepthTrackingMixin(BaseToCodeInterpreter):
@@ -89,7 +90,7 @@ class LinearAlgebraMixin(BaseToCodeInterpreter):
             *extra_func_args)
 
 
-Subroutine = namedtuple('Subroutine', ['name', 'expr'])
+Subroutine = namedtuple('Subroutine', ['name', 'idx', 'expr'])
 
 
 class SubroutinesMixin(BaseToCodeInterpreter):
@@ -99,9 +100,11 @@ class SubroutinesMixin(BaseToCodeInterpreter):
 
     Subclasses only need to implement `create_code_generator` method.
 
-    Their code generators should implement 3 methods:
+    Their code generators should implement 5 methods:
          - function_definition;
          - function_invocation;
+         - module_definition;
+         - module_function_invocation;
          - add_return_statement.
 
     Interpreter should prepare at least one subroutine using method
@@ -112,6 +115,7 @@ class SubroutinesMixin(BaseToCodeInterpreter):
     # disabled by default
     ast_size_check_frequency = sys.maxsize
     ast_size_per_subroutine_threshold = sys.maxsize
+    subroutine_per_group_threshold = sys.maxsize
 
     def __init__(self, *args, **kwargs):
         self._subroutine_idx = 0
@@ -124,15 +128,33 @@ class SubroutinesMixin(BaseToCodeInterpreter):
         subroutine queue.
         """
         self._subroutine_idx = 0
+        subroutines = []
 
-        while len(self.subroutine_expr_queue):
+        while self.subroutine_expr_queue:
             self._reset_reused_expr_cache()
             subroutine = self.subroutine_expr_queue.pop(0)
             subroutine_code = self._process_subroutine(subroutine)
+            subroutines.append((subroutine, subroutine_code))
+
+        subroutines.sort(key=lambda subroutine: subroutine[0].idx)
+
+        groups = chunks(subroutines, self.subroutine_per_group_threshold)
+        for _, subroutine_code in next(groups):
             top_code_generator.add_code_lines(subroutine_code)
 
-    def enqueue_subroutine(self, name, expr):
-        self.subroutine_expr_queue.append(Subroutine(name, expr))
+        for index, subroutine_group in enumerate(groups):
+            cg = self.create_code_generator()
+
+            with cg.module_definition(
+                    module_name=self._format_group_name(index + 1)):
+                for _, subroutine_code in subroutine_group:
+                    cg.add_code_lines(subroutine_code)
+
+            top_code_generator.add_code_lines(
+                cg.finalize_and_get_generated_code())
+
+    def enqueue_subroutine(self, name, idx, expr):
+        self.subroutine_expr_queue.append(Subroutine(name, idx, expr))
 
     def _pre_interpret_hook(self, expr, ast_size_check_counter=0, **kwargs):
         if isinstance(expr, ast.BinExpr) and not expr.to_reuse:
@@ -145,7 +167,16 @@ class SubroutinesMixin(BaseToCodeInterpreter):
                 ast_size = ast.count_exprs(expr)
                 if ast_size > self.ast_size_per_subroutine_threshold:
                     function_name = self._get_subroutine_name()
-                    self.enqueue_subroutine(function_name, expr)
+
+                    self.enqueue_subroutine(function_name, self._subroutine_idx, expr)
+
+                    group_idx = self._subroutine_idx // self.subroutine_per_group_threshold
+                    if group_idx != 0:
+                        return self._cg.module_function_invocation(
+                            self._format_group_name(group_idx),
+                            function_name,
+                            self._feature_array_name), kwargs
+
                     return self._cg.function_invocation(function_name, self._feature_array_name), kwargs
 
             kwargs['ast_size_check_counter'] = ast_size_check_counter
@@ -190,6 +221,10 @@ class SubroutinesMixin(BaseToCodeInterpreter):
         subroutine_name = f"subroutine{self._subroutine_idx}"
         self._subroutine_idx += 1
         return subroutine_name
+
+    @staticmethod
+    def _format_group_name(group_idx):
+        return f"SubroutineGroup{group_idx}"
 
     # Methods to be implemented by subclasses.
 
