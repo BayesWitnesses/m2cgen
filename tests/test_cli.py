@@ -78,8 +78,8 @@ def test_generate_code(pickled_model):
 
     verify_python_model_is_expected(
         generated_code,
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-        expected_output=-44.40540274041321)
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        expected_output=11089.941259597403)
 
 
 def test_function_name(pickled_model):
@@ -160,5 +160,5 @@ def test_unsupported_args_are_ignored(pickled_model):
 
     verify_python_model_is_expected(
         generated_code,
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-        expected_output=-44.40540274041321)
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        expected_output=11089.941259597403)
