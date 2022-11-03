@@ -11,7 +11,7 @@ Cython==0.29.32; sys_platform == 'darwin' and platform_machine == 'arm64'
 scikit-learn==1.0.2
 xgboost==1.6.2
 lightgbm==3.3.2
-statsmodels==0.13.2
+statsmodels==0.13.5
 sklearn-contrib-lightning==0.6.2.post0
 
 # Testing tools
