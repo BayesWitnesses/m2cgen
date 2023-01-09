@@ -9,7 +9,7 @@ Cython==0.29.32; sys_platform == 'darwin' and platform_machine == 'arm64'
 
 # Supported models
 scikit-learn==1.0.2
-xgboost==1.6.2
+xgboost==1.7.3
 lightgbm==3.3.2
 statsmodels==0.13.2
 sklearn-contrib-lightning==0.6.2.post0
