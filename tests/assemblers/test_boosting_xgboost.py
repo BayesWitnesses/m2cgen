@@ -57,6 +57,46 @@ def test_multi_class():
     assert utils.cmp_exprs(actual, expected)
 
 
+def test_regression_multioutput():
+    base_score = 0.6
+    estimator = xgb.XGBRegressor(n_estimators=1, random_state=1, max_depth=1, base_score=base_score)
+    utils.get_multioutput_regression_model_trainer()(estimator)
+
+    assembler = XGBoostModelAssemblerSelector(estimator)
+    actual = assembler.assemble()
+
+    expected = ast.VectorVal([
+        ast.BinNumExpr(ast.NumVal(base_score),
+                       ast.IfExpr(
+                           ast.CompExpr(
+                               ast.FeatureRef(4),
+                               ast.NumVal(0.09817435592412949),
+                               ast.CompOpType.GTE),
+                           ast.NumVal(22.866134643554688),
+                           ast.NumVal(-10.487930297851562)),
+                       ast.BinNumOpType.ADD),
+        ast.BinNumExpr(ast.NumVal(base_score),
+                       ast.IfExpr(
+                           ast.CompExpr(
+                               ast.FeatureRef(1),
+                               ast.NumVal(0.031133096665143967),
+                               ast.CompOpType.GTE),
+                           ast.NumVal(13.26490592956543),
+                           ast.NumVal(-11.912125587463379)),
+                       ast.BinNumOpType.ADD),
+        ast.BinNumExpr(ast.NumVal(base_score),
+                       ast.IfExpr(
+                           ast.CompExpr(
+                               ast.FeatureRef(4),
+                               ast.NumVal(-0.42966189980506897),
+                               ast.CompOpType.GTE),
+                           ast.NumVal(17.365192413330078),
+                           ast.NumVal(-24.488313674926758)),
+                       ast.BinNumOpType.ADD)])
+
+    assert utils.cmp_exprs(actual, expected)
+
+
 def test_regression():
     base_score = 0.6
     estimator = xgb.XGBRegressor(n_estimators=2, random_state=1, max_depth=1, base_score=base_score)

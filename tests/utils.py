@@ -72,6 +72,9 @@ class ModelTrainer:
         if dataset_name == "boston":
             self.name = "train_model_regression"
             self.X, self.y = datasets.load_boston(return_X_y=True)
+        elif dataset_name == "multiout_regression":
+            self.name = "train_model_regression_multioutput"
+            self.X, self.y = datasets.make_regression(n_samples=20, n_features=5, n_targets=3, random_state=1)
         elif dataset_name == "boston_y_bounded":
             self.name = "train_model_regression_bounded"
             self.X, self.y = datasets.load_boston(return_X_y=True)
@@ -218,12 +221,11 @@ def assert_code_equal(actual, expected):
 
 get_regression_model_trainer = partial(ModelTrainer.get_instance, "boston")
 
+get_multioutput_regression_model_trainer = partial(ModelTrainer.get_instance, "multiout_regression")
 
 get_classification_model_trainer = partial(ModelTrainer.get_instance, "iris")
 
-
 get_binary_classification_model_trainer = partial(ModelTrainer.get_instance, "breast_cancer")
-
 
 get_regression_random_data_model_trainer = partial(ModelTrainer.get_instance, "regression_rnd")
 
