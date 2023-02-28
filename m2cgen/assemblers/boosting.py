@@ -138,6 +138,10 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
         "XGBRFClassifier"
     }
 
+    multioutput_regression_names = {
+        "XGBRegressor"
+    }
+
     def __init__(self, model):
         self.multiclass_params_seq_len = model.get_params().get("num_parallel_tree", 1)
         feature_names = model.get_booster().feature_names
@@ -154,7 +158,7 @@ class XGBoostTreeModelAssembler(BaseTreeBoostingAssembler):
 
         # handle case of multi output regression
         model_class_name = type(model).__name__
-        if model_class_name not in self.classifier_names:
+        if model_class_name in self.multioutput_regression_names:
             self.n_multioutput_targets = int(len(trees) / model.n_estimators)
 
         super().__init__(model,
