@@ -3,6 +3,7 @@ from m2cgen.interpreters.c_sharp.interpreter import CSharpInterpreter
 from m2cgen.interpreters.dart.interpreter import DartInterpreter
 from m2cgen.interpreters.elixir.interpreter import ElixirInterpreter
 from m2cgen.interpreters.f_sharp.interpreter import FSharpInterpreter
+from m2cgen.interpreters.fortran.interpreter import FortranInterpreter
 from m2cgen.interpreters.go.interpreter import GoInterpreter
 from m2cgen.interpreters.haskell.interpreter import HaskellInterpreter
 from m2cgen.interpreters.java.interpreter import JavaInterpreter
@@ -30,6 +31,7 @@ __all__ = [
     HaskellInterpreter,
     RubyInterpreter,
     FSharpInterpreter,
+    FortranInterpreter,
     RustInterpreter,
     ElixirInterpreter,
 ]

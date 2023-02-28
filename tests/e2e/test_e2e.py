@@ -31,6 +31,7 @@ HASKELL = pytest.mark.haskell
 RUBY = pytest.mark.ruby
 F_SHARP = pytest.mark.f_sharp
 RUST = pytest.mark.rust
+FORTRAN = pytest.mark.fortran
 ELIXIR = pytest.mark.elixir
 REGRESSION = pytest.mark.regr
 REGRESSION_WITH_MISSING_VALUES = pytest.mark.regr_missing_val
@@ -162,6 +163,7 @@ STATSMODELS_LINEAR_REGULARIZED_PARAMS = dict(method="elastic_net", alpha=7, L1_w
         (executors.DartExecutor, DART),
         (executors.HaskellExecutor, HASKELL),
         (executors.RubyExecutor, RUBY),
+        (executors.FortranExecutor, FORTRAN),
         (executors.FSharpExecutor, F_SHARP),
         (executors.RustExecutor, RUST),
         (executors.ElixirExecutor, ELIXIR),
