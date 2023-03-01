@@ -4,7 +4,7 @@ from m2cgen.interpreters.code_generator import CodeTemplate, ImperativeCodeGener
 
 
 class FortranCodeGenerator(ImperativeCodeGenerator):
-    tpl_num_value = CodeTemplate("{value}")
+    tpl_num_value = CodeTemplate("{value}d0")
     tpl_infix_expression = CodeTemplate("{left} {op} {right}")
     tpl_return_statement_vec = CodeTemplate("{func_name}(:) = {value}")
     tpl_return_statement_single = CodeTemplate("{func_name} = {value}")

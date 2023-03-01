@@ -278,7 +278,8 @@ def execute_command(exec_args, shell=False):
 
 
 def predict_from_commandline(exec_args):
-    items = execute_command(exec_args).split(" ")
+    output = execute_command(exec_args).split(" ")
+    items = [o for o in output if o != ""]
     if len(items) == 1:
         return np.float64(items[0])
     else:

@@ -3,25 +3,13 @@ from pathlib import Path
 from m2cgen.ast import BinNumOpType
 from m2cgen.interpreters.fortran.code_generator import FortranCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
-from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, PowExprFunctionMixin
+from m2cgen.interpreters.mixins import PowExprInfixMixin, LinearAlgebraMixin
 from m2cgen.interpreters.utils import get_file_content
 
 
 class FortranInterpreter(ImperativeToCodeInterpreter,
-                         PowExprFunctionMixin,
-                         BinExpressionDepthTrackingMixin,
-                         LinearAlgebraMixin):
-    # needs to be tested.
-    bin_depth_threshold = 55
-
-    supported_bin_vector_ops = {
-        BinNumOpType.ADD: "add_vectors",
-    }
-
-    supported_bin_vector_num_ops = {
-        BinNumOpType.MUL: "mul_vector_number",
-    }
-
+                         LinearAlgebraMixin,
+                         PowExprInfixMixin):
     abs_function_name = "ABS"
     atan_function_name = "ATAN"
     exponent_function_name = "EXP"
@@ -33,6 +21,14 @@ class FortranInterpreter(ImperativeToCodeInterpreter,
     tanh_function_name = "TANH"
 
     pow_operator = "**"
+
+    supported_bin_vector_ops = {
+        BinNumOpType.ADD: "add_vectors",
+    }
+
+    supported_bin_vector_num_ops = {
+        BinNumOpType.MUL: "mul_vector_number",
+    }
 
     with_sigmoid_expr = False
     with_softmax_expr = False

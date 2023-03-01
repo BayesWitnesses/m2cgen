@@ -46,12 +46,12 @@ end program main
 
 EXECUTE_AND_PRINT_SCALAR = """
     result(1) = score(input)
-    print '(e21.14)', result(1)
+    print '(e22.14)', result(1)
 """
 
 EXECUTE_AND_PRINT_VECTOR_TPL = """
     result = score(input)
-    print '({size}e21.14)', result  
+    print '({size}e22.14)', result  
     
 """
 
