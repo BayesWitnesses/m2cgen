@@ -88,16 +88,19 @@ class BaseCodeGenerator:
         indent = " " * self._current_indent
         self._write_to_code_buffer(indent + f"\n{indent}".join(lines) + "\n")
 
-    def prepend_code_line(self, line):
+    def prepend_code_line(self, line, indent=0):
         if not line:
             return
-        self.prepend_code_lines([line.strip()])
+        self.prepend_code_lines([line.strip()], indent)
 
-    def prepend_code_lines(self, lines):
-        new_line = "\n"
+    def prepend_code_lines(self, lines, indent=0):
+        new_line = f"\n"
+        add_indent = f"{indent * ' '}"
+        new_line_with_indent = new_line + add_indent
+
         if isinstance(lines, str):
             lines = lines.strip().split(new_line)
-        self._write_to_code_buffer(f"{new_line.join(lines)}{new_line}", prepend=True)
+        self._write_to_code_buffer(f"{add_indent}{new_line_with_indent.join(lines)}{new_line}", prepend=True)
 
     # Following methods simply compute expressions using templates without changing result.
 

@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from m2cgen.ast import BinNumOpType
+from m2cgen.interpreters.fortran.code_generator import FortranCodeGenerator
 from m2cgen.interpreters.interpreter import ImperativeToCodeInterpreter
 from m2cgen.interpreters.mixins import BinExpressionDepthTrackingMixin, LinearAlgebraMixin, PowExprFunctionMixin
-from m2cgen.interpreters.fortran.code_generator import FortranCodeGenerator
 from m2cgen.interpreters.utils import get_file_content
 
 
@@ -38,8 +38,9 @@ class FortranInterpreter(ImperativeToCodeInterpreter,
     with_softmax_expr = False
     with_log1p_expr = False
 
-    def __init__(self, indent=4, function_name="score", *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", module_name="Model", *args, **kwargs):
         self.function_name = function_name
+        self.module_name = module_name
 
         cg = FortranCodeGenerator(indent=indent)
         super().__init__(cg, *args, **kwargs)
@@ -48,37 +49,32 @@ class FortranInterpreter(ImperativeToCodeInterpreter,
         self._cg.reset_state()
         self._reset_reused_expr_cache()
 
-        with self._cg.function_definition(
-                name=self.function_name,
-                args=[self._feature_array_name],
-                output_size=expr.output_size,
-        ):
-            last_result = self._do_interpret(expr)
-            self._cg.add_return_statement(last_result, self.function_name, expr.output_size)
+        with self._cg.module_definition(self.module_name):
+            with self._cg.function_definition(
+                    name=self.function_name,
+                    args=[self._feature_array_name],
+                    output_size=expr.output_size,
+            ):
+                last_result = self._do_interpret(expr)
+                self._cg.add_return_statement(last_result, self.function_name, expr.output_size)
 
-        current_dir = Path(__file__).absolute().parent
+            current_dir = Path(__file__).absolute().parent
 
-        if self.with_linear_algebra \
-                or self.with_softmax_expr \
-                or self.with_sigmoid_expr \
-                or self.with_log1p_expr:
-            self._cg.add_code_line("contains")
+            if self.with_linear_algebra:
+                filename = current_dir / "linear_algebra.f90"
+                self._add_contain_statement(filename)
 
-        if self.with_linear_algebra:
-            filename = current_dir / "linear_algebra.f90"
-            self._add_contain_statement(filename)
+            if self.with_softmax_expr:
+                filename = current_dir / "softmax.f90"
+                self._add_contain_statement(filename)
 
-        if self.with_softmax_expr:
-            filename = current_dir / "softmax.f90"
-            self._add_contain_statement(filename)
+            if self.with_sigmoid_expr:
+                filename = current_dir / "sigmoid.f90"
+                self._add_contain_statement(filename)
 
-        if self.with_sigmoid_expr:
-            filename = current_dir / "sigmoid.f90"
-            self._add_contain_statement(filename)
-
-        if self.with_log1p_expr:
-            filename = current_dir / "log1p.f90"
-            self._add_contain_statement(filename)
+            if self.with_log1p_expr:
+                filename = current_dir / "log1p.f90"
+                self._add_contain_statement(filename)
 
         return self._cg.finalize_and_get_generated_code()
 
@@ -94,7 +90,7 @@ class FortranInterpreter(ImperativeToCodeInterpreter,
 
     def interpret_log1p_expr(self, expr, **kwargs):
         self.with_log1p_expr = True
-        return super().interpret_softmax_expr(expr, **kwargs)
+        return super().interpret_log1p_expr(expr, **kwargs)
 
     def interpret_softmax_expr(self, expr, **kwargs):
         self.with_softmax_expr = True

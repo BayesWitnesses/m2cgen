@@ -1,7 +1,7 @@
 function ChebyshevBroucke(x, coeffs) result(result)
     implicit none
     double precision, intent(in) :: x
-    double precision, intent(in) :: coeffs(:)
+    double precision, dimension(22), intent(in) :: coeffs
     double precision :: b0, b1, b2, x2, result
     integer :: i
     b2 = 0.0d0
@@ -17,11 +17,12 @@ function ChebyshevBroucke(x, coeffs) result(result)
 end function ChebyshevBroucke
 
 function Log1p(x) result(result)
+    use, intrinsic :: ieee_arithmetic, only : IEEE_Value, IEEE_QUIET_NAN
     implicit none
     double precision, intent(in) :: x
-    double precision :: res, xAbs
+    double precision :: result, xAbs
     double precision, parameter :: eps = 2.220446049250313d-16
-    double precision, parameter :: coeff(21) = (/ 0.10378693562743769800686267719098d1, &
+    double precision, dimension(22), parameter :: coeff = (/ 0.10378693562743769800686267719098d1, &
             -0.13364301504908918098766041553133d0, &
             0.19408249135520563357926199374750d-1, &
             -0.30107551127535777690376537776592d-2, &
@@ -53,7 +54,7 @@ function Log1p(x) result(result)
         return
     end if
     if (x < -1.0) then
-        result = 0.0d0 / 0.0d0
+        result = IEEE_VALUE(result, IEEE_QUIET_NAN)
         return
     end if
 

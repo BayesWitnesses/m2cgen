@@ -378,7 +378,7 @@ def export_to_ruby(model, indent=4, function_name="score"):
     return _export(model, interpreter)
 
 
-def export_to_fortran(model, indent=4, function_name="score"):
+def export_to_fortran(model, module_name="Model", indent=4, function_name="score"):
     """
     Generates a Fortran code representation of the given model.
 
@@ -386,6 +386,8 @@ def export_to_fortran(model, indent=4, function_name="score"):
     ----------
     model : object
         The model object that should be transpiled into code.
+    module_name : string, optional
+        The name of the generated module.
     indent : int, optional
         The size of indents in the generated code.
     function_name : string, optional
@@ -397,7 +399,8 @@ def export_to_fortran(model, indent=4, function_name="score"):
     """
     interpreter = interpreters.FortranInterpreter(
         indent=indent,
-        function_name=function_name
+        function_name=function_name,
+        module_name=module_name
     )
     return _export(model, interpreter)
 
