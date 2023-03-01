@@ -26,6 +26,7 @@ jobs:
           - "c_sharp or visual_basic or f_sharp"
           - "r_lang"
           - "elixir"
+          - "fortran"
           - "dart or powershell"
     steps:
       - name: Checkout repository

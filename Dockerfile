@@ -48,6 +48,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         dotnet-sdk-6.0 \
         g++ \
         gcc \
+        gfortran \
         git \
         golang-go \
         haskell-platform \

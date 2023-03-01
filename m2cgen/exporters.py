@@ -378,6 +378,33 @@ def export_to_ruby(model, indent=4, function_name="score"):
     return _export(model, interpreter)
 
 
+def export_to_fortran(model, module_name="Model", indent=4, function_name="score"):
+    """
+    Generates a Fortran code representation of the given model.
+
+    Parameters
+    ----------
+    model : object
+        The model object that should be transpiled into code.
+    module_name : string, optional
+        The name of the generated module.
+    indent : int, optional
+        The size of indents in the generated code.
+    function_name : string, optional
+        Name of the function in the generated code.
+
+    Returns
+    -------
+    code : string
+    """
+    interpreter = interpreters.FortranInterpreter(
+        indent=indent,
+        function_name=function_name,
+        module_name=module_name
+    )
+    return _export(model, interpreter)
+
+
 def export_to_f_sharp(model, indent=4, function_name="score"):
     """
     Generates a F# code representation of the given model.

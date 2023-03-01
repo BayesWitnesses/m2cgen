@@ -40,6 +40,7 @@ make docker-build docker-pre-pr
 - C#
 - Dart
 - F#
+- Fortran90
 - Go
 - Haskell
 - Java
