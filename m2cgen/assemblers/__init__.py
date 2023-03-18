@@ -46,6 +46,7 @@ SUPPORTED_MODELS = {
     "xgboost_XGBRFClassifier": XGBoostModelAssemblerSelector,
     "xgboost_XGBRegressor": XGBoostModelAssemblerSelector,
     "xgboost_XGBRFRegressor": XGBoostModelAssemblerSelector,
+    "xgboost_XGBRanker": XGBoostModelAssemblerSelector,
 
     # Sklearn SVM
     "sklearn_LinearSVC": SklearnLinearModelAssembler,
