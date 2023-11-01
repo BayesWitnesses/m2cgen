@@ -19,4 +19,28 @@ void score(double * input, double * output) {
         }
     }
     memcpy(output, var0, 3 * sizeof(double));
+
+
+    public class YourModel {
+        public double score(double[] input) {
+
+            double result = 0.0;
+            result += processInput(input);
+            result += processLogic(input);
+
+            return result;
+        }
+
+        private double processInput(double[] input) {
+            double result = 0.0;
+            return result;
+        }
+
+        private double processLogic(double[] input) {
+            double result = 0.0;
+            return result;
+        }
+
+    }
+
 }
