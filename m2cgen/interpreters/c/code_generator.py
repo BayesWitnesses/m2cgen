@@ -54,7 +54,7 @@ class CCodeGenerator(CLikeCodeGenerator):
         self.prepend_code_line(f"#include {dep}")
 
     def vector_init(self, values):
-        return f"(double[]){{{', '.join(values)}}}"
+        return f"((double[]){{{', '.join(values)}}})"
 
     def _get_var_declare_type(self, is_vector):
         return self.vector_type if is_vector else self.scalar_type
