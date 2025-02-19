@@ -219,7 +219,14 @@ class LightGBMModelAssembler(BaseTreeBoostingAssembler):
     classifier_names = {"LGBMClassifier"}
 
     def __init__(self, model):
-        model_dump = model.booster_.dump_model()
+        if hasattr(model, "booster_"):
+            # Scikit-learn interface (i.g. lightgbm.LGBMClassifier, lightgbm.LGBMRegressor)
+            # https://lightgbm.readthedocs.io/en/stable/Python-API.html#scikit-learn-api
+            model_dump = model.booster_.dump_model()
+        else:
+            # Python-API interface (i.g. lightgbm.train)
+            # https://lightgbm.readthedocs.io/en/stable/pythonapi/lightgbm.train.html
+            model_dump = model.dump_model()
         trees = [m["tree_structure"] for m in model_dump["tree_info"]]
 
         self.n_iter = len(trees) // model_dump["num_tree_per_iteration"]

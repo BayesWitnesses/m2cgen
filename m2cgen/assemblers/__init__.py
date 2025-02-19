@@ -40,6 +40,7 @@ SUPPORTED_MODELS = {
     # LightGBM
     "lightgbm_LGBMClassifier": LightGBMModelAssembler,
     "lightgbm_LGBMRegressor": LightGBMModelAssembler,
+    "lightgbm_Booster": LightGBMModelAssembler,
 
     # XGBoost
     "xgboost_XGBClassifier": XGBoostModelAssemblerSelector,

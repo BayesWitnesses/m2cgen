@@ -41,6 +41,39 @@ def test_binary_classification():
     assert utils.cmp_exprs(actual, expected)
 
 
+def test_binary_classification_booster():
+    estimator = lgb.LGBMClassifier(n_estimators=2, random_state=1, max_depth=1)
+    utils.get_binary_classification_model_trainer()(estimator)
+
+    assembler = LightGBMModelAssembler(estimator.booster_)
+    actual = assembler.assemble()
+
+    sigmoid = ast.SigmoidExpr(
+        ast.BinNumExpr(
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(20),
+                    ast.NumVal(16.795),
+                    ast.CompOpType.GT),
+                ast.NumVal(0.27502096830384837),
+                ast.NumVal(0.6391171126839048)),
+            ast.IfExpr(
+                ast.CompExpr(
+                    ast.FeatureRef(27),
+                    ast.NumVal(0.14205),
+                    ast.CompOpType.GT),
+                ast.NumVal(-0.21340153096570616),
+                ast.NumVal(0.11583109256834748)),
+            ast.BinNumOpType.ADD),
+        to_reuse=True)
+
+    expected = ast.VectorVal([
+        ast.BinNumExpr(ast.NumVal(1), sigmoid, ast.BinNumOpType.SUB),
+        sigmoid])
+
+    assert utils.cmp_exprs(actual, expected)
+
+
 def test_multi_class():
     estimator = lgb.LGBMClassifier(n_estimators=1, random_state=1, max_depth=1)
     estimator.fit(np.array([[1], [2], [3]]), np.array([1, 2, 3]))
