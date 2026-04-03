@@ -77,7 +77,15 @@ class BaseBoostingAssembler(ModelAssembler):
         # return -logf(1.0f / base_score - 1.0f);
         base_score = 0.0
         if self._base_score != 0.0:
-            base_score = -math.log(1.0 / self._base_score - 1.0)
+            #base_score = -math.log(1.0 / self._base_score - 1.0)
+            # Extract base_score properly for XGBoost 2.0+ compatibility
+            current_score = self._base_score
+            if current_score is None:
+                current_score = 0.5
+            elif isinstance(current_score, list):
+                current_score = current_score[0]
+
+            base_score = -math.log(1.0 / current_score - 1.0)
 
         expr = self._assemble_single_output(estimator_params, base_score=base_score)
 
